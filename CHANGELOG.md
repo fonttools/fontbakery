@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal profile
   - **[com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Skip check if font lacks GSUB table or font is missing either liga or smcp features. (PR #4787)
 
+### New checks
+  -  **EXPERIMENTAL - [com.google.fonts/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs
+
 
 ## 0.12.8 (2024-Jul-05)
 ### Noteworthy code-changes

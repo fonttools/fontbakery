@@ -12,6 +12,7 @@ from fontbakery.prelude import (
     WARN,
     Message,
 )
+from fontbakery import utils
 
 
 @condition(Ufo)
@@ -351,3 +352,57 @@ def com_thetypefounders_check_features_default_languagesystem(ufo_font):
             )
         else:
             yield PASS, "Default languagesystem present or automatically inserted."
+
+
+@check(
+    id="com.google.fonts/check/consistent_curve_type",
+    rationale="""
+        This is normally an accident, and may be handled incorrectly by the
+        build pipeline unless specifically configured to account for this.
+    """,
+    conditions=["ufo_font"],
+)
+def check_consistent_curve_type(config, ufo: Ufo):
+    """Check that all glyphs across the source use the same curve type"""
+
+    cubic_glyphs = []
+    quadratic_glyphs = []
+    mixed_glyphs = []
+    for layer in ufo.ufo_font.layers:  # type: ignore
+        for glyph in layer:
+            point_types = set(
+                point.type for contour in glyph.contours for point in contour.points
+            )
+            if "curve" in point_types and "qcurve" in point_types:
+                mixed_glyphs.append(glyph.name)
+            elif "curve" in point_types:
+                cubic_glyphs.append(glyph.name)
+            elif "qcurve" in point_types:
+                quadratic_glyphs.append(glyph.name)
+
+    if mixed_glyphs:
+        yield (
+            WARN,
+            Message(
+                "mixed-glyphs",
+                f"{ufo.file_displayname} contains glyphs with mixed curves:\n\n"
+                f"{utils.bullet_list(config, mixed_glyphs)}\n",
+            ),
+        )
+    if cubic_glyphs and quadratic_glyphs:
+        yield (
+            WARN,
+            Message(
+                "both-cubic-and-quadratic",
+                f"{ufo.file_displayname} contains a mix of cubic-curve glyphs and quadratic-curve "
+                "glyphs\n\nCubics:\n\n"
+                f"{utils.bullet_list(config, cubic_glyphs)}\n\n"
+                "Quadratics:\n\n"
+                f"{utils.bullet_list(config, quadratic_glyphs)}\n",
+            ),
+        )
+    elif not mixed_glyphs:
+        yield (
+            PASS,
+            "All curves of all glyphs use a consistent curve type",
+        )
