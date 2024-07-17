@@ -38,7 +38,7 @@ dependencies = [
     "cmarkgfm >= 0.4",
     "rich",
     "Jinja2 >= 3.0.0",  # issue #4717
-    "packaging",
+    "packaging >= 14.5",  # VERSION_PATTERN was added on v14.5 (fontbakery/issues/4792)
     "pip-api",
     "requests >= 2.19",  # issue #4718
     "beziers >= 0.6.0, == 0.6.*",
