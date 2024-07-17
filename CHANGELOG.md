@@ -1,7 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.12.9 (2024-Jul-??)
+## Upcoming release: 0.12.10 (2024-Jul-??)
+  - ...
+
+
+## 0.12.9 (2024-Jul-17)
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Skip check if font lacks GSUB table or font is missing either liga or smcp features. (PR #4787)
