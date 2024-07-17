@@ -6,12 +6,13 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.12.9 (2024-Jul-17)
+### New checks
+#### Added to the UFO profile
+  -  **EXPERIMENTAL - [com.google.fonts/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs. (PR #4795)
+
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Skip check if font lacks GSUB table or font is missing either liga or smcp features. (PR #4787)
-
-### New checks
-  -  **EXPERIMENTAL - [com.google.fonts/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs
 
 
 ## 0.12.8 (2024-Jul-05)
