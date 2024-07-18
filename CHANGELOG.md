@@ -2,8 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.10 (2024-Jul-??)
-  - ...
-
+### Changes to existing checks
+#### On the UFO profile
+  - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: remove usage of `ufoLib2` APIs
 
 ## 0.12.9 (2024-Jul-17)
 ### New checks
@@ -11,7 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.arrowtype.fonts/check/typoascender_exceeds_Agrave]:** Check that the typoAscender exceeds the yMax of the /Agrave (issue #3170)
 
 #### Added to the UFO profile
-  -  **EXPERIMENTAL - [com.google.fonts/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs. (PR #4795)
+  - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs. (PR #4795)
 
 ### Changes to existing checks
 #### On the Universal profile
