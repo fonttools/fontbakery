@@ -409,3 +409,43 @@ def check_consistent_curve_type(config, ufo: Ufo):
             PASS,
             "All curves of all glyphs use a consistent curve type",
         )
+
+
+@check(
+    id="com.daltonmaag/check/no_open_corners",
+    rationale="""
+        This may be a requirement when creating a font that supports a roundness
+        axis.
+    """,
+    conditions=["ufo_font"],
+)
+def check_no_open_corners(config, ufo):
+    """Check the sources have no corners"""
+    from glyphsLib.filters.eraseOpenCorners import EraseOpenCornersPen
+    from fontTools.pens.basePen import NullPen
+
+    font = ufo.ufo_font
+    default_layer_name = font.layers.defaultLayer.name
+    for layer in font.layers:
+        offending_glyphs = []
+        for glyph in layer:
+            erase_open_corners = EraseOpenCornersPen(NullPen())
+            for contour in glyph:
+                contour.draw(erase_open_corners)
+            if erase_open_corners.affected:
+                offending_glyphs.append(glyph.name)
+
+        if offending_glyphs:
+            location_str = (
+                ufo.file_displayname
+                if layer.name == default_layer_name
+                else f"{ufo.file_displayname} (layer {layer.name})"
+            )
+            yield (
+                FAIL,
+                Message(
+                    "open-corners-found",
+                    f"{location_str} contains glyphs with open corners:\n\n"
+                    f"{utils.bullet_list(config, offending_glyphs)}\n",
+                ),
+            )
