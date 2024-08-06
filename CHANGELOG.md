@@ -2,7 +2,8 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.10 (2024-Jul-??)
-  - ...
+### New checks
+  - **EXPERIMENTAL - [com.daltonmaag/check/no_open_corners]:** checks that sources don't contain open corners, intended for use in font projects with a roundness axis (PR #4808)
 
 
 ## 0.12.9 (2024-Jul-17)

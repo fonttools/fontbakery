@@ -418,6 +418,7 @@ def check_consistent_curve_type(config, ufo: Ufo):
         axis.
     """,
     conditions=["ufo_font"],
+    proposal="https://github.com/fonttools/fontbakery/pull/4808",
 )
 def check_no_open_corners(config, ufo):
     """Check the sources have no corners"""
