@@ -425,7 +425,6 @@ def check_no_open_corners(config, ufo):
     from fontTools.pens.basePen import NullPen
 
     font = ufo.ufo_font
-    default_layer_name = font.layers.defaultLayer.name
     for layer in font.layers:
         offending_glyphs = []
         for glyph in layer:
@@ -437,9 +436,9 @@ def check_no_open_corners(config, ufo):
 
         if offending_glyphs:
             location_str = (
-                ufo.file_displayname
-                if layer.name == default_layer_name
-                else f"{ufo.file_displayname} (layer {layer.name})"
+                "Default layer"
+                if layer.name == font.layers.defaultLayer.name
+                else layer.name
             )
             yield (
                 FAIL,

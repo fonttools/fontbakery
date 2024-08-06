@@ -201,3 +201,17 @@ languagesystem latn dflt;
 feature liga { sub f i by f_i; } liga;"""
 
     assert_PASS(check(ufo))
+
+
+def test_check_no_open_corners() -> None:
+    """Ensure the check identifies open corners correctly"""
+    check = CheckTester("com.daltonmaag/check/no_open_corners")
+
+    ufo = defcon.Font(TEST_FILE("test.ufo"))
+
+    assert_results_contain(check(ufo), FAIL, "open-corners-found")
+
+    # Remove glyph with open corners
+    del ufo["square"]
+
+    assert_PASS(check(ufo))

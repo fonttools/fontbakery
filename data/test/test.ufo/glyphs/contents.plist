@@ -8,5 +8,7 @@
 	<string>B_.glif</string>
 	<key>C</key>
 	<string>C_.glif</string>
+  <key>square</key>
+  <string>square.glif</string>
 </dict>
 </plist>
