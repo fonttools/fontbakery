@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="square" format="2">
+  <advance width="600"/>
+  <outline>
+    <contour>
+      <!-- Intentional open corners for test_check_no_open_corners -->
+      <point x="547" y="128" type="line"/>
+      <point x="495" y="100" type="line"/>
+      <point x="482" y="454" type="line"/>
+      <point x="530" y="423" type="line"/>
+      <point x="110" y="417" type="line"/>
+      <point x="156" y="460" type="line"/>
+      <point x="163" y="100" type="line"/>
+      <point x="111" y="119" type="line"/>
+    </contour>
+  </outline>
+</glyph>

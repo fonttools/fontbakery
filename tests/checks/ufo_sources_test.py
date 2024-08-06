@@ -239,3 +239,17 @@ def test_check_consistent_curve_type_check(empty_ufo_font) -> None:
     # Cubics & quadratics, all in one glyph
     ufo.insertGlyph(mixed_glyph, "mixed")
     assert_results_contain(check(ufo), WARN, "mixed-glyphs")
+
+
+def test_check_no_open_corners() -> None:
+    """Ensure the check identifies open corners correctly"""
+    check = CheckTester("com.daltonmaag/check/no_open_corners")
+
+    ufo = defcon.Font(TEST_FILE("test.ufo"))
+
+    assert_results_contain(check(ufo), FAIL, "open-corners-found")
+
+    # Remove glyph with open corners
+    del ufo["square"]
+
+    assert_PASS(check(ufo))
