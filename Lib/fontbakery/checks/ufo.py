@@ -373,7 +373,7 @@ def check_consistent_curve_type(config, ufo: Ufo):
     for layer in ufo.ufo_font.layers:  # type: ignore
         for glyph in layer:
             point_types = set(
-                point.type for contour in glyph.contours for point in contour.points
+                point.segmentType for contour in glyph for point in contour
             )
             if "curve" in point_types and "qcurve" in point_types:
                 mixed_glyphs.append(glyph.name)
@@ -387,7 +387,7 @@ def check_consistent_curve_type(config, ufo: Ufo):
             WARN,
             Message(
                 "mixed-glyphs",
-                f"{ufo.file_displayname} contains glyphs with mixed curves:\n\n"
+                f"UFO contains glyphs with mixed curves:\n\n"
                 f"{utils.bullet_list(config, mixed_glyphs)}\n",
             ),
         )
@@ -396,7 +396,7 @@ def check_consistent_curve_type(config, ufo: Ufo):
             WARN,
             Message(
                 "both-cubic-and-quadratic",
-                f"{ufo.file_displayname} contains a mix of cubic-curve glyphs"
+                f"UFO contains a mix of cubic-curve glyphs"
                 " and quadratic-curve glyphs\n\n"
                 "Cubics:\n\n"
                 f"{utils.bullet_list(config, cubic_glyphs)}\n\n"

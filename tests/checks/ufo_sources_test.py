@@ -201,3 +201,41 @@ languagesystem latn dflt;
 feature liga { sub f i by f_i; } liga;"""
 
     assert_PASS(check(ufo))
+
+
+def test_check_consistent_curve_type_check(empty_ufo_font) -> None:
+    check = CheckTester("com.daltonmaag/check/consistent_curve_type")
+    ufo, _ = empty_ufo_font
+
+    cubic_contour = defcon.Contour()
+    cubic_contour.appendPoint(defcon.Point((0, 0), "curve"))
+    cubic_glyph = defcon.Glyph()
+    cubic_glyph.appendContour(cubic_contour)
+
+    quadratic_contour = defcon.Contour()
+    quadratic_contour.appendPoint(defcon.Point((0, 0), "qcurve"))
+    quadratic_glyph = defcon.Glyph()
+    quadratic_glyph.appendContour(quadratic_contour)
+
+    mixed_contour = defcon.Contour()
+    mixed_contour.appendPoint(defcon.Point((0, 0), "curve"))
+    mixed_contour.appendPoint(defcon.Point((1, 1), "qcurve"))
+    mixed_glyph = defcon.Glyph()
+    mixed_glyph.appendContour(mixed_contour)
+
+    # Just cubics
+    ufo.insertGlyph(cubic_glyph, "cubic")
+    assert_PASS(check(ufo))
+    del ufo["cubic"]
+
+    # Just quadratics
+    ufo.insertGlyph(quadratic_glyph, "quadratic")
+    assert_PASS(check(ufo))
+
+    # Cubics & quadratics, separate glyphs
+    ufo.insertGlyph(cubic_glyph, "cubic")
+    assert_results_contain(check(ufo), WARN, "both-cubic-and-quadratic")
+
+    # Cubics & quadratics, all in one glyph
+    ufo.insertGlyph(mixed_glyph, "mixed")
+    assert_results_contain(check(ufo), WARN, "mixed-glyphs")
