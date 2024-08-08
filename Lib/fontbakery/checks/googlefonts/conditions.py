@@ -295,7 +295,7 @@ def remote_styles(font):
 
     # download_family_from_Google_Fonts
     dl_url = "https://fonts.google.com/download/list?family={}"
-    family = font.familyname_with_spaces
+    family = font.font_familyname
     url = dl_url.format(family.replace(" ", "%20"))
     data = json.loads(requests.get(url, timeout=10).text[5:])
     remote_fonts = []
