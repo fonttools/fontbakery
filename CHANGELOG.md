@@ -1,7 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0 (2024-Aug-??)
+##  Upcoming release: 0.13.0 (2024-Sep-??)
+### Changes to existing checks
+#### On the Universal profile
+  - **[name/family_and_style_max_length"]:** Use nameID 16 (Typographic family name) to determine name length if it exists. (PR #4811)
+
 ### Migration of checks
 #### Moved from Fontwerk to OpenType profile
   - **[opentype/weight_class_fvar]**: "Checking if OS/2 usWeightClass matches fvar."
