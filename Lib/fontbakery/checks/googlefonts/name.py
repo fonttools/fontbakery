@@ -350,9 +350,21 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
             for instance_name in get_name_entry_strings(
                 ttFont, instance.subfamilyNameID
             ):
-                for family_name in get_name_entry_strings(
-                    ttFont, NameID.FONT_FAMILY_NAME
-                ):
+                typo_family_names = {
+                    (r.platformID, r.platEncID, r.langID): r
+                    for r in ttFont["name"].names
+                    if r.nameID == 16
+                }
+                family_names = {
+                    (r.platformID, r.platEncID, r.langID): r
+                    for r in ttFont["name"].names
+                    if r.nameID == 1
+                }
+                for platform in family_names:
+                    if platform in typo_family_names:
+                        family_name = typo_family_names[platform].toUnicode()
+                    else:
+                        family_name = family_names[platform].toUnicode()
                     full_instance_name = family_name + " " + instance_name
                     if len(full_instance_name) > 32:
                         yield FAIL, Message(
