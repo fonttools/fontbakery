@@ -1445,5 +1445,6 @@ def test_check_gsub_smallcaps_before_ligatures():
     assert_PASS(check(ttFont))
 
     # Test 'liga' lookup before 'smcp' lookup
-    ttFont["GSUB"].table.FeatureList.FeatureRecord = [liga_record, smcp_record]
+    smcp_feature.LookupListIndex = [1]
+    liga_feature.LookupListIndex = [0]
     assert_results_contain(check(ttFont), FAIL, "feature-ordering")

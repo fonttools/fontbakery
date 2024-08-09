@@ -1231,14 +1231,16 @@ def com_google_fonts_check_gsub_smallcaps_before_ligatures(ttFont):
     gsub_table = ttFont["GSUB"].table
 
     smcp_indices = [
-        idx
-        for idx, feature in enumerate(gsub_table.FeatureList.FeatureRecord)
+        index
+        for feature in gsub_table.FeatureList.FeatureRecord
         if feature.FeatureTag == "smcp"
+        for index in feature.Feature.LookupListIndex
     ]
     liga_indices = [
-        idx
-        for idx, feature in enumerate(gsub_table.FeatureList.FeatureRecord)
+        index
+        for feature in gsub_table.FeatureList.FeatureRecord
         if feature.FeatureTag == "liga"
+        for index in feature.Feature.LookupListIndex
     ]
 
     if not smcp_indices or not liga_indices:
