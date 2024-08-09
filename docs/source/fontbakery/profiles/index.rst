@@ -15,4 +15,3 @@ profiles
    fontval
    iso15008
    outline
-   shaping

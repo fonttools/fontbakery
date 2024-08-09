@@ -102,6 +102,10 @@ fontwerk = [
 ]
 
 googlefonts = [
+    "collidoscope >= 0.5.2",
+    # 0.5.2 added Python 3.11 wheels
+    # (see https://github.com/fonttools/fontbakery/issues/3970)
+
     "dehinter >= 3.1.0",
     # 3.1.0 added dehinter.font.hint function
 
@@ -113,11 +117,13 @@ googlefonts = [
     # We cannot use v4 because our protobuf files have been compiled with v3.
     # (see https://github.com/fonttools/fontbakery/issues/2200)
 
+    "stringbrewer",
+
     "unicodedata2",
 
     "fontbakery[beautifulsoup4]",
     "fontbakery[googlefontsalwayslatest]",
-    "fontbakery[shaping]",
+    "fontbakery[shaperglot]",
 ]
 
 iso15008 = []
@@ -126,17 +132,6 @@ microsoft = []
 
 notofonts = [
     "fontbakery[googlefonts]",
-]
-
-# FIXME: This is not a vendor-specific profile!
-shaping = [
-    "collidoscope >= 0.5.2",
-    # 0.5.2 added Python 3.11 wheels
-    # (see https://github.com/fonttools/fontbakery/issues/3970)
-
-    "stringbrewer",
-
-    "fontbakery[shaperglot]",
 ]
 
 typenetwork = [
@@ -167,7 +162,6 @@ all = [
     "fontbakery[googlefonts]",
     "fontbakery[iso15008]",
     "fontbakery[notofonts]",
-    "fontbakery[shaping]",
     "fontbakery[typenetwork]",
 ]
 

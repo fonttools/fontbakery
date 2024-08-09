@@ -78,10 +78,6 @@ jobs:
             name: adobefonts
             args: >-
               data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
-          - description: Shaping checks
-            extras: ".[shaping]"
-            name: shaping
-            args: data/test/mada/Mada-Regular.ttf
           - description: Google Fonts
             extras: ".[googlefonts]"
             name: googlefonts
