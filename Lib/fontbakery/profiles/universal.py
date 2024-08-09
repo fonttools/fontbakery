@@ -18,6 +18,7 @@ PROFILE = {
             "com.daltonmaag/check/ufo_required_fields",
             "com.daltonmaag/check/ufo_recommended_fields",
             "com.daltonmaag/check/ufo_unnecessary_fields",
+            "com.daltonmaag/check/designspace_has_consistent_groups",
         ],
         "Universal Profile Checks": [
             "com.google.fonts/check/alt_caron",
