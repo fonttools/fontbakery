@@ -253,3 +253,12 @@ def test_check_no_open_corners() -> None:
     del ufo["square"]
 
     assert_PASS(check(ufo))
+
+
+def test_check_designspace_has_consistent_groups(tmpdir) -> None:
+    """Ensure the check identifies mismatched groups correctly"""
+    check = CheckTester("com.daltonmaag/check/designspace_has_consistent_groups")
+
+    designspace_path = TEST_FILE("mismatched_groups/Stupid Font.designspace")
+
+    assert_results_contain(check(designspace_path), WARN, "mismatched-kerning-groups")
