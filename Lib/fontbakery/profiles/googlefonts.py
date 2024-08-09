@@ -1,5 +1,5 @@
 PROFILE = {
-    "include_profiles": ["universal", "outline", "shaping", "ufo"],
+    "include_profiles": ["universal", "outline", "shaping"],
     "sections": {
         "Article Checks": [
             "com.google.fonts/check/article/images",

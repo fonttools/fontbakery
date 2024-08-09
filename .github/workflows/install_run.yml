@@ -45,6 +45,16 @@ jobs:
               -x valid_default_instance_nameids
               -x soft_dotted
               data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
+          - description: Universal profile on a UFO font
+            extras: ".[ufo]"
+            name: universal
+            args: --verbose data/test/test.ufo
+          - description: Universal profile on a designspace
+            extras: ".[ufo]"
+            name: universal
+            args: >-
+              -x designspace_has_consistent
+              "data/test/stupidfont/Stupid Font.designspace"
           - description: OpenType profile on a TTC
             name: opentype
             args: >-
@@ -68,16 +78,6 @@ jobs:
             name: adobefonts
             args: >-
               data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
-          - description: UFO profile
-            extras: ".[ufo]"
-            name: ufo
-            args: --verbose data/test/test.ufo
-          - description: UFO Profile on a designspace
-            extras: ".[ufo]"
-            name: ufo
-            args: >-
-              -x designspace_has_consistent
-              "data/test/stupidfont/Stupid Font.designspace"
           - description: Shaping checks
             extras: ".[shaping]"
             name: shaping

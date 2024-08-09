@@ -2,13 +2,17 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.10 (2024-Jul-??)
+### Noteworthy code changes
+  - The **UFO** profile was removed and its checks were migrated to the **Universal** profile. For that reason, all of them received a temporary "experimental" flag (issue #4801)
+
 ### Changes to existing checks
   - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: remove usage of `ufoLib2` APIs. (PR #4802)
 
 ### New checks
-#### Added to the UFO profile
+#### Added to the Universal profile
   - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs. (PR #4795)
   - **EXPERIMENTAL - [com.daltonmaag/check/no_open_corners]:** checks that sources don't contain open corners, intended for use in font projects with a roundness axis. (PR #4808)
+  - And all other pre-existing UFO checks as well.
 
 
 ## 0.12.9 (2024-Jul-17)
