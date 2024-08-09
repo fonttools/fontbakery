@@ -467,6 +467,7 @@ def check_no_open_corners(config, ufo):
         Often designers will want kerning groups to be consistent across their
         whole Designspace, so this check helps flag if this isn't the case.
     """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4814",
 )
 def check_designspace_has_consistent_groups(config, designSpace):
     """Confirms that all sources have the same kerning groups per Designspace."""

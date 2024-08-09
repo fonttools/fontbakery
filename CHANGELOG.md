@@ -2,7 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.11 (2024-Aug-??)
-  - ...
+### New checks
+#### Added to the Universal profile
+  - **EXPERIMENTAL - [com.daltonmaag/check/designspace_has_consistent_groups]:** checks that all designspace sources have the same kerning groups (PR #4814)
 
 
 ## 0.12.10 (2024-Aug-09)
