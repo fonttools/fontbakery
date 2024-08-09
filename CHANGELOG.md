@@ -11,7 +11,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - The **Shaping** and **Outline** profile were also removed and their checks migrated to the **Google Fonts** profile. As gfonts was already including those, and no other profile did so, there's no need to add experimental flags to these ones. (issue #4801)
 
 ### Changes to existing checks
+#### Previously on the UFO profile
   - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: remove usage of `ufoLib2` APIs. (PR #4802)
+
+#### On the Universal profile
+  - **[com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Check lookup indexes instead of feature indexes. (PR #4813)
 
 ### New checks
 #### Added to the Universal profile
