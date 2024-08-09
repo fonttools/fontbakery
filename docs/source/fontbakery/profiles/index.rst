@@ -14,4 +14,3 @@ profiles
    fontwerk
    fontval
    iso15008
-   outline

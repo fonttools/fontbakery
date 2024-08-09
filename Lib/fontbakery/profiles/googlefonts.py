@@ -1,5 +1,5 @@
 PROFILE = {
-    "include_profiles": ["universal", "outline"],
+    "include_profiles": ["universal"],
     "sections": {
         "Article Checks": [
             "com.google.fonts/check/article/images",
@@ -107,6 +107,14 @@ PROFILE = {
             "com.google.fonts/check/shaping/collides",
             "com.google.fonts/check/dotted_circle",
             "com.google.fonts/check/soft_dotted",
+        ],
+        "Outline Checks": [
+            "com.google.fonts/check/outline_alignment_miss",
+            "com.google.fonts/check/outline_short_segments",
+            "com.google.fonts/check/outline_colinear_vectors",
+            "com.google.fonts/check/outline_jaggy_segments",
+            "com.google.fonts/check/outline_semi_vertical",
+            "com.google.fonts/check/outline_direction",
         ],
         "Font File Checks": [
             "com.google.fonts/check/aat",
