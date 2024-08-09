@@ -66,12 +66,13 @@ def designspace_sources(designspace):
 
 @check(
     id="com.daltonmaag/check/ufolint",
-    proposal="https://github.com/fonttools/fontbakery/pull/1736",
     rationale="""
         ufolint is a tool that checks UFO source files for common issues.
         It is a good idea to run it before building a font to catch potential
         problems early in the process.
     """,
+    proposal="https://github.com/fonttools/fontbakery/pull/1736",
+    experimental="Since 2024/Aug/09",
 )
 def com_daltonmaag_check_ufolint(ufo):
     """Run ufolint on UFO source directory."""
@@ -106,6 +107,7 @@ def com_daltonmaag_check_ufolint(ufo):
         unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
+    experimental="Since 2024/Aug/09",
 )
 def com_daltonmaag_check_required_fields(ufo_font):
     """Check that required fields are present in the UFO fontinfo."""
@@ -137,6 +139,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
         This includes fields that should be in any production font.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
+    experimental="Since 2024/Aug/09",
 )
 def com_daltonmaag_check_recommended_fields(ufo_font):
     """Check that recommended fields are present in the UFO fontinfo."""
@@ -176,6 +179,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
         year is deprecated since UFO v2.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
+    experimental="Since 2024/Aug/09",
 )
 def com_daltonmaag_check_unnecessary_fields(ufo_font):
     """Check that no unnecessary fields are present in the UFO fontinfo."""
@@ -215,6 +219,7 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
         can be properly parsed and does include valid source file references.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
+    experimental="Since 2024/Aug/09",
 )
 def com_google_fonts_check_designspace_has_sources(designspace_sources):
     """See if we can actually load the source files."""
@@ -230,6 +235,7 @@ def com_google_fonts_check_designspace_has_sources(designspace_sources):
         We expect that designspace files declare on of the masters as default.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
+    experimental="Since 2024/Aug/09",
 )
 def com_google_fonts_check_designspace_has_default_master(designSpace):
     """Ensure a default master is defined."""
@@ -247,6 +253,7 @@ def com_google_fonts_check_designspace_has_default_master(designSpace):
     """,
     conditions=["designspace_sources"],
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
+    experimental="Since 2024/Aug/09",
 )
 def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, config):
     """Check consistency of glyphset in a designspace file."""
@@ -280,6 +287,7 @@ def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, conf
     """,
     conditions=["designspace_sources"],
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
+    experimental="Since 2024/Aug/09",
 )
 def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, config):
     """Check codepoints consistency in a designspace file."""
@@ -329,6 +337,7 @@ def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, co
         http://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#4b-language-system
     """,
     proposal="https://github.com/googlefonts/fontbakery/issues/4011",
+    experimental="Since 2024/Aug/09",
 )
 def com_thetypefounders_check_features_default_languagesystem(ufo_font):
     """Check that languagesystem DFLT dflt is present in the features.fea file."""
@@ -361,8 +370,8 @@ def com_thetypefounders_check_features_default_languagesystem(ufo_font):
         build pipeline unless specifically configured to account for this.
     """,
     conditions=["ufo_font"],
-    experimental="Since 2024/Jul/17",
     proposal="https://github.com/fonttools/fontbakery/pull/4795",
+    experimental="Since 2024/Jul/17",
 )
 def check_consistent_curve_type(config, ufo: Ufo):
     """Check that all glyphs across the source use the same curve type"""
@@ -419,6 +428,7 @@ def check_consistent_curve_type(config, ufo: Ufo):
     """,
     conditions=["ufo_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/4808",
+    experimental="Since 2024/Aug/09",
 )
 def check_no_open_corners(config, ufo):
     """Check the sources have no corners"""

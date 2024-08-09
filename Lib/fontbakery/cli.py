@@ -47,7 +47,6 @@ CLI_PROFILES = [
     "opentype",
     "shaping",
     "typenetwork",
-    "ufo",
     "universal",
 ]
 

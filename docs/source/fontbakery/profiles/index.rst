@@ -13,7 +13,6 @@ profiles
    fontbureau
    fontwerk
    fontval
-   ufo
    iso15008
    outline
    shaping
