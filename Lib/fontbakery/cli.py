@@ -45,7 +45,6 @@ CLI_PROFILES = [
     "microsoft",
     "notofonts",
     "opentype",
-    "shaping",
     "typenetwork",
     "universal",
 ]

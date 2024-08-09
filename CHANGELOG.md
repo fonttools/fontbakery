@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.12.10 (2024-Jul-??)
 ### Noteworthy code changes
   - The **UFO** profile was removed and its checks were migrated to the **Universal** profile. For that reason, all of them received a temporary "experimental" flag (issue #4801)
+  - The **shaping** profile was also removed and its checks migrated to the **Google Fonts** profile. As gfonts was already including those, and no other profile did so, there's no need to add experimental flags to these ones. (issue #4801)
 
 ### Changes to existing checks
   - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: remove usage of `ufoLib2` APIs. (PR #4802)
