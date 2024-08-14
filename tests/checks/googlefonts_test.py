@@ -10,8 +10,6 @@ from fontTools.ttLib import TTFont
 
 from fontbakery.checks.googlefonts.conditions import (
     expected_font_names,
-    GF_TAGS_SHEET_URL,
-    GF_TAGS_SHEET_URL2,
 )
 from fontbakery.checks.googlefonts.glyphset import can_shape
 from fontbakery.codetesting import (
@@ -4946,35 +4944,6 @@ def test_check_varfont_bold_wght_coord():
     del ttFont["fvar"].instances[3]
     ttFont["fvar"].axes[0].maxValue = 600
     assert_results_contain(check(ttFont), SKIP, "no-bold-weight")
-
-
-def test_check_metadata_has_tags(requests_mock):
-    """The font has tags in the GF Tags spreadsheet"""
-    check = CheckTester("com.google.fonts/check/metadata/has_tags")
-
-    fake_gf_tags_sheet = (
-        "Family,Family Dir,Existing Category\n"
-        ",,\n,,\n,,\n,,\n,,\n"
-        "Merriweather,merriweather,SERIF\n"
-    )
-    requests_mock.get(GF_TAGS_SHEET_URL, text=fake_gf_tags_sheet)
-    fake_gf_tags_sheet2 = (
-        "Timestamp,Email Address,Family Name (name ID 1/16),,Category\n"
-        ",,\n,,\n,,\n,,\n,,\n"
-    )
-    requests_mock.get(GF_TAGS_SHEET_URL2, text=fake_gf_tags_sheet2)
-
-    font = "data/test/merriweather/Merriweather-Regular.ttf"
-    assert_PASS(check(font), "with a name that's in the spreadsheet...")
-
-    md = Font(font).family_metadata
-    md.name = "Not Merriweather"
-    assert_results_contain(
-        check(MockFont(file=font, family_metadata=md)),
-        FATAL,
-        "no-tags",
-        "with a name that doesn't appear...",
-    )
 
 
 def test_check_metadata_minisite_url():
