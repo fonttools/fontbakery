@@ -20,6 +20,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.daltonmaag/check/designspace_has_consistent_groups]:** checks that all designspace sources have the same kerning groups. (PR #4814)
   - And all other pre-existing UFO checks as well.
 
+### Removed checks
+  - **[com.google.fonts/check/metadata/has_tags]**: Check removed because a tool in the google/fonts repository will do the checking instead.
+
 
 ## 0.12.9 (2024-Jul-17)
 ### New checks

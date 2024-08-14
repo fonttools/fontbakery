@@ -1,5 +1,3 @@
-import csv
-from io import StringIO
 import os
 import re
 import yaml
@@ -16,19 +14,6 @@ from fontbakery.constants import (
 )
 from fontbakery.utils import exit_with_install_instructions
 
-
-GF_TAGS_SHEET_URL = (
-    "https://docs.google.com/spreadsheets/d/e/"
-    "2PACX-1vQVM--FKzKTWL-8w0l5AE1e087uU_OaQNHR3_kkxxymoZV5XUnHzv9TJIdy7vcd0Saf4m8CMTMFqGcg/"
-    "pub?gid=1193923458&single=true&output=csv"
-)
-
-# Submissions from designers via form https://forms.gle/jcp3nDv63LaV1rxH6
-GF_TAGS_SHEET_URL2 = (
-    "https://docs.google.com/spreadsheets/d/e/"
-    "2PACX-1vQVM--FKzKTWL-8w0l5AE1e087uU_OaQNHR3_kkxxymoZV5XUnHzv9TJIdy7vcd0Saf4m8CMTMFqGcg/"
-    "pub?gid=378442772&single=true&output=csv"
-)
 
 # @condition
 # def glyphsFile(glyphs_file):
@@ -497,24 +482,3 @@ def expected_font_names(ttFont, ttFonts):
         build_fvar_instances(font_cp)
         build_stat(font_cp, siblings)
     return font_cp
-
-
-_tags_cache = []
-
-
-def gf_tags():
-    import requests
-
-    global _tags_cache  # pylint:disable=W0603,W0602
-    if _tags_cache:
-        return _tags_cache
-
-    for url in (GF_TAGS_SHEET_URL, GF_TAGS_SHEET_URL2):
-        req = requests.get(url, timeout=10)
-        data = list(csv.reader(StringIO(req.text)))
-        # drop the first two columns on sheet2 since they contain
-        # the author and form submission date
-        if url == GF_TAGS_SHEET_URL2:
-            data = [i[2:] for i in data]
-        _tags_cache.extend(data)
-    return _tags_cache
