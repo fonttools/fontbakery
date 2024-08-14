@@ -1,7 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.12.10 (2024-Aug-??)
+##  Upcoming release: 0.12.11 (2024-Aug-??)
+  - ...
+
+
+##  0.12.10 (2024-Aug-14)
 ### Noteworthy code changes
   - The **UFO** profile was removed and its checks were migrated to the **Universal** profile. For that reason, all of them received a temporary "experimental" flag (issue #4801)
   - The **Shaping** and **Outline** profile were also removed and their checks migrated to the **Google Fonts** profile. As gfonts was already including those, and no other profile did so, there's no need to add experimental flags to these ones. (issue #4801)
@@ -19,6 +23,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.daltonmaag/check/no_open_corners]:** checks that sources don't contain open corners, intended for use in font projects with a roundness axis. (PR #4808)
   - **EXPERIMENTAL - [com.daltonmaag/check/designspace_has_consistent_groups]:** checks that all designspace sources have the same kerning groups. (PR #4814)
   - And all other pre-existing UFO checks as well.
+
+### Promotion of previously experimental checks
+#### Made effective on the Google Fonts profile
+  - * **com.google.fonts/check/article/images** After being marked as **experimental** for 4 months since the 0.12.0a5 release (issue #4594)
 
 ### Removed checks
   - **[com.google.fonts/check/metadata/has_tags]**: Check removed because a tool in the google/fonts repository will do the checking instead.
