@@ -17,7 +17,6 @@ from fontbakery.prelude import check, Message, FAIL, WARN, PASS
         at least one visual asset.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4594",
-    experimental="Since 2024/Mar/25",
 )
 def com_google_fonts_check_article_images(config, family_directory):
     """Validate size, and resolution of article images,
