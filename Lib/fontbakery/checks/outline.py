@@ -45,7 +45,7 @@ def close_but_not_on(yExpected, yTrue, tolerance):
 
 
 @check(
-    id="com.google.fonts/check/outline_alignment_miss",
+    id="outline_alignment_miss",
     rationale=f"""
         This check heuristically looks for on-curve points which are close to, but
         do not sit on, significant boundary coordinates. For example, a point which
@@ -61,7 +61,7 @@ def close_but_not_on(yExpected, yTrue, tolerance):
     conditions=["outlines_dict"],
     proposal="https://github.com/fonttools/fontbakery/pull/3088",
 )
-def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config):
+def check_outline_alignment_miss(ttFont, outlines_dict, config):
     """Are there any misaligned on-curve points?"""
 
     warnings = []
@@ -128,7 +128,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
 
 
 @check(
-    id="com.google.fonts/check/outline_short_segments",
+    id="outline_short_segments",
     rationale=f"""
         This check looks for outline segments which seem particularly short (less
         than {SHORT_PATH_EPSILON:.1%} of the overall path length).
@@ -141,7 +141,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
     conditions=["outlines_dict", "not is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/3088",
 )
-def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config):
+def check_outline_short_segments(ttFont, outlines_dict, config):
     """Are any segments inordinately short?"""
     warnings = []
 
@@ -184,7 +184,7 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
 
 
 @check(
-    id="com.google.fonts/check/outline_colinear_vectors",
+    id="outline_colinear_vectors",
     rationale="""
         This check looks for consecutive line segments which have the same angle. This
         normally happens if an outline point has been added by accident.
@@ -195,7 +195,7 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
     conditions=["outlines_dict", "not is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/3088",
 )
-def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, config):
+def check_outline_colinear_vectors(ttFont, outlines_dict, config):
     """Do any segments have colinear vectors?"""
     warnings = []
 
@@ -232,7 +232,7 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
 
 
 @check(
-    id="com.google.fonts/check/outline_jaggy_segments",
+    id="outline_jaggy_segments",
     rationale="""
         This check heuristically detects outline segments which form a particularly
         small angle, indicative of an outline error. This may cause false positives
@@ -242,7 +242,7 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
     conditions=["outlines_dict", "not is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3064",
 )
-def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config):
+def check_outline_jaggy_segments(ttFont, outlines_dict, config):
     """Do outlines contain any jaggy segments?"""
     warnings = []
     reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
@@ -283,7 +283,7 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
 
 
 @check(
-    id="com.google.fonts/check/outline_semi_vertical",
+    id="outline_semi_vertical",
     rationale="""
         This check detects line segments which are nearly, but not quite, exactly
         horizontal or vertical. Sometimes such lines are created by design, but often
@@ -295,7 +295,7 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
     conditions=["outlines_dict", "not is_variable_font", "not is_italic"],
     proposal="https://github.com/fonttools/fontbakery/pull/3088",
 )
-def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
+def check_outline_semi_vertical(ttFont, outlines_dict, config):
     """Do outlines contain any semi-vertical or semi-horizontal lines?"""
     warnings = []
 
@@ -327,7 +327,7 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
 
 
 @check(
-    id="com.google.fonts/check/outline_direction",
+    id="outline_direction",
     rationale="""
         In TrueType fonts, the outermost contour of a glyph should be oriented
         clockwise, while the inner contours should be oriented counter-clockwise.
@@ -337,7 +337,7 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
     conditions=["outlines_dict", "is_ttf"],
     proposal="https://github.com/fonttools/fontbakery/issues/2056",
 )
-def com_google_fonts_check_outline_direction(ttFont, outlines_dict, config):
+def check_outline_direction(ttFont, outlines_dict, config):
     """Check the direction of the outermost contour in each glyph"""
     warnings = []
 

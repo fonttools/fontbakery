@@ -17,14 +17,14 @@ from fontbakery.codetesting import (
 def test_extra_needed_exit(mock_import_error):
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     with patch("sys.exit") as mock_exit:
-        check = CheckTester("com.google.fonts/check/shaping/regression")
+        check = CheckTester("shaping/regression")
         check(font)
         mock_exit.assert_called()
 
 
 def test_check_shaping_regression():
     """Check that we can test shaping against expectations."""
-    check = CheckTester("com.google.fonts/check/shaping/regression")
+    check = CheckTester("shaping/regression")
 
     shaping_test = {
         "configuration": {},
@@ -37,7 +37,7 @@ def test_check_shaping_regression():
             open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
         )
 
-        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+        config = {"shaping": {"test_directory": tmp_gf_dir}}
 
         font = TEST_FILE("nunito/Nunito-Regular.ttf")
         assert_PASS(check(font, config=config), "Nunito: A=664,V=691")
@@ -53,7 +53,7 @@ def test_check_shaping_regression():
 
 def test_check_shaping_regression_with_variations():
     """Check that we can test shaping with variation settings against expectations."""
-    check = CheckTester("com.google.fonts/check/shaping/regression")
+    check = CheckTester("shaping/regression")
 
     shaping_test = {
         "configuration": {},
@@ -76,7 +76,7 @@ def test_check_shaping_regression_with_variations():
             open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
         )
 
-        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+        config = {"shaping": {"test_directory": tmp_gf_dir}}
 
         font = TEST_FILE("varfont/Oswald-VF.ttf")
         assert_PASS(check(font, config=config), "Oswald: A=0+453|V=1+505")
@@ -84,7 +84,7 @@ def test_check_shaping_regression_with_variations():
 
 def test_check_shaping_forbidden():
     """Check that we can test for forbidden glyphs in output."""
-    check = CheckTester("com.google.fonts/check/shaping/forbidden")
+    check = CheckTester("shaping/forbidden")
 
     shaping_test = {
         "configuration": {"forbidden_glyphs": [".notdef"]},
@@ -97,7 +97,7 @@ def test_check_shaping_forbidden():
             open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
         )
 
-        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+        config = {"shaping": {"test_directory": tmp_gf_dir}}
 
         font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
         assert_PASS(check(font, config=config), "Source Han contains CJK")
@@ -113,7 +113,7 @@ def test_check_shaping_forbidden():
 
 def test_check_shaping_collides():
     """Check that we can test for colliding glyphs in output."""
-    check = CheckTester("com.google.fonts/check/shaping/collides")
+    check = CheckTester("shaping/collides")
 
     shaping_test = {
         "configuration": {"collidoscope": {"area": 0, "bases": True, "marks": True}},
@@ -126,7 +126,7 @@ def test_check_shaping_collides():
             open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
         )
 
-        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+        config = {"shaping": {"test_directory": tmp_gf_dir}}
 
         font = TEST_FILE("cousine/Cousine-Regular.ttf")
         assert_PASS(check(font, config=config), "ïï doesn't collide in Cousine")
@@ -142,7 +142,7 @@ def test_check_shaping_collides():
 
 def test_check_dotted_circle():
     """Ensure dotted circle glyph is present and can attach marks."""
-    check = CheckTester("com.google.fonts/check/dotted_circle")
+    check = CheckTester("dotted_circle")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -157,7 +157,7 @@ def test_check_dotted_circle():
 def test_check_soft_dotted():
     """Check if font substitues soft dotted glyphs
     when combined with top marks."""
-    check = CheckTester("com.google.fonts/check/soft_dotted")
+    check = CheckTester("soft_dotted")
 
     font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
     msg = assert_results_contain(check(font), WARN, "soft-dotted")

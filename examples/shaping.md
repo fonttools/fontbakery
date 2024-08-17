@@ -17,7 +17,7 @@ suite files are located. This can be done by creating a configuration file in YA
 format. Its contents will specify the directory where the JSON files can be found:
 
 ```
-com.google.fonts/check/shaping:
+shaping:
     test_directory: examples/shaping
 ```
 

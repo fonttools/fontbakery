@@ -17,7 +17,7 @@ def vmetrics(collection):
 
 
 @check(
-    id="com.google.fonts/check/family/win_ascent_and_descent",
+    id="family/win_ascent_and_descent",
     conditions=["vmetrics", "not is_cjk_font"],
     rationale="""
         A font's winAscent and winDescent values should be greater than or equal to
@@ -38,7 +38,7 @@ def vmetrics(collection):
     """,
     proposal="legacy:check/040",
 )
-def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
+def check_family_win_ascent_and_descent(ttFont, vmetrics):
     """Checking OS/2 usWinAscent & usWinDescent."""
 
     # NOTE:
@@ -104,7 +104,7 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
 
 
 @check(
-    id="com.google.fonts/check/os2_metrics_match_hhea",
+    id="os2_metrics_match_hhea",
     conditions=["not is_cjk_font"],
     rationale="""
         OS/2 and hhea vertical metric values should match. This will produce the
@@ -119,7 +119,7 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
     """,
     proposal="legacy:check/042",
 )
-def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
+def check_os2_metrics_match_hhea(ttFont):
     """Checking OS/2 Metrics match hhea Metrics."""
 
     filename = os.path.basename(ttFont.reader.file.name)
@@ -160,14 +160,14 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/family/vertical_metrics",
+    id="family/vertical_metrics",
     rationale="""
         We want all fonts within a family to have the same vertical metrics so
         their line spacing is consistent across the family.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1487",
 )
-def com_google_fonts_check_family_vertical_metrics(ttFonts):
+def check_family_vertical_metrics(ttFonts):
     """Each font in a family must have the same set of vertical metrics values."""
     failed = []
     vmetrics = {
@@ -225,7 +225,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/linegaps",
+    id="linegaps",
     rationale="""
         The LineGap value is a space added to the line height created by the union
         of the (typo/hhea)Ascender and (typo/hhea)Descender. It is handled differently
@@ -243,7 +243,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
         "https://googlefonts.github.io/gf-guide/metrics.html",
     ],
 )
-def com_google_fonts_check_linegaps(ttFont):
+def check_linegaps(ttFont):
     """Checking Vertical Metric Linegaps."""
 
     required_tables = {"hhea", "OS/2"}
@@ -262,7 +262,7 @@ def com_google_fonts_check_linegaps(ttFont):
 
 
 @check(
-    id="com.arrowtype.fonts/check/typoascender_exceeds_Agrave",
+    id="typoascender_exceeds_Agrave",
     rationale="""
         MacOS uses OS/2.sTypoAscender/Descender values to determine the line height
         of a font. If the sTypoAscender value is smaller than the maximum height of
@@ -279,7 +279,7 @@ def com_google_fonts_check_linegaps(ttFont):
     experimental="Since 2024/Jul/17",
     proposal="https://github.com/fonttools/fontbakery/issues/3170",
 )
-def com_arrowtype_fonts_check_typoascender_exceeds_Agrave(ttFont):
+def check_typoascender_exceeds_Agrave(ttFont):
     """Checking that the typoAscender exceeds the yMax of the /Agrave."""
 
     if "OS/2" not in ttFont:

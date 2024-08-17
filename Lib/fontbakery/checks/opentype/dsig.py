@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="com.google.fonts/check/dsig",
+    id="opentype:dsig",
     rationale="""
         Microsoft Office 2013 and below products expect fonts to have a digital
         signature declared in a DSIG table in order to implement OpenType features.
@@ -26,7 +26,7 @@ from fontbakery.message import Message
         "https://github.com/fonttools/fontbakery/issues/3398",
     ],
 )
-def com_google_fonts_check_dsig(ttFont):
+def check_dsig(ttFont):
     """Does the font have a DSIG table?"""
     if "DSIG" in ttFont:
         yield WARN, Message(

@@ -34,7 +34,7 @@ def test_command_check_googlefonts():
             TOOL_NAME,
             "check-googlefonts",
             "-c",
-            "com.google.fonts/check/canonical_filename",
+            "canonical_filename",
             os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"),
         ],
         check=True,
@@ -113,7 +113,7 @@ def test_status_log_is_indented():
 def test_command_config_file():
     """Test if we can set checks using a config file."""
     config = tempfile.NamedTemporaryFile(delete=False)
-    config.write(b"explicit_checks = ['com.adobe.fonts/check/name/empty_records']")
+    config.write(b"explicit_checks = ['opentype:name/empty_records']")
     config.close()
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
     result = subprocess.run(
@@ -160,10 +160,10 @@ def test_config_override():
     config.write(
         b"""
 overrides:
-  com.google.fonts/check/file_size:
+  file_size:
     large-font: FAIL
 explicit_checks:
-  - com.google.fonts/check/file_size
+  - file_size
 """
     )
     config.close()

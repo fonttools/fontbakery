@@ -7,8 +7,8 @@ import fontbakery.profiles.opentype
 def check_filter(item_type, item_id, item):
     # Filter out external tool checks for testing purposes.
     if item_type == "check" and item_id in (
-        "com.google.fonts/check/ots",
-        "com.google.fonts/check/fontvalidator",
+        "ots",
+        "fontvalidator",
     ):
         return False
 
@@ -29,8 +29,8 @@ def test_external_profile():
             "include_profiles": ["opentype"],
             "sections": {
                 "Dalton Maag OpenType": [
-                    "com.google.fonts/check/family/panose_familytype",
-                    "com.google.fonts/check/varfont/regular_opsz_coord",
+                    "opentype:family/panose_familytype",
+                    "opentype:varfont/regular_opsz_coord",
                 ]
             },
         },
@@ -72,7 +72,7 @@ def test_profile_imports():
     # this is in docs/writing profiles
     profile_imports = ["universal"]
     # Probe some tests
-    expected_tests = ["com.google.fonts/check/unitsperem"]  # in head
+    expected_tests = ["opentype:unitsperem"]  # in head
     _test(profile_imports, expected_tests)
 
 
@@ -91,12 +91,8 @@ def test_in_and_exclude_checks_default():
 
     assert checks == opentype_checks
 
-    checks = profile_checks(
-        fakemodule, {"exclude_checks": ["com.google.fonts/check/unitsperem"]}
-    )
-    assert "com.google.fonts/check/unitsperem" not in checks
+    checks = profile_checks(fakemodule, {"exclude_checks": ["opentype:unitsperem"]})
+    assert "opentype:unitsperem" not in checks
 
-    checks = profile_checks(
-        fakemodule, {"explicit_checks": ["com.google.fonts/check/unitsperem"]}
-    )
-    assert checks == ["com.google.fonts/check/unitsperem"]
+    checks = profile_checks(fakemodule, {"explicit_checks": ["opentype:unitsperem"]})
+    assert checks == ["opentype:unitsperem"]

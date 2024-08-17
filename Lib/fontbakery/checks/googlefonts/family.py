@@ -4,7 +4,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="com.google.fonts/check/family/equal_codepoint_coverage",
+    id="googlefonts:family/equal_codepoint_coverage",
     conditions=["are_ttf", "stylenames_are_canonical"],
     proposal="https://github.com/fonttools/fontbakery/issues/4180",
     rationale="""
@@ -15,7 +15,7 @@ from fontbakery.utils import bullet_list
         fake italic (auto-slanted) or to show tofu.
     """,
 )
-def com_google_fonts_check_family_equal_codepoint_coverage(fonts, config):
+def check_family_equal_codepoint_coverage(fonts, config):
     """Fonts have equal codepoint coverage"""
     cmaps = {}
     for font in fonts:
@@ -39,7 +39,7 @@ def com_google_fonts_check_family_equal_codepoint_coverage(fonts, config):
 
 
 @check(
-    id="com.google.fonts/check/family/italics_have_roman_counterparts",
+    id="googlefonts:family/italics_have_roman_counterparts",
     rationale="""
         For each font family on Google Fonts, every Italic style must have
         a Roman sibling.
@@ -51,7 +51,7 @@ def com_google_fonts_check_family_equal_codepoint_coverage(fonts, config):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1733",
 )
-def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config):
+def check_family_italics_have_roman_counterparts(fonts, config):
     """Ensure Italic styles have Roman counterparts."""
 
     filenames = [f.file for f in fonts]
@@ -101,7 +101,7 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
 
 
 @check(
-    id="com.google.fonts/check/family/tnum_horizontal_metrics",
+    id="googlefonts:family/tnum_horizontal_metrics",
     conditions=["RIBBI_ttFonts"],
     rationale="""
         Tabular figures need to have the same metrics in all styles in order to allow
@@ -113,7 +113,7 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2278",
 )
-def com_google_fonts_check_family_tnum_horizontal_metrics(RIBBI_ttFonts):
+def check_family_tnum_horizontal_metrics(RIBBI_ttFonts):
     """All tabular figures must have the same width across the RIBBI-family."""
     tnum_widths = {}
     for ttFont in RIBBI_ttFonts:

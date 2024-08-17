@@ -72,8 +72,8 @@ Run hand picked checks for all fonts in the `google/fonts` repository:
 
 
     $ fontbakery check-googlefonts \
-        -c com.google.fonts/check/xavgcharwidth \
-        -c com.google.fonts/check/font_version \
+        -c opentype:xavgcharwidth \
+        -c opentype:font_version \
         -n -o "*check" -g "*check" \
         path/to/fonts/{apache,ofl,ufl}/*/*.ttf
 
@@ -185,8 +185,8 @@ configuration file:
 
 ```
 explicit_checks = [
-    'com.google.fonts/check/family/underline_thickness',
-    'com.google.fonts/check/family/panose_familytype',
+    'opentype:family/underline_thickness',
+    'opentype:family/panose_familytype',
 ]
 ```
 
@@ -197,14 +197,14 @@ explicit_checks = [
 Additionally, the configuration file can be used to replace the status of
 particular checks. To do this, you will need to know the *message ID*,
 which is reported with the result. For example, when the
-`com.google.fonts/check/mandatory_glyphs` check reports that the `.notdef`
+`mandatory_glyphs` check reports that the `.notdef`
 glyph does not contain any outlines, it reports the message ID `empty` and
 a `WARN` status. To replace this status and have it return a `FAIL` instead,
 place this in the configuration file (if you are using YAML format):
 
 ```
 overrides:
-  com.google.fonts/check/mandatory_glyphs:
+  mandatory_glyphs:
     empty: FAIL
 ```
 

@@ -25,7 +25,7 @@ from fontbakery.utils import (
 
 
 @check(
-    id="com.google.fonts/check/name/trailing_spaces",
+    id="name/trailing_spaces",
     proposal="https://github.com/fonttools/fontbakery/issues/2417",
     rationale="""
         This check ensures that no entries in the name table end in
@@ -35,7 +35,7 @@ from fontbakery.utils import (
         editor.
     """,
 )
-def com_google_fonts_check_name_trailing_spaces(ttFont):
+def check_name_trailing_spaces(ttFont):
     """Name table records must not have trailing spaces."""
     failed = False
     for name_record in ttFont["name"].names:
@@ -63,7 +63,7 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/family/single_directory",
+    id="family/single_directory",
     rationale="""
         If the set of font files passed in the command line is not all in the
         same directory, then we warn the user since the tool will interpret the
@@ -73,7 +73,7 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
     """,
     proposal="legacy:check/002",
 )
-def com_google_fonts_check_family_single_directory(fonts):
+def check_family_single_directory(fonts):
     """Checking all files are in the same directory."""
 
     directories = []
@@ -96,7 +96,7 @@ def com_google_fonts_check_family_single_directory(fonts):
 
 @disable
 @check(
-    id="com.google.fonts/check/caps_vertically_centered",
+    id="caps_vertically_centered",
     rationale="""
         This check suggests one possible approach to designing vertical metrics,
         but can be ingnored if you follow a different approach.
@@ -110,7 +110,7 @@ def com_google_fonts_check_family_single_directory(fonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4139",
 )
-def com_google_fonts_check_caps_vertically_centered(ttFont):
+def check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
     from fontTools.pens.boundsPen import BoundsPen
 
@@ -151,7 +151,7 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/whitespace_ink",
+    id="whitespace_ink",
     proposal="legacy:check/049",
     rationale="""
            This check ensures that certain whitespace glyphs are empty.
@@ -160,7 +160,7 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
            empty, the result will be text layout that is not as expected.
        """,
 )
-def com_google_fonts_check_whitespace_ink(ttFont):
+def check_whitespace_ink(ttFont):
     """Whitespace glyphs have ink?"""
     # This checks that certain glyphs are empty.
     # Some, but not all, are Unicode whitespace.
@@ -218,10 +218,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/legacy_accents",
-    proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/4310",
-    ],
+    id="legacy_accents",
     rationale="""
         Legacy accents should not have anchors and should have positive width.
         They are often used independently of a letter, either as a placeholder
@@ -230,8 +227,11 @@ def com_google_fonts_check_whitespace_ink(ttFont):
         U+0060 (GRAVE ACCENT) is used in Markdown to notify code blocks,
         and ^ is used as an exponential operator in maths.
     """,
+    proposal=[
+        "https://github.com/googlefonts/fontbakery/issues/4310",
+    ],
 )
-def com_google_fonts_check_legacy_accents(ttFont):
+def check_legacy_accents(ttFont):
     """Check that legacy accents aren't used in composite glyphs."""
 
     # code-points for all legacy chars
@@ -286,7 +286,7 @@ def com_google_fonts_check_legacy_accents(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/contour_count",
+    id="contour_count",
     conditions=["is_ttf", "not is_variable_font"],
     rationale="""
         Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only
@@ -304,7 +304,7 @@ def com_google_fonts_check_legacy_accents(ttFont):
     """,
     proposal="legacy:check/153",
 )
-def com_google_fonts_check_contour_count(ttFont, config):
+def check_contour_count(ttFont, config):
     """Check if each glyph has the recommended amount of contours.
 
     This check is useful to assure glyphs aren't incorrectly constructed.
@@ -450,7 +450,7 @@ def com_google_fonts_check_contour_count(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/cjk_chws_feature",
+    id="cjk_chws_feature",
     conditions=["is_cjk_font"],
     rationale="""
         The W3C recommends the addition of chws and vchw features to CJK fonts
@@ -462,7 +462,7 @@ def com_google_fonts_check_contour_count(ttFont, config):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3363",
 )
-def com_google_fonts_check_cjk_chws_feature(ttFont):
+def check_cjk_chws_feature(ttFont):
     """Does the font contain chws and vchw features?"""
     passed = True
     tags = feature_tags(ttFont)
@@ -482,7 +482,7 @@ def com_google_fonts_check_cjk_chws_feature(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/transformed_components",
+    id="transformed_components",
     conditions=["is_ttf"],
     rationale="""
         Some families have glyphs which have been constructed by using
@@ -507,7 +507,7 @@ def com_google_fonts_check_cjk_chws_feature(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2011",
 )
-def com_google_fonts_check_transformed_components(ttFont, is_hinted):
+def check_transformed_components(ttFont, is_hinted):
     """Ensure component transforms do not perform scaling or rotation."""
     failures = ""
     for glyph_name in ttFont.getGlyphOrder():
@@ -540,7 +540,7 @@ def com_google_fonts_check_transformed_components(ttFont, is_hinted):
 
 
 @check(
-    id="com.google.fonts/check/gpos7",
+    id="gpos7",
     conditions=["ttFont"],
     severity=9,
     rationale="""
@@ -558,7 +558,7 @@ def com_google_fonts_check_transformed_components(ttFont, is_hinted):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3643",
 )
-def com_google_fonts_check_gpos7(ttFont):
+def check_gpos7(ttFont):
     """Ensure no GPOS7 lookups are present."""
     has_gpos7 = False
 
@@ -579,7 +579,7 @@ def com_google_fonts_check_gpos7(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/freetype_rasterizer",
+    id="freetype_rasterizer",
     conditions=["ttFont"],
     severity=10,
     rationale="""
@@ -587,7 +587,7 @@ def com_google_fonts_check_gpos7(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3642",
 )
-def com_adobe_fonts_check_freetype_rasterizer(font):
+def check_freetype_rasterizer(font):
     """Ensure that the font can be rasterized by FreeType."""
     import freetype
     from freetype.ft_errors import FT_Exception
@@ -606,7 +606,7 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
 
 
 @check(
-    id="com.adobe.fonts/check/sfnt_version",
+    id="sfnt_version",
     severity=10,
     rationale="""
         OpenType fonts that contain TrueType outlines should use the value of 0x00010000
@@ -619,7 +619,7 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3388",
 )
-def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
+def check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
     """Font has the proper sfntVersion value?"""
     sfnt_version = ttFont.sfntVersion
 
@@ -641,7 +641,7 @@ def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
 
 
 @check(
-    id="com.google.fonts/check/whitespace_widths",
+    id="whitespace_widths",
     conditions=["not missing_whitespace_chars"],
     rationale="""
         If the space and nbspace glyphs have different widths, then Google Workspace
@@ -661,7 +661,7 @@ def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
         "legacy:check/050",
     ],
 )
-def com_google_fonts_check_whitespace_widths(ttFont):
+def check_whitespace_widths(ttFont):
     """Space and non-breaking space have the same width?"""
     space_name = get_glyph_name(ttFont, 0x0020)
     nbsp_name = get_glyph_name(ttFont, 0x00A0)
@@ -684,7 +684,7 @@ def com_google_fonts_check_whitespace_widths(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/interpolation_issues",
+    id="interpolation_issues",
     conditions=["is_variable_font", "is_ttf"],
     severity=4,
     rationale="""
@@ -698,7 +698,7 @@ def com_google_fonts_check_whitespace_widths(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3930",
 )
-def com_google_fonts_check_interpolation_issues(ttFont, config):
+def check_interpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
     from fontTools.varLib.interpolatable import test as interpolation_test
     from fontTools.varLib.interpolatableHelpers import InterpolatableProblem
@@ -794,7 +794,7 @@ def com_google_fonts_check_interpolation_issues(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/math_signs_width",
+    id="math_signs_width",
     rationale="""
         It is a common practice to have math signs sharing the same width
         (preferably the same width as tabular figures accross the entire font family).
@@ -804,7 +804,7 @@ def com_google_fonts_check_interpolation_issues(ttFont, config):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3832",
 )
-def com_google_fonts_check_math_signs_width(ttFont):
+def check_math_signs_width(ttFont):
     """Check math signs have the same width."""
     # Ironically, the block of text below may not have
     # uniform widths for these glyphs depending on
@@ -867,7 +867,7 @@ def com_google_fonts_check_math_signs_width(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/tabular_kerning",
+    id="tabular_kerning",
     rationale="""
         Tabular glyphs should not have kerning, as they are meant to be used in tables.
 
@@ -887,7 +887,7 @@ def com_google_fonts_check_math_signs_width(ttFont):
     proposal="https://github.com/fonttools/fontbakery/issues/4440",
     experimental="Since 2024/Jun/04",
 )
-def com_google_fonts_check_tabular_kerning(ttFont):
+def check_tabular_kerning(ttFont):
     """Check tabular widths don't have kerning."""
     from vharfbuzz import Vharfbuzz
     import uharfbuzz as hb
@@ -1113,7 +1113,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/alt_caron",
+    id="alt_caron",
     conditions=["is_ttf"],
     rationale="""
         Lcaron, dcaron, lcaron, tcaron should NOT be composed with quoteright
@@ -1127,7 +1127,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3308",
 )
-def com_google_fonts_check_alt_caron(ttFont):
+def check_alt_caron(ttFont):
     """Check accent of Lcaron, dcaron, lcaron, tcaron"""
 
     CARON_GLYPHS = set(
@@ -1204,7 +1204,7 @@ def com_google_fonts_check_alt_caron(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/gsub/smallcaps_before_ligatures",
+    id="gsub/smallcaps_before_ligatures",
     rationale="""
         OpenType small caps should be defined before ligature lookups to ensure
         proper functionality.
@@ -1221,7 +1221,7 @@ def com_google_fonts_check_alt_caron(ttFont):
     experimental="Since 2024/Jun/10",
     conditions=["is_ttf"],
 )
-def com_google_fonts_check_gsub_smallcaps_before_ligatures(ttFont):
+def check_gsub_smallcaps_before_ligatures(ttFont):
     """
     Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table.
     """

@@ -14,7 +14,7 @@ def typo_metrics_enabled(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/vertical_metrics",
+    id="googlefonts:vertical_metrics",
     conditions=["not listed_on_gfonts_api", "not is_cjk_font"],
     rationale="""
         This check generally enforces Google Fonts’ vertical metrics specifications.
@@ -35,7 +35,7 @@ def typo_metrics_enabled(ttFont):
         "https://github.com/fonttools/fontbakery/pull/3921",
     ],
 )
-def com_google_fonts_check_vertical_metrics(ttFont):
+def check_vertical_metrics(ttFont):
     """Check font follows the Google Fonts vertical metric schema"""
 
     filename = os.path.basename(ttFont.reader.file.name)
@@ -159,7 +159,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/vertical_metrics_regressions",
+    id="googlefonts:vertical_metrics_regressions",
     conditions=["regular_remote_style", "not is_cjk_font"],
     rationale="""
         If the family already exists on Google Fonts, we need to ensure that the
@@ -183,7 +183,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1162",
 )
-def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
+def check_vertical_metrics_regressions(regular_ttFont, font):
     """Check if the vertical metrics of a family are similar to the same
     family hosted on Google Fonts."""
     import math
@@ -290,7 +290,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
 
 
 @check(
-    id="com.google.fonts/check/cjk_vertical_metrics",
+    id="googlefonts:cjk_vertical_metrics",
     conditions=["is_cjk_font", "not listed_on_gfonts_api"],
     rationale="""
         CJK fonts have different vertical metrics when compared to Latin fonts.
@@ -302,7 +302,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2797",
 )
-def com_google_fonts_check_cjk_vertical_metrics(ttFont):
+def check_cjk_vertical_metrics(ttFont):
     """Check font follows the Google Fonts CJK vertical metric schema"""
 
     filename = os.path.basename(ttFont.reader.file.name)
@@ -377,7 +377,7 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/cjk_vertical_metrics_regressions",
+    id="googlefonts:cjk_vertical_metrics_regressions",
     conditions=["is_cjk_font", "regular_remote_style", "regular_ttFont"],
     rationale="""
         Check CJK family has the same vertical metrics as the same family
@@ -385,9 +385,7 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3244",
 )
-def com_google_fonts_check_cjk_vertical_metrics_regressions(
-    regular_ttFont, regular_remote_style
-):
+def check_cjk_vertical_metrics_regressions(regular_ttFont, regular_remote_style):
     """Check if the vertical metrics of a CJK family are similar to the same
     family hosted on Google Fonts."""
     import math

@@ -6,7 +6,7 @@ from fontbakery.utils import exit_with_install_instructions
 
 
 @check(
-    id="com.google.fonts/check/fontvalidator",
+    id="fontvalidator",
     proposal="legacy:check/037",
     rationale="""
         Microsoft Font Validator is a tool that can be used to check for
@@ -16,7 +16,7 @@ from fontbakery.utils import exit_with_install_instructions
         on the font and reports any errors or warnings that it finds.
     """,
 )
-def com_google_fonts_check_fontvalidator(font, config):
+def check_fontvalidator(font, config):
     """Checking with Microsoft Font Validator."""
 
     try:
@@ -24,7 +24,7 @@ def com_google_fonts_check_fontvalidator(font, config):
     except ImportError:
         exit_with_install_instructions("fontval")
 
-    check_config = config.get("com.google.fonts/check/fontvalidator", {})
+    check_config = config.get("fontvalidator", {})
     enabled_checks = check_config.get("enabled_checks")
     disabled_checks = check_config.get("disabled_checks")
     if enabled_checks is not None and disabled_checks is not None:
@@ -55,7 +55,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         "The table doesn't contain strings for Mac platform",
         "The PostScript string is not present for both required platforms",
         # FontBakery has got a native check for the xAvgCharWidth field
-        # which is: com.google.fonts/check/xavgcharwidth
+        # which is: opentype:xavgcharwidth
         "The xAvgCharWidth field does not equal the calculated value",
         # The optimal ordering suggested by FVal check W0020 seems to only be
         # relevant to performance optimizations on old versions of Windows
@@ -65,8 +65,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         # More info at:
         # https://github.com/fonttools/fontbakery/issues/2105
         "Tables are not in optimal order",
-        # FontBakery has its own check for required/optional tables:
-        # com.google.fonts/check/required_tables
+        # FontBakery has 'required_tables', its own check for required/optional tables.
         "Recommended table is missing",
         # Check W5300 does not recognise some tags in use, e.g. stylistic sets
         # tagged `ssXX` (where XX is the number). This warning has been reported

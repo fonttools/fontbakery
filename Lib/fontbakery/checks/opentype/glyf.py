@@ -6,7 +6,7 @@ from fontbakery.status import FAIL, PASS, WARN
 
 
 @check(
-    id="com.google.fonts/check/glyf_unused_data",
+    id="opentype:glyf_unused_data",
     rationale="""
         This check validates the structural integrity of the glyf table,
         by checking that all glyphs referenced in the loca table are
@@ -17,7 +17,7 @@ from fontbakery.status import FAIL, PASS, WARN
     conditions=["is_ttf"],
     proposal="legacy:check/069",
 )
-def com_google_fonts_check_glyf_unused_data(ttFont):
+def check_glyf_unused_data(ttFont):
     """Is there any unused data at the end of the glyf table?"""
     expected_glyphs = len(ttFont.getGlyphOrder())
     try:
@@ -50,7 +50,7 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/points_out_of_bounds",
+    id="opentype:points_out_of_bounds",
     conditions=["is_ttf"],
     rationale="""
         The glyf table specifies a bounding box for each glyph. This check
@@ -60,7 +60,7 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/735",
 )
-def com_google_fonts_check_points_out_of_bounds(ttFont, config):
+def check_points_out_of_bounds(ttFont, config):
     """Check for points out of bounds."""
     from fontbakery.utils import pretty_print_list
 
@@ -99,7 +99,7 @@ def com_google_fonts_check_points_out_of_bounds(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/glyf_non_transformed_duplicate_components",
+    id="opentype:glyf_non_transformed_duplicate_components",
     rationale="""
         There have been cases in which fonts had faulty double quote marks, with each
         of them containing two single quote marks as components with the same
@@ -111,7 +111,7 @@ def com_google_fonts_check_points_out_of_bounds(ttFont, config):
     conditions=["is_ttf"],
     proposal="https://github.com/fonttools/fontbakery/pull/2709",
 )
-def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont, config):
+def check_glyf_non_transformed_duplicate_components(ttFont, config):
     """
     Check glyphs do not have duplicate components which have the same x,y coordinates.
     """

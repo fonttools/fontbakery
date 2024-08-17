@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL, WARN
 
 
 @check(
-    id="com.google.fonts/check/colorfont_tables",
+    id="colorfont_tables",
     rationale="""
         COLR v0 fonts are widely supported in most browsers so they do not require
         an SVG color table. However, some environments (e.g. Safari, Adobe apps)
@@ -22,7 +22,7 @@ from fontbakery.prelude import check, Message, FAIL, WARN
         "https://github.com/fonttools/fontbakery/issues/4131",
     ],
 )
-def com_google_fonts_check_colorfont_tables(font, ttFont):
+def check_colorfont_tables(font, ttFont):
     """Check font has the expected color font tables."""
     NANOEMOJI_ADVICE = (
         "You can do it by using the maximum_color tool provided by"
@@ -68,7 +68,7 @@ def com_google_fonts_check_colorfont_tables(font, ttFont):
 
 
 @check(
-    id="com.google.fonts/check/color_cpal_brightness",
+    id="color_cpal_brightness",
     rationale="""
         Layers of a COLRv0 font should not be too dark or too bright. When layer colors
         are set explicitly, they can't be changed and they may turn out illegible
@@ -85,7 +85,7 @@ def com_google_fonts_check_colorfont_tables(font, ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3908",
 )
-def com_google_fonts_check_color_cpal_brightness(config, ttFont):
+def check_color_cpal_brightness(config, ttFont):
     """Color layers should have a minimum brightness"""
     from fontbakery.utils import pretty_print_list
 
@@ -123,7 +123,7 @@ def com_google_fonts_check_color_cpal_brightness(config, ttFont):
 
 
 @check(
-    id="com.google.fonts/check/empty_glyph_on_gid1_for_colrv0",
+    id="empty_glyph_on_gid1_for_colrv0",
     rationale="""
         A rendering bug in Windows 10 paints whichever glyph is on GID 1 on top of
         some glyphs, colored or not. This only occurs for COLR version 0 fonts.
@@ -137,7 +137,7 @@ def com_google_fonts_check_color_cpal_brightness(config, ttFont):
         "https://github.com/fonttools/fontbakery/pull/3905",
     ],
 )
-def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
+def check_empty_glyph_on_gid1_for_colrv0(ttFont):
     """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
     SUGGESTED_FIX = (
         "To fix this, please reorder the glyphs so that"

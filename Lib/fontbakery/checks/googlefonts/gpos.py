@@ -33,7 +33,7 @@ def ligatures(font):
 
 
 @check(
-    id="com.google.fonts/check/kerning_for_non_ligated_sequences",
+    id="kerning_for_non_ligated_sequences",
     conditions=["ligatures", "has_kerning_info"],
     rationale="""
         Fonts with ligatures should have kerning on the corresponding non-ligated
@@ -42,7 +42,7 @@ def ligatures(font):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1145",
 )
-def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, ligatures):
+def check_kerning_for_non_ligated_sequences(ttFont, config, ligatures):
     """Is there kerning info for non-ligated sequences?"""
 
     def look_for_nonligated_kern_info(table):

@@ -7,14 +7,14 @@ from fontbakery.constants import NameID
 
 
 @check(
-    id="com.google.fonts/check/family/equal_font_versions",
+    id="opentype:family/equal_font_versions",
     proposal="legacy:check/014",
     rationale="""
         Within a family released at the same time, all members of the family
         should have the same version number in the head table.
     """,
 )
-def com_google_fonts_check_family_equal_font_versions(ttFonts):
+def check_family_equal_font_versions(ttFonts):
     """Make sure all font files have the same version value."""
     all_detected_versions = []
     fontfile_versions = {}
@@ -40,7 +40,7 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/unitsperem",
+    id="opentype:unitsperem",
     rationale="""
         According to the OpenType spec:
 
@@ -55,7 +55,7 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
     """,
     proposal="legacy:check/043",
 )
-def com_google_fonts_check_unitsperem(ttFont):
+def check_unitsperem(ttFont):
     """Checking unitsPerEm value is reasonable."""
     upem = ttFont["head"].unitsPerEm
     target_upem = [2**i for i in range(4, 15)]
@@ -109,7 +109,7 @@ def parse_version_string(name: str) -> float:
 
 
 @check(
-    id="com.google.fonts/check/font_version",
+    id="opentype:font_version",
     proposal="legacy:check/044",
     rationale="""
             The OpenType specification provides for two fields which contain
@@ -119,7 +119,7 @@ def parse_version_string(name: str) -> float:
             the font.
         """,
 )
-def com_google_fonts_check_font_version(ttFont):
+def check_font_version(ttFont):
     """Checking font version fields (head and name table)."""
 
     # Get font version from the head table as an exact Fraction.
@@ -180,7 +180,7 @@ def com_google_fonts_check_font_version(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/mac_style",
+    id="opentype:mac_style",
     rationale="""
         The values of the flags on the macStyle entry on the 'head' OpenType table
         that describe whether a font is bold and/or italic must be coherent with the
@@ -189,7 +189,7 @@ def com_google_fonts_check_font_version(ttFont):
     conditions=["style"],
     proposal="legacy:check/131",
 )
-def com_google_fonts_check_mac_style(font):
+def check_mac_style(font):
     """Checking head.macStyle value."""
     from fontbakery.utils import check_bit_entry
     from fontbakery.constants import MacStyle

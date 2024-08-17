@@ -65,7 +65,7 @@ def registered_vendor_ids():
 
 
 @check(
-    id="com.google.fonts/check/vendor_id",
+    id="googlefonts:vendor_id",
     rationale="""
         Microsoft keeps a list of font vendors and their respective contact info. This
         list is updated regularly and is indexed by a 4-char "Vendor ID" which is
@@ -90,7 +90,7 @@ def registered_vendor_ids():
         "https://github.com/fonttools/fontbakery/issues/3943",
     ],
 )
-def com_google_fonts_check_vendor_id(ttFont):
+def check_vendor_id(ttFont):
     """Checking OS/2 achVendID."""
 
     SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
@@ -122,7 +122,7 @@ def com_google_fonts_check_vendor_id(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/os2/use_typo_metrics",
+    id="googlefonts:os2/use_typo_metrics",
     rationale="""
         All fonts on the Google Fonts collection should have OS/2.fsSelection bit 7
         (USE_TYPO_METRICS) set. This requirement is part of the vertical metrics scheme
@@ -144,7 +144,7 @@ def com_google_fonts_check_vendor_id(ttFont):
     severity=10,
     proposal="https://github.com/fonttools/fontbakery/issues/3241",
 )
-def com_google_fonts_check_os2_fsselectionbit7(fonts):
+def check_os2_fsselectionbit7(fonts):
     """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts."""
     if any(font.is_cjk_font for font in fonts):
         yield SKIP, Message("cjk", "This check does not apply to CJK fonts.")
@@ -164,7 +164,7 @@ def com_google_fonts_check_os2_fsselectionbit7(fonts):
 
 
 @check(
-    id="com.google.fonts/check/fstype",
+    id="googlefonts:fstype",
     rationale="""
         The fsType in the OS/2 table is a legacy DRM-related field. Fonts in the
         Google Fonts collection must have it set to zero (also known as
@@ -177,7 +177,7 @@ def com_google_fonts_check_os2_fsselectionbit7(fonts):
     """,
     proposal="legacy:check/016",
 )
-def com_google_fonts_check_fstype(ttFont):
+def check_fstype(ttFont):
     """Checking OS/2 fsType does not impose restrictions."""
     value = ttFont["OS/2"].fsType
     if value != 0:
@@ -224,7 +224,7 @@ def com_google_fonts_check_fstype(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/usweightclass",
+    id="googlefonts:usweightclass",
     rationale="""
         Google Fonts expects variable fonts, static ttfs and static otfs to have
         differing OS/2 usWeightClass values.
@@ -243,7 +243,7 @@ def com_google_fonts_check_fstype(ttFont):
     """,
     proposal="legacy:check/020",
 )
-def com_google_fonts_check_usweightclass(font, ttFonts):
+def check_usweightclass(font, ttFonts):
     """
     Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
     """

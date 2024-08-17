@@ -7,7 +7,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
+    id="opentype:varfont/stat_axis_record_for_each_axis",
     rationale="""
         According to the OpenType spec, there must be an Axis Record
         for every axis defined in the fvar table.
@@ -17,7 +17,7 @@ from fontbakery.utils import bullet_list
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/3017",
 )
-def com_google_fonts_check_varfont_stat_axis_record_for_each_axis(ttFont, config):
+def check_varfont_stat_axis_record_for_each_axis(ttFont, config):
     """All fvar axes have a correspondent Axis Record on STAT table?"""
     fvar_axes = set(a.axisTag for a in ttFont["fvar"].axes)
     stat_axes = set(a.AxisTag for a in ttFont["STAT"].table.DesignAxisRecord.Axis)
@@ -33,7 +33,7 @@ def com_google_fonts_check_varfont_stat_axis_record_for_each_axis(ttFont, config
 
 
 @check(
-    id="com.adobe.fonts/check/stat_has_axis_value_tables",
+    id="opentype:stat_has_axis_value_tables",
     rationale="""
         According to the OpenType spec, in a variable font, it is strongly recommended
         that axis value tables be included for every element of typographic subfamily
@@ -52,7 +52,7 @@ def com_google_fonts_check_varfont_stat_axis_record_for_each_axis(ttFont, config
     conditions=["has_STAT_table"],
     proposal="https://github.com/fonttools/fontbakery/issues/3090",
 )
-def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
+def check_stat_has_axis_value_tables(ttFont, is_variable_font):
     """STAT table has Axis Value tables?"""
     passed = True
     stat_table = ttFont["STAT"].table
@@ -127,14 +127,14 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
 
 
 @check(
-    id="com.google.fonts/check/italic_axis_in_stat",
+    id="opentype:italic_axis_in_stat",
     rationale="""
         Check that related Upright and Italic VFs have a
         'ital' axis in STAT table.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2934",
 )
-def com_google_fonts_check_italic_axis_in_stat(fonts, config):
+def check_italic_axis_in_stat(fonts, config):
     """Ensure VFs have 'ital' STAT axis."""
     from fontTools.ttLib import TTFont
 
@@ -200,7 +200,7 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
 
 
 @check(
-    id="com.google.fonts/check/italic_axis_in_stat_is_boolean",
+    id="opentype:italic_axis_in_stat_is_boolean",
     conditions=["style", "has_STAT_table"],
     rationale="""
         Check that the value of the 'ital' STAT axis is boolean (either 0 or 1),
@@ -209,7 +209,7 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3668",
 )
-def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
+def check_italic_axis_in_stat_is_boolean(ttFont, style):
     """Ensure 'ital' STAT axis is boolean value"""
 
     def get_STAT_axis(font, tag):
@@ -283,14 +283,14 @@ def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
 
 
 @check(
-    id="com.google.fonts/check/italic_axis_last",
+    id="opentype:italic_axis_last",
     conditions=["style", "has_STAT_table"],
     rationale="""
         Check that the 'ital' STAT axis is last in axis order.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3669",
 )
-def com_google_fonts_check_italic_axis_last(ttFont, style):
+def check_italic_axis_last(ttFont, style):
     """Ensure 'ital' STAT axis is last."""
 
     def get_STAT_axis(font, tag):

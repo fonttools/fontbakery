@@ -9,7 +9,7 @@ from fontbakery.utils import markdown_table
 
 
 @check(
-    id="com.google.fonts/check/name/unwanted_chars",
+    id="googlefonts:name/unwanted_chars",
     proposal="legacy:check/019",
     rationale="""
         We don't want non-ASCII characters in name table entries; in particular,
@@ -17,7 +17,7 @@ from fontbakery.utils import markdown_table
         their ASCII counterparts: e.g. (c), (tm) and (r) respectively.
     """,
 )
-def com_google_fonts_check_name_unwanted_chars(ttFont):
+def check_name_unwanted_chars(ttFont):
     """Substitute copyright, registered and trademark
     symbols in name table entries."""
     replacement_map = [("\u00a9", "(c)"), ("\u00ae", "(r)"), ("\u2122", "(tm)")]
@@ -34,7 +34,7 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/name/description_max_length",
+    id="googlefonts:name/description_max_length",
     rationale="""
         An old FontLab version had a bug which caused it to store copyright notices
         in nameID 10 entries.
@@ -47,7 +47,7 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
     """,
     proposal="legacy:check/032",
 )
-def com_google_fonts_check_name_description_max_length(ttFont):
+def check_name_description_max_length(ttFont):
     """Description strings in the name table must not exceed 200 characters."""
     for name in ttFont["name"].names:
         if (
@@ -68,7 +68,7 @@ def com_google_fonts_check_name_description_max_length(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/name/version_format",
+    id="googlefonts:name/version_format",
     proposal="legacy:check/055",
     rationale="""
         For Google Fonts, the version string must be in the format "Version X.Y".
@@ -76,7 +76,7 @@ def com_google_fonts_check_name_description_max_length(ttFont):
         information following the numeric version number is acceptable.)
     """,
 )
-def com_google_fonts_check_name_version_format(ttFont):
+def check_name_version_format(ttFont):
     """Version format is correct in 'name' table?"""
     from fontbakery.utils import get_name_entry_strings
     import re
@@ -104,14 +104,14 @@ def com_google_fonts_check_name_version_format(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/name/familyname_first_char",
+    id="googlefonts:name/familyname_first_char",
     rationale="""
         Font family names which start with a numeral are often not discoverable
         in Windows applications.
     """,
     proposal="legacy:check/067",
 )
-def com_google_fonts_check_name_familyname_first_char(ttFont):
+def check_name_familyname_first_char(ttFont):
     """Make sure family name does not begin with a digit."""
     from fontbakery.utils import get_name_entry_strings
 
@@ -125,7 +125,7 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/name/ascii_only_entries",
+    id="name/ascii_only_entries",
     rationale="""
         The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
 
@@ -142,7 +142,7 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
         "https://github.com/fonttools/fontbakery/issues/1663",
     ],
 )
-def com_google_fonts_check_name_ascii_only_entries(ttFont):
+def check_name_ascii_only_entries(ttFont):
     """Are there non-ASCII characters in ASCII-only NAME table entries?"""
     bad_entries = []
     for name in ttFont["name"].names:
@@ -173,7 +173,7 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/font_names",
+    id="googlefonts:font_names",
     rationale="""
         Google Fonts has several rules which need to be adhered to when
         setting a font's name table. Please read:
@@ -184,7 +184,7 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
-def com_google_fonts_check_font_names(ttFont, ttFonts):
+def check_font_names(ttFont, ttFonts):
     """Check font names are correct"""
     expected_names = expected_font_names(ttFont, ttFonts)
 
@@ -257,7 +257,7 @@ def com_google_fonts_check_font_names(ttFont, ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/name/mandatory_entries",
+    id="googlefonts:name/mandatory_entries",
     conditions=["style"],
     proposal="legacy:check/156",
     rationale="""
@@ -267,7 +267,7 @@ def com_google_fonts_check_font_names(ttFont, ttFonts):
         typographic subfamily name.
     """,
 )
-def com_google_fonts_check_name_mandatory_entries(ttFont, style):
+def check_name_mandatory_entries(ttFont, style):
     """Font has all mandatory 'name' table entries?"""
     from fontbakery.utils import get_name_entry_strings
 
@@ -293,7 +293,7 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
 
 
 @check(
-    id="com.google.fonts/check/name/family_and_style_max_length",
+    id="name/family_and_style_max_length",
     rationale="""
         This check ensures that the length of name table entries is not
         too long, as this causes problems in some environments.
@@ -303,7 +303,7 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
         "https://github.com/fonttools/fontbakery/issues/2179",
     ],
 )
-def com_google_fonts_check_name_family_and_style_max_length(ttFont):
+def check_name_family_and_style_max_length(ttFont):
     """Combined length of family and style must not exceed 32 characters."""
     from fontbakery.utils import get_name_entry_strings
     import re
@@ -367,11 +367,12 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                         )
 
 
+# FIXME: This is currently an orphan check!
 @disable
 @check(
-    id="com.google.fonts/check/glyphs_file/name/family_and_style_max_length",
+    id="glyphs_file/name/family_and_style_max_length",
 )
-def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFile):
+def check_glyphs_file_name_family_and_style_max_length(glyphsFile):
     """Combined length of family and style must not exceed 27 characters."""
 
     too_long = []
@@ -395,7 +396,7 @@ def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFi
 
 
 @check(
-    id="com.google.fonts/check/name/line_breaks",
+    id="googlefonts:name/line_breaks",
     rationale="""
         There are some entries on the name table that may include more than one line
         of text. The Google Fonts team, though, prefers to keep the name table entries
@@ -404,11 +405,11 @@ def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFi
         For instance, some designers like to include the full text of a font license in
         the "copyright notice" entry, but for the GFonts collection this entry should
         only mention year, author and other basic info in a manner enforced by
-        com.google.fonts/check/font_copyright
+        `googlefonts:font_copyright`
     """,
     proposal="legacy:check/057",
 )
-def com_google_fonts_check_name_line_breaks(ttFont):
+def check_name_line_breaks(ttFont):
     """Name table entries should not contain line-breaks."""
     for name in ttFont["name"].names:
         string = name.string.decode(name.getEncoding())
@@ -422,7 +423,7 @@ def com_google_fonts_check_name_line_breaks(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/name/family_name_compliance",
+    id="googlefonts:name/family_name_compliance",
     rationale="""
         Checks the family name for compliance with the Google Fonts Guide.
         https://googlefonts.github.io/gf-guide/onboarding.html#new-fonts
@@ -441,7 +442,7 @@ def com_google_fonts_check_name_line_breaks(ttFont):
     conditions=[],
     proposal="https://github.com/fonttools/fontbakery/issues/4049",
 )
-def com_google_fonts_check_name_family_name_compliance(ttFont):
+def check_name_family_name_compliance(ttFont):
     """Check family name for GF Guide compliance."""
     import re
     from pkg_resources import resource_filename

@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="com.google.fonts/check/maxadvancewidth",
+    id="opentype:maxadvancewidth",
     proposal="legacy:check/073",
     rationale="""
         The 'hhea' table contains a field which specifies the maximum
@@ -12,7 +12,7 @@ from fontbakery.message import Message
         advance width of all glyphs specified in the 'hmtx' table.
        """,
 )
-def com_google_fonts_check_maxadvancewidth(ttFont):
+def check_maxadvancewidth(ttFont):
     """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
 
     required_tables = {"hhea", "hmtx"}
@@ -40,7 +40,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/caret_slope",
+    id="opentype:caret_slope",
     rationale="""
         Checks whether hhea.caretSlopeRise and hhea.caretSlopeRun
         match with post.italicAngle.
@@ -58,7 +58,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3670",
 )
-def com_google_fonts_check_caret_slope(ttFont):
+def check_caret_slope(ttFont):
     """Check hhea.caretSlopeRise and hhea.caretSlopeRun"""
 
     import math

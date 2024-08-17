@@ -10,7 +10,7 @@ from fontbakery.codetesting import (
 
 def test_check_layout_valid_feature_tags():
     """Does the font have any invalid feature tags?"""
-    check = CheckTester("com.google.fonts/check/layout_valid_feature_tags")
+    check = CheckTester("opentype:layout_valid_feature_tags")
 
     # test font with valid, registered feature tags.
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
@@ -29,7 +29,7 @@ def test_check_layout_valid_feature_tags():
 
 def test_check_layout_valid_script_tags():
     """Does the font have any invalid script tags?"""
-    check = CheckTester("com.google.fonts/check/layout_valid_script_tags")
+    check = CheckTester("opentype:layout_valid_script_tags")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     assert_PASS(check(font))
@@ -40,7 +40,7 @@ def test_check_layout_valid_script_tags():
 
 def test_check_layout_valid_language_tags():
     """Does the font have any invalid language tags?"""
-    check = CheckTester("com.google.fonts/check/layout_valid_language_tags")
+    check = CheckTester("opentype:layout_valid_language_tags")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     assert_PASS(check(font))

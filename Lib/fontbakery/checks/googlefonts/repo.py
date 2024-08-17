@@ -7,7 +7,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="com.google.fonts/check/repo/fb_report",
+    id="googlefonts:repo/fb_report",
     conditions=["family_directory"],
     rationale="""
         A FontBakery report is ephemeral and so should be used for posting issues on a
@@ -15,7 +15,7 @@ from fontbakery.utils import bullet_list
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2888",
 )
-def com_google_fonts_check_repo_fb_report(family_directory):
+def check_repo_fb_report(family_directory):
     """A font repository should not include FontBakery report files"""
     from fontbakery.utils import filenames_ending_in
 
@@ -37,7 +37,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
 
 
 @check(
-    id="com.google.fonts/check/repo/upstream_yaml_has_required_fields",
+    id="googlefonts:repo/upstream_yaml_has_required_fields",
     rationale="""
         If a family has been pushed using the gftools packager, we must check that all
         the required fields in the upstream.yaml file have been populated.
@@ -46,7 +46,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
     severity=10,
     proposal="https://github.com/fonttools/fontbakery/issues/3338",
 )
-def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml):
+def check_repo_upstream_yaml_has_required_fields(upstream_yaml):
     """Check upstream.yaml file contains all required fields"""
     required_fields = set(["branch", "files"])
     upstream_fields = set(upstream_yaml.keys())
@@ -61,7 +61,7 @@ def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml)
 
 
 @check(
-    id="com.google.fonts/check/repo/zip_files",
+    id="googlefonts:repo/zip_files",
     conditions=["family_directory"],
     rationale="""
         Sometimes people check in ZIPs into their font project repositories. While we
@@ -73,7 +73,7 @@ def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml)
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2903",
 )
-def com_google_fonts_check_repo_zip_files(family_directory, config):
+def check_repo_zip_files(family_directory, config):
     """A font repository should not include ZIP files"""
     from fontbakery.utils import filenames_ending_in, pretty_print_list
 
@@ -93,7 +93,7 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
 
 
 @check(
-    id="com.google.fonts/check/repo/sample_image",
+    id="googlefonts:repo/sample_image",
     rationale="""
         In order to showcase what a font family looks like, the project's README.md
         file should ideally include a sample image and highlight it in the upper
@@ -102,7 +102,7 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
     conditions=["readme_contents", "readme_directory"],
     proposal="https://github.com/fonttools/fontbakery/issues/2898",
 )
-def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):
+def check_repo_sample_image(readme_contents, readme_directory, config):
     """Check README.md has a sample image."""
     import glob
     import re
@@ -167,7 +167,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 
 
 @check(
-    id="com.google.fonts/check/repo/vf_has_static_fonts",
+    id="googlefonts:repo/vf_has_static_fonts",
     conditions=["family_directory", "gfonts_repo_structure"],
     rationale="""
         Variable font family directories kept in the google/fonts git repo may include
@@ -176,7 +176,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2654",
 )
-def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
+def check_repo_vf_has_static_fonts(family_directory):
     """A static fonts directory, if present, must contain manually hinted fonts"""
     from fontbakery.utils import get_name_entry_strings
 
@@ -211,7 +211,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
 
 
 @check(
-    id="com.google.fonts/check/repo/dirname_matches_nameid_1",
+    id="googlefonts:repo/dirname_matches_nameid_1",
     conditions=["gfonts_repo_structure"],
     proposal="https://github.com/fonttools/fontbakery/issues/2302",
     rationale="""
@@ -221,7 +221,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
         name matches our expectations.
     """,
 )
-def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
+def check_repo_dirname_match_nameid_1(fonts):
     """Directory name in GFonts repo structure must
     match NameID 1 of the regular."""
     from fontTools.ttLib import TTFont

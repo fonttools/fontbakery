@@ -26,7 +26,7 @@ def has_kerning_info(font):
 
 
 @check(
-    id="com.google.fonts/check/gpos_kerning_info",
+    id="opentype:gpos_kerning_info",
     proposal="legacy:check/063",
     rationale="""
             Well-designed fonts use kerning to improve the spacing between
@@ -35,7 +35,7 @@ def has_kerning_info(font):
             design or writing system does not require kerning.
        """,
 )
-def com_google_fonts_check_gpos_kerning_info(font):
+def check_gpos_kerning_info(font):
     """Does GPOS table have kerning information?
     This check skips monospaced fonts as defined by post.isFixedPitch value
     """

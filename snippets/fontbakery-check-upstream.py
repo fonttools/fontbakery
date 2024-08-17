@@ -77,7 +77,7 @@ def main():
         ["fontbakery", "check-googlefonts"]
         + fonts
         + ["--ghmarkdown", gh_report]
-        + ["-x", "com.google.fonts/check/has_license"]
+        + ["-x", "googlefonts:family/has_license"]
         + ["-l", "FAIL"]
     )
 

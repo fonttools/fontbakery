@@ -63,7 +63,7 @@ def is_up_to_date(installed_str, latest_str):
 
 
 @check(
-    id="com.google.fonts/check/fontbakery_version",
+    id="fontbakery_version",
     conditions=["network"],
     rationale="""
         Running old versions of FontBakery can lead to a poor report which may
@@ -75,7 +75,7 @@ def is_up_to_date(installed_str, latest_str):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2093",
 )
-def com_google_fonts_check_fontbakery_version(font, config):
+def check_fontbakery_version(font, config):
     """Do we have the latest version of FontBakery installed?"""
     import pip_api
     import requests

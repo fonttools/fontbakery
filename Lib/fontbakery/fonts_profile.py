@@ -113,7 +113,7 @@ def add_checks_to_nascent_profile(sections, section, checks, excluded=None):
         )
     for check in checks:
         if check not in checks_by_id:
-            raise ValueError(f"Check {check} not found")
+            raise ValueError(f"Check '{check}' not found")
         if excluded and check in excluded:
             continue
         check_object = checks_by_id[check]

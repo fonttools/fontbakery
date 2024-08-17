@@ -3,7 +3,7 @@ from fontbakery.utils import bullet_list, glyph_has_ink
 
 
 @check(
-    id="com.google.fonts/check/mandatory_glyphs",
+    id="mandatory_glyphs",
     rationale="""
         The OpenType specification v1.8.2 recommends that the first glyph is the
         '.notdef' glyph without a codepoint assigned and with a drawing:
@@ -20,7 +20,7 @@ from fontbakery.utils import bullet_list, glyph_has_ink
     """,
     proposal="legacy:check/046",
 )
-def com_google_fonts_check_mandatory_glyphs(ttFont):
+def check_mandatory_glyphs(ttFont):
     """Font contains '.notdef' as its first glyph?"""
     passed = True
     NOTDEF = ".notdef"
@@ -61,7 +61,7 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/whitespace_glyphs",
+    id="whitespace_glyphs",
     proposal="legacy:check/047",
     rationale="""
         The OpenType specification recommends that fonts should contain
@@ -76,7 +76,7 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
         soft hyphen (U+00AD), but these are not mandatory.
     """,
 )
-def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
+def check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     """Font contains glyphs for whitespace characters?"""
     failed = False
     for wsc in missing_whitespace_chars:
@@ -91,7 +91,7 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
 
 
 @check(
-    id="com.google.fonts/check/unreachable_glyphs",
+    id="unreachable_glyphs",
     rationale="""
         Glyphs are either accessible directly through Unicode codepoints or through
         substitution rules.
@@ -104,7 +104,7 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3160",
 )
-def com_google_fonts_check_unreachable_glyphs(ttFont, config):
+def unreachable_glyphs(ttFont, config):
     """Check font contains no unreachable glyphs"""
 
     def remove_lookup_outputs(all_glyphs, lookup):
@@ -267,7 +267,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/soft_hyphen",
+    id="soft_hyphen",
     rationale="""
         The 'Soft Hyphen' character (codepoint 0x00AD) is used to mark
         a hyphenation possibility within a word in the absence of or
@@ -290,7 +290,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
         "https://github.com/fonttools/fontbakery/issues/3486",
     ],
 )
-def com_google_fonts_check_soft_hyphen(ttFont):
+def check_soft_hyphen(ttFont):
     """Does the font contain a soft hyphen?"""
     if 0x00AD in ttFont["cmap"].getBestCmap().keys():
         yield WARN, Message("softhyphen", "This font has a 'Soft Hyphen' character.")
@@ -299,7 +299,7 @@ def com_google_fonts_check_soft_hyphen(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/rupee",
+    id="rupee",
     rationale="""
         Per Bureau of Indian Standards every font supporting one of the
         official Indian languages needs to include Unicode Character
@@ -308,7 +308,7 @@ def com_google_fonts_check_soft_hyphen(ttFont):
     conditions=["is_indic_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/2967",
 )
-def com_google_fonts_check_rupee(ttFont):
+def check_rupee(ttFont):
     """Ensure indic fonts have the Indian Rupee Sign glyph."""
     if 0x20B9 not in ttFont["cmap"].getBestCmap().keys():
         yield FAIL, Message(
@@ -320,7 +320,7 @@ def com_google_fonts_check_rupee(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/case_mapping",
+    id="case_mapping",
     rationale="""
         Ensure that no glyph lacks its corresponding upper or lower counterpart
         (but only when unicode supports case-mapping).
@@ -329,7 +329,7 @@ def com_google_fonts_check_rupee(ttFont):
     severity=10,  # if a font shows tofu in caps but not in lowercase
     #               then it can be considered broken.
 )
-def com_google_fonts_check_case_mapping(ttFont):
+def check_case_mapping(ttFont):
     """Ensure the font supports case swapping for all its glyphs."""
     import unicodedata
     from fontbakery.utils import markdown_table
@@ -396,5 +396,3 @@ def com_google_fonts_check_case_mapping(ttFont):
             f"The following glyphs lack their case-swapping counterparts:\n\n"
             f"{markdown_table(missing_counterparts_table)}\n\n",
         )
-    else:
-        yield PASS, "Looks good!"
