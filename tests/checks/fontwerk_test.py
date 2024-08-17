@@ -10,7 +10,7 @@ from fontbakery.codetesting import (
 
 
 def test_check_name_no_mac_entries():
-    check = CheckTester("com.fontwerk/check/no_mac_entries")
+    check = CheckTester("no_mac_entries")
 
     font = TEST_FILE("abeezee/ABeeZee-Italic.ttf")
     assert_results_contain(
@@ -22,7 +22,7 @@ def test_check_name_no_mac_entries():
 
 
 def test_check_vendor_id():
-    check = CheckTester("com.fontwerk/check/vendor_id")
+    check = CheckTester("fontwerk:vendor_id")
 
     ttFont = TTFont(TEST_FILE("abeezee/ABeeZee-Italic.ttf"))
     assert_results_contain(
@@ -34,7 +34,7 @@ def test_check_vendor_id():
 
 
 def test_check_weight_class_fvar():
-    check = CheckTester("com.fontwerk/check/weight_class_fvar")
+    check = CheckTester("weight_class_fvar")
 
     ttFont = TTFont(TEST_FILE("varfont/Oswald-VF.ttf"))
     assert_PASS(check(ttFont), "matches fvar default value.")
@@ -52,7 +52,7 @@ def test_check_weight_class_fvar():
 
 
 def test_check_inconsistencies_between_fvar_stat():
-    check = CheckTester("com.fontwerk/check/inconsistencies_between_fvar_stat")
+    check = CheckTester("inconsistencies_between_fvar_stat")
 
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
     assert_PASS(check(ttFont), "with a good varfont...")
@@ -74,7 +74,7 @@ def test_check_inconsistencies_between_fvar_stat():
 
 
 def test_check_style_linking():
-    check = CheckTester("com.fontwerk/check/style_linking")
+    check = CheckTester("fontwerk:style_linking")
 
     font = TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf")
     assert_results_contain(check(font), FAIL, "style-linking-issue")
@@ -88,7 +88,8 @@ def test_check_style_linking():
 
 def test_check_names_match_default_fvar():
     """Checking if names match default fvar."""
-    check = CheckTester("com.fontwerk/check/names_match_default_fvar")
+    check = CheckTester("fontwerk:names_match_default_fvar")
+
     from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 
     PID = PlatformID.WINDOWS

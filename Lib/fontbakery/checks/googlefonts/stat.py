@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, INFO, SKIP
 
 
 @check(
-    id="com.google.fonts/check/STAT/axis_order",
+    id="googlefonts:STAT/axis_order",
     rationale="""
         This is (for now) a merely informative check to detect what's the axis ordering
         declared on the STAT table of fonts in the Google Fonts collection.
@@ -12,7 +12,7 @@ from fontbakery.prelude import check, Message, INFO, SKIP
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3049",
 )
-def com_google_fonts_check_STAT_axis_order(fonts):
+def check_STAT_axis_order(fonts):
     """Check axis ordering on the STAT table."""
     from collections import Counter
     from fontTools.ttLib import TTLibError

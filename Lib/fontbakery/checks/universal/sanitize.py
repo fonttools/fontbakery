@@ -3,7 +3,6 @@ import os
 from fontbakery.prelude import (
     check,
     Message,
-    PASS,
     FAIL,
     WARN,
     INFO,
@@ -12,7 +11,7 @@ from fontbakery.testable import TTCFont
 
 
 @check(
-    id="com.google.fonts/check/ots",
+    id="ots",
     proposal="legacy:check/036",
     rationale="""
        The OpenType Sanitizer (OTS) is a tool that checks that the font is
@@ -24,7 +23,7 @@ from fontbakery.testable import TTCFont
        it finds.
        """,
 )
-def com_google_fonts_check_ots(font):
+def check_ots(font):
     """Checking with ots-sanitize."""
     import ots
 
@@ -44,12 +43,10 @@ def com_google_fonts_check_ots(font):
                 "ots-sanitize passed this file, however warnings were printed:\n\n"
                 f"{process.stderr.decode()}",
             )
-        else:
-            yield PASS, "ots-sanitize passed this file"
 
 
 @check(
-    id="com.google.fonts/check/ttx_roundtrip",
+    id="ttx_roundtrip",
     conditions=["not vtt_talk_sources"],
     rationale="""
         One way of testing whether or not fonts are well-formed at the
@@ -60,7 +57,7 @@ def com_google_fonts_check_ots(font):
         the binary.""",
     proposal="https://github.com/fonttools/fontbakery/issues/1763",
 )
-def com_google_fonts_check_ttx_roundtrip(font):
+def check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
     from fontTools import ttx
     import subprocess

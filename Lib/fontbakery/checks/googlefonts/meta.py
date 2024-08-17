@@ -2,7 +2,7 @@ from fontbakery.prelude import check, WARN, INFO, FAIL, Message
 
 
 @check(
-    id="com.google.fonts/check/meta/script_lang_tags",
+    id="googlefonts:meta/script_lang_tags",
     rationale="""
         The OpenType 'meta' table originated at Apple. Microsoft added it to OT with
         just two DataMap records:
@@ -50,7 +50,7 @@ from fontbakery.prelude import check, WARN, INFO, FAIL, Message
     severity=3,
     proposal="https://github.com/fonttools/fontbakery/issues/3349",
 )
-def com_google_fonts_check_meta_script_lang_tags(ttFont):
+def check_meta_script_lang_tags(ttFont):
     """Ensure fonts have ScriptLangTags declared on the 'meta' table."""
 
     if "meta" not in ttFont:

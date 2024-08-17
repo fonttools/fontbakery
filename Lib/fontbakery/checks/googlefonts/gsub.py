@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, WARN
 
 
 @check(
-    id="com.google.fonts/check/stylisticset_description",
+    id="stylisticset_description",
     rationale="""
         Stylistic sets should provide description text. Programs such as InDesign,
         TextEdit and Inkscape use that info to display to the users so that they know
@@ -10,7 +10,7 @@ from fontbakery.prelude import check, Message, WARN
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3155",
 )
-def com_google_fonts_check_stylisticset_description(ttFont):
+def check_stylisticset_description(ttFont):
     """Ensure Stylistic Sets have description."""
 
     if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:

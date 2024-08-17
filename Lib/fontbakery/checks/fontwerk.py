@@ -7,7 +7,7 @@ from fontbakery.constants import FsSelection, MacStyle
 
 
 @check(
-    id="com.fontwerk/check/no_mac_entries",
+    id="no_mac_entries",
     rationale="""
         Mac name table entries are not needed anymore. Even Apple stopped producing
         name tables with platform 1. Please see for example the following system font:
@@ -20,7 +20,7 @@ from fontbakery.constants import FsSelection, MacStyle
     """,
     proposal="https://github.com/googlefonts/gftools/issues/469",
 )
-def com_fontwerk_check_name_no_mac_entries(ttFont):
+def check_name_no_mac_entries(ttFont):
     """Check if font has Mac name table entries (platform=1)"""
 
     for rec in ttFont["name"].names:
@@ -29,13 +29,13 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
 
 
 @check(
-    id="com.fontwerk/check/vendor_id",
+    id="fontwerk:vendor_id",
     rationale="""
         Vendor ID must be WERK for Fontwerk fonts.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3579",
 )
-def com_fontwerk_check_vendor_id(ttFont):
+def check_vendor_id(ttFont):
     """Checking OS/2 achVendID."""
 
     vendor_id = ttFont["OS/2"].achVendID
@@ -46,14 +46,14 @@ def com_fontwerk_check_vendor_id(ttFont):
 
 
 @check(
-    id="com.fontwerk/check/names_match_default_fvar",
+    id="fontwerk:names_match_default_fvar",
     rationale="""
         Check if the font names match default fvar instance name.
     """,
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/3698",
 )
-def com_fontwerk_check_names_match_default_fvar(ttFont):
+def check_names_match_default_fvar(ttFont):
     """Checking if names match default fvar instance name."""
     from fontbakery.constants import NameID
 
@@ -124,7 +124,7 @@ def com_fontwerk_check_names_match_default_fvar(ttFont):
 
 
 @check(
-    id="com.fontwerk/check/weight_class_fvar",
+    id="weight_class_fvar",
     rationale="""
         According to Microsoft's OT Spec the OS/2 usWeightClass
         should match the fvar default value.
@@ -132,7 +132,7 @@ def com_fontwerk_check_names_match_default_fvar(ttFont):
     conditions=["is_variable_font", "has_wght_axis"],
     proposal="https://github.com/googlefonts/gftools/issues/477",
 )
-def com_fontwerk_check_weight_class_fvar(ttFont):
+def check_weight_class_fvar(ttFont):
     """Checking if OS/2 usWeightClass matches fvar."""
 
     fvar = ttFont["fvar"]
@@ -184,7 +184,7 @@ def is_covered_in_stat(ttFont, axis_tag, value):
 
 
 @check(
-    id="com.fontwerk/check/inconsistencies_between_fvar_stat",
+    id="inconsistencies_between_fvar_stat",
     rationale="""
         Check for inconsistencies in names and values between the fvar instances
         and STAT table. Inconsistencies may cause issues in apps like Adobe InDesign.
@@ -192,7 +192,7 @@ def is_covered_in_stat(ttFont, axis_tag, value):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/3636",
 )
-def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
+def check_inconsistencies_between_fvar_stat(ttFont):
     """Checking if STAT entries matches fvar and vice versa."""
 
     if "STAT" not in ttFont:
@@ -224,13 +224,13 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
 
 
 @check(
-    id="com.fontwerk/check/style_linking",
+    id="fontwerk:style_linking",
     rationale="""
         Look for possible style linking issues.
     """,
     proposal="https://github.com/googlefonts/noto-fonts/issues/2269",
 )
-def com_fontwerk_check_style_linking(ttFont, font):
+def check_style_linking(ttFont, font):
     """Checking style linking entries"""
 
     errs = []

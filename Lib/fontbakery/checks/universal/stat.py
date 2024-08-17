@@ -1,8 +1,8 @@
-from fontbakery.prelude import FAIL, PASS, Message, check
+from fontbakery.prelude import FAIL, Message, check
 
 
 @check(
-    id="com.google.fonts/check/STAT_strings",
+    id="STAT_strings",
     conditions=["has_STAT_table"],
     rationale="""
         On the STAT table, the "Italic" keyword must not be used on AxisValues
@@ -10,9 +10,8 @@ from fontbakery.prelude import FAIL, PASS, Message, check
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2863",
 )
-def com_google_fonts_check_STAT_strings(ttFont):
+def check_STAT_strings(ttFont):
     """Check correctness of STAT table strings"""
-    passed = True
     ital_axis_index = None
     for index, axis in enumerate(ttFont["STAT"].table.DesignAxisRecord.Axis):
         if axis.AxisTag == "ital":
@@ -34,7 +33,6 @@ def com_google_fonts_check_STAT_strings(ttFont):
     bad_values = set()
     for name in ttFont["name"].names:
         if name.nameID in nameIDs and "italic" in name.toUnicode().lower():
-            passed = False
             bad_values.add(f"nameID {name.nameID}: {name.toUnicode()}")
 
     if bad_values:
@@ -44,12 +42,9 @@ def com_google_fonts_check_STAT_strings(ttFont):
             f' should not contain "Italic":\n{sorted(bad_values)}',
         )
 
-    if passed:
-        yield PASS, "Looks good!"
-
 
 @check(
-    id="com.google.fonts/check/STAT_in_statics",
+    id="STAT_in_statics",
     conditions=["not is_variable_font", "has_STAT_table"],
     rationale="""
         Adobe feature syntax allows for the definition of a STAT table. Fonts built
@@ -75,7 +70,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4149",
 )
-def com_google_fonts_check_STAT_in_statics(ttFont):
+def check_STAT_in_statics(ttFont):
     """Checking STAT table entries in static fonts."""
 
     entries = {}
@@ -86,7 +81,6 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
         else:
             entries[tag_name] = 1
 
-    passed = True
     stat = ttFont["STAT"].table
     designAxes = stat.DesignAxisRecord.Axis
     for axisValueTable in stat.AxisValueArray.AxisValue:
@@ -101,13 +95,9 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
 
     for tag_name in entries:
         if entries[tag_name] > 1:
-            passed = False
             yield FAIL, Message(
                 "multiple-STAT-entries",
                 "The STAT table has more than a single entry for the"
                 f" '{tag_name}' axis ({entries[tag_name]}) on this"
                 " static font which will causes problems on Windows.",
             )
-
-    if passed:
-        yield PASS, "Looks good!"

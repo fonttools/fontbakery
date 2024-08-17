@@ -11,7 +11,7 @@ def GFAxisRegistry():
 
 
 @check(
-    id="com.google.fonts/check/metadata/gf_axisregistry_bounds",
+    id="googlefonts:metadata/axisregistry_bounds",
     rationale="""
         Each axis range in a METADATA.pb file must be registered, and within the bounds
         of the axis definition in the Google Fonts Axis Registry, available at
@@ -20,7 +20,7 @@ def GFAxisRegistry():
     conditions=["is_variable_font", "family_metadata"],
     proposal="https://github.com/fonttools/fontbakery/issues/3010",
 )
-def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
+def check_axisregistry_bounds(family_metadata):
     """Validate METADATA.pb axes values are within gf_axisregistry bounds."""
     for axis in family_metadata.axes:
         if axis.tag in GFAxisRegistry().keys():
@@ -41,7 +41,7 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
 
 
 @check(
-    id="com.google.fonts/check/metadata/gf_axisregistry_valid_tags",
+    id="googlefonts:metadata/axisregistry_valid_tags",
     rationale="""
         Ensure all axes in a METADATA.pb file are registered in the
         Google Fonts Axis Registry, available at
@@ -67,7 +67,7 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
     conditions=["is_variable_font", "family_metadata"],
     proposal="https://github.com/fonttools/fontbakery/issues/3022",
 )
-def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata):
+def check_axisregistry_valid_tags(family_metadata):
     """Validate METADATA.pb axes tags are defined in gf_axisregistry."""
     for axis in family_metadata.axes:
         if axis.tag not in GFAxisRegistry().keys():
@@ -79,7 +79,7 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata):
 
 
 @check(
-    id="com.google.fonts/check/gf_axisregistry/fvar_axis_defaults",
+    id="googlefonts:axisregistry/fvar_axis_defaults",
     rationale="""
         Check that axis defaults have a corresponding fallback name registered at the
         Google Fonts Axis Registry, available at
@@ -102,7 +102,7 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3141",
 )
-def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont):
+def check_axisregistry_fvar_axis_defaults(ttFont):
     """
     Validate defaults on fvar table match registered fallback names in GFAxisRegistry.
     """
@@ -123,7 +123,7 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/STAT/gf_axisregistry",
+    id="googlefonts:STAT/axisregistry",
     rationale="""
         Check that particle names and values on STAT table match the fallback names
         in each axis entry at the Google Fonts Axis Registry, available at
@@ -132,7 +132,7 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3022",
 )
-def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont):
+def check_STAT_axisregistry_names(ttFont):
     """
     Validate STAT particle names and values match the fallback names in GFAxisRegistry.
     """

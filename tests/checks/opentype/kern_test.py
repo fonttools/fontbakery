@@ -12,7 +12,7 @@ from fontbakery.codetesting import (
 
 def test_check_kern_table():
     """Is there a "kern" table declared in the font?"""
-    check = CheckTester("com.google.fonts/check/kern_table")
+    check = CheckTester("opentype:kern_table")
 
     # Our reference Mada Regular is known to be good
     # (does not have a 'kern' table):

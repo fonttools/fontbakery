@@ -10,7 +10,7 @@ from fontbakery.codetesting import (
 
 def test_check_outline_alignment_miss():
     """Check for misaligned points."""
-    check = CheckTester("com.google.fonts/check/outline_alignment_miss")
+    check = CheckTester("outline_alignment_miss")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -26,7 +26,7 @@ def test_check_outline_alignment_os2_old():
     the OS/2 table has a low version and does not have the
     xHeight and CapHeight fields that are normally used."""
 
-    check = CheckTester("com.google.fonts/check/outline_alignment_miss")
+    check = CheckTester("outline_alignment_miss")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
@@ -58,7 +58,7 @@ def test_check_outline_alignment_os2_old():
 
 def test_check_outline_short_segments():
     """Check for short segments."""
-    check = CheckTester("com.google.fonts/check/outline_short_segments")
+    check = CheckTester("outline_short_segments")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -77,7 +77,7 @@ def test_check_outline_short_segments():
 
 def test_check_outline_colinear_vectors():
     """Check for colinear line segments."""
-    check = CheckTester("com.google.fonts/check/outline_colinear_vectors")
+    check = CheckTester("outline_colinear_vectors")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -97,7 +97,7 @@ def test_check_outline_colinear_vectors():
 
 def test_check_outline_jaggy_segments():
     """Check for jaggy segments."""
-    check = CheckTester("com.google.fonts/check/outline_jaggy_segments")
+    check = CheckTester("outline_jaggy_segments")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -118,7 +118,7 @@ def test_check_outline_jaggy_segments():
 
 def test_check_outline_semi_vertical():
     """Check for semi-vertical/semi-horizontal lines."""
-    check = CheckTester("com.google.fonts/check/outline_semi_vertical")
+    check = CheckTester("outline_semi_vertical")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -140,7 +140,7 @@ def test_check_outline_semi_vertical():
 
 def test_check_outline_direction():
     """Check for misaligned points."""
-    check = CheckTester("com.google.fonts/check/outline_direction")
+    check = CheckTester("outline_direction")
 
     font = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     assert_results_contain(check(font), SKIP, "unfulfilled-conditions")

@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="com.google.fonts/check/kern_table",
+    id="opentype:kern_table",
     rationale="""
         Even though all fonts should have their kerning implemented in the GPOS table,
         there may be kerning info at the kern table as well.
@@ -31,7 +31,7 @@ from fontbakery.message import Message
         "https://github.com/fonttools/fontbakery/issues/3148",
     ],
 )
-def com_google_fonts_check_kern_table(ttFont):
+def check_kern_table(ttFont):
     """Is there a usable "kern" table declared in the font?"""
 
     kern = ttFont.get("kern")

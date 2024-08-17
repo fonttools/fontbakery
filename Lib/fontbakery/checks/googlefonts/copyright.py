@@ -9,7 +9,7 @@ from fontbakery.utils import show_inconsistencies
 
 
 @check(
-    id="com.google.fonts/check/font_copyright",
+    id="googlefonts:font_copyright",
     rationale="""
         This check aims at ensuring a uniform and legally accurate copyright statement
         on the name table entries and METADATA.pb files of font files across the Google
@@ -29,7 +29,7 @@ from fontbakery.utils import show_inconsistencies
         "legacy:check/155",
     ],
 )
-def com_google_fonts_check_font_copyright(ttFont, font_metadata, config):
+def check_font_copyright(ttFont, font_metadata, config):
     """Copyright notices match canonical pattern in fonts"""
     import re
     from fontbakery.utils import get_name_entry_strings

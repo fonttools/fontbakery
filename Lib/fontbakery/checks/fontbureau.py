@@ -2,14 +2,14 @@ from fontbakery.prelude import check, FAIL, Message
 
 
 @check(
-    id="io.github.abysstypeco/check/ytlc_sanity",
+    id="fontbureau:ytlc_sanity",
     rationale="""
         This check follows the values of the ytlc axis proposed by Font Bureau.
     """,
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3130",
 )
-def io_github_abysstypeco_check_ytlc_sanity(ttFont):
+def check_ytlc_sanity(ttFont):
     """Check if ytlc values are sane in vf"""
 
     for axis in ttFont["fvar"].axes:

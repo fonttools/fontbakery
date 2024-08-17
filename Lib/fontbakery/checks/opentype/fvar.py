@@ -5,7 +5,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="com.google.fonts/check/varfont/regular_wght_coord",
+    id="opentype:varfont/regular_wght_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wght' available at
@@ -17,7 +17,7 @@ from fontbakery.message import Message
     conditions=["is_variable_font", "has_wght_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
+def check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 400 on the
     'Regular' instance."""
 
@@ -35,7 +35,7 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
 
 
 @check(
-    id="com.google.fonts/check/varfont/regular_wdth_coord",
+    id="opentype:varfont/regular_wdth_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wdth' available at
@@ -47,7 +47,7 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
     conditions=["is_variable_font", "has_wdth_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
+def check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
     """
     The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular'
     instance.
@@ -67,7 +67,7 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
 
 
 @check(
-    id="com.google.fonts/check/varfont/regular_slnt_coord",
+    id="opentype:varfont/regular_slnt_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'slnt' available at
@@ -79,7 +79,7 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
     conditions=["is_variable_font", "has_slnt_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
+def check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
     """
     The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular'
     instance.
@@ -99,7 +99,7 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
 
 
 @check(
-    id="com.google.fonts/check/varfont/regular_ital_coord",
+    id="opentype:varfont/regular_ital_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'ital' available at
@@ -111,7 +111,7 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
     conditions=["is_variable_font", "has_ital_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
+def check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
     """
     The variable font 'ital' (Italic) axis coordinate must be zero on the 'Regular'
     instance.
@@ -131,7 +131,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
 
 
 @check(
-    id="com.google.fonts/check/varfont/regular_opsz_coord",
+    id="opentype:varfont/regular_opsz_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'opsz' available at
@@ -144,7 +144,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
     conditions=["is_variable_font", "has_opsz_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
+def check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
     """
     The variable font 'opsz' (Optical Size) axis coordinate should be between 10 and 16
     on the 'Regular' instance.
@@ -165,7 +165,7 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
 
 
 @check(
-    id="com.google.fonts/check/varfont/wght_valid_range",
+    id="opentype:varfont/wght_valid_range",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wght' available at
@@ -176,7 +176,7 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
     conditions=["is_variable_font", "has_wght_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/2264",
 )
-def com_google_fonts_check_varfont_wght_valid_range(ttFont):
+def check_varfont_wght_valid_range(ttFont):
     """The variable font 'wght' (Weight) axis coordinate
     must be within spec range of 1 to 1000 on all instances."""
 
@@ -193,7 +193,7 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/wdth_valid_range",
+    id="opentype:varfont/wdth_valid_range",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wdth' available at
@@ -205,7 +205,7 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
     conditions=["is_variable_font", "has_wdth_axis"],
     proposal="https://github.com/fonttools/fontbakery/pull/2520",
 )
-def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
+def check_varfont_wdth_valid_range(ttFont):
     """The variable font 'wdth' (Width) axis coordinate
     must strictly greater than zero."""
 
@@ -230,7 +230,7 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/slnt_range",
+    id="opentype:varfont/slnt_range",
     rationale="""
         The OpenType spec says at
         https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt that:
@@ -243,7 +243,7 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     conditions=["is_variable_font", "has_slnt_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/2572",
 )
-def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
+def check_varfont_slnt_range(ttFont, slnt_axis):
     """The variable font 'slnt' (Slant) axis coordinate
     specifies positive values in its range?"""
 
@@ -261,7 +261,7 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
 
 
 @check(
-    id="com.typenetwork/check/varfont/ital_range",
+    id="opentype:varfont/ital_range",
     rationale="""
         The OpenType spec says at
         https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_ital
@@ -271,7 +271,7 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
     """,
     conditions=["is_variable_font", "has_ital_axis"],
 )
-def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
+def check_varfont_ital_range(ttFont, ital_axis):
     """The variable font 'ital' (Italic) axis coordinates
     is in a valid range?"""
 
@@ -288,7 +288,7 @@ def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
 
 
 @check(
-    id="com.adobe.fonts/check/varfont/valid_axis_nameid",
+    id="opentype:varfont/valid_axis_nameid",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -300,7 +300,7 @@ def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3702",
 )
-def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
+def check_varfont_valid_axis_nameid(ttFont, has_name_table):
     """Validates that the value of axisNameID used by each VariationAxisRecord
     is greater than 255 and less than 32768."""
 
@@ -323,7 +323,7 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
 
 
 @check(
-    id="com.adobe.fonts/check/varfont/valid_subfamily_nameid",
+    id="opentype:varfont/valid_subfamily_nameid",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -337,7 +337,7 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3703",
 )
-def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table):
+def check_varfont_valid_subfamily_nameid(ttFont, has_name_table):
     """Validates that the value of subfamilyNameID used by each InstanceRecord
     is 2, 17, or greater than 255 and less than 32768."""
 
@@ -364,7 +364,7 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
 
 
 @check(
-    id="com.adobe.fonts/check/varfont/valid_postscript_nameid",
+    id="opentype:varfont/valid_postscript_nameid",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -378,7 +378,7 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3704",
 )
-def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table):
+def check_varfont_valid_postscript_nameid(ttFont, has_name_table):
     """Validates that the value of postScriptNameID used by each InstanceRecord
     is 6, 0xFFFF, or greater than 255 and less than 32768."""
 
@@ -407,7 +407,7 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
 
 
 @check(
-    id="com.adobe.fonts/check/varfont/valid_default_instance_nameids",
+    id="opentype:varfont/valid_default_instance_nameids",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9.1
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -427,9 +427,7 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3708",
 )
-def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
-    ttFont, has_name_table
-):
+def check_varfont_valid_default_instance_nameids(ttFont, has_name_table):
     """Validates that when an instance record is included for the default instance,
     its subfamilyNameID value is set to a name ID whose string is equal to the
     string of either name ID 2 or 17, and its postScriptNameID value is set to a
@@ -498,7 +496,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
 
 
 @check(
-    id="com.adobe.fonts/check/varfont/same_size_instance_records",
+    id="opentype:varfont/same_size_instance_records",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -511,7 +509,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3705",
 )
-def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
+def check_varfont_same_size_instance_records(ttFont):
     """Validates that all of the instance records in a given font have the same size."""
 
     if not ttFont["fvar"].instances:
@@ -534,7 +532,7 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/varfont/distinct_instance_records",
+    id="opentype:varfont/distinct_instance_records",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -547,7 +545,7 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3706",
 )
-def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_table):
+def check_varfont_distinct_instance_records(ttFont, has_name_table):
     """Validates that all of the instance records in a given font have distinct data."""
 
     if not has_name_table:
@@ -579,7 +577,7 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
 
 
 @check(
-    id="com.adobe.fonts/check/varfont/foundry_defined_tag_name",
+    id="opentype:varfont/foundry_defined_tag_name",
     rationale="""
         According to the Open-Type spec's syntactic requirements for
         foundry-defined design-variation axis tags available at
@@ -591,7 +589,7 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/4043",
 )
-def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
+def check_varfont_foundry_defined_tag_name(ttFont):
     "Validate foundry-defined design-variation axis tag names."
     for axis in ttFont["fvar"].axes:
         axisTag = axis.axisTag
@@ -629,7 +627,7 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/family_axis_ranges",
+    id="opentype:varfont/family_axis_ranges",
     rationale="""
         Between members of a family (such as Roman & Italic),
         the ranges of variable axes must be identical.
@@ -637,7 +635,7 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
     proposal="https://github.com/fonttools/fontbakery/issues/4445",
     conditions=["VFs"],
 )
-def com_google_fonts_check_varfont_family_axis_ranges(ttFonts):
+def check_varfont_family_axis_ranges(ttFonts):
     """Check that family axis ranges are indentical"""
 
     def axis_info(ttFont):

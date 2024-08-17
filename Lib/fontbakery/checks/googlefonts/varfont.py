@@ -9,7 +9,7 @@ from fontbakery.utils import exit_with_install_instructions, markdown_table
 
 
 @check(
-    id="com.google.fonts/check/STAT",
+    id="googlefonts:STAT",
     conditions=["is_variable_font", "expected_font_names"],
     rationale="""
         Check a font's STAT table contains compulsory Axis Values which exist
@@ -20,7 +20,7 @@ from fontbakery.utils import exit_with_install_instructions, markdown_table
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
-def com_google_fonts_check_stat(ttFont, expected_font_names):
+def check_stat(ttFont, expected_font_names):
     """Check a font's STAT table contains compulsory Axis Values."""
     if "STAT" not in ttFont:
         yield FAIL, "Font is missing STAT table"
@@ -118,7 +118,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
 
 
 @check(
-    id="com.google.fonts/check/fvar_instances",
+    id="googlefonts:fvar_instances",
     conditions=["is_variable_font"],
     rationale="""
         Check a font's fvar instance coordinates comply with our guidelines:
@@ -126,7 +126,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
-def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
+def check_fvar_instances(ttFont, ttFonts):
     """Check variable font instances"""
     expected_names = expected_font_names(ttFont, ttFonts)
 
@@ -196,7 +196,7 @@ def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/fvar_name_entries",
+    id="fvar_name_entries",
     conditions=["is_variable_font"],
     rationale="""
         The purpose of this check is to make sure that all name entries referenced
@@ -204,7 +204,7 @@ def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2069",
 )
-def com_google_fonts_check_fvar_name_entries(ttFont):
+def check_fvar_name_entries(ttFont):
     """All name entries referenced by fvar instances exist on the name table?"""
 
     for instance in ttFont["fvar"].instances:
@@ -223,7 +223,7 @@ def com_google_fonts_check_fvar_name_entries(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/consistent_axes",
+    id="varfont/consistent_axes",
     rationale="""
         In order to facilitate the construction of intuitive and friendly user
         interfaces, all variable font files in a given family should have the same set
@@ -233,7 +233,7 @@ def com_google_fonts_check_fvar_name_entries(ttFont):
     conditions=["VFs"],
     proposal="https://github.com/fonttools/fontbakery/issues/2810",
 )
-def com_google_fonts_check_varfont_consistent_axes(VFs):
+def check_varfont_consistent_axes(VFs):
     """Ensure that all variable font files have the same set of axes and axis ranges."""
     ref_ranges = {}
     for vf in VFs:
@@ -271,10 +271,10 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
 
 
 @check(
-    id="com.google.fonts/check/varfont/generate_static",
+    id="googlefonts:varfont/generate_static",
     rationale="""
         Google Fonts may serve static fonts which have been generated from variable
-        fonts. This test will attempt to generate a static ttf using fontTool's
+        fonts. This check will attempt to generate a static ttf using fontTool's
         varLib mutator.
 
         The target font will be the mean of each axis e.g:
@@ -294,7 +294,7 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/1727",
 )
-def com_google_fonts_check_varfont_generate_static(ttFont):
+def check_varfont_generate_static(ttFont):
     """Check a static ttf can be generated from a variable font."""
     import tempfile
 
@@ -318,7 +318,7 @@ def com_google_fonts_check_varfont_generate_static(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/has_HVAR",
+    id="googlefonts:varfont/has_HVAR",
     rationale="""
         Not having a HVAR table can lead to costly text-layout operations on some
         platforms, which we want to avoid.
@@ -328,14 +328,13 @@ def com_google_fonts_check_varfont_generate_static(ttFont):
 
         More info on the HVAR table can be found at:
         https://docs.microsoft.com/en-us/typography/opentype/spec/otvaroverview#variation-data-tables-and-miscellaneous-requirements
-    """,  # FIX-ME: We should clarify which are these
-    #         platforms in which there can be issues
-    #         with costly text-layout operations
-    #         when an HVAR table is missing!
+    """,
+    # FIX-ME: We should clarify which are these platforms in which there can be issues
+    #         with costly text-layout operations when an HVAR table is missing!
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/2119",
 )
-def com_google_fonts_check_varfont_has_HVAR(ttFont):
+def check_varfont_has_HVAR(ttFont):
     """Check that variable fonts have an HVAR table."""
     if "HVAR" not in ttFont.keys():
         yield FAIL, Message(
@@ -348,7 +347,7 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/bold_wght_coord",
+    id="googlefonts:varfont/bold_wght_coord",
     rationale="""
         The Open-Type spec's registered
         design-variation tag 'wght' available at
@@ -363,7 +362,7 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
     conditions=["is_variable_font", "has_wght_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_bold_wght_coord(font):
+def check_varfont_bold_wght_coord(font):
     """
     The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
     instance.
@@ -386,7 +385,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(font):
 
 
 @check(
-    id="com.google.fonts/check/varfont/duplexed_axis_reflow",
+    id="varfont/duplexed_axis_reflow",
     rationale="""
         Certain axes, such as grade (GRAD) or roundness (ROND), should not
         change any advanceWidth or kerning data across the font's design space.
@@ -395,7 +394,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(font):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3187",
 )
-def com_google_fonts_check_varfont_duplexed_axis_reflow(font, ttFont, config):
+def check_varfont_duplexed_axis_reflow(font, ttFont, config):
     """Ensure VFs with duplexed axes do not vary horizontal advance."""
     from fontbakery.utils import all_kerning, pretty_print_list
 
@@ -470,7 +469,7 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(font, ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/varfont_duplicate_instance_names",
+    id="googlefonts:varfont/duplicate_instance_names",
     rationale="""
         This check's purpose is to detect duplicate named instances names in a
         given variable font.
@@ -484,7 +483,7 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(font, ttFont, config):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/2986",
 )
-def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
+def check_varfont_duplicate_instance_names(ttFont):
     """Check variable font instances don't have duplicate names"""
     seen = set()
     duplicate = set()
@@ -520,7 +519,7 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/unsupported_axes",
+    id="varfont/unsupported_axes",
     rationale="""
         The 'ital' axis is not supported yet in Google Chrome.
 
@@ -533,7 +532,7 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/2866",
 )
-def com_google_fonts_check_varfont_unsupported_axes(font):
+def check_varfont_unsupported_axes(font):
     """Ensure VFs do not contain the ital axis."""
     if font.ital_axis:
         yield FAIL, Message(
@@ -543,7 +542,7 @@ def com_google_fonts_check_varfont_unsupported_axes(font):
 
 
 @check(
-    id="com.google.fonts/check/mandatory_avar_table",
+    id="mandatory_avar_table",
     rationale="""
         Most variable fonts should include an avar table to correctly define
         axes progression rates.
@@ -561,11 +560,16 @@ def com_google_fonts_check_varfont_unsupported_axes(font):
     proposal="https://github.com/fonttools/fontbakery/issues/3100"
     # NOTE: This is a high-priority WARN.
 )
-def com_google_fonts_check_mandatory_avar_table(ttFont):
+def check_mandatory_avar_table(ttFont):
     """Ensure variable fonts include an avar table."""
     if "avar" not in ttFont:
         yield WARN, Message(
-            "missing-avar", "This variable font does not have an avar table."
+            "missing-avar",
+            (
+                "This variable font does not have an avar table."
+                " Most variable fonts should include an avar table to correctly"
+                " define axes progression rates."
+            ),
         )
 
 
@@ -580,7 +584,7 @@ def uharfbuzz_blob(font):
 
 
 @check(
-    id="com.google.fonts/check/slant_direction",
+    id="slant_direction",
     conditions=["is_variable_font"],
     rationale="""
         The 'slnt' axis values are defined as negative values for a clockwise (right)
@@ -594,7 +598,7 @@ def uharfbuzz_blob(font):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3910",
 )
-def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
+def check_slant_direction(ttFont, uharfbuzz_blob):
     """Checking direction of slnt axis angles"""
     try:
         import uharfbuzz as hb
@@ -635,7 +639,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
 
 
 @check(
-    id="com.google.fonts/check/varfont/instances_in_order",
+    id="varfont/instances_in_order",
     rationale="""
         Ensure that the fvar table instances are in ascending order of weight.
         Some software, such as Canva, displays the instances in the order they
@@ -647,7 +651,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     conditions=["has_wght_axis"],
     experimental="Since 2024/Mar/27",
 )
-def com_google_fonts_check_varfont_instances_in_order(ttFont, config):
+def check_varfont_instances_in_order(ttFont, config):
     """Ensure the font's instances are in the correct order."""
     from fontbakery.utils import bullet_list
 

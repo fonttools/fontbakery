@@ -64,7 +64,7 @@ def is_claiming_to_be_cjk_font(font):
 
 
 @check(
-    id="com.google.fonts/check/glyph_coverage",
+    id="googlefonts:glyph_coverage",
     rationale="""
         Google Fonts expects that fonts in its collection support at least the minimal
         set of characters defined in the `GF-latin-core` glyph-set.
@@ -72,7 +72,7 @@ def is_claiming_to_be_cjk_font(font):
     conditions=["font_codepoints"],
     proposal="https://github.com/fonttools/fontbakery/pull/2488",
 )
-def com_google_fonts_check_glyph_coverage(ttFont, family_metadata, config):
+def check_glyph_coverage(ttFont, family_metadata, config):
     """Check Google Fonts glyph coverage."""
     import unicodedata2
     from glyphsets import get_glyphsets_fulfilled
@@ -101,7 +101,7 @@ def com_google_fonts_check_glyph_coverage(ttFont, family_metadata, config):
 
 
 @check(
-    id="com.google.fonts/check/glyphsets/shape_languages",
+    id="googlefonts:glyphsets/shape_languages",
     rationale="""
         This check uses a heuristic to determine which GF glyphsets a font supports.
         Then it checks the font for correct shaping behaviour for all languages in
@@ -112,7 +112,7 @@ def com_google_fonts_check_glyph_coverage(ttFont, family_metadata, config):
     ],  # use Shaperglot, which uses youseedee, which downloads Unicode files
     proposal=["https://github.com/googlefonts/fontbakery/issues/4147"],
 )
-def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
+def check_glyphsets_shape_languages(ttFont, config):
     """Shapes languages in all GF glyphsets."""
     from shaperglot.checker import Checker
     from shaperglot.languages import Languages
@@ -169,7 +169,7 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/family/control_chars",
+    id="family/control_chars",
     conditions=["are_ttf"],
     rationale="""
         Use of some unacceptable control characters in the U+0000 - U+001F range can
@@ -180,7 +180,7 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2430",
 )
-def com_google_fonts_check_family_control_chars(ttFonts):
+def check_family_control_chars(ttFonts):
     """Does font file include unacceptable control character glyphs?"""
     # list of unacceptable control character glyph names
     # definition includes the entire control character Unicode block except:
@@ -248,7 +248,7 @@ def com_google_fonts_check_family_control_chars(ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/cjk_not_enough_glyphs",
+    id="cjk_not_enough_glyphs",
     conditions=["is_claiming_to_be_cjk_font"],
     rationale="""
         Kana has 150 characters and it's the smallest CJK writing system.
@@ -258,7 +258,7 @@ def com_google_fonts_check_family_control_chars(ttFonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3214",
 )
-def com_google_fonts_check_cjk_not_enough_glyphs(font):
+def check_cjk_not_enough_glyphs(font):
     """Does the font contain less than 150 CJK characters?"""
 
     cjk_glyphs = font.get_cjk_glyphs
@@ -280,14 +280,14 @@ def com_google_fonts_check_cjk_not_enough_glyphs(font):
 
 
 @check(
-    id="com.google.fonts/check/missing_small_caps_glyphs",
+    id="missing_small_caps_glyphs",
     rationale="""
         Ensure small caps glyphs are available if
         a font declares smcp or c2sc OT features.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3154",
 )
-def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
+def check_missing_small_caps_glyphs(ttFont):
     """Check small caps glyphs are available."""
 
     if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:
@@ -339,14 +339,14 @@ def can_shape(ttFont, text, parameters=None):
 
 
 @check(
-    id="com.google.fonts/check/render_own_name",
+    id="render_own_name",
     rationale="""
         A base expectation is that a font family's regular/default (400 roman) style
         can render its 'menu name' (nameID 1) in itself.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3159",
 )
-def com_google_fonts_check_render_own_name(ttFont):
+def check_render_own_name(ttFont):
     """Check font can render its own name."""
     menu_name = (
         ttFont["name"]

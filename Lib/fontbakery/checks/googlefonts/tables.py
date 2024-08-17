@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, WARN, FAIL
 
 
 @check(
-    id="com.google.fonts/check/aat",
+    id="googlefonts:aat",
     rationale="""
         Apple's TrueType reference manual [1] describes SFNT tables not in the
         Microsoft OpenType specification [2] and these can sometimes sneak into final
@@ -13,7 +13,7 @@ from fontbakery.prelude import check, Message, WARN, FAIL
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2190",
 )
-def com_google_fonts_check_aat(ttFont):
+def check_aat(ttFont):
     """Are there unwanted Apple tables?"""
     UNWANTED_TABLES = {
         "EBSC",
@@ -58,7 +58,7 @@ def com_google_fonts_check_aat(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/no_debugging_tables",
+    id="no_debugging_tables",
     rationale="""
         Tables such as `Debg` are useful in the pre-production stages of font
         development, but add unnecessary bloat to a production font and should
@@ -67,7 +67,7 @@ def com_google_fonts_check_aat(ttFont):
     severity=6,
     proposal="https://github.com/fonttools/fontbakery/issues/3357",
 )
-def com_google_fonts_check_no_debugging_tables(ttFont):
+def check_no_debugging_tables(ttFont):
     """Ensure fonts do not contain any pre-production tables."""
 
     DEBUGGING_TABLES = ["Debg", "FFTM"]

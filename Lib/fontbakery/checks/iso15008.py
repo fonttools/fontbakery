@@ -75,7 +75,7 @@ def pair_kerning(font, left, right):
 
 
 @check(
-    id="com.google.fonts/check/iso15008_proportions",
+    id="iso15008_proportions",
     rationale="""
         According to ISO 15008, fonts used for in-car displays should not be
         too narrow or too wide.
@@ -90,7 +90,7 @@ def pair_kerning(font, left, right):
         "https://github.com/fonttools/fontbakery/issues/3250",
     ],
 )
-def com_google_fonts_check_iso15008_proportions(ttFont):
+def check_iso15008_proportions(ttFont):
     """Check if 0.65 => (H width / H height) => 0.80"""
     glyphset = ttFont.getGlyphSet()
     if "H" not in glyphset:
@@ -114,7 +114,7 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/iso15008_stem_width",
+    id="iso15008_stem_width",
     rationale="""
         According to ISO 15008, fonts used for in-car displays should
         not be too light or too bold.
@@ -129,7 +129,7 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
         "https://github.com/fonttools/fontbakery/issues/3251",
     ],
 )
-def com_google_fonts_check_iso15008_stem_width(ttFont):
+def check_iso15008_stem_width(ttFont):
     """Check if 0.10 <= (stem width / ascender) <= 0.82"""
     width = stem_width(ttFont)
     if width is None:
@@ -146,7 +146,7 @@ def com_google_fonts_check_iso15008_stem_width(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/iso15008_intercharacter_spacing",
+    id="iso15008_intercharacter_spacing",
     rationale="""
         According to ISO 15008, fonts used for in-car displays should not
         be too narrow or too wide.
@@ -168,7 +168,7 @@ def com_google_fonts_check_iso15008_stem_width(ttFont):
         "https://github.com/fonttools/fontbakery/issues/3252",
     ],
 )
-def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
+def check_iso15008_intercharacter_spacing(font, ttFont):
     """Check if spacing between characters is adequate for display use"""
     width = stem_width(ttFont)
 
@@ -232,7 +232,7 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
 
 
 @check(
-    id="com.google.fonts/check/iso15008_interword_spacing",
+    id="iso15008_interword_spacing",
     rationale="""
         According to ISO 15008, fonts used for in-car displays
         should not be too narrow or too wide.
@@ -247,7 +247,7 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
         "https://github.com/fonttools/fontbakery/issues/3253",
     ],
 )
-def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
+def check_iso15008_interword_spacing(font, ttFont):
     """Check if spacing between words is adequate for display use"""
     l_intersections = xheight_intersections(ttFont, "l")
     if len(l_intersections) < 2:
@@ -284,7 +284,7 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
 
 
 @check(
-    id="com.google.fonts/check/iso15008_interline_spacing",
+    id="iso15008_interline_spacing",
     rationale="""
         According to ISO 15008, fonts used for in-car displays
         should not be too narrow or too wide.
@@ -300,7 +300,7 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
         "https://github.com/fonttools/fontbakery/issues/3254",
     ],
 )
-def com_google_fonts_check_iso15008_interline_spacing(ttFont):
+def check_iso15008_interline_spacing(ttFont):
     """Check if spacing between lines is adequate for display use"""
     glyphset = ttFont.getGlyphSet()
     if "h" not in glyphset or "g" not in glyphset:

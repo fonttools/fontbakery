@@ -6,7 +6,7 @@ from fontbakery.utils import exit_with_install_instructions
 
 
 @check(
-    id="com.google.fonts/check/canonical_filename",
+    id="googlefonts:canonical_filename",
     rationale="""
         A font's filename must be composed as "<familyname>-<stylename>.ttf":
 
@@ -24,7 +24,7 @@ from fontbakery.utils import exit_with_install_instructions
     """,
     proposal="legacy:check/001",
 )
-def com_google_fonts_check_canonical_filename(ttFont):
+def check_canonical_filename(ttFont):
     """Checking file is named canonically."""
 
     try:
@@ -44,16 +44,16 @@ def com_google_fonts_check_canonical_filename(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/file_size",
+    id="file_size",
     rationale="""
-        Serving extremely large font files on Google Fonts causes usability issues.
+        Serving extremely large font files causes usability issues.
         This check ensures that file sizes are reasonable.
     """,
     severity=10,
     proposal="https://github.com/fonttools/fontbakery/issues/3320",
     configs=["WARN_SIZE", "FAIL_SIZE"],
 )
-def com_google_fonts_check_file_size(font):
+def check_file_size(font):
     """Ensure files are not too large."""
     # pytype: disable=name-error
     size = os.stat(font.file).st_size
@@ -75,7 +75,7 @@ def com_google_fonts_check_file_size(font):
 
 
 @check(
-    id="com.google.fonts/check/fontdata_namecheck",
+    id="fontdata_namecheck",
     rationale="""
         We need to check names are not already used, and today the best place to check
         that is http://namecheck.fontdata.com
@@ -83,7 +83,7 @@ def com_google_fonts_check_file_size(font):
     conditions=["network", "familyname"],
     proposal="https://github.com/fonttools/fontbakery/issues/494",
 )
-def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
+def check_fontdata_namecheck(ttFont, familyname):
     """Familyname must be unique according to namecheck.fontdata.com"""
     import requests
 
@@ -122,7 +122,7 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
             f"\n"
             f"\t\tYou can exclude this check with the command line"
             f" option:\n"
-            f"\t\t-x com.google.fonts/check/fontdata_namecheck\n"
+            f"\t\t-x fontdata_namecheck\n"
             f"\n"
             f"\t\tOr you can wait until the service is available again.\n"
             f"\t\tIf the problem persists please report this issue"

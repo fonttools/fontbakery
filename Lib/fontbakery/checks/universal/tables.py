@@ -3,7 +3,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="com.google.fonts/check/required_tables",
+    id="required_tables",
     conditions=["ttFont"],
     rationale="""
         According to the OpenType spec
@@ -37,7 +37,7 @@ from fontbakery.utils import bullet_list
     """,
     proposal="legacy:check/052",
 )
-def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
+def check_required_tables(ttFont, config, is_variable_font):
     """Font contains all required tables?"""
     REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"]
 
@@ -70,7 +70,7 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
     # required tables above. Perhaps split it into individual checks
     # with the correspondent rationales for each subset of required tables.
     #
-    # com.google.fonts/check/kern_table is a good example of a separate
+    # The `opentype:kern_table` check is a good example of a separate
     # check for a specific table providing a detailed description of
     # the rationale behind it.
 
@@ -117,7 +117,7 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
 
 
 @check(
-    id="com.google.fonts/check/unwanted_tables",
+    id="unwanted_tables",
     rationale="""
         Some font editors store source data in their own SFNT tables, and these
         can sometimes sneak into final release files, which should only have
@@ -125,7 +125,7 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
     """,
     proposal="legacy:check/053",
 )
-def com_google_fonts_check_unwanted_tables(ttFont):
+def check_unwanted_tables(ttFont):
     """Are there unwanted tables?"""
     UNWANTED_TABLES = {
         "FFTM": "Table contains redundant FontForge timestamp info",

@@ -18,7 +18,7 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
 
 
 @check(
-    id="com.google.fonts/check/layout_valid_feature_tags",
+    id="opentype:layout_valid_feature_tags",
     rationale="""
         Incorrect tags can be indications of typos, leftover debugging code or
         questionable approaches, or user error in the font editor. Such typos can
@@ -30,7 +30,7 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
     proposal="https://github.com/fonttools/fontbakery/issues/3355",
     severity=8,
 )
-def com_google_fonts_check_layout_valid_feature_tags(ttFont):
+def check_layout_valid_feature_tags(ttFont):
     """Does the font have any invalid feature tags?"""
 
     # We'll accept any of the OpenType specified feature tags:
@@ -62,7 +62,7 @@ def script_tags(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/layout_valid_script_tags",
+    id="opentype:layout_valid_script_tags",
     rationale="""
         Incorrect script tags can be indications of typos, leftover debugging code
         or questionable approaches, or user error in the font editor. Such typos can
@@ -71,7 +71,7 @@ def script_tags(ttFont):
     proposal="https://github.com/fonttools/fontbakery/issues/3355",
     severity=8,
 )
-def com_google_fonts_check_layout_valid_script_tags(ttFont):
+def check_layout_valid_script_tags(ttFont):
     """Does the font have any invalid script tags?"""
     bad_tags = set()
     for tag in script_tags(ttFont):
@@ -96,7 +96,7 @@ def language_tags(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/layout_valid_language_tags",
+    id="opentype:layout_valid_language_tags",
     rationale="""
         Incorrect language tags can be indications of typos, leftover debugging code
         or questionable approaches, or user error in the font editor. Such typos can
@@ -105,7 +105,7 @@ def language_tags(ttFont):
     proposal="https://github.com/fonttools/fontbakery/issues/3355",
     severity=8,
 )
-def com_google_fonts_check_layout_valid_language_tags(ttFont):
+def check_layout_valid_language_tags(ttFont):
     """Does the font have any invalid language tags?"""
     bad_tags = set()
     for tag in language_tags(ttFont):

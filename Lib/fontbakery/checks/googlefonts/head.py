@@ -2,17 +2,16 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="com.google.fonts/check/unitsperem_strict",
+    id="googlefonts:unitsperem",
     rationale="""
         Even though the OpenType spec allows unitsPerEm to be any value between 16
         and 16384, the Google Fonts project aims at a narrower set of reasonable values.
 
-        Values above 4000 would likely result in unreasonable
-        filesize increases.
+        Values above 4000 would likely result in unreasonable filesize increases.
     """,
     proposal="legacy:check/116",
 )
-def com_google_fonts_check_unitsperem_strict(ttFont):
+def check_unitsperem(ttFont):
     """Stricter unitsPerEm criteria for Google Fonts."""
     upm_height = ttFont["head"].unitsPerEm
     RECOMMENDED = [16, 32, 64, 128, 256, 500, 512, 1000, 1024, 2000, 2048]

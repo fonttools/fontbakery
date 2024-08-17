@@ -59,7 +59,7 @@ def hinting_stats(font: Font):
 
 
 @check(
-    id="com.google.fonts/check/gasp",
+    id="googlefonts:gasp",
     conditions=["is_ttf"],
     rationale="""
         Traditionally version 0 'gasp' tables were set so that font sizes below 8 ppem
@@ -75,7 +75,7 @@ def hinting_stats(font: Font):
     """,
     proposal="legacy:check/062",
 )
-def com_google_fonts_check_gasp(ttFont):
+def check_gasp(ttFont):
     """Is the Grid-fitting and Scan-conversion Procedure ('gasp') table
     set to optimize rendering?"""
 
@@ -150,14 +150,14 @@ def com_google_fonts_check_gasp(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/hinting_impact",
+    id="hinting_impact",
     rationale="""
-        This check is merely informative, displaying and useful comparison of filesizes
+        This check is merely informative, displaying an useful comparison of filesizes
         of hinted versus unhinted font files.
     """,
     proposal="legacy:check/054",
 )
-def com_google_fonts_check_hinting_impact(font):
+def check_hinting_impact(font):
     """Show hinting filesize impact."""
     stats = hinting_stats(font)
     hinted = stats["hinted_size"]
@@ -183,16 +183,16 @@ def com_google_fonts_check_hinting_impact(font):
 
 
 @check(
-    id="com.google.fonts/check/has_ttfautohint_params",
+    id="googlefonts:has_ttfautohint_params",
     proposal="https://github.com/fonttools/fontbakery/issues/1773",
     rationale="""
-        It is critically important that all static TTFs in the API which
-        were autohinted with ttfautohint store their TTFAutohint args in
+        It is critically important that all static TTFs in the Google Fonts API
+        which were autohinted with ttfautohint store their TTFAutohint args in
         the 'name' table, so that an automated solution can be made to
         replicate the hinting on subsets, etc.
     """,
 )
-def com_google_fonts_check_has_ttfautohint_params(ttFont):
+def check_has_ttfautohint_params(ttFont):
     """Font has ttfautohint params?"""
     from fontbakery.utils import get_name_entry_strings
 
@@ -230,14 +230,14 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/old_ttfautohint",
+    id="googlefonts:old_ttfautohint",
     conditions=["is_ttf"],
     rationale="""
         Check if font has been hinted with an outdated version of ttfautohint.
     """,
     proposal="legacy:check/056",
 )
-def com_google_fonts_check_old_ttfautohint(ttFont):
+def check_old_ttfautohint(ttFont):
     """Font has old ttfautohint applied?"""
     from fontbakery.utils import get_name_entry_strings
 
@@ -285,7 +285,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/smart_dropout",
+    id="smart_dropout",
     conditions=["is_ttf", "not VTT_hinted"],
     rationale="""
         This setup is meant to ensure consistent rendering quality for fonts across
@@ -319,7 +319,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont):
     """,
     proposal="legacy:check/072",
 )
-def com_google_fonts_check_smart_dropout(ttFont):
+def check_smart_dropout(ttFont):
     """Font enables smart dropout control in "prep" table instructions?"""
     INSTRUCTIONS = b"\xb8\x01\xff\x85\xb0\x04\x8d"
 
@@ -335,7 +335,7 @@ def com_google_fonts_check_smart_dropout(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/vttclean",
+    id="vttclean",
     rationale="""
         The goal here is to reduce filesizes and improve pageloading when dealing
         with webfonts.
@@ -346,7 +346,7 @@ def com_google_fonts_check_smart_dropout(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2059",
 )
-def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
+def check_vtt_clean(ttFont, vtt_talk_sources):
     """There must not be VTT Talk sources in the font."""
 
     if vtt_talk_sources:
@@ -360,7 +360,7 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
 
 
 @check(
-    id="com.google.fonts/check/integer_ppem_if_hinted",
+    id="integer_ppem_if_hinted",
     conditions=["is_hinted"],
     rationale="""
         Hinted fonts must have head table flag bit 3 set.
@@ -375,20 +375,18 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2338",
 )
-def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
+def check_integer_ppem_if_hinted(ttFont):
     """PPEM must be an integer on hinted fonts."""
 
     if not ttFont["head"].flags & (1 << 3):
         yield FAIL, Message(
             "bad-flags",
             (
-                "This is a hinted font, so it must have bit 3 set"
-                " on the flags of the head table, so that"
-                " PPEM values will be rounded into an integer"
-                " value.\n"
+                "This is a hinted font, so it must have bit 3 set on the flags of"
+                " the head table, so that PPEM values will be rounded into an"
+                " integer value.\n"
                 "\n"
-                "This can be accomplished by using the"
-                " 'gftools fix-hinting' command:\n"
+                "This can be accomplished by using the 'gftools fix-hinting' command:\n"
                 "\n"
                 "```\n"
                 "# create virtualenv\n"
@@ -398,8 +396,7 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
                 "source venv/bin/activate"
                 "\n"
                 "# install gftools\n"
-                "pip install git+https://www.github.com"
-                "/googlefonts/tools\n"
+                "pip install git+https://www.github.com/googlefonts/gftools\n"
                 "```\n"
             ),
         )

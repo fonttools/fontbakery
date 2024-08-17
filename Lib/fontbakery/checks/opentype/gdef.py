@@ -27,7 +27,7 @@ def _get_mark_class_glyphnames(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/gdef_spacing_marks",
+    id="opentype:gdef_spacing_marks",
     rationale="""
         Glyphs in the GDEF mark glyph class should be non-spacing.
 
@@ -36,7 +36,7 @@ def _get_mark_class_glyphnames(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2877",
 )
-def com_google_fonts_check_gdef_spacing_marks(ttFont, config):
+def check_gdef_spacing_marks(ttFont, config):
     """Check glyphs in mark glyph class are non-spacing."""
     from fontbakery.utils import pretty_print_list
 
@@ -75,13 +75,13 @@ def com_google_fonts_check_gdef_spacing_marks(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/gdef_mark_chars",
+    id="opentype:gdef_mark_chars",
     rationale="""
         Mark characters should be in the GDEF mark glyph class.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2877",
 )
-def com_google_fonts_check_gdef_mark_chars(ttFont, config):
+def check_gdef_mark_chars(ttFont, config):
     """Check mark characters are in GDEF mark glyph class."""
     from fontbakery.utils import pretty_print_list
 
@@ -115,7 +115,7 @@ def com_google_fonts_check_gdef_mark_chars(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/gdef_non_mark_chars",
+    id="opentype:gdef_non_mark_chars",
     rationale="""
         Glyphs in the GDEF mark glyph class become non-spacing and may be repositioned
         if they have mark anchors.
@@ -125,7 +125,7 @@ def com_google_fonts_check_gdef_mark_chars(ttFont, config):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2877",
 )
-def com_google_fonts_check_gdef_non_mark_chars(ttFont, config):
+def check_gdef_non_mark_chars(ttFont, config):
     """Check GDEF mark glyph class doesn't have characters that are not marks."""
     from fontbakery.utils import pretty_print_list
 

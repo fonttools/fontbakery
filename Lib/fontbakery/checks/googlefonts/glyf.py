@@ -10,7 +10,7 @@ from fontbakery.prelude import check, disable, FAIL, Message
 # https://github.com/fonttools/fontbakery/issues/1727
 @disable
 @check(
-    id="com.google.fonts/check/negative_advance_width",
+    id="googlefonts:negative_advance_width",
     rationale="""
         Advance width values in the Horizontal Metrics (htmx) table cannot be negative
         since they are encoded as unsigned 16-bit values. But some programs may infer
@@ -30,7 +30,7 @@ from fontbakery.prelude import check, disable, FAIL, Message
     conditions=["is_ttf"],
     proposal="https://github.com/fonttools/fontbakery/issues/1720",
 )
-def com_google_fonts_check_negative_advance_width(ttFont):
+def check_negative_advance_width(ttFont):
     """Check that advance widths cannot be inferred as negative."""
     for glyphName in ttFont["glyf"].glyphs:
         coords = ttFont["glyf"][glyphName].coordinates
@@ -47,7 +47,7 @@ def com_google_fonts_check_negative_advance_width(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/glyf_nested_components",
+    id="glyf_nested_components",
     rationale="""
         There have been bugs rendering variable fonts with nested components.
         Additionally, some static fonts with nested components have been reported
@@ -60,7 +60,7 @@ def com_google_fonts_check_negative_advance_width(ttFont):
     conditions=["is_ttf"],
     proposal="https://github.com/fonttools/fontbakery/issues/2961",
 )
-def com_google_fonts_check_glyf_nested_components(ttFont, config):
+def check_glyf_nested_components(ttFont, config):
     """Check glyphs do not have components which are themselves components."""
     from fontbakery.utils import pretty_print_list
 

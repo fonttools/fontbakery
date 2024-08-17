@@ -4,7 +4,7 @@ from fontbakery.prelude import check, Message, FAIL, WARN, PASS
 
 
 @check(
-    id="com.google.fonts/check/article/images",
+    id="googlefonts:article/images",
     conditions=["family_directory"],
     rationale="""
         The purpose of this check is to ensure images (either raster or vector files)
@@ -18,7 +18,7 @@ from fontbakery.prelude import check, Message, FAIL, WARN, PASS
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4594",
 )
-def com_google_fonts_check_article_images(config, family_directory):
+def check_article_images(config, family_directory):
     """Validate size, and resolution of article images,
     and ensure article page has minimum length and includes visual assets."""
     from bs4 import BeautifulSoup

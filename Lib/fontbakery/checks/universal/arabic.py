@@ -1,9 +1,9 @@
-from fontbakery.prelude import FAIL, PASS, SKIP, Message, check
+from fontbakery.prelude import FAIL, SKIP, Message, check
 from fontbakery.utils import get_glyph_name
 
 
 @check(
-    id="com.google.fonts/check/arabic_spacing_symbols",
+    id="arabic_spacing_symbols",
     proposal=[
         "https://github.com/googlefonts/fontbakery/issues/4295",
     ],
@@ -17,7 +17,7 @@ from fontbakery.utils import get_glyph_name
     """,
     severity=4,
 )
-def com_google_fonts_check_arabic_spacing_symbols(ttFont):
+def check_arabic_spacing_symbols(ttFont):
     """Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks."""
 
     # code-points
@@ -41,25 +41,20 @@ def com_google_fonts_check_arabic_spacing_symbols(ttFont):
         0xFBC2,  # Wasla Above
     }
 
-    passed = True
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
         reverseCmap = ttFont["cmap"].buildReversed()
         for name in reverseCmap:
             if reverseCmap[name].intersection(ARABIC_SPACING_SYMBOLS):
                 if name in class_def and class_def[name] == 3:
-                    passed = False
                     yield FAIL, Message(
                         "mark-in-gdef",
                         f'"{name}" is defined in GDEF as a mark (class 3).',
                     )
 
-    if passed:
-        yield PASS, "Looks good!"
-
 
 @check(
-    id="com.google.fonts/check/arabic_high_hamza",
+    id="arabic_high_hamza",
     proposal=[
         "https://github.com/googlefonts/fontbakery/issues/4290",
     ],
@@ -75,7 +70,7 @@ def com_google_fonts_check_arabic_spacing_symbols(ttFont):
     """,
     severity=4,
 )
-def com_google_fonts_check_arabic_high_hamza(ttFont):
+def check_arabic_high_hamza(ttFont):
     """Check that glyph for U+0675 ARABIC LETTER HIGH HAMZA is not a mark."""
     from fontTools.pens.areaPen import AreaPen
 
@@ -90,8 +85,6 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
         )
         return
 
-    passed = True
-
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
         reverseCmap = ttFont["cmap"].buildReversed()
@@ -99,7 +92,6 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
         for name in glyphOrder:
             if ARABIC_LETTER_HIGH_HAMZA in reverseCmap.get(name, set()):
                 if name in class_def and class_def[name] == 3:
-                    passed = False
                     yield FAIL, Message(
                         "mark-in-gdef",
                         f'"{name}" is defined in GDEF as a mark (class 3).',
@@ -119,13 +111,9 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
     high_hamza_area = area_pen.value
 
     if abs((high_hamza_area - hamza_area) / hamza_area) > 0.1:
-        passed = False
         yield FAIL, Message(
             "glyph-area",
             "The arabic letter high hamza (U+0675) should have roughly"
             " the same size the arabic letter hamza (U+0621),"
             " but a different glyph outline area was detected.",
         )
-
-    if passed:
-        yield PASS, "Looks good!"

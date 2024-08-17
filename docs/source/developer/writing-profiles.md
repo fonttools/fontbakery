@@ -29,7 +29,7 @@ The most basic profile, which runs a single check, looks like this:
 ```python
 PROFILE = {
   "sections": {
-    "My single check": [ "com.google.fonts/check/render_own_name" ]
+    "My single check": [ "render_own_name" ]
   }
 }
 ```
@@ -41,7 +41,7 @@ You can build up your own profile out of all the checks available in the `fontba
 ```python
 PROFILE = {
   "sections": {
-    "My single check": [ "com.google.fonts/check/render_own_name" ]
+    "My single check": [ "render_own_name" ]
   },
   "include_profiles": [ "opentype" ]
 }
@@ -52,10 +52,10 @@ But then there may be certain checks from included profiles that, as a foundry, 
 ```python
 PROFILE = {
   "sections": {
-    "My single check": [ "com.google.fonts/check/render_own_name" ]
+    "My single check": [ "render_own_name" ]
   },
   "include_profiles": [ "opentype" ],
-  "exclude_checks": [ "com.google.fonts/check/family_naming_recommendations" ]
+  "exclude_checks": [ "opentype:family_naming_recommendations" ]
 }
 ```
 
@@ -63,7 +63,7 @@ There may also be checks that you want to run, but for your purposes you would l
 
 ```python
   "overrides": {
-    "com.google.fonts/check/transformed_components": [
+    "transformed_components": [
       {
           "code": "transformed-components",
           "status": "WARN",
@@ -75,11 +75,11 @@ There may also be checks that you want to run, but for your purposes you would l
 
 Each check ID is mapped to a list of overrides, which is a dictionary with three keys: `code` is the message code reported by the check; (The same check can report several different message codes depending on what it found, and you have the flexibility to override them all separately.) `status` is the new, overridden status; `reason` will be displayed with the check result to explain why this result has been overridden.
 
-Finally, some checks may expect to find certain constant values in the profile. For example, `com.google.fonts/check/file_size` checks if a font's size on disk is too big. How big is determined by the `WARN_SIZE` and `FONT_SIZE` constants, which are specified in the profile like so:
+Finally, some checks may expect to find certain constant values in the profile. For example, `googlefonts:file_size` checks if a font's size on disk is too big. How big is determined by the `WARN_SIZE` and `FONT_SIZE` constants, which are specified in the profile like so:
 
 ```python
     "configuration_defaults": {
-        "com.google.fonts/check/file_size": {
+        "googlefonts:file_size": {
             "WARN_SIZE": 1 * 1024 * 1024,
             "FAIL_SIZE": 9 * 1024 * 1024,
         }
@@ -114,7 +114,7 @@ Your check implementation will use the `@check` decorator to tell Fontbakery tha
 
 ```python
 @check(
-    id="com.myfoundry/check/has_FNRD_table",
+    id="has_FNRD_table",
     rationale="""
         All MyFoundry fonts should contain a `FNRD` table as a subtle
         reference to The Illuminatus! Trilogy.
@@ -131,9 +131,9 @@ def check_has_FNRD_table(ttFont):
 
 > We want to encourage authors to contribute their own checks to the Font Bakery collection, if they are generally useful and fit into it. Therefore an agreement on how to create check ids is needed to avoid id-collisions.
 
-> [Reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) has proven useful and a nice side effect is that contributors to Font Bakery will stay appreciated. Here are some examples: `com.daltonmaag/check/required-fields` and `de.graphicore.fontbakery/profile-examples/hello`: both examples are valid and more or less descriptive.
+> Sometimes, different vendors will have checks with the same ID, but with different QA criteria (different check implementations). In that case, for disambiguation, the vendor-specific profilename should be used as a prefix, separated from the resto of the ID by a colon. Beware, though! Such prefix is not necessary to include a check in a profile. It is exclusively meant for disambiguation (or when there's absolute certainty that the check cannot be useful to others). In the most general case, no prefix should be used.
 
-> Of course, after your personal prefix, organizing names is up to you. One proposal is e.g. for checks that are specific to certain tables, the table name could be used as part of the check id.
+> Organizing names is up to you. One proposal is e.g. for checks that are specific to certain tables, the table name could be used as part of the check id.
 
 Now let's look at that definition:
 
@@ -248,7 +248,7 @@ Coming back to the question of why these cached "questions to ask" are called "c
 
 ```python
 @check(
-    id="com.myfoundry/check/cff_names_match",
+    id="cff_names_match",
     conditions=["is_cff"]
 )
 def check_cff_names_match(ttFont):
@@ -268,7 +268,7 @@ You can match multiple conditions, and again these can be methods on the individ
 
 ```python
 @check(
-    id="com.myfoundry/check/lookup_on_fontsinuse",
+    id="lookup_on_fontsinuse",
     conditions=["network"]
 )
 ```

@@ -5,7 +5,7 @@ from fontbakery.utils import get_glyph_name, pretty_print_list
 
 
 @check(
-    id="com.google.fonts/check/valid_glyphnames",
+    id="valid_glyphnames",
     rationale="""
         Microsoft's recommendations for OpenType Fonts states the following:
 
@@ -31,7 +31,7 @@ from fontbakery.utils import get_glyph_name, pretty_print_list
         "https://github.com/fonttools/fontbakery/issues/2832",
     ],
 )
-def com_google_fonts_check_valid_glyphnames(ttFont, config):
+def check_valid_glyphnames(ttFont, config):
     """Glyph names are all valid?"""
     if (
         ttFont.sfntVersion == "\x00\x01\x00\x00"
@@ -89,14 +89,14 @@ def com_google_fonts_check_valid_glyphnames(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/unique_glyphnames",
+    id="unique_glyphnames",
     rationale="""
         Duplicate glyph names prevent font installation on Mac OS X.
     """,
     proposal="legacy:check/059",
     misc_metadata={"affects": [("Mac", "unspecified")]},
 )
-def com_google_fonts_check_unique_glyphnames(ttFont):
+def check_unique_glyphnames(ttFont):
     """Font contains unique glyph names?"""
     if (
         ttFont.sfntVersion == "\x00\x01\x00\x00"
@@ -136,7 +136,7 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/whitespace_glyphnames",
+    id="whitespace_glyphnames",
     conditions=["not missing_whitespace_chars"],
     rationale="""
         This check enforces adherence to recommended whitespace
@@ -144,7 +144,7 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
     """,
     proposal="legacy:check/048",
 )
-def com_google_fonts_check_whitespace_glyphnames(ttFont):
+def check_whitespace_glyphnames(ttFont):
     """Font has **proper** whitespace glyph names?"""
     # AGL recommended names, according to Adobe Glyph List for new fonts:
     AGL_RECOMMENDED_0020 = {"space"}

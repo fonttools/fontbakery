@@ -5,7 +5,7 @@ from fontbakery.utils import exit_with_install_instructions
 
 
 @check(
-    id="com.google.fonts/check/metadata/unsupported_subsets",
+    id="googlefonts:metadata/unsupported_subsets",
     rationale="""
         This check ensures that the subsets specified on a METADATA.pb file are
         actually supported (even if only partially) by the font files.
@@ -17,9 +17,7 @@ from fontbakery.utils import exit_with_install_instructions
     proposal="https://github.com/fonttools/fontbakery/issues/3533",
     severity=10,  # max severity because this blocks font pushes to production.
 )
-def com_google_fonts_check_metadata_unsupported_subsets(
-    family_metadata, ttFont, font_codepoints
-):
+def check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints):
     """Check for METADATA subsets with zero support."""
     try:
         from gfsubsets import CodepointsInSubset, ListSubsets
@@ -51,7 +49,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(
 
 
 @check(
-    id="com.google.fonts/check/metadata/unreachable_subsetting",
+    id="googlefonts:metadata/unreachable_subsetting",
     rationale="""
         This check ensures that all encoded glyphs in the font are covered by a
         subset declared in the METADATA.pb. Google Fonts splits the font into
@@ -68,7 +66,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(
     ],
     severity=2,
 )
-def com_google_fonts_check_metadata_unreachable_subsetting(font, config):
+def check_metadata_unreachable_subsetting(font, config):
     """Check for codepoints not covered by METADATA subsets."""
     try:
         import unicodedata2

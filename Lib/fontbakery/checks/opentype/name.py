@@ -11,14 +11,14 @@ from fontbakery.utils import markdown_table
 
 
 @check(
-    id="com.adobe.fonts/check/name/empty_records",
+    id="opentype:name/empty_records",
     rationale="""
         Check the name table for empty records,
         as this can cause problems in Adobe apps.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2369",
 )
-def com_adobe_fonts_check_name_empty_records(ttFont):
+def check_name_empty_records(ttFont):
     """Check name table for empty records."""
     for name_record in ttFont["name"].names:
         name_string = name_record.toUnicode().strip()
@@ -39,7 +39,7 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/name/no_copyright_on_description",
+    id="opentype:name/no_copyright_on_description",
     proposal="legacy:check/031",
     rationale="""
         The name table in a font file contains strings about the font;
@@ -48,7 +48,7 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
         be any copyright information in the description entry.
     """,
 )
-def com_google_fonts_check_name_no_copyright_on_description(ttFont):
+def check_name_no_copyright_on_description(ttFont):
     """Description strings in the name table must not contain copyright info."""
     for name in ttFont["name"].names:
         if (
@@ -132,7 +132,7 @@ def PANOSE_expected(family_type):
 
 
 @check(
-    id="com.google.fonts/check/monospace",
+    id="opentype:monospace",
     conditions=["glyph_metrics_stats", "is_ttf"],
     rationale="""
         There are various metadata in the OpenType spec to specify if a font is
@@ -178,7 +178,7 @@ def PANOSE_expected(family_type):
     """,
     proposal="legacy:check/033",
 )
-def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
+def check_monospace(ttFont, glyph_metrics_stats):
     """Checking correctness of monospaced metadata."""
     from fontbakery.constants import IsFixedWidth, PANOSE_Proportion
 
@@ -296,7 +296,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
 
 @check(
-    id="com.google.fonts/check/name/match_familyname_fullfont",
+    id="opentype:name/match_familyname_fullfont",
     rationale="""
         The FULL_FONT_NAME entry in the ‘name’ table should start with the same string
         as the Family Name (FONT_FAMILY_NAME, TYPOGRAPHIC_FAMILY_NAME or
@@ -317,7 +317,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     """,
     proposal="legacy:check/068",
 )
-def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
+def check_name_match_familyname_fullfont(ttFont):
     """Does full font name begin with the font family name?"""
 
     name_table = ttFont["name"]
@@ -412,7 +412,7 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/postscript_name",
+    id="opentype:postscript_name",
     proposal="https://github.com/miguelsousa/openbakery/issues/62",
     rationale="""
         The PostScript name is used by some applications to identify the font.
@@ -420,7 +420,7 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 
     """,
 )
-def com_adobe_fonts_check_postscript_name(ttFont):
+def check_postscript_name(ttFont):
     """PostScript name follows OpenType specification requirements?"""
     import re
     from fontbakery.utils import get_name_entry_strings
@@ -451,7 +451,7 @@ def com_adobe_fonts_check_postscript_name(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/family_naming_recommendations",
+    id="opentype:family_naming_recommendations",
     proposal="legacy:check/071",
     rationale="""
         This check ensures that the length of various family name and style
@@ -459,7 +459,7 @@ def com_adobe_fonts_check_postscript_name(ttFont):
         recommended by the OpenType specification.
     """,
 )
-def com_google_fonts_check_family_naming_recommendations(ttFont):
+def check_family_naming_recommendations(ttFont):
     """Font follows the family naming recommendations?"""
     # See http://forum.fontlab.com/index.php?topic=313.0
 
@@ -542,7 +542,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/name/postscript_vs_cff",
+    id="opentype:name/postscript_vs_cff",
     conditions=["is_cff"],
     rationale="""
         The PostScript name entries in the font's 'name' table should match
@@ -554,7 +554,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2229",
 )
-def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
+def check_name_postscript_vs_cff(ttFont):
     """CFF table FontName must match name table ID 6 (PostScript name)."""
     cff_names = ttFont["CFF "].cff.fontNames
     if len(cff_names) != 1:
@@ -576,7 +576,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/name/postscript_name_consistency",
+    id="opentype:name/postscript_name_consistency",
     conditions=["not is_cff"],  # e.g. TTF or CFF2
     rationale="""
         The PostScript name entries in the font's 'name' table should be
@@ -586,7 +586,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2394",
 )
-def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
+def check_name_postscript_name_consistency(ttFont):
     """Name table ID 6 (PostScript name) must be consistent across platforms."""
     postscript_names = set()
     for entry in ttFont["name"].names:
@@ -604,7 +604,7 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/family/max_4_fonts_per_family_name",
+    id="opentype:family/max_4_fonts_per_family_name",
     rationale="""
         Per the OpenType spec:
 
@@ -613,7 +613,7 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2372",
 )
-def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
+def check_family_max_4_fonts_per_family_name(ttFonts):
     """Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts."""
     from collections import Counter
     from fontbakery.utils import get_name_entry_strings
@@ -643,7 +643,7 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
 
 
 @check(
-    id="com.adobe.fonts/check/family/consistent_family_name",
+    id="opentype:family/consistent_family_name",
     rationale="""
         Per the OpenType spec:
 
@@ -670,7 +670,7 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4112",
 )
-def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
+def check_consistent_font_family_name(ttFonts):
     """
     Verify that family names in the name table are consistent across all fonts in the
     family. Checks Typographic Family name (nameID 16) if present, otherwise uses Font
@@ -724,7 +724,7 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/name/italic_names",
+    id="opentype:name/italic_names",
     conditions=["style"],
     rationale="""
         This check ensures that several entries in the name table
@@ -733,7 +733,7 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3666",
 )
-def com_google_fonts_check_name_italic_names(ttFont, style):
+def check_name_italic_names(ttFont, style):
     """Check name table IDs 1, 2, 16, 17 to conform to Italic style."""
 
     def get_name(nameID):

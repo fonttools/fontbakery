@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="com.google.fonts/check/family/underline_thickness",
+    id="opentype:family/underline_thickness",
     rationale="""
         Dave C Lemon (Adobe Type Team) recommends setting the underline thickness to be
         consistent across the family.
@@ -15,7 +15,7 @@ from fontbakery.message import Message
     proposal="legacy:check/008",
     misc_metadata={"affects": [("InDesign", "unspecified")]},
 )
-def com_google_fonts_check_family_underline_thickness(ttFonts):
+def check_family_underline_thickness(ttFonts):
     """Fonts have consistent underline thickness?"""
     underTs = {}
     underlineThickness = None
@@ -47,7 +47,7 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/post_table_version",
+    id="opentype:post_table_version",
     rationale="""
         Format 2.5 of the 'post' table was deprecated in OpenType 1.3 and
         should not be used.
@@ -81,7 +81,7 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
         "https://github.com/fonttools/fontbakery/issues/3635",
     ],
 )
-def com_google_fonts_check_post_table_version(ttFont):
+def opentype_post_table_version(ttFont):
     """Font has correct post table version?"""
     formatType = ttFont["post"].formatType
     is_cff = "CFF " in ttFont
@@ -112,7 +112,7 @@ def com_google_fonts_check_post_table_version(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/italic_angle",
+    id="opentype:italic_angle",
     conditions=["style"],
     rationale="""
         The 'post' table italicAngle property should be a reasonable amount, likely
@@ -123,7 +123,7 @@ def com_google_fonts_check_post_table_version(ttFont):
     """,
     proposal="legacy:check/130",
 )
-def com_google_fonts_check_italic_angle(ttFont, style):
+def check_italic_angle(ttFont, style):
     """Checking post.italicAngle value."""
     import math
     from beziers.path import BezierPath, Line, Point

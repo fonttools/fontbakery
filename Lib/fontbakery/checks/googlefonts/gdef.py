@@ -26,7 +26,7 @@ def ligature_glyphs(font):
 
 
 @check(
-    id="com.google.fonts/check/ligature_carets",
+    id="ligature_carets",
     conditions=["ligature_glyphs"],
     rationale="""
         All ligatures in a font must have corresponding caret (text cursor) positions
@@ -39,7 +39,7 @@ def ligature_glyphs(font):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1225",
 )
-def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
+def check_ligature_carets(ttFont, ligature_glyphs):
     """Are there caret positions declared for every ligature?"""
     if ligature_glyphs == -1:
         yield FAIL, Message(

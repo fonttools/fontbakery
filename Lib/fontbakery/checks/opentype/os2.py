@@ -8,7 +8,7 @@ from fontbakery.utils import show_inconsistencies, bullet_list
 
 
 @check(
-    id="com.google.fonts/check/family/panose_familytype",
+    id="opentype:family/panose_familytype",
     proposal="legacy:check/010",
     rationale="""
     The [PANOSE value](https://monotype.github.io/panose/) in the OS/2 table is a
@@ -19,7 +19,7 @@ from fontbakery.utils import show_inconsistencies, bullet_list
     This check ensures that within a family, all fonts have the same family type.
 """,
 )
-def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], config):
+def check_family_panose_familytype(fonts: Iterable[Font], config):
     """Fonts have consistent PANOSE family type?"""
     missing = []
     familytypes = defaultdict(list)
@@ -51,7 +51,7 @@ def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], confi
 
 
 @check(
-    id="com.google.fonts/check/xavgcharwidth",
+    id="opentype:xavgcharwidth",
     proposal="legacy:check/034",
     rationale="""
     The OS/2.xAvgCharWidth field is used to calculate the width of a string of characters.
@@ -61,7 +61,7 @@ def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], confi
     a bug in the font compiler, rather than something that the designer can
     do anything about.""",
 )
-def com_google_fonts_check_xavgcharwidth(ttFont):
+def check_xavgcharwidth(ttFont):
     """Check if OS/2 xAvgCharWidth is correct."""
 
     if "OS/2" not in ttFont:
@@ -172,14 +172,14 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/fsselection_matches_macstyle",
+    id="opentype:fsselection_matches_macstyle",
     rationale="""
         The bold and italic bits in OS/2.fsSelection must match the bold and italic
         bits in head.macStyle per the OpenType spec.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2382",
 )
-def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
+def check_fsselection_matches_macstyle(ttFont):
     """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
 
     # Check both OS/2 and head are present.
@@ -216,7 +216,7 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
+    id="opentype:family/bold_italic_unique_for_nameid1",
     conditions=["RIBBI_ttFonts"],
     rationale="""
         Per the OpenType spec: name ID 1 'is used in combination with Font Subfamily
@@ -228,7 +228,7 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2388",
 )
-def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
+def check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     """Check that OS/2.fsSelection bold & italic settings are unique
     for each NameID1"""
     from collections import Counter
@@ -271,7 +271,7 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
 
 
 @check(
-    id="com.google.fonts/check/code_pages",
+    id="opentype:code_pages",
     rationale="""
         At least some programs (such as Word and Sublime Text) under Windows 7
         do not recognize fonts unless code page bits are properly set on the
@@ -292,7 +292,7 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2474",
 )
-def com_google_fonts_check_code_pages(ttFont):
+def check_code_pages(ttFont):
     """Check code page character ranges"""
 
     if "OS/2" not in ttFont:
@@ -315,7 +315,7 @@ def com_google_fonts_check_code_pages(ttFont):
 
 
 @check(
-    id="com.thetypefounders/check/vendor_id",
+    id="opentype:vendor_id",
     rationale="""
         When a font project's Vendor ID is specified explicitly on FontBakery's
         configuration file, all binaries must have a matching vendor identifier
@@ -323,7 +323,7 @@ def com_google_fonts_check_code_pages(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3941",
 )
-def com_thetypefounders_check_vendor_id(config, ttFont):
+def check_vendor_id(config, ttFont):
     """Checking OS/2 achVendID against configuration."""
 
     if "vendor_id" not in config:
@@ -351,7 +351,7 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
 
 
 @check(
-    id="com.google.fonts/check/fsselection",
+    id="opentype:fsselection",
     conditions=["style"],
     proposal="legacy:check/129",
     rationale="""
@@ -365,7 +365,7 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
     set by using the style linking checkboxes in the exports settings.
     """,
 )
-def com_google_fonts_check_fsselection(ttFont, style):
+def check_fsselection(ttFont, style):
     """Checking OS/2 fsSelection value."""
     from fontbakery.constants import RIBBI_STYLE_NAMES, STATIC_STYLE_NAMES, FsSelection
     from fontbakery.utils import check_bit_entry

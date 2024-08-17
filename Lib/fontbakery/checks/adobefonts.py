@@ -11,14 +11,14 @@ from fontbakery.prelude import check, Message, PASS, FAIL, WARN
 
 
 @check(
-    id="com.adobe.fonts/check/family/consistent_upm",
+    id="adobefonts:family/consistent_upm",
     rationale="""
         While not required by the OpenType spec, we (Adobe) expect that a group
         of fonts designed & produced as a family have consistent units per em.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2372",
 )
-def com_adobe_fonts_check_family_consistent_upm(ttFonts):
+def check_family_consistent_upm(ttFonts):
     """Fonts have consistent Units Per Em?"""
     upm_set = set()
     for ttFont in ttFonts:
@@ -59,7 +59,7 @@ def _quick_and_dirty_glyph_is_empty(font, glyph_name):
 
 
 @check(
-    id="com.adobe.fonts/check/find_empty_letters",
+    id="empty_letters",
     rationale="""
         Font language, script, and character set tagging approaches typically have an
         underlying assumption that letters (i.e. characters with Unicode general
@@ -77,11 +77,12 @@ def _quick_and_dirty_glyph_is_empty(font, glyph_name):
         range of Korean hangul syllable code-points, which are known to be used by font
         designers as a workaround to undesired behavior from InDesign's Korean IME
         (Input Method Editor).
+
         More details available at https://github.com/fonttools/fontbakery/issues/2894
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2460",
 )
-def com_adobe_fonts_check_find_empty_letters(ttFont):
+def check_empty_letters(ttFont):
     """Letters in font have glyphs that are not empty?"""
     cmap = ttFont.getBestCmap()
     blank_ok_set = ALL_HANGUL_SYLLABLES_CODEPOINTS - MODERN_HANGUL_SYLLABLES_CODEPOINTS
@@ -134,7 +135,7 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/nameid_1_win_english",
+    id="adobefonts:nameid_1_win_english",
     rationale="""
         While not required by the OpenType spec, Adobe Fonts' pipeline requires
         every font to support at least nameID 1 (Font Family name) for platformID 3
@@ -142,7 +143,7 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3714",
 )
-def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
+def check_nameid_1_win_english(ttFont, has_name_table):
     """Font has a good nameID 1, Windows/Unicode/US-English `name` table record?"""
     if not has_name_table:
         return FAIL, Message("name-table-not-found", "Font has no 'name' table.")
@@ -173,7 +174,7 @@ def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
 
 
 @check(
-    id="com.adobe.fonts/check/unsupported_tables",
+    id="adobefonts:unsupported_tables",
     rationale="""
         Adobe Fonts' font-processing pipeline does not support all kinds of tables
         that can be included in OpenType font files.⏎
@@ -181,7 +182,7 @@ def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3870",
 )
-def com_adobe_fonts_check_unsupported_tables(ttFont):
+def check_unsupported_tables(ttFont):
     """Does the font have any unsupported tables?"""
     SUPPORTED_TABLES = {
         "avar",
@@ -239,17 +240,17 @@ def com_adobe_fonts_check_unsupported_tables(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/STAT_strings",
+    id="adobefonts:STAT_strings",
     conditions=["has_STAT_table"],
     rationale="""
         In the STAT table, the "Italic" keyword must not be used on AxisValues
         for variation axes other than 'ital' or 'slnt'. This is a more lenient
-        implementation of com.google.fonts/check/STAT_strings which allows "Italic"
+        implementation of googlefonts:STAT_strings which allows "Italic"
         only for the 'ital' axis.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2863",
 )
-def com_adobe_fonts_check_STAT_strings(ttFont):
+def check_STAT_strings(ttFont):
     """Check correctness of STAT table strings"""
     stat_table = ttFont["STAT"].table
     ital_slnt_axis_indices = []

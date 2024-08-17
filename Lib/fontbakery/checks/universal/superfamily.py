@@ -4,7 +4,7 @@ from fontbakery.prelude import INFO, PASS, SKIP, WARN, Message, check
 
 
 @check(
-    id="com.google.fonts/check/superfamily/list",
+    id="superfamily/list",
     rationale="""
         This is a merely informative check that lists all sibling families
         detected by fontbakery.
@@ -14,26 +14,25 @@ from fontbakery.prelude import INFO, PASS, SKIP, WARN, Message, check
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1487",
 )
-def com_google_fonts_check_superfamily_list(superfamily):
+def check_superfamily_list(superfamily):
     """List all superfamily filepaths"""
     for family in superfamily:
         yield INFO, Message("family-path", os.path.split(family[0])[0])
 
 
 @check(
-    id="com.google.fonts/check/superfamily/vertical_metrics",
+    id="superfamily/vertical_metrics",
     rationale="""
         We may want all fonts within a super-family (all sibling families) to have
         the same vertical metrics so their line spacing is consistent
         across the super-family.
 
-        This is an experimental extended version of
-        com.google.fonts/check/family/vertical_metrics and for now it will only
-        result in WARNs.
+        This is an experimental extended version of the
+        `family/vertical_metrics` check and for now it will only result in WARNs.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1487",
 )
-def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
+def check_superfamily_vertical_metrics(superfamily_ttFonts):
     """
     Each font in set of sibling families must have the same set of vertical metrics
     values.

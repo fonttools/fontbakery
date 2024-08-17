@@ -96,7 +96,7 @@ def github_gfonts_description(font: Font, network, config):
 
 
 @check(
-    id="com.google.fonts/check/description/has_article",
+    id="googlefonts:description/has_article",
     rationale="""
         Fonts may have a longer article about them, or a description, but
         not both - except for Noto fonts which should have both!
@@ -107,7 +107,7 @@ def github_gfonts_description(font: Font, network, config):
         "https://github.com/fonttools/fontbakery/issues/4702",
     ],
 )
-def com_google_fonts_check_description_has_article(font):
+def check_description_has_article(font):
     """Check for presence of an ARTICLE.en_us.html file"""
     directory = os.path.dirname(font.file)
     article_path = os.path.join(directory, "article", "ARTICLE.en_us.html")
@@ -155,7 +155,7 @@ def com_google_fonts_check_description_has_article(font):
 
 
 @check(
-    id="com.google.fonts/check/description/has_unsupported_elements",
+    id="googlefonts:description/has_unsupported_elements",
     conditions=["description_and_article"],
     rationale="""
         The Google Fonts backend doesn't support the following html elements:
@@ -165,7 +165,7 @@ def com_google_fonts_check_description_has_article(font):
         "https://github.com/fonttools/fontbakery/issues/2811#issuecomment-1907566857",
     ],
 )
-def com_google_fonts_check_description_has_unsupported_elements(
+def check_description_has_unsupported_elements(
     description_and_article, description_and_article_html
 ):
     """Check the description doesn't contain unsupported html elements"""
@@ -222,7 +222,7 @@ def com_google_fonts_check_description_has_unsupported_elements(
 
 
 @check(
-    id="com.google.fonts/check/description/broken_links",
+    id="googlefonts:description/broken_links",
     conditions=["network", "description_and_article_html"],
     rationale="""
         The snippet of HTML in the DESCRIPTION.en_us.html/ARTICLE.en_us.html file is
@@ -234,7 +234,7 @@ def com_google_fonts_check_description_has_unsupported_elements(
         "https://github.com/fonttools/fontbakery/issues/4110",
     ],
 )
-def com_google_fonts_check_description_broken_links(description_and_article_html, font):
+def check_description_broken_links(description_and_article_html, font):
     """Does DESCRIPTION file contain broken links?"""
     import requests
 
@@ -281,7 +281,7 @@ def com_google_fonts_check_description_broken_links(description_and_article_html
 
 
 @check(
-    id="com.google.fonts/check/description/urls",
+    id="googlefonts:description/urls",
     conditions=["description_and_article_html"],
     rationale="""
         The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font
@@ -295,7 +295,7 @@ def com_google_fonts_check_description_broken_links(description_and_article_html
         "https://github.com/fonttools/fontbakery/issues/4283",
     ],
 )
-def com_google_fonts_check_description_urls(description_and_article_html):
+def check_description_urls(description_and_article_html):
     """URLs on DESCRIPTION file must not display http(s) prefix."""
     for source, doc in description_and_article_html.items():
         for a_href in doc.iterfind(".//a[@href]"):
@@ -319,7 +319,7 @@ def com_google_fonts_check_description_urls(description_and_article_html):
 
 
 @check(
-    id="com.google.fonts/check/description/git_url",
+    id="googlefonts:description/git_url",
     conditions=["description_html", "not is_noto"],
     rationale="""
         The contents of the DESCRIPTION.en-us.html file are displayed on the
@@ -335,7 +335,7 @@ def com_google_fonts_check_description_urls(description_and_article_html):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2523",
 )
-def com_google_fonts_check_description_git_url(description_html):
+def check_description_git_url(description_html):
     """Does DESCRIPTION file contain a upstream Git repo URL?"""
     git_urls = []
     for a_href in description_html.iterfind(".//a[@href]"):
@@ -354,7 +354,7 @@ def com_google_fonts_check_description_git_url(description_html):
 
 
 @check(
-    id="com.google.fonts/check/description/valid_html",
+    id="googlefonts:description/valid_html",
     conditions=["description_and_article"],
     rationale="""
         Sometimes people write malformed HTML markup. This check should ensure the
@@ -371,7 +371,7 @@ def com_google_fonts_check_description_git_url(description_html):
         "https://github.com/fonttools/fontbakery/issues/2664",
     ],
 )
-def com_google_fonts_check_description_valid_html(descfile, description_and_article):
+def check_description_valid_html(descfile, description_and_article):
     """Is this a proper HTML snippet?"""
     try:
         from lxml import html
@@ -409,7 +409,7 @@ def com_google_fonts_check_description_valid_html(descfile, description_and_arti
 
 
 @check(
-    id="com.google.fonts/check/description/min_length",
+    id="googlefonts:description/min_length",
     conditions=["description"],
     proposal="legacy:check/005",
     rationale="""
@@ -421,7 +421,7 @@ def com_google_fonts_check_description_valid_html(descfile, description_and_arti
         taken the time to write "something sensible" about the font.
     """,
 )
-def com_google_fonts_check_description_min_length(description):
+def check_description_min_length(description):
     """DESCRIPTION.en_us.html must have more than 200 bytes."""
     if len(description) <= 200:
         yield FAIL, Message(
@@ -431,7 +431,7 @@ def com_google_fonts_check_description_min_length(description):
 
 
 @check(
-    id="com.google.fonts/check/description/eof_linebreak",
+    id="googlefonts:description/eof_linebreak",
     conditions=["description"],
     rationale="""
         Some older text-handling tools sometimes misbehave if the last line of data
@@ -444,7 +444,7 @@ def com_google_fonts_check_description_min_length(description):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2879",
 )
-def com_google_fonts_check_description_eof_linebreak(description):
+def check_description_eof_linebreak(description):
     """DESCRIPTION.en_us.html should end in a linebreak."""
     if description[-1] != "\n":
         yield WARN, Message(
@@ -455,7 +455,7 @@ def com_google_fonts_check_description_eof_linebreak(description):
 
 
 @check(
-    id="com.google.fonts/check/description/family_update",
+    id="googlefonts:description/family_update",
     rationale="""
         We want to ensure that any significant changes to the font family are
         properly mentioned in the DESCRIPTION file.
@@ -467,7 +467,7 @@ def com_google_fonts_check_description_eof_linebreak(description):
     conditions=["description", "network"],
     proposal="https://github.com/fonttools/fontbakery/issues/3182",
 )
-def com_google_fonts_check_description_family_update(font, network, config):
+def check_description_family_update(font, network, config):
     """
     On a family update, the DESCRIPTION.en_us.html file should ideally also be updated.
     """

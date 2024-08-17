@@ -154,7 +154,7 @@ def cff_analysis(font):
 
 
 @check(
-    id="com.adobe.fonts/check/cff_call_depth",
+    id="opentype:cff_call_depth",
     conditions=["ttFont", "is_cff"],
     rationale="""
         Per "The Type 2 Charstring Format, Technical Note #5177",
@@ -162,7 +162,7 @@ def cff_analysis(font):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2425",
 )
-def com_adobe_fonts_check_cff_call_depth(font):
+def check_cff_call_depth(font):
     """Is the CFF subr/gsubr call depth > 10?"""
     analysis = font.cff_analysis
 
@@ -179,14 +179,14 @@ def com_adobe_fonts_check_cff_call_depth(font):
 
 
 @check(
-    id="com.adobe.fonts/check/cff2_call_depth",
+    id="opentype:cff2_call_depth",
     conditions=["ttFont", "is_cff2"],
     rationale="""
         Per "The CFF2 CharString Format", the "Subr nesting, stack limit" is 10.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2425",
 )
-def com_adobe_fonts_check_cff2_call_depth(font):
+def check_cff2_call_depth(font):
     """Is the CFF2 subr/gsubr call depth > 10?"""
 
     analysis = font.cff_analysis
@@ -204,7 +204,7 @@ def com_adobe_fonts_check_cff2_call_depth(font):
 
 
 @check(
-    id="com.adobe.fonts/check/cff_deprecated_operators",
+    id="opentype:cff_deprecated_operators",
     conditions=["ttFont", "is_cff", "cff_analysis"],
     rationale="""
         The 'dotsection' operator and the use of 'endchar' to build accented characters
@@ -216,7 +216,7 @@ def com_adobe_fonts_check_cff2_call_depth(font):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3033",
 )
-def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
+def check_cff_deprecated_operators(cff_analysis):
     """Does the font use deprecated CFF operators or operations?"""
 
     if cff_analysis.glyphs_dotsection or cff_analysis.glyphs_endchar_seac:
@@ -234,7 +234,7 @@ def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
 
 
 @check(
-    id="com.adobe.fonts/check/cff_ascii_strings",
+    id="opentype:cff_ascii_strings",
     conditions=["ttFont", "is_cff", "cff_analysis"],
     rationale="""
         All CFF Table top dict string chars should fit into the ASCII range.
@@ -242,7 +242,7 @@ def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
     proposal="https://github.com/fonttools/fontbakery/issues/4619",
     experimental="Since 2024/Jun/20",
 )
-def com_adobe_fonts_check_cff_ascii_strings(cff_analysis):
+def check_cff_ascii_strings(cff_analysis):
     """Does the font's CFF table top dict strings fit into the ASCII range?"""
 
     if cff_analysis.string_not_ascii is None:

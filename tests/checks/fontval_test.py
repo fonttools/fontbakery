@@ -13,10 +13,10 @@ def test_extra_needed_exit(monkeypatch):
     module_name = "lxml.etree"
     sys.meta_path.insert(0, ImportRaiser(module_name))
     monkeypatch.delitem(sys.modules, module_name, raising=False)
-    from fontbakery.checks.fontval import com_google_fonts_check_fontvalidator
+    from fontbakery.checks.fontval import check_fontvalidator
 
     with pytest.raises(SystemExit):
-        list(com_google_fonts_check_fontvalidator(None, None))
+        list(check_fontvalidator(None, None))
 
     remove_import_raiser(module_name)
 
@@ -27,7 +27,7 @@ def test_extra_needed_exit(monkeypatch):
 )
 def test_check_fontvalidator():
     """MS Font Validator checks"""
-    check = CheckTester("com.google.fonts/check/fontvalidator")
+    check = CheckTester("fontvalidator")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     config = {}

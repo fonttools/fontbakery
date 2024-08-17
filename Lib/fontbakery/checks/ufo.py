@@ -65,7 +65,7 @@ def designspace_sources(designspace):
 
 
 @check(
-    id="com.daltonmaag/check/ufolint",
+    id="ufolint",
     rationale="""
         ufolint is a tool that checks UFO source files for common issues.
         It is a good idea to run it before building a font to catch potential
@@ -74,7 +74,7 @@ def designspace_sources(designspace):
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
     experimental="Since 2024/Aug/09",
 )
-def com_daltonmaag_check_ufolint(ufo):
+def check_ufolint(ufo):
     """Run ufolint on UFO source directory."""
 
     # IMPORTANT: This check cannot use the 'ufo_font' condition because it makes it
@@ -100,7 +100,7 @@ def com_daltonmaag_check_ufolint(ufo):
 
 
 @check(
-    id="com.daltonmaag/check/ufo_required_fields",
+    id="ufo_required_fields",
     conditions=["ufo_font"],
     rationale="""
         ufo2ft requires these info fields to compile a font binary:
@@ -109,7 +109,7 @@ def com_daltonmaag_check_ufolint(ufo):
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
     experimental="Since 2024/Aug/09",
 )
-def com_daltonmaag_check_required_fields(ufo_font):
+def check_ufo_required_fields(ufo_font):
     """Check that required fields are present in the UFO fontinfo."""
     required_fields = []
 
@@ -133,7 +133,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
 
 
 @check(
-    id="com.daltonmaag/check/ufo_recommended_fields",
+    id="ufo_recommended_fields",
     conditions=["ufo_font"],
     rationale="""
         This includes fields that should be in any production font.
@@ -141,7 +141,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
     experimental="Since 2024/Aug/09",
 )
-def com_daltonmaag_check_recommended_fields(ufo_font):
+def check_ufo_recommended_fields(ufo_font):
     """Check that recommended fields are present in the UFO fontinfo."""
     recommended_fields = []
 
@@ -167,7 +167,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
 
 
 @check(
-    id="com.daltonmaag/check/ufo_unnecessary_fields",
+    id="ufo_unnecessary_fields",
     conditions=["ufo_font"],
     rationale="""
         ufo2ft will generate these.
@@ -181,7 +181,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
     experimental="Since 2024/Aug/09",
 )
-def com_daltonmaag_check_unnecessary_fields(ufo_font):
+def check_ufo_unnecessary_fields(ufo_font):
     """Check that no unnecessary fields are present in the UFO fontinfo."""
     unnecessary_fields = []
 
@@ -210,7 +210,7 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
 
 
 @check(
-    id="com.google.fonts/check/designspace_has_sources",
+    id="designspace_has_sources",
     rationale="""
         This check parses a designspace file and tries to load the
         source files specified.
@@ -221,7 +221,7 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
     experimental="Since 2024/Aug/09",
 )
-def com_google_fonts_check_designspace_has_sources(designspace_sources):
+def check_designspace_has_sources(designspace_sources):
     """See if we can actually load the source files."""
     if not designspace_sources:
         yield FAIL, Message("no-sources", "Unable to load source files.")
@@ -230,14 +230,14 @@ def com_google_fonts_check_designspace_has_sources(designspace_sources):
 
 
 @check(
-    id="com.google.fonts/check/designspace_has_default_master",
+    id="designspace_has_default_master",
     rationale="""
         We expect that designspace files declare on of the masters as default.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
     experimental="Since 2024/Aug/09",
 )
-def com_google_fonts_check_designspace_has_default_master(designSpace):
+def check_designspace_has_default_master(designSpace):
     """Ensure a default master is defined."""
     if not designSpace.findDefault():
         yield FAIL, Message("not-found", "Unable to find a default master.")
@@ -246,7 +246,7 @@ def com_google_fonts_check_designspace_has_default_master(designSpace):
 
 
 @check(
-    id="com.google.fonts/check/designspace_has_consistent_glyphset",
+    id="designspace_has_consistent_glyphset",
     rationale="""
         This check ensures that non-default masters don't have glyphs
         not present in the default one.
@@ -255,7 +255,7 @@ def com_google_fonts_check_designspace_has_default_master(designSpace):
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
     experimental="Since 2024/Aug/09",
 )
-def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, config):
+def check_designspace_has_consistent_glyphset(designSpace, config):
     """Check consistency of glyphset in a designspace file."""
     from fontbakery.utils import bullet_list
 
@@ -280,7 +280,7 @@ def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, conf
 
 
 @check(
-    id="com.google.fonts/check/designspace_has_consistent_codepoints",
+    id="designspace_has_consistent_codepoints",
     rationale="""
         This check ensures that Unicode assignments are consistent
         across all sources specified in a designspace file.
@@ -289,7 +289,7 @@ def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, conf
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
     experimental="Since 2024/Aug/09",
 )
-def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, config):
+def check_designspace_has_consistent_codepoints(designSpace, config):
     """Check codepoints consistency in a designspace file."""
     from fontbakery.utils import bullet_list
 
@@ -320,7 +320,7 @@ def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, co
 
 
 @check(
-    id="com.thetypefounders/check/features_default_languagesystem",
+    id="ufo_features_default_languagesystem",
     conditions=["ufo_font"],
     rationale="""
         The feature file specification strongly recommends to use a
@@ -339,7 +339,7 @@ def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, co
     proposal="https://github.com/googlefonts/fontbakery/issues/4011",
     experimental="Since 2024/Aug/09",
 )
-def com_thetypefounders_check_features_default_languagesystem(ufo_font):
+def check_ufo_features_default_languagesystem(ufo_font):
     """Check that languagesystem DFLT dflt is present in the features.fea file."""
 
     if ufo_font.features.text is None:
@@ -364,7 +364,7 @@ def com_thetypefounders_check_features_default_languagesystem(ufo_font):
 
 
 @check(
-    id="com.daltonmaag/check/consistent_curve_type",
+    id="ufo_consistent_curve_type",
     rationale="""
         This is normally an accident, and may be handled incorrectly by the
         build pipeline unless specifically configured to account for this.
@@ -373,7 +373,7 @@ def com_thetypefounders_check_features_default_languagesystem(ufo_font):
     proposal="https://github.com/fonttools/fontbakery/pull/4795",
     experimental="Since 2024/Jul/17",
 )
-def check_consistent_curve_type(config, ufo: Ufo):
+def check_ufo_consistent_curve_type(config, ufo: Ufo):
     """Check that all glyphs across the source use the same curve type"""
 
     cubic_glyphs = []
@@ -421,7 +421,7 @@ def check_consistent_curve_type(config, ufo: Ufo):
 
 
 @check(
-    id="com.daltonmaag/check/no_open_corners",
+    id="ufo_no_open_corners",
     rationale="""
         This may be a requirement when creating a font that supports a roundness
         axis.
@@ -430,7 +430,7 @@ def check_consistent_curve_type(config, ufo: Ufo):
     proposal="https://github.com/fonttools/fontbakery/pull/4808",
     experimental="Since 2024/Aug/09",
 )
-def check_no_open_corners(config, ufo):
+def check_ufo_no_open_corners(config, ufo):
     """Check the sources have no corners"""
     from glyphsLib.filters.eraseOpenCorners import EraseOpenCornersPen
     from fontTools.pens.basePen import NullPen
@@ -462,7 +462,7 @@ def check_no_open_corners(config, ufo):
 
 
 @check(
-    id="com.daltonmaag/check/designspace_has_consistent_groups",
+    id="designspace_has_consistent_groups",
     rationale="""
         Often designers will want kerning groups to be consistent across their
         whole Designspace, so this check helps flag if this isn't the case.

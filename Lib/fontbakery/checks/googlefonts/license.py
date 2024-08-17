@@ -77,7 +77,7 @@ def is_ofl(font):
 
 
 @check(
-    id="com.google.fonts/check/family/has_license",
+    id="googlefonts:family/has_license",
     conditions=["gfonts_repo_structure"],
     proposal="legacy:check/028",
     rationale="""
@@ -86,7 +86,7 @@ def is_ofl(font):
         LICENSE.txt.
     """,
 )
-def com_google_fonts_check_family_has_license(licenses, config):
+def check_family_has_license(licenses, config):
     """Check font has a license."""
     from fontbakery.utils import pretty_print_list
 
@@ -109,7 +109,7 @@ def com_google_fonts_check_family_has_license(licenses, config):
 
 
 @check(
-    id="com.google.fonts/check/license/OFL_copyright",
+    id="googlefonts:license/OFL_copyright",
     conditions=["license_contents"],
     rationale="""
         An OFL.txt file's first line should be the font copyright.
@@ -119,7 +119,7 @@ def com_google_fonts_check_family_has_license(licenses, config):
     severity=10,  # max severity because licensing mistakes can cause legal problems.
     proposal="https://github.com/fonttools/fontbakery/issues/2764",
 )
-def com_google_fonts_check_license_OFL_copyright(license_contents):
+def check_license_OFL_copyright(license_contents):
     """Check license file has good copyright string."""
     import re
 
@@ -135,7 +135,7 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
 
 
 @check(
-    id="com.google.fonts/check/license/OFL_body_text",
+    id="googlefonts:license/OFL_body_text",
     conditions=["is_ofl", "license_contents"],
     rationale="""
         Check OFL body text is correct.
@@ -144,7 +144,7 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     severity=10,  # max severity because licensing mistakes can cause legal problems.
     proposal="https://github.com/fonttools/fontbakery/issues/3352",
 )
-def com_google_fonts_check_license_OFL_body_text(license_contents):
+def check_license_OFL_body_text(license_contents):
     """Check OFL body text is correct."""
     from fontbakery.constants import OFL_BODY_TEXT
 
@@ -185,7 +185,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
 
 
 @check(
-    id="com.google.fonts/check/name/license",
+    id="googlefonts:name/license",
     conditions=["license_filename"],
     rationale="""
         A known licensing description must be provided in the NameID 14
@@ -213,7 +213,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
     """,
     proposal="legacy:check/029",
 )
-def com_google_fonts_check_name_license(ttFont, license_filename):
+def check_name_license(ttFont, license_filename):
     """Check copyright namerecords match license file."""
     from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
 
@@ -272,7 +272,7 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
 
 
 @check(
-    id="com.google.fonts/check/name/license_url",
+    id="googlefonts:name/license_url",
     rationale="""
         A known license URL must be provided in the NameID 14 (LICENSE INFO URL)
         entry of the name table.
@@ -301,7 +301,7 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
         "https://github.com/fonttools/fontbakery/issues/4358",
     ],
 )
-def com_google_fonts_check_name_license_url(ttFont, familyname):
+def check_name_license_url(ttFont, familyname):
     """License URL matches License text on name table?"""
     from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
 
@@ -430,7 +430,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
 
 
 @check(
-    id="com.google.fonts/check/metadata/license",
+    id="googlefonts:metadata/license",
     conditions=["family_metadata"],
     proposal="legacy:check/085",
     rationale="""
@@ -439,7 +439,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
         generally be OFL unless there are special circumstances.)
     """,
 )
-def com_google_fonts_check_metadata_license(family_metadata):
+def check_metadata_license(family_metadata):
     """METADATA.pb license is "APACHE2", "UFL" or "OFL"?"""
     expected_licenses = ["APACHE2", "OFL", "UFL"]
     if not family_metadata.license in expected_licenses:
@@ -451,7 +451,7 @@ def com_google_fonts_check_metadata_license(family_metadata):
 
 
 @check(
-    id="com.google.fonts/check/epar",
+    id="googlefonts:epar",
     rationale="""
         The EPAR table is/was a way of expressing common licensing permissions and
         restrictions in metadata; while almost nothing supported it, Dave Crossland
@@ -464,7 +464,7 @@ def com_google_fonts_check_metadata_license(family_metadata):
     severity=1,
     proposal="https://github.com/fonttools/fontbakery/issues/226",
 )
-def com_google_fonts_check_epar(ttFont):
+def check_epar(ttFont):
     """EPAR table present in font?"""
 
     if "EPAR" not in ttFont:
@@ -477,7 +477,7 @@ def com_google_fonts_check_epar(ttFont):
 
 # Although this is a /name/ check, it's really about licensing
 @check(
-    id="com.google.fonts/check/name/rfn",
+    id="googlefonts:name/rfn",
     rationale="""
         Some designers adopt the "Reserved Font Name" clause of the OFL license. This
         means that the original author reserves the rights to the family name and other
@@ -494,7 +494,7 @@ def com_google_fonts_check_epar(ttFont):
     conditions=["not rfn_exception"],
     proposal="https://github.com/fonttools/fontbakery/issues/1380",
 )
-def com_google_fonts_check_name_rfn(ttFont, familyname):
+def check_name_rfn(ttFont, familyname):
     """Name table strings must not contain the string 'Reserved Font Name'."""
     for entry in ttFont["name"].names:
         string = entry.toUnicode()

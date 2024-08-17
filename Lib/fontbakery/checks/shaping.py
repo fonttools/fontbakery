@@ -122,11 +122,11 @@ def run_a_set_of_shaping_tests(
     shaping_file_found = False
     ran_a_test = False
     extra_data = None
-    if "com.google.fonts/check/shaping" not in config:
+    if "shaping" not in config:
         yield SKIP, "Shaping test directory not defined in configuration file"
         return
 
-    shaping_basedir = config["com.google.fonts/check/shaping"].get("test_directory")
+    shaping_basedir = config["shaping"].get("test_directory")
     if not shaping_basedir:
         yield SKIP, "Shaping test directory not defined in configuration file"
         return
@@ -200,7 +200,7 @@ def run_a_set_of_shaping_tests(
 
 
 @check(
-    id="com.google.fonts/check/shaping/regression",
+    id="shaping/regression",
     rationale="""
         Fonts with complex layout rules can benefit from regression tests to ensure
         that the rules are behaving as designed. This checks runs a shaping test
@@ -214,7 +214,7 @@ def run_a_set_of_shaping_tests(
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3223",
 )
-def com_google_fonts_check_shaping_regression(config, ttFont):
+def check_shaping_regression(config, ttFont):
     """Check that texts shape as per expectation"""
     yield from run_a_set_of_shaping_tests(
         config,
@@ -272,7 +272,7 @@ def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_t
 
 
 @check(
-    id="com.google.fonts/check/shaping/forbidden",
+    id="shaping/forbidden",
     rationale="""
         Fonts with complex layout rules can benefit from regression tests to ensure
         that the rules are behaving as designed. This checks runs a shaping test
@@ -286,7 +286,7 @@ def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_t
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3223",
 )
-def com_google_fonts_check_shaping_forbidden(config, ttFont):
+def check_shaping_forbidden(config, ttFont):
     """Check that no forbidden glyphs are found while shaping"""
     yield from run_a_set_of_shaping_tests(
         config,
@@ -338,7 +338,7 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
 
 
 @check(
-    id="com.google.fonts/check/shaping/collides",
+    id="shaping/collides",
     rationale="""
         Fonts with complex layout rules can benefit from regression tests to ensure
         that the rules are behaving as designed. This checks runs a shaping test
@@ -351,7 +351,7 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3223",
 )
-def com_google_fonts_check_shaping_collides(config, ttFont):
+def check_shaping_collides(config, ttFont):
     """Check that no collisions are found while shaping"""
     yield from run_a_set_of_shaping_tests(
         config,
@@ -465,7 +465,7 @@ def is_complex_shaper_font(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/dotted_circle",
+    id="dotted_circle",
     conditions=["is_ttf"],
     severity=3,
     rationale="""
@@ -487,7 +487,7 @@ def is_complex_shaper_font(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3600",
 )
-def com_google_fonts_check_dotted_circle(ttFont, config):
+def check_dotted_circle(ttFont, config):
     """Ensure dotted circle glyph is present and can attach marks."""
     from fontbakery.utils import bullet_list, iterate_lookup_list_with_extensions
 
@@ -555,7 +555,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
 
 
 @check(
-    id="com.google.fonts/check/soft_dotted",
+    id="soft_dotted",
     severity=3,
     rationale="""
         An accent placed on characters with a "soft dot", like i or j, causes
@@ -574,7 +574,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
     ],  # use Shaperglot, which uses youseedee, which downloads Unicode files
     proposal="https://github.com/fonttools/fontbakery/issues/4059",
 )
-def com_google_fonts_check_soft_dotted(ttFont):
+def check_soft_dotted(ttFont):
     """Ensure soft_dotted characters lose their dot when combined with marks that
     replace the dot."""
     try:

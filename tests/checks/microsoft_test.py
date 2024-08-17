@@ -12,30 +12,30 @@ def test_font():
 
 
 check_test_data = [
-    ("com.microsoft/check/copyright", [PASS]),
-    ("com.microsoft/check/version", [PASS]),
-    ("com.microsoft/check/trademark", [PASS]),
-    ("com.microsoft/check/manufacturer", [PASS]),
-    ("com.microsoft/check/vendor_url", [PASS]),
-    ("com.microsoft/check/license_description", [FAIL]),
-    ("com.microsoft/check/typographic_family_name", [PASS]),
-    ("com.microsoft/check/fstype", [PASS]),
-    ("com.microsoft/check/vertical_metrics", [PASS]),
-    ("com.microsoft/check/STAT_axis_values", [PASS]),
-    ("com.microsoft/check/fvar_STAT_axis_ranges", [PASS]),
-    ("com.microsoft/check/STAT_table_eliding_bit", [PASS]),
-    ("com.microsoft/check/STAT_table_axis_order", [PASS]),
-    ("com.microsoft/check/name_id_1", [PASS]),
-    ("com.microsoft/check/name_id_2", [PASS]),
-    ("com.microsoft/check/office_ribz_req", [PASS]),
-    ("com.microsoft/check/name_length_req", [PASS]),
+    ("microsoft:copyright", [PASS]),
+    ("microsoft:fstype", [PASS]),
+    ("microsoft:license_description", [FAIL]),
+    ("microsoft:manufacturer", [PASS]),
+    ("microsoft:trademark", [PASS]),
+    ("microsoft:typographic_family_name", [PASS]),
+    ("microsoft:vendor_url", [PASS]),
+    ("microsoft:version", [PASS]),
+    ("microsoft:vertical_metrics", [PASS]),
+    ("microsoft:fvar_STAT_axis_ranges", [PASS]),
+    ("microsoft:wgl4", [FAIL, WARN]),
+    ("microsoft:ogl2", [FAIL]),
+    ("microsoft:office_ribz_req", [PASS]),
+    ("microsoft:STAT_axis_values", [PASS]),
+    ("microsoft:STAT_table_axis_order", [PASS]),
+    ("microsoft:STAT_table_eliding_bit", [PASS]),
+    ("name_id_1", [PASS]),
+    ("name_id_2", [PASS]),
+    ("name_length_req", [PASS]),
+    ("tnum_glyphs_equal_widths", [PASS]),
     (
-        "com.microsoft/check/vtt_volt_data",
+        "vtt_volt_data",
         [FAIL, FAIL, FAIL, FAIL, FAIL, PASS, PASS, PASS, PASS, PASS, PASS, PASS],
     ),
-    ("com.microsoft/check/tnum_glyphs_equal_widths", [PASS]),
-    ("com.microsoft/check/wgl4", [FAIL, WARN]),
-    ("com.microsoft/check/ogl2", [FAIL]),
 ]
 
 
@@ -54,7 +54,7 @@ def test_check(test_font, check_id, expected_status_results):
     ],
 )
 def test_tnum_glyphs_equal_widths(font_path):
-    check = CheckTester("com.microsoft/check/tnum_glyphs_equal_widths")
+    check = CheckTester("tnum_glyphs_equal_widths")
 
     # Pass condition
     font = TTFont(TEST_FILE(font_path))
