@@ -1,5 +1,18 @@
 PROFILE = {
-    # "include_profiles": ["fontval"], # Temporary Disabled
+    "include_profiles": [
+        "opentype",
+        # "fontval",  # Temporary Disabled
+    ],
+    "exclude_checks": [
+        "opentype:family/panose_familytype",
+        "opentype:name/no_copyright_on_description",
+        "opentype:vendor_id",
+    ],
+    "pending_review": [
+        "opentype:cff_ascii_strings",
+        "opentype:postscript_name",
+        "opentype:varfont/family_axis_ranges",
+    ],
     "sections": {
         "Type Network": [
             "typenetwork:composite_glyphs",
@@ -27,14 +40,6 @@ PROFILE = {
             #
             # "empty_letters",  # The check is broken
         ],
-        "CFF table": [
-            "opentype:cff_call_depth",
-            "opentype:cff2_call_depth",
-            "opentype:cff_deprecated_operators",
-        ],
-        "DSIG table": [
-            "opentype:dsig",
-        ],
         "Fontwerk": [
             "fontwerk:style_linking",
             # "fontwerk:vendor_id", # PERMANENTLY EXCLUDED
@@ -42,34 +47,6 @@ PROFILE = {
             "inconsistencies_between_fvar_stat",
             "no_mac_entries",
             "weight_class_fvar",
-        ],
-        "fvar table": [
-            "opentype:varfont/distinct_instance_records",
-            "opentype:varfont/foundry_defined_tag_name",
-            "opentype:varfont/ital_range",
-            "opentype:varfont/regular_ital_coord",  # OVERRIDEN: Lowered to WARN
-            "opentype:varfont/regular_opsz_coord",  # OVERRIDEN: Lowered to WARN
-            "opentype:varfont/regular_slnt_coord",  # OVERRIDEN: Lowered to WARN
-            "opentype:varfont/regular_wdth_coord",  # OVERRIDEN: Lowered to WARN
-            "opentype:varfont/regular_wght_coord",  # OVERRIDEN: Lowered to WARN
-            "opentype:varfont/same_size_instance_records",
-            "opentype:varfont/slnt_range",
-            "opentype:varfont/valid_axis_nameid",
-            "opentype:varfont/valid_default_instance_nameids",
-            "opentype:varfont/valid_postscript_nameid",
-            "opentype:varfont/valid_subfamily_nameid",
-            "opentype:varfont/wdth_valid_range",
-            "opentype:varfont/wght_valid_range",
-        ],
-        "GDEF table": [
-            "opentype:gdef_mark_chars",
-            "opentype:gdef_non_mark_chars",  # OVERRIDEN
-            "opentype:gdef_spacing_marks",
-        ],
-        "glyf table": [
-            "opentype:glyf_non_transformed_duplicate_components",
-            "opentype:glyf_unused_data",
-            "opentype:points_out_of_bounds",
         ],
         "Google Fonts": [
             "googlefonts:aat",
@@ -102,52 +79,6 @@ PROFILE = {
             # "varfont/duplexed_axis_reflow", # Review
             "vttclean",
         ],
-        "GPOS Table": [
-            "opentype:gpos_kerning_info",
-        ],
-        "head table": [
-            "opentype:family/equal_font_versions",
-            "opentype:unitsperem",
-            "opentype:font_version",
-            "opentype:mac_style",
-        ],
-        "hhea table": [
-            "opentype:maxadvancewidth",
-            "opentype:caret_slope",
-        ],
-        "kern table": [
-            "opentype:kern_table",
-        ],
-        "Layout Checks": [
-            "opentype:layout_valid_feature_tags",
-            "opentype:layout_valid_language_tags",
-            "opentype:layout_valid_script_tags",
-        ],
-        "loca table": [
-            "opentype:loca/maxp_num_glyphs",
-        ],
-        "name table": [
-            "opentype:family/consistent_family_name",
-            "opentype:family/max_4_fonts_per_family_name",
-            "opentype:family_naming_recommendations",
-            "opentype:monospace",
-            "opentype:name/empty_records",
-            "opentype:name/italic_names",
-            "opentype:name/match_familyname_fullfont",  # OVERRIDEN
-            # "opentype:name/no_copyright_on_description", # PERMANENTLY_EXCLUDED
-            "opentype:name/postscript_name_consistency",
-            "opentype:name/postscript_vs_cff",
-            "opentype:postscript_name",  # REVIEW
-        ],
-        "OS/2 table": [
-            "opentype:code_pages",
-            "opentype:family/bold_italic_unique_for_nameid1",
-            # "opentype:family/panose_familytype", # PERMANENTLY EXCLUDED
-            "opentype:fsselection",
-            "opentype:fsselection_matches_macstyle",
-            # "opentype:vendor_id", # PERMANENTLY_EXCLUDED
-            "opentype:xavgcharwidth",
-        ],
         "Outline Checks": [
             "outline_alignment_miss",
             "outline_colinear_vectors",
@@ -155,24 +86,12 @@ PROFILE = {
             "outline_semi_vertical",
             "outline_short_segments",
         ],
-        "post table": [
-            "opentype:family/underline_thickness",
-            "opentype:italic_angle",
-            "opentype:post_table_version",
-        ],
         "Shaping Checks": [
             "dotted_circle",  # REVIEW
             # "shaping/regression", # PERMANENTLY EXCLUDED
             # "shaping/forbidden", # PERMANENTLY EXCLUDED
             # "shaping/collides",  # PERMANENTLY EXCLUDED
             "soft_dotted",
-        ],
-        "STAT table": [
-            "opentype:italic_axis_in_stat",
-            "opentype:italic_axis_in_stat_is_boolean",
-            "opentype:italic_axis_last",
-            "opentype:stat_has_axis_value_tables",
-            "opentype:varfont/stat_axis_record_for_each_axis",
         ],
         "Universal Checks": [
             # "alt_caron",  # PERMANENTLY EXCLUDED
