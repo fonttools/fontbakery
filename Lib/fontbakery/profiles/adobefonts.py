@@ -3,6 +3,28 @@
 Checks for Adobe Fonts (formerly known as Typekit).
 """
 PROFILE = {
+    "include_profiles": ["opentype"],
+    "exclude_checks": [
+        "opentype:name/no_copyright_on_description",
+        "opentype:xavgcharwidth",
+    ],
+    "pending_review": [
+        "opentype:caret_slope",
+        "opentype:dsig",
+        "opentype:fsselection",
+        "opentype:gdef_mark_chars",
+        "opentype:gdef_non_mark_chars",
+        "opentype:gdef_spacing_marks",
+        "opentype:italic_angle",
+        "opentype:italic_axis_in_stat",
+        "opentype:italic_axis_in_stat_is_boolean",
+        "opentype:italic_axis_last",
+        "opentype:mac_style",
+        "opentype:name/italic_names",
+        "opentype:varfont/family_axis_ranges",
+        "opentype:varfont/ital_range",
+        "opentype:vendor_id",
+    ],
     "sections": {
         "Adobe Fonts Checks": [
             "adobefonts:family/consistent_upm",
@@ -12,37 +34,9 @@ PROFILE = {
             #
             "empty_letters",
         ],
-        "CFF": [
-            "opentype:cff2_call_depth",
-            "opentype:cff_call_depth",
-            "opentype:cff_deprecated_operators",
-            "opentype:cff_ascii_strings",
-        ],
         "fontwerk": [
             "inconsistencies_between_fvar_stat",  # IS_OVERRIDDEN
             "weight_class_fvar",  # IS_OVERRIDDEN
-        ],
-        "fvar": [
-            "opentype:varfont/distinct_instance_records",
-            "opentype:varfont/foundry_defined_tag_name",
-            "opentype:varfont/valid_axis_nameid",
-            "opentype:varfont/valid_default_instance_nameids",  # IS_OVERRIDDEN
-            "opentype:varfont/valid_postscript_nameid",
-            "opentype:varfont/valid_subfamily_nameid",
-            "opentype:varfont/regular_ital_coord",  # IS_OVERRIDDEN
-            "opentype:varfont/regular_opsz_coord",  # IS_OVERRIDDEN
-            "opentype:varfont/regular_slnt_coord",  # IS_OVERRIDDEN
-            "opentype:varfont/regular_wdth_coord",  # IS_OVERRIDDEN
-            "opentype:varfont/regular_wght_coord",  # IS_OVERRIDDEN
-            "opentype:varfont/same_size_instance_records",
-            "opentype:varfont/slnt_range",
-            "opentype:varfont/wdth_valid_range",
-            "opentype:varfont/wght_valid_range",
-        ],
-        "glyf": [
-            "opentype:glyf_non_transformed_duplicate_components",
-            "opentype:glyf_unused_data",
-            "opentype:points_out_of_bounds",
         ],
         "Google Fonts": [
             "googlefonts:aat",
@@ -50,40 +44,6 @@ PROFILE = {
             "googlefonts:varfont/bold_wght_coord",  # IS_OVERRIDDEN
             #
             "fvar_name_entries",
-        ],
-        "gpos": [
-            "opentype:gpos_kerning_info",
-        ],
-        "head": [
-            "opentype:family/equal_font_versions",
-            "opentype:font_version",
-            "opentype:unitsperem",
-        ],
-        "hhea": [
-            "opentype:maxadvancewidth",
-        ],
-        "kern": [
-            "opentype:kern_table",
-        ],
-        "layout": [
-            "opentype:layout_valid_feature_tags",
-            "opentype:layout_valid_language_tags",
-            "opentype:layout_valid_script_tags",
-        ],
-        "loca": [
-            "opentype:loca/maxp_num_glyphs",
-        ],
-        "name": [
-            # "opentype:name/no_copyright_on_description",  # PERMANENTLY_EXCLUDED
-            "opentype:name/match_familyname_fullfont",  # IS_OVERRIDDEN
-            "opentype:family/max_4_fonts_per_family_name",
-            "opentype:family/consistent_family_name",
-            "opentype:name/empty_records",
-            "opentype:postscript_name",
-            "opentype:name/postscript_name_consistency",
-            "opentype:name/postscript_vs_cff",
-            "opentype:family_naming_recommendations",
-            "opentype:monospace",
         ],
         "notofonts": [
             # "notofonts:cmap/unexpected_subtables",  # PERMANENTLY_EXCLUDED
@@ -98,21 +58,6 @@ PROFILE = {
             # "notofonts:unicode_range_bits",
             #
             "cmap/format_12",
-        ],
-        "os2": [
-            # "opentype:xavgcharwidth",  # PERMANENTLY_EXCLUDED
-            "opentype:family/bold_italic_unique_for_nameid1",
-            "opentype:fsselection_matches_macstyle",
-            "opentype:code_pages",
-            "opentype:family/panose_familytype",
-        ],
-        "post": [
-            "opentype:family/underline_thickness",
-            "opentype:post_table_version",
-        ],
-        "stat": [
-            "opentype:stat_has_axis_value_tables",  # IS_OVERRIDDEN
-            "opentype:varfont/stat_axis_record_for_each_axis",
         ],
         "universal": [
             # "cjk_chws_feature",

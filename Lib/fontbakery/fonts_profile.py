@@ -143,12 +143,17 @@ def profile_factory(module):
                     sections,
                     section.name,
                     [check.id for check in section.checks],
-                    excluded=profile_data.get("exclude_checks", []),
+                    excluded=profile_data.get("exclude_checks", [])
+                    + profile_data.get("pending_review", []),
                 )
 
     for section, checks in profile_data["sections"].items():
         add_checks_to_nascent_profile(
-            sections, section, checks, excluded=profile_data.get("exclude_checks", [])
+            sections,
+            section,
+            checks,
+            excluded=profile_data.get("exclude_checks", [])
+            + profile_data.get("pending_review", []),
         )
 
     profile = Profile(
