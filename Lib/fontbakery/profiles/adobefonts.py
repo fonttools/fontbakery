@@ -3,10 +3,26 @@
 Checks for Adobe Fonts (formerly known as Typekit).
 """
 PROFILE = {
-    "include_profiles": ["opentype"],
+    "include_profiles": ["universal"],
     "exclude_checks": [
         "opentype:name/no_copyright_on_description",
         "opentype:xavgcharwidth",
+        #
+        "designspace_has_consistent_codepoints",
+        "designspace_has_consistent_glyphset",
+        "designspace_has_consistent_groups",
+        "designspace_has_default_master",
+        "designspace_has_sources",
+        "ufolint",
+        "ufo_features_default_languagesystem",
+        "ufo_recommended_fields",
+        "ufo_required_fields",
+        "ufo_unnecessary_fields",
+        "STAT_strings",  # replaced by adobefonts:STAT_strings
+        "transformed_components",
+        "unreachable_glyphs",
+        "whitespace_glyphnames",
+        "whitespace_ink",
     ],
     "pending_review": [
         "opentype:caret_slope",
@@ -24,6 +40,23 @@ PROFILE = {
         "opentype:varfont/family_axis_ranges",
         "opentype:varfont/ital_range",
         "opentype:vendor_id",
+        "alt_caron",
+        "arabic_high_hamza",
+        "arabic_spacing_symbols",
+        "case_mapping",
+        "cjk_chws_feature",  # was temporarily removed
+        "contour_count",  # was temporarily removed
+        "gsub/smallcaps_before_ligatures",
+        "interpolation_issues",
+        "legacy_accents",
+        "math_signs_width",
+        "soft_hyphen",
+        "STAT_in_statics",
+        "superfamily/list",
+        "superfamily/vertical_metrics",
+        "tabular_kerning",
+        "typoascender_exceeds_Agrave",
+        "unwanted_tables",
     ],
     "sections": {
         "Adobe Fonts Checks": [
@@ -58,35 +91,6 @@ PROFILE = {
             # "notofonts:unicode_range_bits",
             #
             "cmap/format_12",
-        ],
-        "universal": [
-            # "cjk_chws_feature",
-            # "contour_count",
-            # "dotted_circle",
-            "family/win_ascent_and_descent",  # IS_OVERRIDDEN
-            "family/single_directory",
-            "family/vertical_metrics",
-            "fontbakery_version",  # IS_OVERRIDDEN
-            "freetype_rasterizer",
-            "gpos7",
-            "linegaps",
-            "mandatory_glyphs",
-            "name/trailing_spaces",  # IS_OVERRIDDEN
-            "os2_metrics_match_hhea",  # IS_OVERRIDDEN
-            "ots",
-            "required_tables",
-            "rupee",
-            "sfnt_version",
-            # "STAT_strings",  # replaced by adobefonts:STAT_strings
-            # "transformed_components",
-            "ttx_roundtrip",
-            "unique_glyphnames",
-            # "unreachable_glyphs",
-            "valid_glyphnames",  # IS_OVERRIDDEN
-            # "whitespace_glyphnames",  # PERMANENTLY_EXCLUDED
-            "whitespace_glyphs",  # IS_OVERRIDDEN
-            # "whitespace_ink",         # PERMANENTLY_EXCLUDED
-            "whitespace_widths",
         ],
     },
     "overrides": {
