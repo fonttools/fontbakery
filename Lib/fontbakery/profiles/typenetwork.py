@@ -1,17 +1,42 @@
+# pylint: disable=line-too-long  # This is data, not code
 PROFILE = {
     "include_profiles": [
-        "opentype",
-        # "fontval",  # Temporary Disabled
+        "universal",
+        # "fontval",  # Temporarily disabled
     ],
     "exclude_checks": [
         "opentype:family/panose_familytype",
         "opentype:name/no_copyright_on_description",
         "opentype:vendor_id",
+        "superfamily/list",
+        "alt_caron",
+        "cjk_chws_feature",
+        "family/single_directory",  # Sometimes we want to run the profile on multiple fonts.
+        "fontbakery_version",
+        "math_signs_width",  # It really depends on the design and the intended use to make math symbols the same width.
+        "os2_metrics_match_hhea",  # Removed in favor of new vmetrics check
+        "STAT_strings",  # replaced by adobefonts:STAT_strings
     ],
     "pending_review": [
         "opentype:cff_ascii_strings",
         "opentype:postscript_name",
         "opentype:varfont/family_axis_ranges",
+        # "caps_vertically_centered",  # Disabled: issue #4274
+        "case_mapping",
+        "designspace_has_consistent_codepoints",
+        "designspace_has_consistent_glyphset",
+        "designspace_has_consistent_groups",
+        "designspace_has_default_master",
+        "designspace_has_sources",
+        "gsub/smallcaps_before_ligatures",
+        "legacy_accents",
+        "tabular_kerning",
+        "typoascender_exceeds_Agrave",
+        "ufolint",
+        "ufo_features_default_languagesystem",
+        "ufo_recommended_fields",
+        "ufo_required_fields",
+        "ufo_unnecessary_fields",
     ],
     "sections": {
         "Type Network": [
@@ -93,44 +118,6 @@ PROFILE = {
             # "shaping/collides",  # PERMANENTLY EXCLUDED
             "soft_dotted",
         ],
-        "Universal Checks": [
-            # "alt_caron",  # PERMANENTLY EXCLUDED
-            "arabic_high_hamza",
-            "arabic_spacing_symbols",
-            # "caps_vertically_centered", # REVIEW
-            # 'cjk_chws_feature', # PERMANENTLY EXCLUDED
-            "contour_count",
-            # "family/single_directory", # PERMANENTLY EXCLUDED
-            "family/vertical_metrics",
-            "family/win_ascent_and_descent",
-            # "fontbakery_version", # PERMANENTLY EXCLUDED
-            "freetype_rasterizer",
-            "gpos7",
-            "interpolation_issues",
-            "linegaps",
-            "mandatory_glyphs",
-            # "math_signs_width",  # PERMANENTLY EXCLUDED
-            "name/trailing_spaces",
-            # "os2_metrics_match_hhea", # Removed in favor of new vmetrics check
-            "ots",  # OVERRIDEN
-            "required_tables",
-            "rupee",
-            "sfnt_version",
-            "soft_hyphen",
-            "STAT_in_statics",
-            # 'superfamily/list', # PERMANENTLY EXCLUDED
-            "superfamily/vertical_metrics",
-            "transformed_components",  # OVERRIDEN
-            "ttx_roundtrip",
-            "unique_glyphnames",
-            "unreachable_glyphs",
-            "unwanted_tables",
-            "valid_glyphnames",
-            "whitespace_glyphnames",
-            "whitespace_glyphs",
-            "whitespace_ink",
-            "whitespace_widths",
-        ],
     },
     "overrides": {
         "no_mac_entries": [
@@ -139,13 +126,6 @@ PROFILE = {
                 "status": "WARN",
                 "reason": "For TN, this is desired but not mandatory.",
             }
-        ],
-        "family/single_directory": [
-            {
-                "code": "single-directory",
-                "status": "WARN",
-                "reason": "Sometimes we want to run the profile on multiple fonts.",
-            },
         ],
         "glyf_nested_components": [
             {
@@ -230,14 +210,6 @@ PROFILE = {
                 "status": "FAIL",
                 "reason": "When non mark characters are on the GDEF Mark class,"
                 " will produce an overlap.",
-            },
-        ],
-        "math_signs_width": [
-            {
-                "code": "width-outliers",
-                "status": "INFO",
-                "reason": "It really depends on the design and the intended use"
-                " to make math symbols the same width.",
             },
         ],
         "dotted_circle": [
