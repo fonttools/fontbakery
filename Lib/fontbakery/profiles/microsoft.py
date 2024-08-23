@@ -1,7 +1,24 @@
 PROFILE = {
-    "include_profiles": ["opentype"],
+    "include_profiles": ["universal"],
+    "exclude_checks": [
+        "fontbakery_version",  # We update at our own pace
+        "STAT_in_statics",  # Difference of opinion
+        "tabular_kerning",  # We have tnum_glyphs_equal_widths
+    ],
     "pending_review": [
         "opentype:cff_ascii_strings",
+        "designspace_has_consistent_codepoints",
+        "designspace_has_consistent_glyphset",
+        "designspace_has_consistent_groups",
+        "designspace_has_default_master",
+        "designspace_has_sources",
+        "gsub/smallcaps_before_ligatures",
+        "typoascender_exceeds_Agrave",
+        "ufolint",
+        "ufo_features_default_languagesystem",
+        "ufo_recommended_fields",
+        "ufo_required_fields",
+        "ufo_unnecessary_fields",
     ],
     "sections": {
         "Metadata Checks": [
@@ -35,49 +52,6 @@ PROFILE = {
         ],
         "Glyph Checks": [
             "tnum_glyphs_equal_widths",
-        ],
-        "Superfamily Checks": [
-            "superfamily/list",
-            "superfamily/vertical_metrics",
-        ],
-        "Universal Profile Checks": [
-            "alt_caron",
-            "arabic_high_hamza",
-            "arabic_spacing_symbols",
-            "case_mapping",
-            "cjk_chws_feature",
-            "contour_count",
-            "family/single_directory",
-            "family/vertical_metrics",
-            "family/win_ascent_and_descent",
-            # "fontbakery_version",  # We update at our own pace
-            "freetype_rasterizer",
-            "gpos7",
-            "interpolation_issues",
-            "legacy_accents",
-            "linegaps",
-            "mandatory_glyphs",
-            "math_signs_width",
-            "name/trailing_spaces",
-            "os2_metrics_match_hhea",
-            "ots",
-            "required_tables",
-            "rupee",
-            "sfnt_version",
-            "soft_hyphen",
-            # "STAT_in_statics",  # Difference of opinion
-            "STAT_strings",
-            # "tabular_kerning",  # We have tnum_glyphs_equal_widths
-            "transformed_components",
-            "ttx_roundtrip",
-            "unique_glyphnames",
-            "unreachable_glyphs",
-            "unwanted_tables",
-            "valid_glyphnames",
-            "whitespace_glyphnames",
-            "whitespace_glyphs",
-            "whitespace_ink",
-            "whitespace_widths",
         ],
     },
 }
