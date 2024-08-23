@@ -83,7 +83,6 @@ PROFILE = {
             "com.google.fonts/check/varfont/consistent_axes",
             "com.google.fonts/check/smart_dropout",  # OVERRIDEN
             "com.google.fonts/check/vttclean",
-            "com.google.fonts/check/aat",
             "com.google.fonts/check/fvar_name_entries",
             # "com.google.fonts/check/ligature_carets", # PERMANENTLY EXCLUDED
             # "com.google.fonts/check/kerning_for_non_ligated_sequences", # PERMANENTLY EXCLUDED
@@ -173,6 +172,7 @@ PROFILE = {
             "com.google.fonts/check/italic_axis_last",
         ],
         "Universal Checks": [
+            "com.google.fonts/check/aat",
             "com.google.fonts/check/name/trailing_spaces",
             "com.google.fonts/check/family/win_ascent_and_descent",
             # "com.google.fonts/check/os2_metrics_match_hhea", # Removed in favor of

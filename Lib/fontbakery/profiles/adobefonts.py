@@ -44,7 +44,6 @@ PROFILE = {
             "com.google.fonts/check/points_out_of_bounds",
         ],
         "Google Fonts": [
-            "com.google.fonts/check/aat",
             "com.google.fonts/check/fvar_name_entries",
             "com.google.fonts/check/varfont_duplicate_instance_names",
             "com.google.fonts/check/varfont/bold_wght_coord",  # IS_OVERRIDDEN
@@ -146,6 +145,7 @@ PROFILE = {
             # "com.google.fonts/check/STAT_strings",
             # "com.google.fonts/check/transformed_components",
             # ---
+            "com.google.fonts/check/aat",
             "com.google.fonts/check/family/win_ascent_and_descent",  # IS_OVERRIDDEN
             "com.google.fonts/check/fontbakery_version",  # IS_OVERRIDDEN
             "com.google.fonts/check/name/trailing_spaces",  # IS_OVERRIDDEN

@@ -21,6 +21,7 @@ PROFILE = {
             "com.daltonmaag/check/designspace_has_consistent_groups",
         ],
         "Universal Profile Checks": [
+            "com.google.fonts/check/aat",
             "com.google.fonts/check/alt_caron",
             "com.google.fonts/check/arabic_high_hamza",
             "com.google.fonts/check/arabic_spacing_symbols",
