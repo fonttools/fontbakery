@@ -6,9 +6,7 @@ from fontbakery.prelude import check, Message, WARN, FAIL
     rationale="""
         Apple's TrueType reference manual [1] describes SFNT tables not in the
         Microsoft OpenType specification [2] and these can sometimes sneak into final
-        release files.
-
-        This check ensures fonts only have OpenType tables.
+        release files, but Google Fonts should only have OpenType tables.
 
         [1] https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html
         [2] https://docs.microsoft.com/en-us/typography/opentype/spec/
@@ -18,6 +16,8 @@ from fontbakery.prelude import check, Message, WARN, FAIL
 def com_google_fonts_check_aat(ttFont):
     """Are there unwanted Apple tables?"""
     UNWANTED_TABLES = {
+        "EBSC",
+        "Zaph",
         "acnt",
         "ankr",
         "bdat",
@@ -25,7 +25,6 @@ def com_google_fonts_check_aat(ttFont):
         "bloc",
         "bmap",
         "bsln",
-        "EBSC",
         "fdsc",
         "feat",
         "fond",
@@ -40,7 +39,6 @@ def com_google_fonts_check_aat(ttFont):
         "prop",
         "trak",
         "xref",
-        "Zaph",
     }
     unwanted_tables_found = []
     for table in ttFont.keys():
@@ -54,7 +52,7 @@ def com_google_fonts_check_aat(ttFont):
             f"Unwanted AAT tables were found"
             f" in the font and should be removed, either by"
             f" fonttools/ttx or by editing them using the tool"
-            f" they're built with:\n\n"
+            f" they built with:\n\n"
             f" {unwanted_list}",
         )
 

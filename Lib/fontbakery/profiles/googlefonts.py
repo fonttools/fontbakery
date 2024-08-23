@@ -116,6 +116,7 @@ PROFILE = {
             "com.google.fonts/check/outline_direction",
         ],
         "Font File Checks": [
+            "com.google.fonts/check/aat",
             "com.google.fonts/check/canonical_filename",
             "com.google.fonts/check/cjk_not_enough_glyphs",
             "com.google.fonts/check/cjk_vertical_metrics",
