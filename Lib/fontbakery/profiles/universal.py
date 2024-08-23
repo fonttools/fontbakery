@@ -21,6 +21,7 @@ PROFILE = {
             "ufo_unnecessary_fields",
         ],
         "Universal Profile Checks": [
+            "unwanted_aat_tables",
             "alt_caron",
             "arabic_high_hamza",
             "arabic_spacing_symbols",

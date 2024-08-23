@@ -112,7 +112,6 @@ PROFILE = {
             "outline_short_segments",
         ],
         "Font File Checks": [
-            "googlefonts:aat",
             "googlefonts:axisregistry/fvar_axis_defaults",
             "googlefonts:canonical_filename",
             "googlefonts:cjk_vertical_metrics",

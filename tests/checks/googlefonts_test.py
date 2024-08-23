@@ -2935,7 +2935,7 @@ def test_check_vttclean():
 
 def test_check_aat():
     """Are there unwanted Apple tables ?"""
-    check = CheckTester("googlefonts:aat")
+    check = CheckTester("unwanted_aat_tables")
 
     unwanted_tables = [
         "EBSC",
