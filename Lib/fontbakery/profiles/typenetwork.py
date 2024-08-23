@@ -30,6 +30,7 @@ PROFILE = {
         "designspace_has_sources",
         "gsub/smallcaps_before_ligatures",
         "legacy_accents",
+        "no_debugging_tables",
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
         "ufolint",

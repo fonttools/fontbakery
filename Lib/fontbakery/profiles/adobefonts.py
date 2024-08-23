@@ -50,6 +50,7 @@ PROFILE = {
         "interpolation_issues",
         "legacy_accents",
         "math_signs_width",
+        "no_debugging_tables",
         "soft_hyphen",
         "STAT_in_statics",
         "superfamily/list",

@@ -42,6 +42,7 @@ PROFILE = {
             "mandatory_glyphs",
             "math_signs_width",
             "name/trailing_spaces",
+            "no_debugging_tables",
             "os2_metrics_match_hhea",
             "ots",
             "required_tables",
