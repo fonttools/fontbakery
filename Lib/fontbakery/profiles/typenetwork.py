@@ -74,7 +74,6 @@ PROFILE = {
             "weight_class_fvar",
         ],
         "Google Fonts": [
-            "googlefonts:aat",
             "googlefonts:family/equal_codepoint_coverage",
             # "googlefonts:gasp", # Review
             # "googlefonts:glyphsets/shape_languages", # Review

@@ -72,7 +72,6 @@ PROFILE = {
             "weight_class_fvar",  # IS_OVERRIDDEN
         ],
         "Google Fonts": [
-            "googlefonts:aat",
             "googlefonts:varfont/duplicate_instance_names",
             "googlefonts:varfont/bold_wght_coord",  # IS_OVERRIDDEN
             #

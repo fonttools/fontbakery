@@ -6,6 +6,7 @@ PROFILE = {
         "tabular_kerning",  # We have tnum_glyphs_equal_widths
     ],
     "pending_review": [
+        "unwanted_aat_tables",
         "opentype:cff_ascii_strings",
         "designspace_has_consistent_codepoints",
         "designspace_has_consistent_glyphset",
