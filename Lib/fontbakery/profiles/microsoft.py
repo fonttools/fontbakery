@@ -14,6 +14,7 @@ PROFILE = {
         "designspace_has_default_master",
         "designspace_has_sources",
         "gsub/smallcaps_before_ligatures",
+        "no_debugging_tables",
         "typoascender_exceeds_Agrave",
         "ufolint",
         "ufo_features_default_languagesystem",

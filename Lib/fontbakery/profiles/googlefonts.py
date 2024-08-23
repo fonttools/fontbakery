@@ -162,7 +162,6 @@ PROFILE = {
             "mandatory_avar_table",
             "missing_small_caps_glyphs",
             "name/ascii_only_entries",
-            "no_debugging_tables",
             "render_own_name",
             "slant_direction",
             "smart_dropout",
