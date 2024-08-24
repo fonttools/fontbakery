@@ -275,7 +275,7 @@ You can match multiple conditions, and again these can be methods on the individ
 
 ### Declaring your own conditions
 
-Finally, if you have your own "questions to ask" about a testable or about the run context - particularly those you are likely to ask more than once in different checks, and hence it's worth caching the result - you can declare your own conditions. This is done with the `@condition` decorator (available for import as part of the `fontbakery.prelude`), and you can see examples of it in the `fontbakery.checks.shared_conditions` module:
+Finally, if you have your own "questions to ask" about a testable or about the run context - particularly those you are likely to ask more than once in different checks, and hence it's worth caching the result - you can declare your own conditions. This is done with the `@condition` decorator (available for import as part of the `fontbakery.prelude`), and you can see examples of it in the `fontbakery.checks.conditions` module:
 
 ```python
 @condition(CheckRunContext)
@@ -292,4 +292,4 @@ class CheckRunContext:
         return all(f.is_ttf for f in self.fonts)
 ```
 
-If you think that other checks may end up using your shiny new condition, you can add it to `fontbakery.checks.shared_conditions`; if not, you can place the condition definition in the file containing your check definitions.
+If you think that other checks may end up using your shiny new condition, you can add it to `fontbakery.checks.conditions`; if not, you can place the condition definition in the file containing your check definitions.
