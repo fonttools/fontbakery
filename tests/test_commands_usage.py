@@ -130,13 +130,13 @@ def test_command_config_file_injection():
     config = tempfile.NamedTemporaryFile(delete=False)
     config.write(
         b"""
-[a_test_profile]
+[example_profile]
 OK = 123
 """
     )
     config.close()
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
-    test_profile = os.path.join("tests", "checks", "a_test_profile.py")
+    test_profile = os.path.join("tests", "example_profile.py")
     result = subprocess.run(
         [
             TOOL_NAME,
