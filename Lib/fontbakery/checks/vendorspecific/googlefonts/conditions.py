@@ -311,7 +311,7 @@ def remote_styles(font):
 
 @condition(Font)
 def regular_remote_style(font):
-    from fontbakery.checks.shared_conditions import get_instance_axis_value
+    from fontbakery.checks.conditions import get_instance_axis_value
 
     remote_styles = font.remote_styles
 
@@ -329,7 +329,7 @@ def regular_remote_style(font):
 
 @condition(CheckRunContext)
 def regular_ttFont(context):
-    from fontbakery.checks.shared_conditions import get_instance_axis_value
+    from fontbakery.checks.conditions import get_instance_axis_value
 
     for ttFont in context.ttFonts:
         if "-Regular." in os.path.basename(ttFont.reader.file.name):

@@ -15,7 +15,7 @@ from fontbakery.codetesting import (
     TEST_FILE,
     MockFont,
 )
-from fontbakery.checks.universal.fontbakery import is_up_to_date
+from fontbakery.checks.fontbakery import is_up_to_date
 from fontbakery.testable import Font
 from fontbakery.utils import glyph_has_ink
 
