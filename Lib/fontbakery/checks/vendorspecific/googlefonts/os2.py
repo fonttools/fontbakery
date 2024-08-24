@@ -1,7 +1,7 @@
 from functools import lru_cache
 import re
 
-from fontbakery.checks.googlefonts.conditions import expected_font_names
+from fontbakery.checks.vendorspecific.googlefonts.conditions import expected_font_names
 from fontbakery.prelude import check, Message, WARN, FAIL, SKIP
 from fontbakery.utils import exit_with_install_instructions
 

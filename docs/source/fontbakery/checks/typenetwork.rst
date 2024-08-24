@@ -2,5 +2,5 @@
 Checks to support the Type Network profile
 ##########################################
 
-.. automodule:: fontbakery.checks.typenetwork
+.. automodule:: fontbakery.checks.vendorspecific.typenetwork
     :members:

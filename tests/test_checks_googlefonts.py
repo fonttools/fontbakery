@@ -8,10 +8,10 @@ import requests
 from conftest import ImportRaiser, remove_import_raiser
 from fontTools.ttLib import TTFont
 
-from fontbakery.checks.googlefonts.conditions import (
+from fontbakery.checks.vendorspecific.googlefonts.conditions import (
     expected_font_names,
 )
-from fontbakery.checks.googlefonts.glyphset import can_shape
+from fontbakery.checks.vendorspecific.googlefonts.glyphset import can_shape
 from fontbakery.codetesting import (
     TEST_FILE,
     CheckTester,
@@ -677,7 +677,7 @@ def test_check_fstype():
 
 def test_condition_registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
-    from fontbakery.checks.googlefonts.os2 import registered_vendor_ids
+    from fontbakery.checks.vendorspecific.googlefonts.os2 import registered_vendor_ids
 
     registered_ids = registered_vendor_ids()
 
@@ -1052,28 +1052,6 @@ def test_check_hinting_impact():
     font = TEST_FILE("rokkitt/Rokkitt-Bold.otf")
     assert_results_contain(
         check(font), INFO, "size-impact", "this check always emits an INFO result..."
-    )
-
-
-def test_check_file_size():
-    """Ensure files are not too large."""
-    # This needs a profile to inject configuration data
-    check = CheckTester("file_size", profile=googlefonts_profile)
-
-    assert_PASS(check(TEST_FILE("mada/Mada-Regular.ttf")))
-
-    assert_results_contain(
-        check(TEST_FILE("varfont/inter/Inter[slnt,wght].ttf")),
-        WARN,
-        "large-font",
-        "with quite a big font...",
-    )
-
-    assert_results_contain(
-        check(TEST_FILE("cjk/SourceHanSans-Regular.otf")),
-        FAIL,
-        "massive-font",
-        "with a very big font...",
     )
 
 

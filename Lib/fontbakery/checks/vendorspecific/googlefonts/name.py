@@ -1,4 +1,4 @@
-from fontbakery.checks.googlefonts.conditions import expected_font_names
+from fontbakery.checks.vendorspecific.googlefonts.conditions import expected_font_names
 from fontbakery.prelude import check, Message, PASS, FAIL, WARN
 from fontbakery.constants import (
     RIBBI_STYLE_NAMES,
