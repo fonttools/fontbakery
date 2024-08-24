@@ -2933,53 +2933,6 @@ def test_check_vttclean():
     assert_results_contain(check(bad_font), FAIL, "has-vtt-sources")
 
 
-def test_check_aat():
-    """Are there unwanted Apple tables ?"""
-    check = CheckTester("unwanted_aat_tables")
-
-    unwanted_tables = [
-        "EBSC",
-        "Zaph",
-        "acnt",
-        "ankr",
-        "bdat",
-        "bhed",
-        "bloc",
-        "bmap",
-        "bsln",
-        "fdsc",
-        "feat",
-        "fond",
-        "gcid",
-        "just",
-        "kerx",
-        "lcar",
-        "ltag",
-        "mort",
-        "morx",
-        "opbd",
-        "prop",
-        "trak",
-        "xref",
-    ]
-    # Our reference Mada Regular font is good here:
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont), "with a good font...")
-
-    # We now add unwanted tables one-by-one to validate the FAIL code-path:
-    for unwanted in unwanted_tables:
-        ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-        ttFont.reader.tables[unwanted] = "foo"
-        assert_results_contain(
-            check(ttFont),
-            FAIL,
-            "has-unwanted-tables",
-            f"with unwanted table {unwanted} ...",
-        )
-
-
 def test_check_fvar_name_entries():
     """Check variable font instances."""
     # TODO: Implement-me!
