@@ -132,6 +132,7 @@ PROFILE = {
             "googlefonts:old_ttfautohint",
             "googlefonts:os2/use_typo_metrics",
             "googlefonts:production_glyphs_similarity",
+            # "googlefonts:production_encoded_glyphs",  # DISABLED
             "googlefonts:STAT",
             "googlefonts:STAT/axis_order",
             "googlefonts:STAT/axisregistry",
@@ -149,7 +150,6 @@ PROFILE = {
             "cjk_not_enough_glyphs",
             "color_cpal_brightness",
             "colorfont_tables",
-            # DISABLED: "production_encoded_glyphs",
             "empty_glyph_on_gid1_for_colrv0",
             "file_size",
             "fontdata_namecheck",

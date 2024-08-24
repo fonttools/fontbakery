@@ -75,11 +75,11 @@ There may also be checks that you want to run, but for your purposes you would l
 
 Each check ID is mapped to a list of overrides, which is a dictionary with three keys: `code` is the message code reported by the check; (The same check can report several different message codes depending on what it found, and you have the flexibility to override them all separately.) `status` is the new, overridden status; `reason` will be displayed with the check result to explain why this result has been overridden.
 
-Finally, some checks may expect to find certain constant values in the profile. For example, `googlefonts:file_size` checks if a font's size on disk is too big. How big is determined by the `WARN_SIZE` and `FONT_SIZE` constants, which are specified in the profile like so:
+Finally, some checks may expect to find certain constant values in the profile. For example, `file_size` checks if a font's size on disk is too big. How big is determined by the `WARN_SIZE` and `FONT_SIZE` constants, which are specified in the profile like so:
 
 ```python
     "configuration_defaults": {
-        "googlefonts:file_size": {
+        "file_size": {
             "WARN_SIZE": 1 * 1024 * 1024,
             "FAIL_SIZE": 9 * 1024 * 1024,
         }

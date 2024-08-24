@@ -29,7 +29,7 @@ PROFILE = {
         "fontdata_namecheck",
     ],
     "configuration_defaults": {
-        "googlefonts:file_size": {
+        "file_size": {
             "WARN_SIZE": 1 * 1024 * 1024,
             "FAIL_SIZE": 9 * 1024 * 1024,
         }

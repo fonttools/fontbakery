@@ -11,10 +11,10 @@ Check definitions
    fontwerk
    googlefonts
    iso15008
+   microsoft
    notofonts
    opentype
    outline
    shaping
    typenetwork
    ufo
-   universal

@@ -4,7 +4,7 @@ import os
 from fontbakery.constants import NameID, PlatformID
 from fontbakery.prelude import check, condition, Message, INFO, PASS, FAIL, WARN, SKIP
 from fontbakery.testable import Font
-from fontbakery.checks.googlefonts.constants import (
+from fontbakery.checks.vendorspecific.googlefonts.constants import (
     DESCRIPTION_OF_EXPECTED_COPYRIGHT_STRING_FORMATTING,
     EXPECTED_COPYRIGHT_PATTERN,
 )

@@ -1,7 +1,6 @@
 import os
 from typing import List
 
-
 from fontbakery.prelude import (
     check,
     disable,
@@ -9,7 +8,6 @@ from fontbakery.prelude import (
     PASS,
     FAIL,
     WARN,
-    INFO,
     SKIP,
 )
 from fontbakery.glyphdata import desired_glyph_data

@@ -1,7 +1,7 @@
 import os
 from collections import defaultdict
 
-from fontbakery.checks.googlefonts.conditions import expected_font_names
+from fontbakery.checks.vendorspecific.googlefonts.conditions import expected_font_names
 from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 from fontbakery.prelude import FAIL, PASS, SKIP, WARN, Message, check, condition
 from fontbakery.testable import Font

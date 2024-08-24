@@ -1,6 +1,6 @@
 from collections import defaultdict
 from fontbakery.prelude import check, Message, FAIL
-from fontbakery.checks.googlefonts.constants import (
+from fontbakery.checks.vendorspecific.googlefonts.constants import (
     DESCRIPTION_OF_EXPECTED_COPYRIGHT_STRING_FORMATTING,
     EXPECTED_COPYRIGHT_PATTERN,
 )
