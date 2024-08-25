@@ -17,7 +17,6 @@ check_test_data = [
     ("microsoft:license_description", [FAIL]),
     ("microsoft:manufacturer", [PASS]),
     ("microsoft:trademark", [PASS]),
-    ("microsoft:typographic_family_name", [PASS]),
     ("microsoft:vendor_url", [PASS]),
     ("microsoft:version", [PASS]),
     ("microsoft:vertical_metrics", [PASS]),
@@ -28,9 +27,6 @@ check_test_data = [
     ("microsoft:STAT_axis_values", [PASS]),
     ("microsoft:STAT_table_axis_order", [PASS]),
     ("microsoft:STAT_table_eliding_bit", [PASS]),
-    ("name_id_1", [PASS]),
-    ("name_id_2", [PASS]),
-    ("name_length_req", [PASS]),
     ("tnum_glyphs_equal_widths", [PASS]),
     (
         "vtt_volt_data",

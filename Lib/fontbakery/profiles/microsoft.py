@@ -34,11 +34,11 @@ PROFILE = {
         ],
         "Name Checks": [
             "microsoft:office_ribz_req",
-            "microsoft:typographic_family_name",
             #
             "name_id_1",
             "name_id_2",
             "name_length_req",
+            "typographic_family_name",
         ],
         "Metrics Checks": [
             "microsoft:vertical_metrics",

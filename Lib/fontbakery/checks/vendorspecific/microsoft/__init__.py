@@ -1,32 +1,7 @@
 import re
 
 from fontbakery.prelude import check, PASS, WARN, FAIL
-
-
-def get_family_name(ttFont):
-    """
-    Get the family name from the name table.
-
-    TODO: For now, this is just name ID 1. It should be expanded to at least
-    check IDs 16 & 21, and ideally do the whole font differentiator heuristic.
-    """
-    family_name = ttFont["name"].getName(1, 3, 1, 0x0409)
-    if family_name is None:
-        return None
-    return family_name.toUnicode()
-
-
-def get_subfamily_name(ttFont):
-    """
-    Get the subfamily name from the name table.
-
-    TODO: For now, this is just name ID 2. It should be expanded to at least
-    check IDs 17 & 22, and ideally do the whole font differentiator heuristic.
-    """
-    subfamily_name = ttFont["name"].getName(2, 3, 1, 0x0409)
-    if subfamily_name is None:
-        return None
-    return subfamily_name.toUnicode()
+from fontbakery.checks.name import get_family_name, get_subfamily_name
 
 
 @check(
@@ -150,32 +125,6 @@ def check_license_description(ttFont):
             yield FAIL, "License description does not contain required text"
         else:
             yield PASS, "License description OK"
-
-
-@check(
-    id="microsoft:typographic_family_name",
-    rationale="""
-        Check whether Name ID 16 (Typographic Family name) is consistent
-        across the set of fonts.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/pull/4657",
-)
-def check_typographic_family_name(ttFonts):
-    """Typographic Family name consistency."""
-    values = set()
-    for ttFont in ttFonts:
-        name_record = ttFont["name"].getName(16, 3, 1, 0x0409)
-        if name_record is None:
-            values.add("<no value>")
-        else:
-            values.add(name_record.toUnicode())
-    if len(values) != 1:
-        yield FAIL, (
-            f"Name ID 16 (Typographic Family name) is not consistent "
-            f"across fonts. Values found: {sorted(values)}"
-        )
-    else:
-        yield PASS, "Name ID 16 (Typographic Family name) is consistent"
 
 
 @check(
@@ -466,36 +415,6 @@ def check_STAT_table_axis_order(ttFont):
 
 
 @check(
-    id="name_id_1",
-    rationale="""
-        Presence of a name ID 1 entry is mandatory.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/pull/4657",
-)
-def check_name_id_1(ttFont):
-    """Font has a name with ID 1."""
-    if not ttFont["name"].getName(1, 3, 1, 0x409):
-        yield FAIL, "Font lacks a name with ID 1."
-    else:
-        yield PASS, "Font has a name with ID 1."
-
-
-@check(
-    id="name_id_2",
-    rationale="""
-        Presence of a name ID 2 entry is mandatory.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/pull/4657",
-)
-def check_name_id_2(ttFont):
-    """Font has a name with ID 2."""
-    if not ttFont["name"].getName(2, 3, 1, 0x409):
-        yield FAIL, "Font lacks a name with ID 2."
-    else:
-        yield PASS, "Font has a name with ID 2."
-
-
-@check(
     id="microsoft:office_ribz_req",
     rationale="""
         Office fonts:
@@ -522,40 +441,6 @@ def check_office_ribz_req(ttFont):
         )
     else:
         yield PASS, "Name ID 2 (subfamily) OK"
-
-
-@check(
-    id="name_length_req",
-    rationale="""
-        For Office, family and subfamily names must be 31 characters or less total
-        to fit in a LOGFONT.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/pull/4657",
-)
-def check_name_length_req(ttFont):
-    """Maximum allowed length for family and subfamily names."""
-    family_name = get_family_name(ttFont)
-    subfamily_name = get_subfamily_name(ttFont)
-    if family_name is None:
-        yield FAIL, "Name ID 1 (family) missing"
-    if subfamily_name is None:
-        yield FAIL, "Name ID 2 (sub family) missing"
-
-    logfont = (
-        family_name
-        if subfamily_name in ("Regular", "Bold", "Italic", "Bold Italic")
-        else " ".join([family_name, subfamily_name])
-    )
-
-    if len(logfont) > 31:
-        yield FAIL, (
-            f"Family + subfamily name, '{logfont}', is too long: "
-            f"{len(logfont)} characters; must be 31 or less"
-        )
-    else:
-        yield PASS, (
-            f"Family + subfamily name has good length: {len(logfont)} characters"
-        )
 
 
 @check(

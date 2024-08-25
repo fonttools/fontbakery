@@ -1,3 +1,4 @@
+import pytest
 from fontTools.ttLib import TTFont
 
 from fontbakery.codetesting import (
@@ -9,6 +10,50 @@ from fontbakery.codetesting import (
 )
 from fontbakery.constants import NameID
 from fontbakery.status import FAIL, WARN
+
+
+@pytest.fixture
+def test_ttFont():
+    return TTFont(TEST_FILE("selawik/Selawik-fvar-test-VTT.ttf"), lazy=True)
+
+
+def test_check_name_id_1(test_ttFont):
+    """Font has a name with ID 1."""
+    check = CheckTester("name_id_1")
+
+    assert_PASS(check(test_ttFont), "with a good font...")
+
+    # TODO: test a FAIL case
+
+
+def test_check_name_id_2(test_ttFont):
+    """Font has a name with ID 2."""
+    check = CheckTester("name_id_2")
+
+    assert_PASS(check(test_ttFont), "with a good font...")
+
+    # TODO: test a FAIL case
+
+
+def test_check_name_length_req(test_ttFont):
+    """Maximum allowed length for family and subfamily names."""
+    check = CheckTester("name_length_req")
+
+    assert_PASS(check(test_ttFont), "with a good font...")
+
+    # TODO: test a FAIL case
+
+
+def test_check_typographic_family_name(test_ttFont):
+    """Typographic Family name consistency."""
+    check = CheckTester("typographic_family_name")
+
+    family = [
+        test_ttFont,  # FIXME: This must be tested with more than a single font file!
+    ]
+    assert_PASS(check(family), "with a good family...")
+
+    # TODO: test a FAIL case
 
 
 def test_check_name_ascii_only_entries():
