@@ -3,7 +3,7 @@ import pytest
 from fontTools.ttLib import TTFont
 
 from fontbakery.status import FAIL, PASS, WARN
-from fontbakery.codetesting import CheckTester, TEST_FILE, assert_PASS
+from fontbakery.codetesting import CheckTester, TEST_FILE
 
 
 @pytest.fixture
@@ -27,7 +27,6 @@ check_test_data = [
     ("microsoft:STAT_axis_values", [PASS]),
     ("microsoft:STAT_table_axis_order", [PASS]),
     ("microsoft:STAT_table_eliding_bit", [PASS]),
-    ("tnum_glyphs_equal_widths", [PASS]),
     (
         "vtt_volt_data",
         [FAIL, FAIL, FAIL, FAIL, FAIL, PASS, PASS, PASS, PASS, PASS, PASS, PASS],
@@ -40,18 +39,3 @@ def test_check(test_font, check_id, expected_status_results):
     check = CheckTester(check_id)
     status_results = [result.status for result in check(test_font)]
     assert expected_status_results == status_results
-
-
-@pytest.mark.parametrize(
-    "font_path",
-    [
-        "montserrat/Montserrat-Regular.ttf",
-        "ubuntusans/UbuntuSans[wdth,wght].ttf",
-    ],
-)
-def test_tnum_glyphs_equal_widths(font_path):
-    check = CheckTester("tnum_glyphs_equal_widths")
-
-    # Pass condition
-    font = TTFont(TEST_FILE(font_path))
-    assert_PASS(check(font))
