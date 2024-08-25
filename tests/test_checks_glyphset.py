@@ -1,10 +1,39 @@
+from fontTools.ttLib import TTFont
+
+from fontbakery.checks.glyphset import can_shape
 from fontbakery.codetesting import (
-    TEST_FILE,
-    CheckTester,
     assert_PASS,
     assert_results_contain,
+    CheckTester,
+    portable_path,
+    TEST_FILE,
 )
 from fontbakery.status import FAIL
+
+
+def test_check_missing_small_caps_glyphs():
+    """Check small caps glyphs are available."""
+    # check = CheckTester("missing_small_caps_glyphs")
+    # TODO: Implement-me!
+
+
+def test_can_shape():
+    font = TTFont(
+        portable_path("data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf")
+    )
+    assert can_shape(font, "ABC")
+    assert not can_shape(font, "こんにちは")
+
+
+def test_check_render_own_name():
+    """Check family directory name."""
+    check = CheckTester("render_own_name")
+
+    ttFont = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
+    assert_PASS(check(ttFont))
+
+    ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_results_contain(check(ttFont), FAIL, "render-own-name")
 
 
 def test_check_family_control_chars():

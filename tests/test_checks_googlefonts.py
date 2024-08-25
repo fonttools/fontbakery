@@ -11,7 +11,6 @@ from fontTools.ttLib import TTFont
 from fontbakery.checks.vendorspecific.googlefonts.conditions import (
     expected_font_names,
 )
-from fontbakery.checks.vendorspecific.googlefonts.glyphset import can_shape
 from fontbakery.codetesting import (
     TEST_FILE,
     CheckTester,
@@ -3842,12 +3841,6 @@ def test_check_os2_use_typo_metrics_with_cjk():
     assert_SKIP(check(tt_pass_set))
 
 
-def test_check_missing_small_caps_glyphs():
-    """Check small caps glyphs are available."""
-    # check = CheckTester("missing_small_caps_glyphs")
-    # TODO: Implement-me!
-
-
 def test_check_stylisticset_description():
     """Ensure Stylistic Sets have description."""
     # check = CheckTester("stylisticset_description")
@@ -3901,25 +3894,6 @@ def test_check_metadata_family_directory_name():
         FAIL,
         "bad-directory-name",
     )
-
-
-def test_can_shape():
-    font = TTFont(
-        portable_path("data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    )
-    assert can_shape(font, "ABC")
-    assert not can_shape(font, "こんにちは")
-
-
-def test_check_render_own_name():
-    """Check family directory name."""
-    check = CheckTester("render_own_name")
-
-    ttFont = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
-    assert_PASS(check(ttFont))
-
-    ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
-    assert_results_contain(check(ttFont), FAIL, "render-own-name")
 
 
 def test_check_repo_sample_image():

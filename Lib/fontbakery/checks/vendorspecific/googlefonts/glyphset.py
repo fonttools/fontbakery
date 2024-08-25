@@ -1,13 +1,7 @@
 from fontbakery.constants import PANOSE_Family_Type
 from fontbakery.prelude import check, condition, Message, FAIL, WARN, SKIP
 from fontbakery.testable import Font
-from fontbakery.constants import (
-    NameID,
-    PlatformID,
-    WindowsEncodingID,
-    WindowsLanguageID,
-)
-from fontbakery.utils import markdown_table, bullet_list, exit_with_install_instructions
+from fontbakery.utils import markdown_table, bullet_list
 
 
 def is_icon_font(ttFont, config):
@@ -165,90 +159,4 @@ def check_glyphsets_shape_languages(ttFont, config):
                 "No GF glyphset was found to be supported >80%,"
                 " so language shaping support couldn't get checked."
             ),
-        )
-
-
-@check(
-    id="missing_small_caps_glyphs",
-    rationale="""
-        Ensure small caps glyphs are available if
-        a font declares smcp or c2sc OT features.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/3154",
-)
-def check_missing_small_caps_glyphs(ttFont):
-    """Check small caps glyphs are available."""
-
-    if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:
-        llist = ttFont["GSUB"].table.LookupList
-        for record in range(ttFont["GSUB"].table.FeatureList.FeatureCount):
-            feature = ttFont["GSUB"].table.FeatureList.FeatureRecord[record]
-            tag = feature.FeatureTag
-            if tag in ["smcp", "c2sc"]:
-                for index in feature.Feature.LookupListIndex:
-                    subtable = llist.Lookup[index].SubTable[0]
-                    if subtable.LookupType == 7:
-                        # This is an Extension lookup
-                        # used for reaching 32-bit offsets
-                        # within the GSUB table.
-                        subtable = subtable.ExtSubTable
-                    if not hasattr(subtable, "mapping"):
-                        continue
-                    smcp_glyphs = set()
-                    for value in subtable.mapping.values():
-                        if isinstance(value, list):
-                            for v in value:
-                                smcp_glyphs.add(v)
-                        else:
-                            smcp_glyphs.add(value)
-                    missing = smcp_glyphs - set(ttFont.getGlyphNames())
-                    if missing:
-                        missing = "\n\t - " + "\n\t - ".join(missing)
-                        yield FAIL, Message(
-                            "missing-glyphs",
-                            f"These '{tag}' glyphs are missing:\n\n{missing}",
-                        )
-                break
-
-
-def can_shape(ttFont, text, parameters=None):
-    """
-    Returns true if the font can render a text string without any
-    .notdef characters.
-    """
-    try:
-        from vharfbuzz import Vharfbuzz
-    except ImportError:
-        exit_with_install_instructions("googlefonts")
-
-    filename = ttFont.reader.file.name
-    vharfbuzz = Vharfbuzz(filename)
-    buf = vharfbuzz.shape(text, parameters)
-    return all(g.codepoint != 0 for g in buf.glyph_infos)
-
-
-@check(
-    id="render_own_name",
-    rationale="""
-        A base expectation is that a font family's regular/default (400 roman) style
-        can render its 'menu name' (nameID 1) in itself.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/3159",
-)
-def check_render_own_name(ttFont):
-    """Check font can render its own name."""
-    menu_name = (
-        ttFont["name"]
-        .getName(
-            NameID.FONT_FAMILY_NAME,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-            WindowsLanguageID.ENGLISH_USA,
-        )
-        .toUnicode()
-    )
-    if not can_shape(ttFont, menu_name):
-        yield FAIL, Message(
-            "render-own-name",
-            f".notdef glyphs were found when attempting to render {menu_name}",
         )

@@ -1,5 +1,169 @@
+from fontbakery.constants import (
+    NameID,
+    PlatformID,
+    WindowsEncodingID,
+    WindowsLanguageID,
+)
 from fontbakery.prelude import check, Message, FAIL, WARN, PASS
 from fontbakery.utils import bullet_list, glyph_has_ink
+
+
+@check(
+    id="case_mapping",
+    rationale="""
+        Ensure that no glyph lacks its corresponding upper or lower counterpart
+        (but only when unicode supports case-mapping).
+    """,
+    proposal="https://github.com/googlefonts/fontbakery/issues/3230",
+    severity=10,  # if a font shows tofu in caps but not in lowercase
+    #               then it can be considered broken.
+)
+def check_case_mapping(ttFont):
+    """Ensure the font supports case swapping for all its glyphs."""
+    import unicodedata
+    from fontbakery.utils import markdown_table
+
+    # These are a selection of codepoints for which the corresponding case-swap
+    # glyphs are missing way too often on the Google Fonts library,
+    # so we'll ignore for now:
+    EXCEPTIONS = [
+        0x0192,  # ƒ - Latin Small Letter F with Hook
+        0x00B5,  # µ - Micro Sign
+        0x03C0,  # π - Greek Small Letter Pi
+        0x2126,  # Ω - Ohm Sign
+        0x03BC,  # μ - Greek Small Letter Mu
+        0x03A9,  # Ω - Greek Capital Letter Omega
+        0x0394,  # Δ - Greek Capital Letter Delta
+        0x0251,  # ɑ - Latin Small Letter Alpha
+        0x0261,  # ɡ - Latin Small Letter Script G
+        0x00FF,  # ÿ - Latin Small Letter Y with Diaeresis
+        0x0250,  # ɐ - Latin Small Letter Turned A
+        0x025C,  # ɜ - Latin Small Letter Reversed Open E
+        0x0252,  # ɒ - Latin Small Letter Turned Alpha
+        0x0271,  # ɱ - Latin Small Letter M with Hook
+        0x0282,  # ʂ - Latin Small Letter S with Hook
+        0x029E,  # ʞ - Latin Small Letter Turned K
+        0x0287,  # ʇ - Latin Small Letter Turned T
+        0x0127,  # ħ - Latin Small Letter H with Stroke
+        0x0140,  # ŀ - Latin Small Letter L with Middle Dot
+        0x023F,  # ȿ - Latin Small Letter S with Swash Tail
+        0x0240,  # ɀ - Latin Small Letter Z with Swash Tail
+        0x026B,  # ɫ - Latin Small Letter L with Middle Tilde
+    ]
+
+    missing_counterparts_table = []
+    cmap = ttFont["cmap"].getBestCmap()
+    for codepoint in cmap:
+        if codepoint in EXCEPTIONS:
+            continue
+
+        # Only check letters
+        if unicodedata.category(chr(codepoint))[0] != "L":
+            continue
+
+        the_char = chr(codepoint)
+        swapped = the_char.swapcase()
+
+        # skip cases like 'ß' => 'SS'
+        if len(swapped) > 1:
+            continue
+
+        if the_char != swapped and ord(swapped) not in cmap:
+            name = unicodedata.name(the_char)
+            swapped_name = unicodedata.name(swapped)
+            row = {
+                "Glyph present in the font": f"U+{codepoint:04X}: {name}",
+                "Missing case-swapping counterpart": (
+                    f"U+{ord(swapped):04X}: {swapped_name}"
+                ),
+            }
+            missing_counterparts_table.append(row)
+
+    if missing_counterparts_table:
+        yield FAIL, Message(
+            "missing-case-counterparts",
+            f"The following glyphs lack their case-swapping counterparts:\n\n"
+            f"{markdown_table(missing_counterparts_table)}\n\n",
+        )
+
+
+@check(
+    id="family/control_chars",
+    conditions=["are_ttf"],
+    rationale="""
+        Use of some unacceptable control characters in the U+0000 - U+001F range can
+        lead to rendering issues on some platforms.
+
+        Acceptable control characters are defined as .null (U+0000) and
+        CR (U+000D) for this check.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/2430",
+)
+def check_family_control_chars(ttFonts):
+    """Does font file include unacceptable control character glyphs?"""
+    # list of unacceptable control character glyph names
+    # definition includes the entire control character Unicode block except:
+    #    - .null (U+0000)
+    #    - CR (U+000D)
+    unacceptable_cc_list = [
+        "uni0001",
+        "uni0002",
+        "uni0003",
+        "uni0004",
+        "uni0005",
+        "uni0006",
+        "uni0007",
+        "uni0008",
+        "uni0009",
+        "uni000A",
+        "uni000B",
+        "uni000C",
+        "uni000E",
+        "uni000F",
+        "uni0010",
+        "uni0011",
+        "uni0012",
+        "uni0013",
+        "uni0014",
+        "uni0015",
+        "uni0016",
+        "uni0017",
+        "uni0018",
+        "uni0019",
+        "uni001A",
+        "uni001B",
+        "uni001C",
+        "uni001D",
+        "uni001E",
+        "uni001F",
+    ]
+
+    # A dict with 'key => value' pairs of
+    # font path that did not pass the check => list of unacceptable glyph names
+    bad_fonts = {}
+
+    for ttFont in ttFonts:
+        passed = True
+        unacceptable_glyphs_in_set = []  # a list of unacceptable glyph names identified
+        glyph_name_set = set(ttFont["glyf"].glyphs.keys())
+        fontname = ttFont.reader.file.name
+
+        for unacceptable_glyph_name in unacceptable_cc_list:
+            if unacceptable_glyph_name in glyph_name_set:
+                passed = False
+                unacceptable_glyphs_in_set.append(unacceptable_glyph_name)
+
+        if not passed:
+            bad_fonts[fontname] = unacceptable_glyphs_in_set
+
+    if len(bad_fonts) > 0:
+        msg_unacceptable = (
+            "The following unacceptable control characters were identified:\n"
+        )
+        for fnt in bad_fonts.keys():
+            bad = ", ".join(bad_fonts[fnt])
+            msg_unacceptable += f" {fnt}: {bad}\n"
+        yield FAIL, Message("unacceptable", f"{msg_unacceptable}")
 
 
 @check(
@@ -61,33 +225,139 @@ def check_mandatory_glyphs(ttFont):
 
 
 @check(
-    id="whitespace_glyphs",
-    proposal="legacy:check/047",
+    id="missing_small_caps_glyphs",
     rationale="""
-        The OpenType specification recommends that fonts should contain
-        glyphs for the following whitespace characters:
-
-        - U+0020 SPACE
-        - U+00A0 NO-BREAK SPACE
-
-        The space character is required for text processing, and the no-break
-        space is useful to prevent line breaks at its position. It is also
-        recommended to have a glyph for the tab character (U+0009) and the
-        soft hyphen (U+00AD), but these are not mandatory.
+        Ensure small caps glyphs are available if
+        a font declares smcp or c2sc OT features.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/3154",
 )
-def check_whitespace_glyphs(ttFont, missing_whitespace_chars):
-    """Font contains glyphs for whitespace characters?"""
-    failed = False
-    for wsc in missing_whitespace_chars:
-        failed = True
+def check_missing_small_caps_glyphs(ttFont):
+    """Check small caps glyphs are available."""
+
+    if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:
+        llist = ttFont["GSUB"].table.LookupList
+        for record in range(ttFont["GSUB"].table.FeatureList.FeatureCount):
+            feature = ttFont["GSUB"].table.FeatureList.FeatureRecord[record]
+            tag = feature.FeatureTag
+            if tag in ["smcp", "c2sc"]:
+                for index in feature.Feature.LookupListIndex:
+                    subtable = llist.Lookup[index].SubTable[0]
+                    if subtable.LookupType == 7:
+                        # This is an Extension lookup
+                        # used for reaching 32-bit offsets
+                        # within the GSUB table.
+                        subtable = subtable.ExtSubTable
+                    if not hasattr(subtable, "mapping"):
+                        continue
+                    smcp_glyphs = set()
+                    for value in subtable.mapping.values():
+                        if isinstance(value, list):
+                            for v in value:
+                                smcp_glyphs.add(v)
+                        else:
+                            smcp_glyphs.add(value)
+                    missing = smcp_glyphs - set(ttFont.getGlyphNames())
+                    if missing:
+                        missing = "\n\t - " + "\n\t - ".join(missing)
+                        yield FAIL, Message(
+                            "missing-glyphs",
+                            f"These '{tag}' glyphs are missing:\n\n{missing}",
+                        )
+                break
+
+
+def can_shape(ttFont, text, parameters=None):
+    """
+    Returns true if the font can render a text string without any
+    .notdef characters.
+    """
+    from vharfbuzz import Vharfbuzz
+
+    filename = ttFont.reader.file.name
+    vharfbuzz = Vharfbuzz(filename)
+    buf = vharfbuzz.shape(text, parameters)
+    return all(g.codepoint != 0 for g in buf.glyph_infos)
+
+
+@check(
+    id="render_own_name",
+    rationale="""
+        A base expectation is that a font family's regular/default (400 roman) style
+        can render its 'menu name' (nameID 1) in itself.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/3159",
+)
+def check_render_own_name(ttFont):
+    """Check font can render its own name."""
+    menu_name = (
+        ttFont["name"]
+        .getName(
+            NameID.FONT_FAMILY_NAME,
+            PlatformID.WINDOWS,
+            WindowsEncodingID.UNICODE_BMP,
+            WindowsLanguageID.ENGLISH_USA,
+        )
+        .toUnicode()
+    )
+    if not can_shape(ttFont, menu_name):
         yield FAIL, Message(
-            f"missing-whitespace-glyph-{wsc}",
-            f"Whitespace glyph missing for codepoint {wsc}.",
+            "render-own-name",
+            f".notdef glyphs were found when attempting to render {menu_name}",
         )
 
-    if not failed:
-        yield PASS, "Font contains glyphs for whitespace characters."
+
+@check(
+    id="rupee",
+    rationale="""
+        Per Bureau of Indian Standards every font supporting one of the
+        official Indian languages needs to include Unicode Character
+        “₹” (U+20B9) Indian Rupee Sign.
+    """,
+    conditions=["is_indic_font"],
+    proposal="https://github.com/fonttools/fontbakery/issues/2967",
+)
+def check_rupee(ttFont):
+    """Ensure indic fonts have the Indian Rupee Sign glyph."""
+    if 0x20B9 not in ttFont["cmap"].getBestCmap().keys():
+        yield FAIL, Message(
+            "missing-rupee",
+            "Please add a glyph for Indian Rupee Sign (₹) at codepoint U+20B9.",
+        )
+    else:
+        yield PASS, "Looks good!"
+
+
+@check(
+    id="soft_hyphen",
+    rationale="""
+        The 'Soft Hyphen' character (codepoint 0x00AD) is used to mark
+        a hyphenation possibility within a word in the absence of or
+        overriding dictionary hyphenation.
+
+        It is sometimes designed empty with no width (such as a control character),
+        sometimes the same as the traditional hyphen, sometimes double encoded with
+        the hyphen.
+
+        That being said, it is recommended to not include it in the font at all,
+        because discretionary hyphenation should be handled at the level of the
+        shaping engine, not the font. Also, even if present, the software would
+        not display that character.
+
+        More discussion at:
+        https://typedrawers.com/discussion/2046/special-dash-things-softhyphen-horizontalbar
+    """,
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/4046",
+        "https://github.com/fonttools/fontbakery/issues/3486",
+    ],
+)
+def check_soft_hyphen(ttFont):
+    """Does the font contain a soft hyphen?"""
+    if 0x00AD in ttFont["cmap"].getBestCmap().keys():
+        yield WARN, Message("softhyphen", "This font has a 'Soft Hyphen' character.")
+    else:
+        yield PASS, "Looks good!"
 
 
 @check(
@@ -267,211 +537,30 @@ def unreachable_glyphs(ttFont, config):
 
 
 @check(
-    id="soft_hyphen",
+    id="whitespace_glyphs",
+    proposal="legacy:check/047",
     rationale="""
-        The 'Soft Hyphen' character (codepoint 0x00AD) is used to mark
-        a hyphenation possibility within a word in the absence of or
-        overriding dictionary hyphenation.
+        The OpenType specification recommends that fonts should contain
+        glyphs for the following whitespace characters:
 
-        It is sometimes designed empty with no width (such as a control character),
-        sometimes the same as the traditional hyphen, sometimes double encoded with
-        the hyphen.
+        - U+0020 SPACE
+        - U+00A0 NO-BREAK SPACE
 
-        That being said, it is recommended to not include it in the font at all,
-        because discretionary hyphenation should be handled at the level of the
-        shaping engine, not the font. Also, even if present, the software would
-        not display that character.
-
-        More discussion at:
-        https://typedrawers.com/discussion/2046/special-dash-things-softhyphen-horizontalbar
+        The space character is required for text processing, and the no-break
+        space is useful to prevent line breaks at its position. It is also
+        recommended to have a glyph for the tab character (U+0009) and the
+        soft hyphen (U+00AD), but these are not mandatory.
     """,
-    proposal=[
-        "https://github.com/fonttools/fontbakery/issues/4046",
-        "https://github.com/fonttools/fontbakery/issues/3486",
-    ],
 )
-def check_soft_hyphen(ttFont):
-    """Does the font contain a soft hyphen?"""
-    if 0x00AD in ttFont["cmap"].getBestCmap().keys():
-        yield WARN, Message("softhyphen", "This font has a 'Soft Hyphen' character.")
-    else:
-        yield PASS, "Looks good!"
-
-
-@check(
-    id="rupee",
-    rationale="""
-        Per Bureau of Indian Standards every font supporting one of the
-        official Indian languages needs to include Unicode Character
-        “₹” (U+20B9) Indian Rupee Sign.
-    """,
-    conditions=["is_indic_font"],
-    proposal="https://github.com/fonttools/fontbakery/issues/2967",
-)
-def check_rupee(ttFont):
-    """Ensure indic fonts have the Indian Rupee Sign glyph."""
-    if 0x20B9 not in ttFont["cmap"].getBestCmap().keys():
+def check_whitespace_glyphs(ttFont, missing_whitespace_chars):
+    """Font contains glyphs for whitespace characters?"""
+    failed = False
+    for wsc in missing_whitespace_chars:
+        failed = True
         yield FAIL, Message(
-            "missing-rupee",
-            "Please add a glyph for Indian Rupee Sign (₹) at codepoint U+20B9.",
-        )
-    else:
-        yield PASS, "Looks good!"
-
-
-@check(
-    id="case_mapping",
-    rationale="""
-        Ensure that no glyph lacks its corresponding upper or lower counterpart
-        (but only when unicode supports case-mapping).
-    """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3230",
-    severity=10,  # if a font shows tofu in caps but not in lowercase
-    #               then it can be considered broken.
-)
-def check_case_mapping(ttFont):
-    """Ensure the font supports case swapping for all its glyphs."""
-    import unicodedata
-    from fontbakery.utils import markdown_table
-
-    # These are a selection of codepoints for which the corresponding case-swap
-    # glyphs are missing way too often on the Google Fonts library,
-    # so we'll ignore for now:
-    EXCEPTIONS = [
-        0x0192,  # ƒ - Latin Small Letter F with Hook
-        0x00B5,  # µ - Micro Sign
-        0x03C0,  # π - Greek Small Letter Pi
-        0x2126,  # Ω - Ohm Sign
-        0x03BC,  # μ - Greek Small Letter Mu
-        0x03A9,  # Ω - Greek Capital Letter Omega
-        0x0394,  # Δ - Greek Capital Letter Delta
-        0x0251,  # ɑ - Latin Small Letter Alpha
-        0x0261,  # ɡ - Latin Small Letter Script G
-        0x00FF,  # ÿ - Latin Small Letter Y with Diaeresis
-        0x0250,  # ɐ - Latin Small Letter Turned A
-        0x025C,  # ɜ - Latin Small Letter Reversed Open E
-        0x0252,  # ɒ - Latin Small Letter Turned Alpha
-        0x0271,  # ɱ - Latin Small Letter M with Hook
-        0x0282,  # ʂ - Latin Small Letter S with Hook
-        0x029E,  # ʞ - Latin Small Letter Turned K
-        0x0287,  # ʇ - Latin Small Letter Turned T
-        0x0127,  # ħ - Latin Small Letter H with Stroke
-        0x0140,  # ŀ - Latin Small Letter L with Middle Dot
-        0x023F,  # ȿ - Latin Small Letter S with Swash Tail
-        0x0240,  # ɀ - Latin Small Letter Z with Swash Tail
-        0x026B,  # ɫ - Latin Small Letter L with Middle Tilde
-    ]
-
-    missing_counterparts_table = []
-    cmap = ttFont["cmap"].getBestCmap()
-    for codepoint in cmap:
-        if codepoint in EXCEPTIONS:
-            continue
-
-        # Only check letters
-        if unicodedata.category(chr(codepoint))[0] != "L":
-            continue
-
-        the_char = chr(codepoint)
-        swapped = the_char.swapcase()
-
-        # skip cases like 'ß' => 'SS'
-        if len(swapped) > 1:
-            continue
-
-        if the_char != swapped and ord(swapped) not in cmap:
-            name = unicodedata.name(the_char)
-            swapped_name = unicodedata.name(swapped)
-            row = {
-                "Glyph present in the font": f"U+{codepoint:04X}: {name}",
-                "Missing case-swapping counterpart": (
-                    f"U+{ord(swapped):04X}: {swapped_name}"
-                ),
-            }
-            missing_counterparts_table.append(row)
-
-    if missing_counterparts_table:
-        yield FAIL, Message(
-            "missing-case-counterparts",
-            f"The following glyphs lack their case-swapping counterparts:\n\n"
-            f"{markdown_table(missing_counterparts_table)}\n\n",
+            f"missing-whitespace-glyph-{wsc}",
+            f"Whitespace glyph missing for codepoint {wsc}.",
         )
 
-
-@check(
-    id="family/control_chars",
-    conditions=["are_ttf"],
-    rationale="""
-        Use of some unacceptable control characters in the U+0000 - U+001F range can
-        lead to rendering issues on some platforms.
-
-        Acceptable control characters are defined as .null (U+0000) and
-        CR (U+000D) for this check.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/pull/2430",
-)
-def check_family_control_chars(ttFonts):
-    """Does font file include unacceptable control character glyphs?"""
-    # list of unacceptable control character glyph names
-    # definition includes the entire control character Unicode block except:
-    #    - .null (U+0000)
-    #    - CR (U+000D)
-    unacceptable_cc_list = [
-        "uni0001",
-        "uni0002",
-        "uni0003",
-        "uni0004",
-        "uni0005",
-        "uni0006",
-        "uni0007",
-        "uni0008",
-        "uni0009",
-        "uni000A",
-        "uni000B",
-        "uni000C",
-        "uni000E",
-        "uni000F",
-        "uni0010",
-        "uni0011",
-        "uni0012",
-        "uni0013",
-        "uni0014",
-        "uni0015",
-        "uni0016",
-        "uni0017",
-        "uni0018",
-        "uni0019",
-        "uni001A",
-        "uni001B",
-        "uni001C",
-        "uni001D",
-        "uni001E",
-        "uni001F",
-    ]
-
-    # A dict with 'key => value' pairs of
-    # font path that did not pass the check => list of unacceptable glyph names
-    bad_fonts = {}
-
-    for ttFont in ttFonts:
-        passed = True
-        unacceptable_glyphs_in_set = []  # a list of unacceptable glyph names identified
-        glyph_name_set = set(ttFont["glyf"].glyphs.keys())
-        fontname = ttFont.reader.file.name
-
-        for unacceptable_glyph_name in unacceptable_cc_list:
-            if unacceptable_glyph_name in glyph_name_set:
-                passed = False
-                unacceptable_glyphs_in_set.append(unacceptable_glyph_name)
-
-        if not passed:
-            bad_fonts[fontname] = unacceptable_glyphs_in_set
-
-    if len(bad_fonts) > 0:
-        msg_unacceptable = (
-            "The following unacceptable control characters were identified:\n"
-        )
-        for fnt in bad_fonts.keys():
-            bad = ", ".join(bad_fonts[fnt])
-            msg_unacceptable += f" {fnt}: {bad}\n"
-        yield FAIL, Message("unacceptable", f"{msg_unacceptable}")
+    if not failed:
+        yield PASS, "Font contains glyphs for whitespace characters."
