@@ -1,10 +1,10 @@
 from collections import defaultdict
 import os
 
+from fontbakery.checks.glyphset import can_shape
 from fontbakery.constants import NameID, RIBBI_STYLE_NAMES
 from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN, SKIP, FATAL
 from fontbakery.utils import exit_with_install_instructions, show_inconsistencies
-from fontbakery.checks.vendorspecific.googlefonts.glyphset import can_shape
 
 
 @check(
