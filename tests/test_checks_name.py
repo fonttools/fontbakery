@@ -212,3 +212,15 @@ def DISABLED_test_check_glyphs_file_name_family_and_style_max_length():
         assert_results_contain(
             check(glyphsFile), WARN, "too-long", "with a too long stylename..."
         )
+
+
+def test_check_name_no_mac_entries():
+    check = CheckTester("no_mac_entries")
+
+    font = TEST_FILE("abeezee/ABeeZee-Italic.ttf")
+    assert_results_contain(
+        check(font), FAIL, "mac-names", "with a font containing Mac names"
+    )
+
+    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
+    assert_PASS(check(font), "with a font without Mac names")
