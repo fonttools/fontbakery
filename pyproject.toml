@@ -31,6 +31,7 @@ dependencies = [
     "beziers >= 0.6.0, == 0.6.*",
     "cmarkgfm >= 0.4",
     "defcon",
+    "dehinter >= 3.1.0",  # 3.1.0 added dehinter.font.hint function
     "fontTools[ufo] >= 4.46.0",
     "freetype-py < 2.4.0",  # see: https://github.com/fonttools/fontbakery/issues/4143
     "Jinja2 >= 3.0.0",  # issue #4717
@@ -105,9 +106,6 @@ googlefonts = [
     "collidoscope >= 0.5.2",
     # 0.5.2 added Python 3.11 wheels
     # (see https://github.com/fonttools/fontbakery/issues/3970)
-
-    "dehinter >= 3.1.0",
-    # 3.1.0 added dehinter.font.hint function
 
     "fonttools[lxml,unicode]",
     # (see https://github.com/googlefonts/gflanguages/pull/7)
