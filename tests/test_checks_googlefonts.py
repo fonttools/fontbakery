@@ -1001,7 +1001,7 @@ def test_check_name_license(mada_ttFonts):
 
 def NOT_IMPLEMENTED_test_check_name_license_url():
     """License URL matches License text on name table?"""
-    # check = CheckTester( "googlefonts:name/license_url")
+    # check = CheckTester("googlefonts:name/license_url")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -1075,7 +1075,7 @@ def test_check_name_version_format():
 
 def NOT_IMPLEMENTED_test_check_old_ttfautohint():
     """Font has old ttfautohint applied?"""
-    # check = CheckTester( "old_ttfautohint")
+    # check = CheckTester("googlefonts:old_ttfautohint")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -1139,7 +1139,7 @@ def test_check_epar():
 
 def NOT_IMPLEMENTED_test_check_gasp():
     """Is GASP table correctly set?"""
-    # check = CheckTester( "googlefonts:gasp")
+    # check = CheckTester("googlefonts:gasp")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -1316,9 +1316,7 @@ def test_check_metadata_subsets_order():
 
 def test_check_metadata_includes_production_subsets(requests_mock):
     """Check METADATA.pb has production subsets."""
-    check = CheckTester(
-        "googlefonts:metadata/includes_production_subsets",
-    )
+    check = CheckTester("googlefonts:metadata/includes_production_subsets")
 
     requests_mock.get(
         "http://fonts.google.com/metadata/fonts",
@@ -1348,9 +1346,8 @@ def test_check_metadata_includes_production_subsets(requests_mock):
 
 def test_check_metadata_single_cjk_subset():
     """Check METADATA.pb file only contains a single CJK subset"""
-    check = CheckTester(
-        "googlefonts:metadata/single_cjk_subset",
-    )
+    check = CheckTester("googlefonts:metadata/single_cjk_subset")
+
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
     md = Font(font).family_metadata
 
@@ -1511,10 +1508,8 @@ def test_check_metadata_nameid_post_script_name():
 
 
 def test_check_metadata_nameid_font_name():
-    """
-    METADATA.pb font.name value should be same as the family name declared on
-    the name table.
-    """
+    """METADATA.pb font.name value should be same as the family name declared
+    on the name table."""
     check = CheckTester("googlefonts:metadata/nameid/font_name")
 
     # Our reference Merriweather-Regular is know to have good fullname metadata
@@ -1613,7 +1608,7 @@ def test_check_metadata_match_fullname_postscript():
 def NOT_IMPLEMENTED_test_check_match_filename_postscript():
     """METADATA.pb family.filename and family.post_script_name
     fields have equivalent values?"""
-    # check = CheckTester( "googlefonts:metadata/match_filename_postscript")
+    # check = CheckTester("googlefonts:metadata/match_filename_postscript")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -1707,9 +1702,7 @@ def test_check_metadata_valid_filename_values():
 
 def test_check_metadata_valid_post_script_name_values():
     """METADATA.pb font.post_script_name field contains font name in right format?"""
-    check = CheckTester(
-        "googlefonts:metadata/valid_post_script_name_values",
-    )
+    check = CheckTester("googlefonts:metadata/valid_post_script_name_values")
 
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
@@ -1901,9 +1894,7 @@ def test_check_metadata_nameid_family_and_full_names():
     METADATA.pb font.name and font.full_name fields match the values declared on
     the name table?
     """
-    check = CheckTester(
-        "googlefonts:metadata/nameid/family_and_full_names",
-    )
+    check = CheckTester("googlefonts:metadata/nameid/family_and_full_names")
 
     # Our reference Merriweather Regular is known to be good here.
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -2051,7 +2042,7 @@ def test_check_metadata_os2_weightclass():
 
 def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
     """METADATA.pb: Metadata weight matches postScriptName."""
-    # check = CheckTester( "googlefonts:metadata/match_weight_postscript")
+    # check = CheckTester("googlefonts:metadata/match_weight_postscript")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2062,7 +2053,7 @@ def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
 
 def NOT_IMPLEMENTED_test_check_metadata_canonical_style_names():
     """METADATA.pb: Font styles are named canonically?"""
-    # check = CheckTester( "googlefonts:metadata/canonical_style_names")
+    # check = CheckTester("googlefonts:metadata/canonical_style_names")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2181,7 +2172,7 @@ def test_check_unitsperem():
 
 def NOT_IMPLEMENTED_test_check_version_bump():
     """Version number has increased since previous release on Google Fonts?"""
-    # check = CheckTester( "googlefonts:version_bump")
+    # check = CheckTester("googlefonts:version_bump")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2194,7 +2185,7 @@ def NOT_IMPLEMENTED_test_check_version_bump():
 
 def NOT_IMPLEMENTED_test_check_production_glyphs_similarity():
     """Glyphs are similiar to Google Fonts version?"""
-    # check = CheckTester( "googlefonts:production_glyphs_similarity")
+    # check = CheckTester("googlefonts:production_glyphs_similarity")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2260,7 +2251,7 @@ def test_check_italic_angle():
 @pytest.mark.xfail(strict=True)
 def test_check_production_encoded_glyphs(cabin_ttFonts):
     """Check glyphs are not missing when compared to version on fonts.google.com"""
-    check = CheckTester("production_encoded_glyphs")
+    check = CheckTester("googlefonts:production_encoded_glyphs")
 
     for font in cabin_fonts:
         # Cabin font hosted on fonts.google.com contains
@@ -2611,7 +2602,7 @@ def test_check_fontdata_namecheck():
 # https://github.com/fonttools/fontbakery/issues/1727
 def disabled_test_check_negative_advance_width():
     """Check that advance widths cannot be inferred as negative."""
-    check = CheckTester("negative_advance_width")
+    check = CheckTester("googlefonts:negative_advance_width")
 
     # Our reference Cabin Regular is good
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -2745,7 +2736,7 @@ def test_check_fvar_instances__whats_going_on_here():  # TODO: REVIEW THIS.
 
 def NOT_IMPLEMENTED_test_check_family_tnum_horizontal_metrics():
     """All tabular figures must have the same width across the RIBBI-family."""
-    # check = CheckTester( "googlefonts:family/tnum_horizontal_metrics")
+    # check = CheckTester("googlefonts:family/tnum_horizontal_metrics")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2901,9 +2892,7 @@ def test_check_repo_vf_has_static_fonts(tmp_path):
 
 def test_check_repo_upstream_yaml_has_required_fields():
     """Check upstream.yaml has all required fields"""
-    check = CheckTester(
-        "googlefonts:repo/upstream_yaml_has_required_fields",
-    )
+    check = CheckTester("googlefonts:repo/upstream_yaml_has_required_fields")
     upstream_yaml = {
         "branch": "main",
         "files": {"TestFamily-Regular.ttf": "TestFamily-Regular.ttf"},
@@ -3766,12 +3755,6 @@ def test_check_os2_use_typo_metrics_with_cjk():
         )
     )
     assert_SKIP(check(tt_pass_set))
-
-
-def test_check_stylisticset_description():
-    """Ensure Stylistic Sets have description."""
-    # check = CheckTester("stylisticset_description")
-    # TODO: Implement-me!
 
 
 def test_check_meta_script_lang_tags():
