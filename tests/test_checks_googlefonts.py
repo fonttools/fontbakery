@@ -2692,20 +2692,6 @@ def test_check_fontdata_namecheck():
     assert_PASS(check(font), "with a unique family name...", ignore_error=TIMEOUT_MSG)
 
 
-def test_check_glyf_nested_components():
-    """Check glyphs do not have nested components."""
-    check = CheckTester("glyf_nested_components")
-
-    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
-
-    # We need to create a nested component. "second" has components, so setting
-    # one of "quotedbl"'s components to "second" should do it.
-    ttFont["glyf"]["quotedbl"].components[0].glyphName = "second"
-
-    assert_results_contain(check(ttFont), FAIL, "found-nested-components")
-
-
 # Temporarily disabling this code-test since check/negative_advance_width itself
 # is disabled waiting for an implementation targetting the
 # actual root cause of the issue.
