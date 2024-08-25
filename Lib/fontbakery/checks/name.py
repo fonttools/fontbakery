@@ -8,6 +8,58 @@ from fontbakery.prelude import check, disable, Message, FAIL, WARN
 from fontbakery.utils import get_name_entry_strings
 
 
+def get_family_name(ttFont):
+    """
+    Get the family name from the name table.
+
+    TODO: For now, this is just name ID 1. It should be expanded to at least
+    check IDs 16 & 21, and ideally do the whole font differentiator heuristic.
+    """
+    family_name = ttFont["name"].getName(1, 3, 1, 0x0409)
+    if family_name is None:
+        return None
+    return family_name.toUnicode()
+
+
+def get_subfamily_name(ttFont):
+    """
+    Get the subfamily name from the name table.
+
+    TODO: For now, this is just name ID 2. It should be expanded to at least
+    check IDs 17 & 22, and ideally do the whole font differentiator heuristic.
+    """
+    subfamily_name = ttFont["name"].getName(2, 3, 1, 0x0409)
+    if subfamily_name is None:
+        return None
+    return subfamily_name.toUnicode()
+
+
+@check(
+    id="name_id_1",
+    rationale="""
+        Presence of a name ID 1 entry is mandatory.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
+def check_name_id_1(ttFont):
+    """Font has a name with ID 1."""
+    if not ttFont["name"].getName(1, 3, 1, 0x409):
+        yield FAIL, "Font lacks a name with ID 1."
+
+
+@check(
+    id="name_id_2",
+    rationale="""
+        Presence of a name ID 2 entry is mandatory.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
+def check_name_id_2(ttFont):
+    """Font has a name with ID 2."""
+    if not ttFont["name"].getName(2, 3, 1, 0x409):
+        yield FAIL, "Font lacks a name with ID 2."
+
+
 @check(
     id="name/ascii_only_entries",
     rationale="""
@@ -153,4 +205,58 @@ def check_glyphs_file_name_family_and_style_max_length(glyphsFile):
             f" https://github.com/fonttools/fontbakery/issues/2179"
             f" in order to understand the reasoning behind these"
             f" name table records max-length criteria.",
+        )
+
+
+@check(
+    id="name_length_req",
+    rationale="""
+        For Office, family and subfamily names must be 31 characters or less total
+        to fit in a LOGFONT.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
+def check_name_length_req(ttFont):
+    """Maximum allowed length for family and subfamily names."""
+    family_name = get_family_name(ttFont)
+    subfamily_name = get_subfamily_name(ttFont)
+    if family_name is None:
+        yield FAIL, "Name ID 1 (family) missing"
+    if subfamily_name is None:
+        yield FAIL, "Name ID 2 (sub family) missing"
+
+    logfont = (
+        family_name
+        if subfamily_name in ("Regular", "Bold", "Italic", "Bold Italic")
+        else " ".join([family_name, subfamily_name])
+    )
+
+    if len(logfont) > 31:
+        yield FAIL, (
+            f"Family + subfamily name, '{logfont}', is too long: "
+            f"{len(logfont)} characters; must be 31 or less"
+        )
+
+
+@check(
+    id="typographic_family_name",
+    rationale="""
+        Check whether Name ID 16 (Typographic Family name) is consistent
+        across the set of fonts.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
+def check_typographic_family_name(ttFonts):
+    """Typographic Family name consistency."""
+    values = set()
+    for ttFont in ttFonts:
+        name_record = ttFont["name"].getName(16, 3, 1, 0x0409)
+        if name_record is None:
+            values.add("<no value>")
+        else:
+            values.add(name_record.toUnicode())
+    if len(values) != 1:
+        yield FAIL, (
+            f"Name ID 16 (Typographic Family name) is not consistent "
+            f"across fonts. Values found: {sorted(values)}"
         )
