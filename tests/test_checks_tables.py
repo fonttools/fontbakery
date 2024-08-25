@@ -6,7 +6,7 @@ from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
 )
-from fontbakery.status import FAIL
+from fontbakery.status import FAIL, WARN
 
 
 def test_check_unwanted_aat_tables():
@@ -54,3 +54,14 @@ def test_check_unwanted_aat_tables():
             "has-unwanted-tables",
             f"with unwanted table {unwanted} ...",
         )
+
+
+def test_check_no_debugging_tables():
+    """Ensure fonts do not contain any preproduction tables."""
+    check = CheckTester("no_debugging_tables")
+
+    ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
+    assert_results_contain(check(ttFont), WARN, "has-debugging-tables")
+
+    del ttFont["FFTM"]
+    assert_PASS(check(ttFont))
