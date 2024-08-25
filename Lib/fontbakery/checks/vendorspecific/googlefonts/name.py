@@ -125,54 +125,6 @@ def check_name_familyname_first_char(ttFont):
 
 
 @check(
-    id="name/ascii_only_entries",
-    rationale="""
-        The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
-
-        For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that string should be
-        the same in CFF fonts which also have this requirement in the OpenType spec.
-
-        Note:
-        A common place where we find non-ASCII strings is on name table entries
-        with NameID > 18, which are expressly for localising the ASCII-only IDs
-        into Hindi / Arabic / etc.
-    """,
-    proposal=[
-        "legacy:check/074",
-        "https://github.com/fonttools/fontbakery/issues/1663",
-    ],
-)
-def check_name_ascii_only_entries(ttFont):
-    """Are there non-ASCII characters in ASCII-only NAME table entries?"""
-    bad_entries = []
-    for name in ttFont["name"].names:
-        if name.nameID in (NameID.COPYRIGHT_NOTICE, NameID.POSTSCRIPT_NAME):
-            string = name.string.decode(name.getEncoding())
-            try:
-                string.encode("ascii")
-            except UnicodeEncodeError:
-                bad_entries.append(name)
-                badstring = string.encode("ascii", errors="xmlcharrefreplace")
-                yield FAIL, Message(
-                    "bad-string",
-                    (
-                        f"Bad string at"
-                        f" [nameID {name.nameID}, '{name.getEncoding()}']:"
-                        f" '{badstring}'"
-                    ),
-                )
-    if len(bad_entries) > 0:
-        yield FAIL, Message(
-            "non-ascii-strings",
-            (
-                f"There are {len(bad_entries)} strings containing"
-                " non-ASCII characters in the ASCII-only"
-                " NAME table entries."
-            ),
-        )
-
-
-@check(
     id="googlefonts:font_names",
     rationale="""
         Google Fonts has several rules which need to be adhered to when
