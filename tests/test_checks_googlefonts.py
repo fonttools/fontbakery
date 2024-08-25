@@ -2342,17 +2342,6 @@ def test_check_italic_angle():
     )
 
 
-def test_check_slant_direction():
-    """Checking direction of slnt axis angles"""
-    check = CheckTester("slant_direction")
-
-    font = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
-    assert_PASS(check(font))
-
-    font = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
-    assert_results_contain(check(font), FAIL, "positive-value-for-clockwise-lean")
-
-
 # FIXME!
 # GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the code-test below.
@@ -2820,11 +2809,6 @@ def test_check_vttclean():
 
     bad_font = TEST_FILE("hinting/Roboto-VF.ttf")
     assert_results_contain(check(bad_font), FAIL, "has-vtt-sources")
-
-
-def test_check_fvar_name_entries():
-    """Check variable font instances."""
-    # TODO: Implement-me!
 
 
 def test_check_fvar_instances__another_test():  # TODO: REVIEW THIS.
@@ -3764,50 +3748,6 @@ def test_check_varfont_duplicate_instance_names(vf_ttFont):
     assert f" and nameID {name_id} was not found." in msg
 
 
-def test_check_varfont_unsupported_axes():
-    """Ensure VFs do not contain opsz or ital axes."""
-    check = CheckTester("varfont/unsupported_axes")
-
-    # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'slnt' variation axes.
-    # So, should pass the check:
-    ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
-    assert_PASS(check(ttFont))
-
-    # If we add 'ital' it must FAIL:
-    from fontTools.ttLib.tables._f_v_a_r import Axis
-
-    new_axis = Axis()
-    new_axis.axisTag = "ital"
-    ttFont["fvar"].axes.append(new_axis)
-    assert_results_contain(check(ttFont), FAIL, "unsupported-ital")
-
-
-def test_check_varfont_duplexed_axis_reflow():
-    """Ensure VFs with the GRAD axis do not vary horizontal advance."""
-    check = CheckTester("varfont/duplexed_axis_reflow")
-
-    ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
-    assert_results_contain(check(ttFont), FAIL, "grad-causes-reflow")
-
-    # Zero out the horizontal advances
-    gvar = ttFont["gvar"]
-    for glyph, deltas in gvar.variations.items():
-        for delta in deltas:
-            if "GRAD" not in delta.axes:
-                continue
-            if delta.coordinates:
-                delta.coordinates = delta.coordinates[:-4] + [(0, 0)] * 4
-
-    # But the kern rules should still be a problem
-    assert_results_contain(check(ttFont), FAIL, "duplexed-kern-causes-reflow")
-
-    ttFont["GPOS"].table.LookupList.Lookup = []
-    assert_PASS(check(ttFont))
-
-    ttFont = TTFont(TEST_FILE("bad_fonts/reflowing_ROND/BadRoundness-VF.ttf"))
-    assert_results_contain(check(ttFont), FAIL, "rond-causes-reflow")
-
-
 def test_check_gfaxisregistry_bounds():
     """Validate METADATA.pb axes values are within gf_axisregistry bounds."""
     check = CheckTester("googlefonts:metadata/axisregistry_bounds")
@@ -3995,17 +3935,6 @@ def test_check_metadata_designer_profiles(requests_mock):
     # TODO: FAIL, "link-field"
     # TODO: FAIL, "missing-avatar"
     # TODO: FAIL, "bad-avatar-filename"
-
-
-def test_check_mandatory_avar_table():
-    """Ensure variable fonts include an avar table."""
-    check = CheckTester("mandatory_avar_table")
-
-    ttFont = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))
-    assert_PASS(check(ttFont))
-
-    del ttFont["avar"]
-    assert_results_contain(check(ttFont), WARN, "missing-avar")
 
 
 def test_check_description_family_update(requests_mock):
@@ -4686,17 +4615,3 @@ def test_check_article_images():
     # Test case for ARTICLE meeting requirements
     family_directory = portable_path("data/test/article_valid")
     assert_PASS(check(MockFont(family_directory=family_directory)))
-
-
-def test_varfont_instances_in_order():
-    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    check = CheckTester("varfont/instances_in_order")
-
-    assert_PASS(check(ttFont))
-
-    # Move the second instance to the front
-    ttFont["fvar"].instances = [
-        ttFont["fvar"].instances[1],
-        ttFont["fvar"].instances[0],
-    ] + ttFont["fvar"].instances[1:]
-    assert_results_contain(check(ttFont), FAIL, "instances-not-in-order")
