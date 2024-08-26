@@ -25,6 +25,7 @@ PROFILE = {
         "ufo_required_fields",
         "ufo_unnecessary_fields",
         "unwanted_aat_tables",
+        "vttclean",  # very similar to vtt_volt_data, may be a good idea to merge them.
     ],
     "sections": {
         "Metadata Checks": [
@@ -52,9 +53,6 @@ PROFILE = {
             "microsoft:STAT_axis_values",
             "microsoft:STAT_table_axis_order",
             "microsoft:STAT_table_eliding_bit",
-        ],
-        "Sanity Checks": [
-            "vtt_volt_data",
         ],
         "Glyph Checks": [
             "tnum_glyphs_equal_widths",

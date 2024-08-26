@@ -39,6 +39,7 @@ PROFILE = {
         "ufo_recommended_fields",
         "ufo_required_fields",
         "ufo_unnecessary_fields",
+        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
     ],
     "sections": {
         "Type Network": [
@@ -98,7 +99,6 @@ PROFILE = {
             "stylisticset_description",
             "varfont/consistent_axes",
             # "varfont/duplexed_axis_reflow", # Review
-            "vttclean",
         ],
         "Outline Checks": [
             "outline_alignment_miss",

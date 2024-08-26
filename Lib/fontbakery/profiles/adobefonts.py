@@ -59,6 +59,8 @@ PROFILE = {
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
         "unwanted_tables",
+        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
+        "vttclean",
     ],
     "sections": {
         "Adobe Fonts Checks": [

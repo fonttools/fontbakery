@@ -62,6 +62,8 @@ PROFILE = {
             "unwanted_aat_tables",
             "unwanted_tables",
             "valid_glyphnames",
+            "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
+            "vttclean",
             "whitespace_glyphnames",
             "whitespace_glyphs",
             "whitespace_ink",
