@@ -6,8 +6,8 @@ PROFILE = {
         "tabular_kerning",  # We have tnum_glyphs_equal_widths
     ],
     "pending_review": [
-        "unwanted_aat_tables",
         "opentype:cff_ascii_strings",
+        "opentype:weight_class_fvar",
         "designspace_has_consistent_codepoints",
         "designspace_has_consistent_glyphset",
         "designspace_has_consistent_groups",
@@ -21,6 +21,7 @@ PROFILE = {
         "ufo_recommended_fields",
         "ufo_required_fields",
         "ufo_unnecessary_fields",
+        "unwanted_aat_tables",
     ],
     "sections": {
         "Metadata Checks": [

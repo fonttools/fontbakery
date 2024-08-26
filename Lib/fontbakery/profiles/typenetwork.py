@@ -21,6 +21,7 @@ PROFILE = {
         "opentype:cff_ascii_strings",
         "opentype:postscript_name",
         "opentype:varfont/family_axis_ranges",
+        "opentype:weight_class_fvar",
         # "caps_vertically_centered",  # Disabled: issue #4274
         "case_mapping",
         "designspace_has_consistent_codepoints",
@@ -72,7 +73,6 @@ PROFILE = {
             #
             "inconsistencies_between_fvar_stat",
             "no_mac_entries",
-            "weight_class_fvar",
         ],
         "Google Fonts": [
             "googlefonts:family/equal_codepoint_coverage",

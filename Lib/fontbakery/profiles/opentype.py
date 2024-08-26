@@ -66,6 +66,7 @@ PROFILE = {
             "opentype:varfont/wdth_valid_range",
             "opentype:varfont/wght_valid_range",
             "opentype:vendor_id",
+            "opentype:weight_class_fvar",
             "opentype:xavgcharwidth",
         ]
     }

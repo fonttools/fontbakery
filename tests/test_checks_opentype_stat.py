@@ -202,3 +202,21 @@ def test_check_italic_axis_last():
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     assert_PASS(check(font))
+
+
+def test_check_weight_class_fvar():
+    check = CheckTester("opentype:weight_class_fvar")
+
+    ttFont = TTFont(TEST_FILE("varfont/Oswald-VF.ttf"))
+    assert_PASS(check(ttFont), "matches fvar default value.")
+
+    ttFont["OS/2"].usWeightClass = 333
+    assert_results_contain(
+        check(ttFont), FAIL, "bad-weight-class", "but should match fvar default value."
+    )
+
+    # Test with a variable font that doesn't have a 'wght' (Weight) axis.
+    # The check should yield SKIP.
+    ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert "Unfulfilled Conditions: has_wght_axis" in msg
