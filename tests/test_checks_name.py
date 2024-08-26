@@ -215,6 +215,7 @@ def DISABLED_test_check_glyphs_file_name_family_and_style_max_length():
 
 
 def test_check_name_no_mac_entries():
+    """Ensure font doesn't have Mac name table entries (platform=1)."""
     check = CheckTester("no_mac_entries")
 
     font = TEST_FILE("abeezee/ABeeZee-Italic.ttf")

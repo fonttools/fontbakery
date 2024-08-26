@@ -44,6 +44,7 @@ PROFILE = {
             "math_signs_width",
             "name/trailing_spaces",
             "no_debugging_tables",
+            "no_mac_entries",
             "os2_metrics_match_hhea",
             "ots",
             "required_tables",

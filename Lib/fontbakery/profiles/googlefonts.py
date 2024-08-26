@@ -3,6 +3,7 @@ PROFILE = {
     "include_profiles": ["universal"],
     "pending_review": [
         "inconsistencies_between_fvar_stat",
+        "no_mac_entries",
     ],
     "sections": {
         "Article Checks": [

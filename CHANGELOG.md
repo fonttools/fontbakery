@@ -7,8 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[opentype:weight_class_fvar]:** from the Fontwerk profile: "Checking if OS/2 usWeightClass matches fvar."
 
 #### Moved to the Universal profile
-  - **[fvar_name_entries]**: from the GoogleFonts profile: "All name entries referenced by fvar instances exist on the name table?"
+  - **[fvar_name_entries]**: from the Google Fonts profile: "All name entries referenced by fvar instances exist on the name table?"
   - **[inconsistencies_between_fvar_stat]**: from the Fontwerk profile: "Checking if STAT entries matches fvar and vice versa."
+  - **[no_mac_entries]**: from the Fontwerk profile: "Ensure font doesn't have Mac name table entries (platform=1)."
 
 
 ##  0.12.10 (2024-Aug-14)
