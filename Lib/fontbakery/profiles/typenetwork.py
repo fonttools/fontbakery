@@ -71,7 +71,6 @@ PROFILE = {
             "fontwerk:style_linking",
             # "fontwerk:vendor_id", # PERMANENTLY EXCLUDED
             #
-            "inconsistencies_between_fvar_stat",
             "no_mac_entries",
         ],
         "Google Fonts": [

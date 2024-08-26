@@ -15,6 +15,7 @@ PROFILE = {
         "designspace_has_sources",
         "fvar_name_entries",
         "gsub/smallcaps_before_ligatures",
+        "inconsistencies_between_fvar_stat",
         "no_debugging_tables",
         "typoascender_exceeds_Agrave",
         "ufolint",

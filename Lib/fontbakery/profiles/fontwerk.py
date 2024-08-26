@@ -28,7 +28,6 @@ PROFILE = {
             "fontwerk:style_linking",
             "fontwerk:vendor_id",
             #
-            "inconsistencies_between_fvar_stat",
             "no_mac_entries",
         ],
     },

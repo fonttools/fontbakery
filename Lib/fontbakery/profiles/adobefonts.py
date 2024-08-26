@@ -68,9 +68,6 @@ PROFILE = {
             #
             "empty_letters",
         ],
-        "fontwerk": [
-            "inconsistencies_between_fvar_stat",  # IS_OVERRIDDEN
-        ],
         "Google Fonts": [
             "googlefonts:varfont/duplicate_instance_names",
             "googlefonts:varfont/bold_wght_coord",  # IS_OVERRIDDEN
