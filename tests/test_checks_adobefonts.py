@@ -329,7 +329,7 @@ def test_check_override_inconsistencies_between_fvar_stat():
 
 
 def test_check_override_weight_class_fvar():
-    check = CheckTester("weight_class_fvar", profile=adobefonts_profile)
+    check = CheckTester("opentype:weight_class_fvar", profile=adobefonts_profile)
 
     ttFont = TTFont(TEST_FILE("varfont/Oswald-VF.ttf"))
     ttFont["OS/2"].usWeightClass = 333

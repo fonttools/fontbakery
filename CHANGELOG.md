@@ -1,8 +1,10 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.12.11 (2024-Aug-??)
-  - ...
+##  Upcoming release: 0.13.0 (2024-Aug-??)
+### Migration of checks
+#### Moved to the OpenType profile
+  - **[opentype:weight_class_fvar]:** from the FontWerk profile.
 
 
 ##  0.12.10 (2024-Aug-14)

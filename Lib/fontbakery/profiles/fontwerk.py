@@ -9,7 +9,6 @@ PROFILE = {
             #
             "inconsistencies_between_fvar_stat",
             "no_mac_entries",
-            "weight_class_fvar",
         ],
     },
     "exclude_checks": [

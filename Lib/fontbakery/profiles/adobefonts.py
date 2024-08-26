@@ -70,7 +70,6 @@ PROFILE = {
         ],
         "fontwerk": [
             "inconsistencies_between_fvar_stat",  # IS_OVERRIDDEN
-            "weight_class_fvar",  # IS_OVERRIDDEN
         ],
         "Google Fonts": [
             "googlefonts:varfont/duplicate_instance_names",
@@ -237,7 +236,7 @@ PROFILE = {
                 "Fonts that do not meet this guideline might behave inconsistently so please carefully consider trying to meet it.",
             }
         ],
-        "weight_class_fvar": [
+        "opentype:weight_class_fvar": [
             {
                 "code": "bad-weight-class",
                 "status": "WARN",
