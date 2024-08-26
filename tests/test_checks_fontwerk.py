@@ -21,28 +21,6 @@ def test_check_vendor_id():
     assert_PASS(check(ttFont), "'WERK' is correct.")
 
 
-def test_check_inconsistencies_between_fvar_stat():
-    check = CheckTester("inconsistencies_between_fvar_stat")
-
-    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
-    assert_PASS(check(ttFont), "with a good varfont...")
-
-    ttFont = TTFont(TEST_FILE("bad_fonts/fvar_stat_differences/AxisLocationVAR.ttf"))
-    ttFont["name"].removeNames(nameID=277)
-    assert_results_contain(
-        check(ttFont),
-        FAIL,
-        "missing-name-id",
-        "fvar instance is missing in the name table",
-    )
-
-    # add name with wrong order of name parts
-    ttFont["name"].setName("Medium Text", 277, 3, 1, 0x409)
-    assert_results_contain(
-        check(ttFont), FAIL, "missing-fvar-instance-axis-value", "missing in STAT table"
-    )
-
-
 def test_check_style_linking():
     check = CheckTester("fontwerk:style_linking")
 
