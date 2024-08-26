@@ -153,7 +153,6 @@ PROFILE = {
             "empty_glyph_on_gid1_for_colrv0",
             "file_size",
             "fontdata_namecheck",
-            "fvar_name_entries",
             "glyf_nested_components",
             "hinting_impact",
             "integer_ppem_if_hinted",

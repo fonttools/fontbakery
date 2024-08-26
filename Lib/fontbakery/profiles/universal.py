@@ -21,7 +21,6 @@ PROFILE = {
             "ufo_unnecessary_fields",
         ],
         "Universal Profile Checks": [
-            "unwanted_aat_tables",
             "alt_caron",
             "arabic_high_hamza",
             "arabic_spacing_symbols",
@@ -32,6 +31,7 @@ PROFILE = {
             "family/single_directory",
             "family/vertical_metrics",
             "family/win_ascent_and_descent",
+            "fvar_name_entries",
             "fontbakery_version",
             "freetype_rasterizer",
             "gpos7",
@@ -57,6 +57,7 @@ PROFILE = {
             "typoascender_exceeds_Agrave",
             "unique_glyphnames",
             "unreachable_glyphs",
+            "unwanted_aat_tables",
             "unwanted_tables",
             "valid_glyphnames",
             "whitespace_glyphnames",

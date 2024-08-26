@@ -13,6 +13,7 @@ PROFILE = {
         "designspace_has_consistent_groups",
         "designspace_has_default_master",
         "designspace_has_sources",
+        "fvar_name_entries",
         "gsub/smallcaps_before_ligatures",
         "no_debugging_tables",
         "typoascender_exceeds_Agrave",

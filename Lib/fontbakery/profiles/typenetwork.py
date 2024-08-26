@@ -92,7 +92,6 @@ PROFILE = {
             # "googlefonts:vendor_id", # PERMANENTLY EXCLUDED
             #
             "family/control_chars",
-            "fvar_name_entries",
             "glyf_nested_components",
             "mandatory_avar_table",
             "missing_small_caps_glyphs",
