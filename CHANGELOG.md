@@ -10,6 +10,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[fvar_name_entries]**: from the Google Fonts profile: "All name entries referenced by fvar instances exist on the name table?"
   - **[inconsistencies_between_fvar_stat]**: from the Fontwerk profile: "Checking if STAT entries matches fvar and vice versa."
   - **[no_mac_entries]**: from the Fontwerk profile: "Ensure font doesn't have Mac name table entries (platform=1)."
+  - **[vttclean]**: from the Google Fonts profile: "There must not be VTT Talk sources in the font."
+  - **[vtt_volt_data]**: from the Microsoft profile: "VTT or Volt Source Data must not be present."
 
 
 ##  0.12.10 (2024-Aug-14)

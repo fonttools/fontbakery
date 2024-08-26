@@ -4,6 +4,7 @@ PROFILE = {
     "pending_review": [
         "inconsistencies_between_fvar_stat",
         "no_mac_entries",
+        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
     ],
     "sections": {
         "Article Checks": [
@@ -173,7 +174,6 @@ PROFILE = {
             "varfont/duplexed_axis_reflow",
             "varfont/instances_in_order",
             "varfont/unsupported_axes",
-            "vttclean",
         ],
     },
     "configuration_defaults": {

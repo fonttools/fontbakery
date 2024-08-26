@@ -20,7 +20,6 @@ PROFILE = {
     "pending_review": [
         "glyf_nested_components",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
-        "vttclean",
     ],
     "sections": {
         "Fontwerk Checks": [
