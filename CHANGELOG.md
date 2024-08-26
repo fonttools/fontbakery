@@ -4,7 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ##  Upcoming release: 0.13.0 (2024-Aug-??)
 ### Migration of checks
 #### Moved to the OpenType profile
-  - **[opentype:weight_class_fvar]:** from the FontWerk profile.
+  - **[opentype:weight_class_fvar]:** from the FontWerk profile: "Checking if OS/2 usWeightClass matches fvar."
+
+#### Moved to the Universal profile
+  - **[fvar_name_entries]**: from the GoogleFonts profile: "All name entries referenced by fvar instances exist on the name table?"
 
 
 ##  0.12.10 (2024-Aug-14)

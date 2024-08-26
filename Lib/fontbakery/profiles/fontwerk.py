@@ -1,16 +1,6 @@
 # pylint: disable=line-too-long  # This is data, not code
 PROFILE = {
     "include_profiles": ["googlefonts"],
-    "sections": {
-        "Fontwerk Checks": [
-            "fontwerk:names_match_default_fvar",
-            "fontwerk:style_linking",
-            "fontwerk:vendor_id",
-            #
-            "inconsistencies_between_fvar_stat",
-            "no_mac_entries",
-        ],
-    },
     "exclude_checks": [
         "googlefonts:canonical_filename",
         "googlefonts:family/italics_have_roman_counterparts",  # May need some improvements before we decide to include this one.
@@ -27,6 +17,21 @@ PROFILE = {
         #
         "fontdata_namecheck",
     ],
+    "pending_review": [
+        "glyf_nested_components",
+        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
+        "vttclean",
+    ],
+    "sections": {
+        "Fontwerk Checks": [
+            "fontwerk:names_match_default_fvar",
+            "fontwerk:style_linking",
+            "fontwerk:vendor_id",
+            #
+            "inconsistencies_between_fvar_stat",
+            "no_mac_entries",
+        ],
+    },
     "configuration_defaults": {
         "file_size": {
             "WARN_SIZE": 1 * 1024 * 1024,
