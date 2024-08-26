@@ -17,6 +17,7 @@ PROFILE = {
         "gsub/smallcaps_before_ligatures",
         "inconsistencies_between_fvar_stat",
         "no_debugging_tables",
+        "no_mac_entries",
         "typoascender_exceeds_Agrave",
         "ufolint",
         "ufo_features_default_languagesystem",

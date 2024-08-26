@@ -277,7 +277,7 @@ def check_typographic_family_name(ttFonts):
     proposal="https://github.com/googlefonts/gftools/issues/469",
 )
 def check_name_no_mac_entries(ttFont):
-    """Check if font has Mac name table entries (platform=1)"""
+    """Ensure font doesn't have Mac name table entries (platform=1)."""
 
     for rec in ttFont["name"].names:
         if rec.platformID == 1:

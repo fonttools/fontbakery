@@ -70,8 +70,6 @@ PROFILE = {
         "Fontwerk": [
             "fontwerk:style_linking",
             # "fontwerk:vendor_id", # PERMANENTLY EXCLUDED
-            #
-            "no_mac_entries",
         ],
         "Google Fonts": [
             "googlefonts:family/equal_codepoint_coverage",

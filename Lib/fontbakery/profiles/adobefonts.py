@@ -51,6 +51,7 @@ PROFILE = {
         "legacy_accents",
         "math_signs_width",
         "no_debugging_tables",
+        "no_mac_entries",
         "soft_hyphen",
         "STAT_in_statics",
         "superfamily/list",

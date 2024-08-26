@@ -27,8 +27,6 @@ PROFILE = {
             "fontwerk:names_match_default_fvar",
             "fontwerk:style_linking",
             "fontwerk:vendor_id",
-            #
-            "no_mac_entries",
         ],
     },
     "configuration_defaults": {
