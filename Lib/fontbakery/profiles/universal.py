@@ -36,6 +36,7 @@ PROFILE = {
             "freetype_rasterizer",
             "gpos7",
             "gsub/smallcaps_before_ligatures",
+            "inconsistencies_between_fvar_stat",
             "interpolation_issues",
             "legacy_accents",
             "linegaps",

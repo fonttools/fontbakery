@@ -1,6 +1,9 @@
 # pylint: disable=line-too-long  # This is data, not code
 PROFILE = {
     "include_profiles": ["universal"],
+    "pending_review": [
+        "inconsistencies_between_fvar_stat",
+    ],
     "sections": {
         "Article Checks": [
             "googlefonts:article/images",
