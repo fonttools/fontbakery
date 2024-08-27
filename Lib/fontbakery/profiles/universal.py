@@ -38,6 +38,7 @@ PROFILE = {
             "glyf_nested_components",
             "gpos7",
             "gsub/smallcaps_before_ligatures",
+            "hinting_impact",
             "inconsistencies_between_fvar_stat",
             "interpolation_issues",
             "legacy_accents",
