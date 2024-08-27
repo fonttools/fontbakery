@@ -46,6 +46,7 @@ PROFILE = {
         "case_mapping",
         "cjk_chws_feature",  # was temporarily removed
         "contour_count",  # was temporarily removed
+        "glyf_nested_components",
         "gsub/smallcaps_before_ligatures",
         "interpolation_issues",
         "legacy_accents",

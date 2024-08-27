@@ -34,6 +34,7 @@ PROFILE = {
             "fvar_name_entries",
             "fontbakery_version",
             "freetype_rasterizer",
+            "glyf_nested_components",
             "gpos7",
             "gsub/smallcaps_before_ligatures",
             "inconsistencies_between_fvar_stat",

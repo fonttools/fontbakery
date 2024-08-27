@@ -10,7 +10,7 @@ from fontbakery.status import FAIL
 
 
 def test_check_glyf_nested_components():
-    """Check glyphs do not have nested components."""
+    """Ensure glyphs do not have components which are themselves components."""
     check = CheckTester("glyf_nested_components")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
