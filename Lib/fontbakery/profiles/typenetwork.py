@@ -29,6 +29,7 @@ PROFILE = {
         "designspace_has_consistent_groups",
         "designspace_has_default_master",
         "designspace_has_sources",
+        "fontdata_namecheck",
         "gsub/smallcaps_before_ligatures",
         "legacy_accents",
         "no_debugging_tables",

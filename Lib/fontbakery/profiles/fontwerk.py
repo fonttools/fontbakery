@@ -14,7 +14,6 @@ PROFILE = {
         "googlefonts:production_glyphs_similarity",
         "googlefonts:vendor_id",
         "googlefonts:version_bump",
-        #
         "fontdata_namecheck",
     ],
     "pending_review": [
