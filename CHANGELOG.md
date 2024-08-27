@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[fvar_name_entries]**: "All name entries referenced by fvar instances exist on the name table?"
   - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"
   - **[glyf_nested_components]**: "Ensure glyphs do not have components which are themselves components."
+  - **[hinting_impact]**: "Show hinting filesize impact." (merely INFO-level result)
   - **[vttclean]**: "There must not be VTT Talk sources in the font."
 
 #### Moved from Fontwerk to Universal profile

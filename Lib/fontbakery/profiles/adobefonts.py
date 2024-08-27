@@ -49,6 +49,7 @@ PROFILE = {
         "fontdata_namecheck",
         "glyf_nested_components",
         "gsub/smallcaps_before_ligatures",
+        "hinting_impact",
         "interpolation_issues",
         "legacy_accents",
         "math_signs_width",

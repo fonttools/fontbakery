@@ -16,6 +16,7 @@ PROFILE = {
         "fvar_name_entries",
         "fontdata_namecheck",
         "glyf_nested_components",
+        "hinting_impact",
         "gsub/smallcaps_before_ligatures",
         "inconsistencies_between_fvar_stat",
         "no_debugging_tables",

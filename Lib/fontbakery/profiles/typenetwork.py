@@ -31,6 +31,7 @@ PROFILE = {
         "designspace_has_sources",
         "fontdata_namecheck",
         "gsub/smallcaps_before_ligatures",
+        "hinting_impact",
         "legacy_accents",
         "no_debugging_tables",
         "tabular_kerning",
