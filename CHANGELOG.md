@@ -3,16 +3,21 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ##  Upcoming release: 0.13.0 (2024-Aug-??)
 ### Migration of checks
-#### Moved to the OpenType profile
-  - **[opentype:weight_class_fvar]:** from the Fontwerk profile: "Checking if OS/2 usWeightClass matches fvar."
+#### Moved from Fontwerk to OpenType profile
+  - **[opentype:weight_class_fvar]:** "Checking if OS/2 usWeightClass matches fvar."
 
-#### Moved to the Universal profile
-  - **[fvar_name_entries]**: from the Google Fonts profile: "All name entries referenced by fvar instances exist on the name table?"
-  - **[glyf_nested_components]**: from the Google Fonts profile: "Ensure glyphs do not have components which are themselves components."
-  - **[inconsistencies_between_fvar_stat]**: from the Fontwerk profile: "Checking if STAT entries matches fvar and vice versa."
-  - **[no_mac_entries]**: from the Fontwerk profile: "Ensure font doesn't have Mac name table entries (platform=1)."
-  - **[vttclean]**: from the Google Fonts profile: "There must not be VTT Talk sources in the font."
-  - **[vtt_volt_data]**: from the Microsoft profile: "VTT or Volt Source Data must not be present."
+#### Moved from Google Fonts to Universal profile
+  - **[fvar_name_entries]**: "All name entries referenced by fvar instances exist on the name table?"
+  - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"
+  - **[glyf_nested_components]**: "Ensure glyphs do not have components which are themselves components."
+  - **[vttclean]**: "There must not be VTT Talk sources in the font."
+
+#### Moved from Fontwerk to Universal profile
+  - **[inconsistencies_between_fvar_stat]**: "Checking if STAT entries matches fvar and vice versa."
+  - **[no_mac_entries]**: "Ensure font doesn't have Mac name table entries (platform=1)."
+
+#### Moved from Microsoft to Universal profile
+  - **[vtt_volt_data]**: "VTT or Volt Source Data must not be present."
 
 
 ##  0.12.10 (2024-Aug-14)

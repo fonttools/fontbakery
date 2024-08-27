@@ -3,6 +3,7 @@ PROFILE = {
     "pending_review": [
         "opentype:weight_class_fvar",
         "fvar_name_entries",
+        "fontdata_namecheck",
         "glyf_nested_components",
         "inconsistencies_between_fvar_stat",
         "no_mac_entries",

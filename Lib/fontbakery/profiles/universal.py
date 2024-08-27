@@ -33,6 +33,7 @@ PROFILE = {
             "family/win_ascent_and_descent",
             "fvar_name_entries",
             "fontbakery_version",
+            "fontdata_namecheck",
             "freetype_rasterizer",
             "glyf_nested_components",
             "gpos7",
