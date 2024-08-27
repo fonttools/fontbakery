@@ -3,6 +3,7 @@ PROFILE = {
     "pending_review": [
         "opentype:weight_class_fvar",
         "fvar_name_entries",
+        "glyf_nested_components",
         "inconsistencies_between_fvar_stat",
         "no_mac_entries",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.

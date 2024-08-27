@@ -16,7 +16,7 @@ from fontbakery.prelude import check, Message, FAIL
     proposal="https://github.com/fonttools/fontbakery/issues/2961",
 )
 def check_glyf_nested_components(ttFont, config):
-    """Check glyphs do not have components which are themselves components."""
+    """Ensure glyphs do not have components which are themselves components."""
     from fontbakery.utils import pretty_print_list
 
     bad_glyphs = []

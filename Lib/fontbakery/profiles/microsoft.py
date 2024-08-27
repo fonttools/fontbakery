@@ -14,6 +14,7 @@ PROFILE = {
         "designspace_has_default_master",
         "designspace_has_sources",
         "fvar_name_entries",
+        "glyf_nested_components",
         "gsub/smallcaps_before_ligatures",
         "inconsistencies_between_fvar_stat",
         "no_debugging_tables",

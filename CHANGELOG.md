@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Moved to the Universal profile
   - **[fvar_name_entries]**: from the Google Fonts profile: "All name entries referenced by fvar instances exist on the name table?"
+  - **[glyf_nested_components]**: from the Google Fonts profile: "Ensure glyphs do not have components which are themselves components."
   - **[inconsistencies_between_fvar_stat]**: from the Fontwerk profile: "Checking if STAT entries matches fvar and vice versa."
   - **[no_mac_entries]**: from the Fontwerk profile: "Ensure font doesn't have Mac name table entries (platform=1)."
   - **[vttclean]**: from the Google Fonts profile: "There must not be VTT Talk sources in the font."
