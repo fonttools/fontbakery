@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Moved from Fontwerk to OpenType profile
   - **[opentype:weight_class_fvar]:** "Checking if OS/2 usWeightClass matches fvar."
 
+#### Moved from Google Fonts to OpenType profile
+  - **[opentype:slant_direction]**: "Checking direction of slnt axis angles."
+
 #### Moved from Google Fonts to Universal profile
   - **[fvar_name_entries]**: "All name entries referenced by fvar instances exist on the name table?"
   - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"

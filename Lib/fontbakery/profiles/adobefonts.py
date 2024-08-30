@@ -37,6 +37,7 @@ PROFILE = {
         "opentype:italic_axis_last",
         "opentype:mac_style",
         "opentype:name/italic_names",
+        "opentype:slant_direction",
         "opentype:varfont/family_axis_ranges",
         "opentype:varfont/ital_range",
         "opentype:vendor_id",

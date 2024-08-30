@@ -2,6 +2,7 @@ PROFILE = {
     "include_profiles": ["universal"],
     "pending_review": [
         "opentype:weight_class_fvar",
+        "opentype:slant_direction",
         "fvar_name_entries",
         "fontdata_namecheck",
         "glyf_nested_components",

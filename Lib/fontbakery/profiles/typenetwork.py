@@ -95,7 +95,6 @@ PROFILE = {
             "mandatory_avar_table",
             "missing_small_caps_glyphs",
             "name/family_and_style_max_length",
-            "slant_direction",
             "smart_dropout",  # OVERRIDEN
             "stylisticset_description",
             "varfont/consistent_axes",

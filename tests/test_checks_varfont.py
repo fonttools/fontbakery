@@ -74,17 +74,6 @@ def test_check_mandatory_avar_table():
     assert_results_contain(check(ttFont), WARN, "missing-avar")
 
 
-def test_check_slant_direction():
-    """Checking direction of slnt axis angles"""
-    check = CheckTester("slant_direction")
-
-    font = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
-    assert_PASS(check(font))
-
-    font = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
-    assert_results_contain(check(font), FAIL, "positive-value-for-clockwise-lean")
-
-
 def test_varfont_instances_in_order():
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
     check = CheckTester("varfont/instances_in_order")
