@@ -289,7 +289,7 @@ def can_shape(ttFont, text, parameters=None):
     proposal="https://github.com/fonttools/fontbakery/issues/3159",
 )
 def check_render_own_name(ttFont):
-    """Check font can render its own name."""
+    """Ensure font can render its own name."""
     menu_name = (
         ttFont["name"]
         .getName(

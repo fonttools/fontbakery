@@ -51,6 +51,7 @@ PROFILE = {
             "os2_metrics_match_hhea",
             "ots",
             "required_tables",
+            "render_own_name",
             "rupee",
             "sfnt_version",
             "soft_hyphen",

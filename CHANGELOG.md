@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"
   - **[glyf_nested_components]**: "Ensure glyphs do not have components which are themselves components."
   - **[hinting_impact]**: "Show hinting filesize impact." (merely INFO-level result)
+  - **[render_own_name]**: "Ensure font can render its own name."
   - **[vttclean]**: "There must not be VTT Talk sources in the font."
 
 #### Moved from Fontwerk to Universal profile
