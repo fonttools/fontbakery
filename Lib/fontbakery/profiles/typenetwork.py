@@ -34,6 +34,7 @@ PROFILE = {
         "hinting_impact",
         "legacy_accents",
         "no_debugging_tables",
+        "render_own_name",
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
         "ufolint",

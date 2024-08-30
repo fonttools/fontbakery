@@ -163,7 +163,6 @@ PROFILE = {
             "mandatory_avar_table",
             "missing_small_caps_glyphs",
             "name/ascii_only_entries",
-            "render_own_name",
             "smart_dropout",
             "stylisticset_description",
             "varfont/consistent_axes",
