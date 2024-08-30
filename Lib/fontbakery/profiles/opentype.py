@@ -45,6 +45,7 @@ PROFILE = {
             "opentype:points_out_of_bounds",
             "opentype:postscript_name",
             "opentype:post_table_version",
+            "opentype:slant_direction",
             "opentype:stat_has_axis_value_tables",
             "opentype:unitsperem",
             "opentype:varfont/distinct_instance_records",

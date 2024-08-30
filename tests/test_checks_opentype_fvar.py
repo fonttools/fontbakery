@@ -666,3 +666,14 @@ def test_check_varfont_family_axis_ranges():
         TTFont("data/test/cabinvf/Cabin-Italic[wdth,wght].ttf"),
     ]
     assert_PASS(check(ttFonts), "with good varfont...")
+
+
+def test_check_slant_direction():
+    """Checking direction of slnt axis angles."""
+    check = CheckTester("opentype:slant_direction")
+
+    font = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
+    assert_PASS(check(font))
+
+    font = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
+    assert_results_contain(check(font), FAIL, "positive-value-for-clockwise-lean")
