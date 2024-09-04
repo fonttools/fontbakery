@@ -27,7 +27,6 @@ for notreal in [
     "defcon",
     "vharfbuzz",
     "uharfbuzz",
-    "fontMath",
 ]:
     sys.modules[notreal] = MagicMock()
 
