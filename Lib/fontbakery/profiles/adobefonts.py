@@ -25,6 +25,8 @@ PROFILE = {
         "whitespace_ink",
     ],
     "pending_review": [
+        "notofonts:cmap/alien_codepoints",  # Note: These two checks had not been previously marked as permanently excluded,
+        "notofonts:unicode_range_bits",     # so maybe there's still some change they may be considered useful here?
         "opentype:caret_slope",
         "opentype:dsig",
         "opentype:fsselection",
@@ -81,17 +83,6 @@ PROFILE = {
             "googlefonts:varfont/bold_wght_coord",  # IS_OVERRIDDEN
         ],
         "notofonts": [
-            # "notofonts:cmap/unexpected_subtables",  # PERMANENTLY_EXCLUDED
-            # "notofonts:hmtx/comma_period",          # PERMANENTLY_EXCLUDED
-            # "notofonts:hmtx/encoded_latin_digits",  # PERMANENTLY_EXCLUDED
-            # "notofonts:hmtx/whitespace_advances",   # PERMANENTLY_EXCLUDED
-            # "notofonts:name/designer",              # PERMANENTLY_EXCLUDED
-            # "notofonts:name/manufacturer",          # PERMANENTLY_EXCLUDED
-            # "notofonts:name/trademark",             # PERMANENTLY_EXCLUDED
-            # "notofonts:os2/vendor",                 # PERMANENTLY_EXCLUDED
-            # "notofonts:cmap/alien_codepoints",
-            # "notofonts:unicode_range_bits",
-            #
             "cmap/format_12",
         ],
     },
