@@ -28,6 +28,7 @@ PROFILE = {
             "case_mapping",
             "cjk_chws_feature",
             "contour_count",
+            "family/control_chars",
             "family/single_directory",
             "family/vertical_metrics",
             "family/win_ascent_and_descent",
