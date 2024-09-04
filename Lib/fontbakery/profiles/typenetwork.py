@@ -28,7 +28,7 @@ PROFILE = {
         "googlefonts:glyphsets/shape_languages",
         "googlefonts:metadata/primary_script",
         "googlefonts:metadata/unreachable_subsetting",
-        "googlefonts:metadata/valid_nameid25", # Previously this one had been marked as "temporarily excluded".
+        "googlefonts:metadata/valid_nameid25",  # Previously this one had been marked as "temporarily excluded".
         "googlefonts:negative_advance_width",
         "googlefonts:STAT/axis_order",
         #
@@ -41,7 +41,7 @@ PROFILE = {
         "designspace_has_sources",
         "empty_letters",  # Previously this one had a note: "The check is broken"
         "fontdata_namecheck",
-        "fontval",  # Temporarily disabled
+        "fontval",  # Temporarily disabled
         "gsub/smallcaps_before_ligatures",
         "hinting_impact",
         "legacy_accents",

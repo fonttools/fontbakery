@@ -26,7 +26,7 @@ PROFILE = {
     ],
     "pending_review": [
         "notofonts:cmap/alien_codepoints",  # Note: These two checks had not been previously marked as permanently excluded,
-        "notofonts:unicode_range_bits",     # so maybe there's still some change they may be considered useful here?
+        "notofonts:unicode_range_bits",  # so maybe there's still some change they may be considered useful here?
         "opentype:caret_slope",
         "opentype:dsig",
         "opentype:fsselection",
