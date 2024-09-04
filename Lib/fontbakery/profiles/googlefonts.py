@@ -161,7 +161,6 @@ PROFILE = {
             "kerning_for_non_ligated_sequences",
             "ligature_carets",
             "mandatory_avar_table",
-            "missing_small_caps_glyphs",
             "name/ascii_only_entries",
             "smart_dropout",
             "varfont/consistent_axes",

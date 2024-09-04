@@ -20,6 +20,7 @@ PROFILE = {
         "hinting_impact",
         "gsub/smallcaps_before_ligatures",
         "inconsistencies_between_fvar_stat",
+        "missing_small_caps_glyphs",
         "no_debugging_tables",
         "no_mac_entries",
         "render_own_name",

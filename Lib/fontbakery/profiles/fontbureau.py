@@ -8,6 +8,7 @@ PROFILE = {
         "glyf_nested_components",
         "hinting_impact",
         "inconsistencies_between_fvar_stat",
+        "missing_small_caps_glyphs",
         "no_mac_entries",
         "render_own_name",
         "stylisticset_description",

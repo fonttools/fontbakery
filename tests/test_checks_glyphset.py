@@ -12,7 +12,7 @@ from fontbakery.status import FAIL
 
 
 def test_check_missing_small_caps_glyphs():
-    """Check small caps glyphs are available."""
+    """Ensure small caps glyphs are available."""
     # check = CheckTester("missing_small_caps_glyphs")
     # TODO: Implement-me!
 
