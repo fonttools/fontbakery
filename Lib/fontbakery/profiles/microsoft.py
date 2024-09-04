@@ -15,6 +15,7 @@ PROFILE = {
         "designspace_has_consistent_groups",
         "designspace_has_default_master",
         "designspace_has_sources",
+        "empty_letters",
         "family/control_chars",
         "fvar_name_entries",
         "fontdata_namecheck",

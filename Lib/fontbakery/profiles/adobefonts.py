@@ -80,8 +80,6 @@ PROFILE = {
             "adobefonts:nameid_1_win_english",
             "adobefonts:unsupported_tables",
             "adobefonts:STAT_strings",
-            #
-            "empty_letters",
         ],
         "Google Fonts": [
             "googlefonts:varfont/duplicate_instance_names",
