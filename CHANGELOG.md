@@ -15,6 +15,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"
   - **[glyf_nested_components]**: "Ensure glyphs do not have components which are themselves components."
   - **[hinting_impact]**: "Show hinting filesize impact." (merely INFO-level result)
+  - **[mandatory_avar_table]**: "Ensure variable fonts include an avar table."
   - **[missing_small_caps_glyphs]**: "Ensure small caps glyphs are available."
   - **[name/family_and_style_max_length]**: "Combined length of family and style must not exceed 32 characters."
   - **[render_own_name]**: "Ensure font can render its own name."

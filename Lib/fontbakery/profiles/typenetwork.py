@@ -89,7 +89,6 @@ PROFILE = {
             "googlefonts:varfont/bold_wght_coord",
             "googlefonts:varfont/duplicate_instance_names",
             #
-            "mandatory_avar_table",
             "smart_dropout",
             "varfont/consistent_axes",
         ],

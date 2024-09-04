@@ -156,7 +156,6 @@ PROFILE = {
             "integer_ppem_if_hinted",
             "kerning_for_non_ligated_sequences",
             "ligature_carets",
-            "mandatory_avar_table",
             "name/ascii_only_entries",
             "smart_dropout",
             "varfont/consistent_axes",
