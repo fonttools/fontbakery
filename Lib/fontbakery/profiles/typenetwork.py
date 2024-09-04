@@ -2,7 +2,6 @@
 PROFILE = {
     "include_profiles": [
         "universal",
-        # "fontval",  # Temporarily disabled
     ],
     "exclude_checks": [
         "opentype:family/panose_familytype",
@@ -18,18 +17,31 @@ PROFILE = {
         "STAT_strings",  # replaced by adobefonts:STAT_strings
     ],
     "pending_review": [
+        "typenetwork:fstype",  # DEPRECATED: if not really needed anymore, it would be good to delete it from the repo.
+        #
         "opentype:cff_ascii_strings",
         "opentype:postscript_name",
         "opentype:varfont/family_axis_ranges",
         "opentype:weight_class_fvar",
-        # "caps_vertically_centered",  # Disabled: issue #4274
+        #
+        "googlefonts:gasp",
+        "googlefonts:glyphsets/shape_languages",
+        "googlefonts:metadata/primary_script",
+        "googlefonts:metadata/unreachable_subsetting",
+        "googlefonts:metadata/valid_nameid25", # Previously this one had been marked as "temporarily excluded".
+        "googlefonts:negative_advance_width",
+        "googlefonts:STAT/axis_order",
+        #
+        "caps_vertically_centered",  # Disabled: issue #4274
         "case_mapping",
         "designspace_has_consistent_codepoints",
         "designspace_has_consistent_glyphset",
         "designspace_has_consistent_groups",
         "designspace_has_default_master",
         "designspace_has_sources",
+        "empty_letters",  # Previously this one had a note: "The check is broken"
         "fontdata_namecheck",
+        "fontval",  # Temporarily disabled
         "gsub/smallcaps_before_ligatures",
         "hinting_impact",
         "legacy_accents",
@@ -42,7 +54,8 @@ PROFILE = {
         "ufo_recommended_fields",
         "ufo_required_fields",
         "ufo_unnecessary_fields",
-        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
+        "varfont/duplexed_axis_reflow",
+        "vtt_volt_data",  # Very similar to 'vttclean' check, it may be a good idea to merge them.
     ],
     "sections": {
         "Type Network": [
@@ -53,7 +66,6 @@ PROFILE = {
             "typenetwork:family/valid_strikeout",
             "typenetwork:family/valid_underline",
             "typenetwork:font_is_centered_vertically",
-            # "typenetwork:fstype",  # DEPRECATED
             "typenetwork:glyph_coverage",
             "typenetwork:marks_width",
             "typenetwork:name/mandatory_entries",
@@ -68,38 +80,22 @@ PROFILE = {
             "adobefonts:nameid_1_win_english",
             "adobefonts:STAT_strings",
             "adobefonts:unsupported_tables",
-            #
-            # "empty_letters",  # The check is broken
         ],
         "Fontwerk": [
             "fontwerk:style_linking",
-            # "fontwerk:vendor_id", # PERMANENTLY EXCLUDED
         ],
         "Google Fonts": [
             "googlefonts:family/equal_codepoint_coverage",
-            # "googlefonts:gasp", # Review
-            # "googlefonts:glyphsets/shape_languages", # Review
-            # "googlefonts:kerning_for_non_ligated_sequences", # PERMANENTLY EXCLUDED
-            # "googlefonts:ligature_carets", # PERMANENTLY EXCLUDED
-            # "googlefonts:metadata/empty_designer", # PERMANENTLY EXCLUDED
-            # "googlefonts:metadata/primary_script", # Review
-            # "googlefonts:metadata/unreachable_subsetting", # Review
-            # "googlefonts:metadata/valid_nameid25", # TEMPORARY EXCLUDED
-            # "googlefonts:negative_advance_width",
-            # "googlefonts:os2/use_typo_metrics", # Removed in favor of new vmetrics check
-            # "googlefonts:STAT/axis_order",
-            "googlefonts:varfont/bold_wght_coord",  # OVERRIDEN: Lowered to WARN
+            "googlefonts:varfont/bold_wght_coord",
             "googlefonts:varfont/duplicate_instance_names",
-            # "googlefonts:vendor_id", # PERMANENTLY EXCLUDED
             #
             "family/control_chars",
             "mandatory_avar_table",
             "missing_small_caps_glyphs",
             "name/family_and_style_max_length",
-            "smart_dropout",  # OVERRIDEN
+            "smart_dropout",
             "stylisticset_description",
             "varfont/consistent_axes",
-            # "varfont/duplexed_axis_reflow", # Review
         ],
         "Outline Checks": [
             "outline_alignment_miss",
@@ -109,10 +105,7 @@ PROFILE = {
             "outline_short_segments",
         ],
         "Shaping Checks": [
-            "dotted_circle",  # REVIEW
-            # "shaping/regression", # PERMANENTLY EXCLUDED
-            # "shaping/forbidden", # PERMANENTLY EXCLUDED
-            # "shaping/collides",  # PERMANENTLY EXCLUDED
+            "dotted_circle",  # This one is included, but it would be good to be reviewed.
             "soft_dotted",
         ],
     },
