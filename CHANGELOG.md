@@ -27,6 +27,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[render_own_name]**: "Ensure font can render its own name."
   - **[smart_dropout]**: "Ensure smart dropout control is enabled in "prep" table instructions."
   - **[stylisticset_description]**: "Ensure Stylistic Sets have description."
+  - **[varfont/consistent_axes]**: "Ensure that all variable font files have the same set of axes and axis ranges."
   - **[vttclean]**: "There must not be VTT Talk sources in the font."
 
 #### Moved from Fontwerk to Universal profile

@@ -160,7 +160,6 @@ PROFILE = {
             "kerning_for_non_ligated_sequences",
             "ligature_carets",
             "name/ascii_only_entries",
-            "varfont/consistent_axes",
             "varfont/duplexed_axis_reflow",
             "varfont/instances_in_order",
             "varfont/unsupported_axes",

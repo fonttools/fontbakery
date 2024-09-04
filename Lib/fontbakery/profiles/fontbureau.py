@@ -19,6 +19,7 @@ PROFILE = {
         "smart_dropout",
         "stylisticset_description",
         "typographic_family_name",
+        "varfont/consistent_axes",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
         "vttclean",
     ],

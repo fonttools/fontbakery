@@ -90,8 +90,6 @@ PROFILE = {
             "googlefonts:family/equal_codepoint_coverage",
             "googlefonts:varfont/bold_wght_coord",
             "googlefonts:varfont/duplicate_instance_names",
-            #
-            "varfont/consistent_axes",
         ],
         "Outline Checks": [
             "outline_alignment_miss",
