@@ -52,9 +52,9 @@ PROFILE = {
         "Name Checks": [
             "microsoft:office_ribz_req",
             #
-            "name_id_1",
-            "name_id_2",
-            "name_length_req",
+            "name_id_1",  # TODO: These name id 1 & 2 checks are too simple. Maybe they could be merged.
+            "name_id_2",  # TODO: Also, they could be included in some other name table check on the universal profile.
+            "name_length_req",  # TODO: Maybe the same applies to this one.
             "typographic_family_name",
         ],
         "Metrics Checks": [
@@ -67,7 +67,7 @@ PROFILE = {
             "microsoft:STAT_table_eliding_bit",
         ],
         "Glyph Checks": [
-            "tnum_glyphs_equal_widths",
+            "tnum_glyphs_equal_widths",  # TODO: compare this to 'tabular_kerning' to attempt merging them into a single check.
         ],
     },
 }
