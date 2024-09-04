@@ -57,6 +57,7 @@ PROFILE = {
         "legacy_accents",
         "math_signs_width",
         "missing_small_caps_glyphs",
+        "name/family_and_style_max_length",
         "no_debugging_tables",
         "no_mac_entries",
         "render_own_name",
