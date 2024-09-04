@@ -55,7 +55,6 @@ PROFILE = {
             "name_id_1",  # TODO: These name id 1 & 2 checks are too simple. Maybe they could be merged.
             "name_id_2",  # TODO: Also, they could be included in some other name table check on the universal profile.
             "name_length_req",  # TODO: Maybe the same applies to this one.
-            "typographic_family_name",
         ],
         "Metrics Checks": [
             "microsoft:vertical_metrics",

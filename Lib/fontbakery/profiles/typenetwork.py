@@ -50,6 +50,7 @@ PROFILE = {
         "render_own_name",
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
+        "typographic_family_name",
         "ufolint",
         "ufo_features_default_languagesystem",
         "ufo_recommended_fields",

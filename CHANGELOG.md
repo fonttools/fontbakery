@@ -33,6 +33,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[no_mac_entries]**: "Ensure font doesn't have Mac name table entries (platform=1)."
 
 #### Moved from Microsoft to Universal profile
+  - **[typographic_family_name]**: "Typographic Family name consistency."
   - **[vtt_volt_data]**: "VTT or Volt Source Data must not be present."
 
 
