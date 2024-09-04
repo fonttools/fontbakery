@@ -227,13 +227,13 @@ def check_mandatory_glyphs(ttFont):
 @check(
     id="missing_small_caps_glyphs",
     rationale="""
-        Ensure small caps glyphs are available if
+        Ensure small caps glyphs must be available if
         a font declares smcp or c2sc OT features.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3154",
 )
 def check_missing_small_caps_glyphs(ttFont):
-    """Check small caps glyphs are available."""
+    """Ensure small caps glyphs are available."""
 
     if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:
         llist = ttFont["GSUB"].table.LookupList
