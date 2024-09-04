@@ -61,6 +61,7 @@ PROFILE = {
         "render_own_name",
         "soft_hyphen",
         "STAT_in_statics",
+        "stylisticset_description",
         "superfamily/list",
         "superfamily/vertical_metrics",
         "tabular_kerning",

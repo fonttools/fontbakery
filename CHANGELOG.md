@@ -15,6 +15,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[glyf_nested_components]**: "Ensure glyphs do not have components which are themselves components."
   - **[hinting_impact]**: "Show hinting filesize impact." (merely INFO-level result)
   - **[render_own_name]**: "Ensure font can render its own name."
+  - **[stylisticset_description]**: "Ensure Stylistic Sets have description."
   - **[vttclean]**: "There must not be VTT Talk sources in the font."
 
 #### Moved from Fontwerk to Universal profile
