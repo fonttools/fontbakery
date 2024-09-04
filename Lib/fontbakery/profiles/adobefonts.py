@@ -70,6 +70,7 @@ PROFILE = {
         "superfamily/vertical_metrics",
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
+        "typographic_family_name",
         "unwanted_tables",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
         "vttclean",

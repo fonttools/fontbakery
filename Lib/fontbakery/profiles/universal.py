@@ -68,6 +68,7 @@ PROFILE = {
             "transformed_components",
             "ttx_roundtrip",
             "typoascender_exceeds_Agrave",
+            "typographic_family_name",
             "unique_glyphnames",
             "unreachable_glyphs",
             "unwanted_aat_tables",
