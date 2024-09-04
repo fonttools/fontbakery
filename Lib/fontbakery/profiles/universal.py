@@ -60,6 +60,7 @@ PROFILE = {
             "render_own_name",
             "rupee",
             "sfnt_version",
+            "smart_dropout",
             "soft_hyphen",
             "STAT_in_statics",
             "STAT_strings",

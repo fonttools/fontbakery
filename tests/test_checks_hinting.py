@@ -43,7 +43,7 @@ def test_check_integer_ppem_if_hinted():
 
 
 def test_check_smart_dropout():
-    """Font enables smart dropout control in "prep" table instructions?"""
+    """Ensure smart dropout control is enabled in "prep" table instructions."""
     check = CheckTester("smart_dropout")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))

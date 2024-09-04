@@ -25,6 +25,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[missing_small_caps_glyphs]**: "Ensure small caps glyphs are available."
   - **[name/family_and_style_max_length]**: "Combined length of family and style must not exceed 32 characters."
   - **[render_own_name]**: "Ensure font can render its own name."
+  - **[smart_dropout]**: "Ensure smart dropout control is enabled in "prep" table instructions."
   - **[stylisticset_description]**: "Ensure Stylistic Sets have description."
   - **[vttclean]**: "There must not be VTT Talk sources in the font."
 

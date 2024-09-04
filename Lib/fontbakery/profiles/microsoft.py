@@ -29,6 +29,7 @@ PROFILE = {
         "no_debugging_tables",
         "no_mac_entries",
         "render_own_name",
+        "smart_dropout",
         "stylisticset_description",
         "typoascender_exceeds_Agrave",
         "ufolint",

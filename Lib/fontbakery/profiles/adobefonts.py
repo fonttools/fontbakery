@@ -63,6 +63,7 @@ PROFILE = {
         "no_debugging_tables",
         "no_mac_entries",
         "render_own_name",
+        "smart_dropout",
         "soft_hyphen",
         "STAT_in_statics",
         "stylisticset_description",
