@@ -9,6 +9,7 @@ PROFILE = {
         "opentype:cff_ascii_strings",
         "opentype:slant_direction",
         "opentype:weight_class_fvar",
+        "cmap/format_12",
         "designspace_has_consistent_codepoints",
         "designspace_has_consistent_glyphset",
         "designspace_has_consistent_groups",

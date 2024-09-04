@@ -19,7 +19,7 @@ PROFILE = {
             "notofonts:hmtx/whitespace_advances",
             "notofonts:cmap/alien_codepoints",
             #
-            "cmap/format_12",
+            "cmap/format_12",  # While this check is still in googlefonts' pending review list, we have to explicitly add it here.
         ]
     },
     # For builds which target Google Fonts, we do want these checks, but as part of
