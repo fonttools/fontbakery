@@ -2,6 +2,7 @@
 PROFILE = {
     "include_profiles": ["universal"],
     "pending_review": [
+        "cmap/format_12",
         "inconsistencies_between_fvar_stat",
         "no_mac_entries",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.

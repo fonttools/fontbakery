@@ -87,9 +87,6 @@ PROFILE = {
             "googlefonts:varfont/duplicate_instance_names",
             "googlefonts:varfont/bold_wght_coord",  # IS_OVERRIDDEN
         ],
-        "notofonts": [
-            "cmap/format_12",
-        ],
     },
     "overrides": {
         "whitespace_glyphs": [

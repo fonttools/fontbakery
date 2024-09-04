@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Moved from Fontwerk to OpenType profile
   - **[opentype:weight_class_fvar]:** "Checking if OS/2 usWeightClass matches fvar."
 
+#### Moved from Noto Fonts to Universal profile
+  - **[cmap/format_12]**: "Check that format 12 cmap subtables are correctly constituted."
+
 #### Moved from Google Fonts to OpenType profile
   - **[opentype:slant_direction]**: "Checking direction of slnt axis angles."
 

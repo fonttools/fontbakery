@@ -18,6 +18,7 @@ PROFILE = {
     ],
     "pending_review": [
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
+        "cmap/format_12", # Note: When reviewing this one, please check whether googlefonts also includes it or not, since currently it is in googlefonts' pending_review as well. 
     ],
     "sections": {
         "Fontwerk Checks": [
