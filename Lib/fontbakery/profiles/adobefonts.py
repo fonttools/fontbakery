@@ -85,7 +85,7 @@ PROFILE = {
         ],
         "Google Fonts": [
             "googlefonts:varfont/duplicate_instance_names",
-            "googlefonts:varfont/bold_wght_coord",  # IS_OVERRIDDEN
+            "googlefonts:varfont/bold_wght_coord",
         ],
     },
     "overrides": {
