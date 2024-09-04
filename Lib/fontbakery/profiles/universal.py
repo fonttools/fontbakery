@@ -44,6 +44,7 @@ PROFILE = {
             "inconsistencies_between_fvar_stat",
             "interpolation_issues",
             "legacy_accents",
+            "empty_letters",
             "linegaps",
             "mandatory_avar_table",
             "mandatory_glyphs",

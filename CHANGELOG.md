@@ -6,11 +6,14 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Moved from Fontwerk to OpenType profile
   - **[opentype:weight_class_fvar]:** "Checking if OS/2 usWeightClass matches fvar."
 
+#### Moved from Google Fonts to OpenType profile
+  - **[opentype:slant_direction]**: "Checking direction of slnt axis angles."
+
 #### Moved from Noto Fonts to Universal profile
   - **[cmap/format_12]**: "Check that format 12 cmap subtables are correctly constituted."
 
-#### Moved from Google Fonts to OpenType profile
-  - **[opentype:slant_direction]**: "Checking direction of slnt axis angles."
+#### Moved from Adobe Fonts to Universal profile
+  - **[empty_letters]**: "Letters in font have glyphs that are not empty?"
 
 #### Moved from Google Fonts to Universal profile
   - **[family/control_chars]**: "Does font file include unacceptable control character glyphs?"
