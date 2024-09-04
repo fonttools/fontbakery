@@ -124,7 +124,7 @@ def check_hinting_impact(font):
     proposal="legacy:check/072",
 )
 def check_smart_dropout(ttFont):
-    """Font enables smart dropout control in "prep" table instructions?"""
+    """Ensure smart dropout control is enabled in "prep" table instructions."""
     INSTRUCTIONS = b"\xb8\x01\xff\x85\xb0\x04\x8d"
 
     if not ("prep" in ttFont and INSTRUCTIONS in ttFont["prep"].program.getBytecode()):

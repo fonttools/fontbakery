@@ -16,6 +16,7 @@ PROFILE = {
         "name/family_and_style_max_length",
         "no_mac_entries",
         "render_own_name",
+        "smart_dropout",
         "stylisticset_description",
         "typographic_family_name",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
