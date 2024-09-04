@@ -94,7 +94,6 @@ PROFILE = {
             "missing_small_caps_glyphs",
             "name/family_and_style_max_length",
             "smart_dropout",
-            "stylisticset_description",
             "varfont/consistent_axes",
         ],
         "Outline Checks": [

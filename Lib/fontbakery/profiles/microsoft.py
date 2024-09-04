@@ -23,6 +23,7 @@ PROFILE = {
         "no_debugging_tables",
         "no_mac_entries",
         "render_own_name",
+        "stylisticset_description",
         "typoascender_exceeds_Agrave",
         "ufolint",
         "ufo_features_default_languagesystem",

@@ -57,6 +57,7 @@ PROFILE = {
             "soft_hyphen",
             "STAT_in_statics",
             "STAT_strings",
+            "stylisticset_description",
             "tabular_kerning",
             "transformed_components",
             "ttx_roundtrip",

@@ -164,7 +164,6 @@ PROFILE = {
             "missing_small_caps_glyphs",
             "name/ascii_only_entries",
             "smart_dropout",
-            "stylisticset_description",
             "varfont/consistent_axes",
             "varfont/duplexed_axis_reflow",
             "varfont/instances_in_order",
