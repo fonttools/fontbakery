@@ -44,6 +44,7 @@ PROFILE = {
             "interpolation_issues",
             "legacy_accents",
             "linegaps",
+            "mandatory_avar_table",
             "mandatory_glyphs",
             "math_signs_width",
             "missing_small_caps_glyphs",

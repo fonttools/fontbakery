@@ -200,8 +200,8 @@ def check_varfont_unsupported_axes(font):
 
         If the progression rates of axes is linear, this check can be ignored.
         Fontmake will also skip adding an avar table if the progression rates
-        are linear. However, we still recommend designers visually proof each
-        instance is at the expected weight, width etc.
+        are linear. However, it is still recommended that designers visually proof
+        each instance is at the expected weight, width etc.
     """,
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3100"

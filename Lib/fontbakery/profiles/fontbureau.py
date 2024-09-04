@@ -9,6 +9,7 @@ PROFILE = {
         "glyf_nested_components",
         "hinting_impact",
         "inconsistencies_between_fvar_stat",
+        "mandatory_avar_table",
         "missing_small_caps_glyphs",
         "name/family_and_style_max_length",
         "no_mac_entries",
