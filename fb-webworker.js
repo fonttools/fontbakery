@@ -33,7 +33,7 @@ async function loadPyodideAndPackages() {
     'axisregistry',
     'setuptools',
     'lxml',
-    'fontTools>=4.39.0',
+    'fontTools>=4.53.0',
     'opentypespec',
     'munkres',
     'mock',
