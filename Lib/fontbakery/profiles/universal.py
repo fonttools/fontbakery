@@ -46,6 +46,7 @@ PROFILE = {
             "mandatory_glyphs",
             "math_signs_width",
             "missing_small_caps_glyphs",
+            "name/family_and_style_max_length",
             "name/trailing_spaces",
             "no_debugging_tables",
             "no_mac_entries",

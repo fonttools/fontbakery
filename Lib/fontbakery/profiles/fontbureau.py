@@ -9,6 +9,7 @@ PROFILE = {
         "hinting_impact",
         "inconsistencies_between_fvar_stat",
         "missing_small_caps_glyphs",
+        "name/family_and_style_max_length",
         "no_mac_entries",
         "render_own_name",
         "stylisticset_description",

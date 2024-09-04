@@ -88,8 +88,6 @@ PROFILE = {
             "googlefonts:name/line_breaks",
             "googlefonts:name/rfn",
             "googlefonts:name/unwanted_chars",
-            #
-            "name/family_and_style_max_length",
         ],
         "Repository Checks": [
             "googlefonts:license/OFL_body_text",
