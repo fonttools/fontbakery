@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[opentype:slant_direction]**: "Checking direction of slnt axis angles."
 
 #### Moved from Google Fonts to Universal profile
+  - **[family/control_chars]**: "Does font file include unacceptable control character glyphs?"
   - **[fvar_name_entries]**: "All name entries referenced by fvar instances exist on the name table?"
   - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"
   - **[glyf_nested_components]**: "Ensure glyphs do not have components which are themselves components."

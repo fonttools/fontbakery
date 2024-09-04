@@ -78,8 +78,6 @@ PROFILE = {
             "googlefonts:family/has_license",
             "googlefonts:family/italics_have_roman_counterparts",
             "googlefonts:family/tnum_horizontal_metrics",
-            #
-            "family/control_chars",
         ],
         "Name table checks": [
             "googlefonts:name/family_name_compliance",
