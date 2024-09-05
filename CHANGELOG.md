@@ -37,6 +37,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[smart_dropout]**: "Ensure smart dropout control is enabled in "prep" table instructions."
   - **[stylisticset_description]**: "Ensure Stylistic Sets have description."
   - **[varfont/consistent_axes]**: "Ensure that all variable font files have the same set of axes and axis ranges."
+  - **[varfont/duplexed_axis_reflow]**: "Ensure VFs with duplexed axes do not vary horizontal advance."
   - **[vttclean]**: "There must not be VTT Talk sources in the font."
 
 #### Moved from Fontwerk to Universal profile

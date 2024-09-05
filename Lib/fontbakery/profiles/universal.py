@@ -85,6 +85,7 @@ PROFILE = {
             "unwanted_tables",
             "valid_glyphnames",
             "varfont/consistent_axes",
+            "varfont/duplexed_axis_reflow",
             "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
             "vttclean",
             "whitespace_glyphnames",

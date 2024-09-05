@@ -29,6 +29,7 @@ PROFILE = {
         "stylisticset_description",
         "typographic_family_name",
         "varfont/consistent_axes",
+        "varfont/duplexed_axis_reflow",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
         "vttclean",
     ],
