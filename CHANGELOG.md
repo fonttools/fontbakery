@@ -26,6 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[fvar_name_entries]**: "All name entries referenced by fvar instances exist on the name table?"
   - **[glyf_nested_components]**: "Ensure glyphs do not have components which are themselves components."
   - **[hinting_impact]**: "Show hinting filesize impact." (merely INFO-level result)
+  - **[integer_ppem_if_hinted]**: "PPEM must be an integer on hinted fonts."
   - **[kerning_for_non_ligated_sequences]**: "Is there kerning info for non-ligated sequences?"
   - **[ligature_carets]**: "Are there caret positions declared for every ligature?"
   - **[mandatory_avar_table]**: "Ensure variable fonts include an avar table."

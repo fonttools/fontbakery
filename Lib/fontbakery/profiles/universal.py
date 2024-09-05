@@ -48,6 +48,7 @@ PROFILE = {
             "gsub/smallcaps_before_ligatures",
             "hinting_impact",
             "inconsistencies_between_fvar_stat",
+            "integer_ppem_if_hinted",
             "interpolation_issues",
             "legacy_accents",
             "ligature_carets",

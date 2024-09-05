@@ -151,7 +151,6 @@ PROFILE = {
             "googlefonts:vertical_metrics",
             "googlefonts:vertical_metrics_regressions",
             #
-            "integer_ppem_if_hinted",
             "name/ascii_only_entries",
             "varfont/duplexed_axis_reflow",
             "varfont/instances_in_order",

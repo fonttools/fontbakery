@@ -16,6 +16,7 @@ PROFILE = {
         "glyf_nested_components",
         "hinting_impact",
         "inconsistencies_between_fvar_stat",
+        "integer_ppem_if_hinted",
         "kerning_for_non_ligated_sequences",
         "ligature_carets",
         "mandatory_avar_table",
