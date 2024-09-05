@@ -48,6 +48,7 @@ PROFILE = {
         "ufo_unnecessary_fields",
         "unwanted_aat_tables",
         "varfont/consistent_axes",
+        "varfont/duplexed_axis_reflow",
         "vttclean",  # very similar to vtt_volt_data, may be a good idea to merge them.
     ],
     "sections": {

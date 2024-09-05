@@ -151,7 +151,6 @@ PROFILE = {
             "googlefonts:vertical_metrics",
             "googlefonts:vertical_metrics_regressions",
             #
-            "varfont/duplexed_axis_reflow",
             "varfont/instances_in_order",
             "varfont/unsupported_axes",
         ],
