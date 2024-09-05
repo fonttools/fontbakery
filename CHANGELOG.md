@@ -16,6 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[empty_letters]**: "Letters in font have glyphs that are not empty?"
 
 #### Moved from Google Fonts to Universal profile
+  - **[colorfont_tables]**: "Ensure font has the expected color font tables."
   - **[family/control_chars]**: "Does font file include unacceptable control character glyphs?"
   - **[file_size]**: "Ensure files are not too large."
   - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"

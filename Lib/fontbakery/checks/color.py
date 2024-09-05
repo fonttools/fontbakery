@@ -23,7 +23,7 @@ from fontbakery.prelude import check, Message, FAIL, WARN
     ],
 )
 def check_colorfont_tables(font, ttFont):
-    """Check font has the expected color font tables."""
+    """Ensure font has the expected color font tables."""
     NANOEMOJI_ADVICE = (
         "You can do it by using the maximum_color tool provided by"
         " the nanoemoji project:\n"
