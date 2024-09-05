@@ -150,8 +150,6 @@ PROFILE = {
             "googlefonts:version_bump",
             "googlefonts:vertical_metrics",
             "googlefonts:vertical_metrics_regressions",
-            #
-            "varfont/unsupported_axes",
         ],
     },
     "configuration_defaults": {

@@ -180,7 +180,7 @@ def check_varfont_duplexed_axis_reflow(font, ttFont, config):
     proposal="https://github.com/fonttools/fontbakery/issues/2866",
 )
 def check_varfont_unsupported_axes(font):
-    """Ensure VFs do not contain the ital axis."""
+    """Ensure VFs do not contain (yet) the ital axis."""
     if font.ital_axis:
         yield FAIL, Message(
             "unsupported-ital",

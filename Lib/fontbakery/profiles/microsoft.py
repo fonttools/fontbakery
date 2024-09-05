@@ -50,6 +50,7 @@ PROFILE = {
         "varfont/consistent_axes",
         "varfont/duplexed_axis_reflow",
         "varfont/instances_in_order",
+        "varfont/unsupported_axes",
         "vttclean",  # very similar to vtt_volt_data, may be a good idea to merge them.
     ],
     "sections": {

@@ -46,7 +46,7 @@ def test_check_varfont_duplexed_axis_reflow():
 
 
 def test_check_varfont_unsupported_axes():
-    """Ensure VFs do not contain opsz or ital axes."""
+    """Ensure VFs do not contain (yet) the ital axis."""
     check = CheckTester("varfont/unsupported_axes")
 
     # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'slnt' variation axes.
