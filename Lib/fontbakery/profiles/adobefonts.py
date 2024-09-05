@@ -59,6 +59,7 @@ PROFILE = {
         "glyf_nested_components",
         "gsub/smallcaps_before_ligatures",
         "hinting_impact",
+        "integer_ppem_if_hinted",
         "interpolation_issues",
         "kerning_for_non_ligated_sequences",
         "legacy_accents",

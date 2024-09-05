@@ -28,6 +28,7 @@ PROFILE = {
         "hinting_impact",
         "gsub/smallcaps_before_ligatures",
         "inconsistencies_between_fvar_stat",
+        "integer_ppem_if_hinted",
         "kerning_for_non_ligated_sequences",
         "ligature_carets",
         "mandatory_avar_table",

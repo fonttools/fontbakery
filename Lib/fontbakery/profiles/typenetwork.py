@@ -50,6 +50,7 @@ PROFILE = {
         "fontval",  # Temporarily disabled
         "gsub/smallcaps_before_ligatures",
         "hinting_impact",
+        "integer_ppem_if_hinted",
         "legacy_accents",
         "no_debugging_tables",
         "render_own_name",
