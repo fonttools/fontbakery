@@ -28,6 +28,7 @@ PROFILE = {
             "case_mapping",
             "cjk_chws_feature",
             "cmap/format_12",
+            "color_cpal_brightness",
             "colorfont_tables",
             "contour_count",
             "empty_letters",
