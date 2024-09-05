@@ -152,7 +152,6 @@ PROFILE = {
             "googlefonts:vertical_metrics_regressions",
             #
             "cjk_not_enough_glyphs",
-            "color_cpal_brightness",
             "empty_glyph_on_gid1_for_colrv0",
             "integer_ppem_if_hinted",
             "name/ascii_only_entries",

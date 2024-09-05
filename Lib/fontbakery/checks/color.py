@@ -86,7 +86,7 @@ def check_colorfont_tables(font, ttFont):
     proposal="https://github.com/fonttools/fontbakery/pull/3908",
 )
 def check_color_cpal_brightness(config, ttFont):
-    """Color layers should have a minimum brightness"""
+    """Color layers should have a minimum brightness."""
     from fontbakery.utils import pretty_print_list
 
     def color_brightness(hex_value):

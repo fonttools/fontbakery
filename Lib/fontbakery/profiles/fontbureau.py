@@ -4,6 +4,7 @@ PROFILE = {
         "opentype:weight_class_fvar",
         "opentype:slant_direction",
         "cmap/format_12",
+        "color_cpal_brightness",
         "colorfont_tables",
         "empty_letters",
         "family/control_chars",
