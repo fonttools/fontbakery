@@ -24,6 +24,7 @@ PROFILE = {
         "gsub/smallcaps_before_ligatures",
         "inconsistencies_between_fvar_stat",
         "kerning_for_non_ligated_sequences",
+        "ligature_carets",
         "mandatory_avar_table",
         "missing_small_caps_glyphs",
         "name/family_and_style_max_length",

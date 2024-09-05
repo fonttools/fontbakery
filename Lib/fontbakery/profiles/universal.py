@@ -45,6 +45,7 @@ PROFILE = {
             "inconsistencies_between_fvar_stat",
             "interpolation_issues",
             "legacy_accents",
+            "ligature_carets",
             "linegaps",
             "kerning_for_non_ligated_sequences",
             "mandatory_avar_table",

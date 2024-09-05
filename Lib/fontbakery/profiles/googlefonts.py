@@ -157,7 +157,6 @@ PROFILE = {
             "empty_glyph_on_gid1_for_colrv0",
             "file_size",
             "integer_ppem_if_hinted",
-            "ligature_carets",
             "name/ascii_only_entries",
             "varfont/duplexed_axis_reflow",
             "varfont/instances_in_order",
