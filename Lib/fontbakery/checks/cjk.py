@@ -13,7 +13,7 @@ from fontbakery.prelude import check, Message, WARN
     proposal="https://github.com/fonttools/fontbakery/pull/3214",
 )
 def check_cjk_not_enough_glyphs(font):
-    """Does the font contain less than 150 CJK characters?"""
+    """Any CJK font should contain at least a minimal set of 150 CJK characters."""
 
     cjk_glyphs = font.get_cjk_glyphs
     cjk_glyph_count = len(cjk_glyphs)

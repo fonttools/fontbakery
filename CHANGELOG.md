@@ -16,6 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[empty_letters]**: "Letters in font have glyphs that are not empty?"
 
 #### Moved from Google Fonts to Universal profile
+  - **[cjk_not_enough_glyphs]**: "Any CJK font should contain at least a minimal set of 150 CJK characters."
   - **[color_cpal_brightness]**: "Color layers should have a minimum brightness."
   - **[colorfont_tables]**: "Ensure font has the expected color font tables."
   - **[family/control_chars]**: "Does font file include unacceptable control character glyphs?"

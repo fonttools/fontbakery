@@ -9,6 +9,7 @@ PROFILE = {
         "opentype:cff_ascii_strings",
         "opentype:slant_direction",
         "opentype:weight_class_fvar",
+        "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
         "colorfont_tables",
