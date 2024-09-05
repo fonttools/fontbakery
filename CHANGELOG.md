@@ -31,6 +31,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[ligature_carets]**: "Are there caret positions declared for every ligature?"
   - **[mandatory_avar_table]**: "Ensure variable fonts include an avar table."
   - **[missing_small_caps_glyphs]**: "Ensure small caps glyphs are available."
+  - **[name/ascii_only_entries]**: "Are there non-ASCII characters in ASCII-only NAME table entries?"
   - **[name/family_and_style_max_length]**: "Combined length of family and style must not exceed 32 characters."
   - **[render_own_name]**: "Ensure font can render its own name."
   - **[smart_dropout]**: "Ensure smart dropout control is enabled in "prep" table instructions."

@@ -33,6 +33,7 @@ PROFILE = {
         "ligature_carets",
         "mandatory_avar_table",
         "missing_small_caps_glyphs",
+        "name/ascii_only_entries",
         "name/family_and_style_max_length",
         "no_debugging_tables",
         "no_mac_entries",
