@@ -55,6 +55,7 @@ PROFILE = {
         "gsub/smallcaps_before_ligatures",
         "hinting_impact",
         "interpolation_issues",
+        "kerning_for_non_ligated_sequences",
         "legacy_accents",
         "mandatory_avar_table",
         "math_signs_width",
