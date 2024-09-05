@@ -10,7 +10,7 @@ from fontbakery.status import FAIL, WARN
 
 
 def test_check_colorfont_tables():
-    """Check font has the expected color font tables."""
+    """Ensure font has the expected color font tables."""
     check = CheckTester("colorfont_tables")
 
     ttFont = TTFont(TEST_FILE("color_fonts/noto-glyf_colr_1.ttf"))

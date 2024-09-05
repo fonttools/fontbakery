@@ -10,6 +10,7 @@ PROFILE = {
         "opentype:slant_direction",
         "opentype:weight_class_fvar",
         "cmap/format_12",
+        "colorfont_tables",
         "designspace_has_consistent_codepoints",
         "designspace_has_consistent_glyphset",
         "designspace_has_consistent_groups",
