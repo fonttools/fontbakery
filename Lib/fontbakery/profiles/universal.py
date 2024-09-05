@@ -35,6 +35,7 @@ PROFILE = {
             "family/vertical_metrics",
             "family/win_ascent_and_descent",
             "fvar_name_entries",
+            "file_size",
             "fontbakery_version",
             "fontdata_namecheck",
             "freetype_rasterizer",
@@ -85,5 +86,11 @@ PROFILE = {
             "whitespace_ink",
             "whitespace_widths",
         ],
+    },
+    "configuration_defaults": {
+        "file_size": {
+            "WARN_SIZE": 1 * 1024 * 1024,
+            "FAIL_SIZE": 9 * 1024 * 1024,
+        }
     },
 }

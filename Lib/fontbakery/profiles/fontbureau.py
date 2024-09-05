@@ -6,6 +6,7 @@ PROFILE = {
         "cmap/format_12",
         "empty_letters",
         "family/control_chars",
+        "file_size",
         "fvar_name_entries",
         "fontdata_namecheck",
         "glyf_nested_components",

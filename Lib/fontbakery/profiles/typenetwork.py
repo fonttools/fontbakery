@@ -41,6 +41,7 @@ PROFILE = {
         "designspace_has_default_master",
         "designspace_has_sources",
         "empty_letters",  # Previously this one had a note: "The check is broken"
+        "file_size",
         "fontdata_namecheck",
         "fontval",  # Temporarily disabled
         "gsub/smallcaps_before_ligatures",
