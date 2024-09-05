@@ -50,6 +50,7 @@ PROFILE = {
         "cjk_chws_feature",  # was temporarily removed
         "contour_count",  # was temporarily removed
         "family/control_chars",
+        "file_size",
         "fontdata_namecheck",
         "glyf_nested_components",
         "gsub/smallcaps_before_ligatures",

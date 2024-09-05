@@ -1,10 +1,4 @@
 PROFILE = {
-    "configuration_defaults": {
-        "file_size": {
-            "WARN_SIZE": 1 * 1024 * 1024,
-            "FAIL_SIZE": 16 * 1024 * 1024,
-        },
-    },
     "include_profiles": ["googlefonts"],
     "sections": {
         "Noto Fonts": [
@@ -35,4 +29,10 @@ PROFILE = {
         "render_own_name",
         "smart_dropout",
     ],
+    "configuration_defaults": {
+        "file_size": {
+            "WARN_SIZE": 1 * 1024 * 1024,
+            "FAIL_SIZE": 16 * 1024 * 1024,
+        },
+    },
 }

@@ -155,7 +155,6 @@ PROFILE = {
             "color_cpal_brightness",
             "colorfont_tables",
             "empty_glyph_on_gid1_for_colrv0",
-            "file_size",
             "integer_ppem_if_hinted",
             "name/ascii_only_entries",
             "varfont/duplexed_axis_reflow",
