@@ -6,9 +6,9 @@ PROFILE = {
         "tabular_kerning",  # We have tnum_glyphs_equal_widths
     ],
     "pending_review": [
-        "opentype:cff_ascii_strings",
-        "opentype:slant_direction",
-        "opentype:weight_class_fvar",
+        "opentype/cff_ascii_strings",
+        "opentype/slant_direction",
+        "opentype/weight_class_fvar",
         "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
@@ -55,29 +55,29 @@ PROFILE = {
     ],
     "sections": {
         "Metadata Checks": [
-            "microsoft:copyright",
-            "microsoft:fstype",
-            "microsoft:license_description",
-            "microsoft:manufacturer",
-            "microsoft:trademark",
-            "microsoft:vendor_url",
-            "microsoft:version",
+            "microsoft/copyright",
+            "microsoft/fstype",
+            "microsoft/license_description",
+            "microsoft/manufacturer",
+            "microsoft/trademark",
+            "microsoft/vendor_url",
+            "microsoft/version",
         ],
         "Name Checks": [
-            "microsoft:office_ribz_req",
+            "microsoft/office_ribz_req",
             #
             "name_id_1",  # TODO: These name id 1 & 2 checks are too simple. Maybe they could be merged.
             "name_id_2",  # TODO: Also, they could be included in some other name table check on the universal profile.
             "name_length_req",  # TODO: Maybe the same applies to this one.
         ],
         "Metrics Checks": [
-            "microsoft:vertical_metrics",
+            "microsoft/vertical_metrics",
         ],
         "Variable Fonts Checks": [
-            "microsoft:fvar_STAT_axis_ranges",
-            "microsoft:STAT_axis_values",
-            "microsoft:STAT_table_axis_order",
-            "microsoft:STAT_table_eliding_bit",
+            "microsoft/fvar_STAT_axis_ranges",
+            "microsoft/STAT_axis_values",
+            "microsoft/STAT_table_axis_order",
+            "microsoft/STAT_table_eliding_bit",
         ],
         "Glyph Checks": [
             "tnum_glyphs_equal_widths",  # TODO: compare this to 'tabular_kerning' to attempt merging them into a single check.

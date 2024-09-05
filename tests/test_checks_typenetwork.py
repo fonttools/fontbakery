@@ -13,7 +13,7 @@ check_statuses = (ERROR, FAIL, WARN, INFO, PASS, SKIP)
 
 def test_check_fstype():
     """Checking OS/2 fsType"""
-    check = CheckTester("typenetwork:fstype")
+    check = CheckTester("typenetwork/fstype")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     for value in [0, 1, 2, 4, 8, 0x0100, 0x0200]:
@@ -30,13 +30,13 @@ def test_check_fstype():
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:glyph_coverage
+#  typenetwork/glyph_coverage
 #  """Type Network expects that fonts in its catalog support at least the
 #     minimal set of characters."""
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:vertical_metrics
+#  typenetwork/vertical_metrics
 #  """OS/2 and hhea vertical metric values should match.
 #     This will produce the same linespacing on Mac, GNU+Linux and Windows."""
 
@@ -46,19 +46,19 @@ def test_check_fstype():
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:tnum_horizontal_metrics
+#  typenetwork/tnum_horizontal_metrics
 #  """Tabular figures need to have the same metrics in all styles in order
 #     to allow tables to be set with proper typographic control, but to maintain
 #     the placement of decimals and numeric columns between rows."""
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:family/equal_numbers_of_glyphs
+#  typenetwork/family/equal_numbers_of_glyphs
 #  """Check if all fonts in a family have the same number of glyphs."""
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:usweightclass
+#  typenetwork/usweightclass
 #  """Check usweightclass value."""
 
 
@@ -73,7 +73,7 @@ def test_check_fstype():
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:composite_glyphs
+#  typenetwork/composite_glyphs
 #  """For performance reasons, is desirable that TTF fonts use composites glyphs."""
 
 
@@ -91,7 +91,7 @@ def test_check_fstype():
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:name/mandatory_entries
+#  typenetwork/name/mandatory_entries
 #  """For proper functioning, fonts must have some specific records.
 #     Other name records are optional but desireable to be present."""
 
@@ -111,7 +111,7 @@ def test_check_fstype():
 
 
 # ========= TODO: Implement code-test: ============
-#  typenetwork:family/duplicated_names
+#  typenetwork/family/duplicated_names
 #  """Check if font doesn’t have duplicated names within a family.
 #     Having duplicated name records can produce several issues like not all fonts
 #     being listed on design apps or incorrect automatic creation of CSS classes

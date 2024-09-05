@@ -72,8 +72,8 @@ Run hand picked checks for all fonts in the `google/fonts` repository:
 
 
     $ fontbakery check-googlefonts \
-        -c opentype:xavgcharwidth \
-        -c opentype:font_version \
+        -c opentype/xavgcharwidth \
+        -c opentype/font_version \
         -n -o "*check" -g "*check" \
         path/to/fonts/{apache,ofl,ufl}/*/*.ttf
 
@@ -185,8 +185,8 @@ configuration file:
 
 ```
 explicit_checks = [
-    'opentype:family/underline_thickness',
-    'opentype:family/panose_familytype',
+    'opentype/family/underline_thickness',
+    'opentype/family/panose_familytype',
 ]
 ```
 

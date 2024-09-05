@@ -20,7 +20,7 @@ from fontbakery.constants import (
 
 
 @check(
-    id="typenetwork:glyph_coverage",
+    id="typenetwork/glyph_coverage",
     rationale="""
         Type Network expects that fonts in its catalog support at least the minimal
         set of characters.
@@ -433,7 +433,7 @@ def check_glyph_coverage(ttFont, font_codepoints, config):
 
 
 @check(
-    id="typenetwork:vertical_metrics",
+    id="typenetwork/vertical_metrics",
     rationale="""
         OS/2 and hhea vertical metric values should match. This will produce the
         same linespacing on Mac, GNU+Linux and Windows.
@@ -534,7 +534,7 @@ def check_vertical_metrics(ttFont):
 
 
 @check(
-    id="typenetwork:font_is_centered_vertically",
+    id="typenetwork/font_is_centered_vertically",
     rationale="""
         FIXME! This check still does not have rationale documentation.
     """,
@@ -653,7 +653,7 @@ def tn_expected_os2_weight(font):
 
 
 @check(
-    id="typenetwork:usweightclass",
+    id="typenetwork/usweightclass",
     conditions=["tn_expected_os2_weight"],
     rationale="""
         For Variable Fonts, it should be equal to default wght, for static ttfs,
@@ -736,7 +736,7 @@ def check_usweightclass(font, tn_expected_os2_weight):
 
 
 @check(
-    id="typenetwork:family/tnum_horizontal_metrics",
+    id="typenetwork/family/tnum_horizontal_metrics",
     rationale="""
         Tabular figures need to have the same metrics in all styles in order to allow
         tables to be set with proper typographic control, but to maintain the placement
@@ -819,7 +819,7 @@ def italic_ttFonts(context):
 
 
 @check(
-    id="typenetwork:family/equal_numbers_of_glyphs",
+    id="typenetwork/family/equal_numbers_of_glyphs",
     rationale="""
         Check if all fonts in a family have the same number of glyphs.
     """,
@@ -888,7 +888,7 @@ def equal_numbers_of_glyphs(roman_ttFonts, italic_ttFonts):
 
 
 @check(
-    id="typenetwork:family/valid_underline",
+    id="typenetwork/family/valid_underline",
     rationale="""
         If underline thickness is not set nothing gets rendered on Figma.
     """,
@@ -912,7 +912,7 @@ def check_family_valid_underline(ttFont):
 
 
 @check(
-    id="typenetwork:family/valid_strikeout",
+    id="typenetwork/family/valid_strikeout",
     rationale="""
         If strikeout size is not set, nothing gets rendered on Figma.
     """,
@@ -936,7 +936,7 @@ def check_family_valid_strikeout(ttFont):
 
 
 @check(
-    id="typenetwork:fstype",
+    id="typenetwork/fstype",
     rationale="""
         The fsType in the OS/2 table is a legacy DRM-related field.
         Type Network's EULA is more accurately represented by setting it to 4,
@@ -999,7 +999,7 @@ def check_fstype(ttFont):
 
 
 @check(
-    id="typenetwork:composite_glyphs",
+    id="typenetwork/composite_glyphs",
     rationale="""
         For performance reasons, it is recommended that TTF fonts use composite glyphs.
     """,
@@ -1030,7 +1030,7 @@ def check_composite_glyphs(ttFont):
 
 
 @check(
-    id="typenetwork:PUA_encoded_glyphs",
+    id="typenetwork/PUA_encoded_glyphs",
     rationale="""
         Using Private Use Area (PUA) encodings is not recommended. They are
         defined by users and are not standardized. That said, PUA are font
@@ -1077,7 +1077,7 @@ def check_PUA_encoded_glyphs(ttFont, config):
 
 
 @check(
-    id="typenetwork:marks_width",
+    id="typenetwork/marks_width",
     rationale="""
         To avoid incorrect overlappings when typing, glyphs that are spacing marks
         must have width, on the other hand, combining marks should be 0 width.
@@ -1131,7 +1131,7 @@ def check_marks_width(ttFont, config):
 
 
 @check(
-    id="typenetwork:name/mandatory_entries",
+    id="typenetwork/name/mandatory_entries",
     conditions=["style"],
     rationale="""
         For proper functioning, fonts must have some specific records.
@@ -1213,7 +1213,7 @@ def check_name_mandatory_entries(ttFont, style):
 
 
 @check(
-    id="typenetwork:varfont/axes_have_variation",
+    id="typenetwork/varfont/axes_have_variation",
     rationale="""
         Axes on a variable font must have variation. In other words min and max values
         need to be different. It’s common to find fonts with unnecesary axes
@@ -1250,7 +1250,7 @@ def check_varfont_axes_have_variation(ttFont):
 
 
 @check(
-    id="typenetwork:varfont/fvar_axes_order",
+    id="typenetwork/varfont/fvar_axes_order",
     rationale="""
         If a font doesn’t have a STAT table, instances get sorted better on Adobe Apps
         when fvar axes follow a specific order: 'opsz', 'wdth', 'wght','ital', 'slnt'.
@@ -1301,7 +1301,7 @@ def check_varfont_fvar_axes_order(ttFont):
 
 
 @check(
-    id="typenetwork:family/duplicated_names",
+    id="typenetwork/family/duplicated_names",
     rationale="""
         Having duplicated name records can produce several issues like not all fonts
         being listed on design apps or incorrect automatic creation of CSS classes

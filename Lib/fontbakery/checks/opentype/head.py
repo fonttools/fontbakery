@@ -7,7 +7,7 @@ from fontbakery.constants import NameID
 
 
 @check(
-    id="opentype:family/equal_font_versions",
+    id="opentype/family/equal_font_versions",
     proposal="legacy:check/014",
     rationale="""
         Within a family released at the same time, all members of the family
@@ -40,7 +40,7 @@ def check_family_equal_font_versions(ttFonts):
 
 
 @check(
-    id="opentype:unitsperem",
+    id="opentype/unitsperem",
     rationale="""
         According to the OpenType spec:
 
@@ -109,7 +109,7 @@ def parse_version_string(name: str) -> float:
 
 
 @check(
-    id="opentype:font_version",
+    id="opentype/font_version",
     proposal="legacy:check/044",
     rationale="""
             The OpenType specification provides for two fields which contain
@@ -180,7 +180,7 @@ def check_font_version(ttFont):
 
 
 @check(
-    id="opentype:mac_style",
+    id="opentype/mac_style",
     rationale="""
         The values of the flags on the macStyle entry on the 'head' OpenType table
         that describe whether a font is bold and/or italic must be coherent with the

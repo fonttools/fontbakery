@@ -4,7 +4,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="googlefonts:family/equal_codepoint_coverage",
+    id="googlefonts/family/equal_codepoint_coverage",
     conditions=["are_ttf", "stylenames_are_canonical"],
     proposal="https://github.com/fonttools/fontbakery/issues/4180",
     rationale="""
@@ -39,7 +39,7 @@ def check_family_equal_codepoint_coverage(fonts, config):
 
 
 @check(
-    id="googlefonts:family/italics_have_roman_counterparts",
+    id="googlefonts/family/italics_have_roman_counterparts",
     rationale="""
         For each font family on Google Fonts, every Italic style must have
         a Roman sibling.
@@ -101,7 +101,7 @@ def check_family_italics_have_roman_counterparts(fonts, config):
 
 
 @check(
-    id="googlefonts:family/tnum_horizontal_metrics",
+    id="googlefonts/family/tnum_horizontal_metrics",
     conditions=["RIBBI_ttFonts"],
     rationale="""
         Tabular figures need to have the same metrics in all styles in order to allow

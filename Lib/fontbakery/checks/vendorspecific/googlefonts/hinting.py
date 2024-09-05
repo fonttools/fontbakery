@@ -3,7 +3,7 @@ from fontbakery.constants import LATEST_TTFAUTOHINT_VERSION, NameID
 
 
 @check(
-    id="googlefonts:gasp",
+    id="googlefonts/gasp",
     conditions=["is_ttf"],
     rationale="""
         Traditionally version 0 'gasp' tables were set so that font sizes below 8 ppem
@@ -94,7 +94,7 @@ def check_gasp(ttFont):
 
 
 @check(
-    id="googlefonts:has_ttfautohint_params",
+    id="googlefonts/has_ttfautohint_params",
     proposal="https://github.com/fonttools/fontbakery/issues/1773",
     rationale="""
         It is critically important that all static TTFs in the Google Fonts API
@@ -141,7 +141,7 @@ def check_has_ttfautohint_params(ttFont):
 
 
 @check(
-    id="googlefonts:old_ttfautohint",
+    id="googlefonts/old_ttfautohint",
     conditions=["is_ttf"],
     rationale="""
         Check if font has been hinted with an outdated version of ttfautohint.

@@ -9,7 +9,7 @@ from fontbakery.utils import markdown_table
 
 
 @check(
-    id="googlefonts:name/unwanted_chars",
+    id="googlefonts/name/unwanted_chars",
     proposal="legacy:check/019",
     rationale="""
         We don't want non-ASCII characters in name table entries; in particular,
@@ -34,7 +34,7 @@ def check_name_unwanted_chars(ttFont):
 
 
 @check(
-    id="googlefonts:name/description_max_length",
+    id="googlefonts/name/description_max_length",
     rationale="""
         An old FontLab version had a bug which caused it to store copyright notices
         in nameID 10 entries.
@@ -68,7 +68,7 @@ def check_name_description_max_length(ttFont):
 
 
 @check(
-    id="googlefonts:name/version_format",
+    id="googlefonts/name/version_format",
     proposal="legacy:check/055",
     rationale="""
         For Google Fonts, the version string must be in the format "Version X.Y".
@@ -104,7 +104,7 @@ def check_name_version_format(ttFont):
 
 
 @check(
-    id="googlefonts:name/familyname_first_char",
+    id="googlefonts/name/familyname_first_char",
     rationale="""
         Font family names which start with a numeral are often not discoverable
         in Windows applications.
@@ -125,7 +125,7 @@ def check_name_familyname_first_char(ttFont):
 
 
 @check(
-    id="googlefonts:font_names",
+    id="googlefonts/font_names",
     rationale="""
         Google Fonts has several rules which need to be adhered to when
         setting a font's name table. Please read:
@@ -209,7 +209,7 @@ def check_font_names(ttFont, ttFonts):
 
 
 @check(
-    id="googlefonts:name/mandatory_entries",
+    id="googlefonts/name/mandatory_entries",
     conditions=["style"],
     proposal="legacy:check/156",
     rationale="""
@@ -245,7 +245,7 @@ def check_name_mandatory_entries(ttFont, style):
 
 
 @check(
-    id="googlefonts:name/line_breaks",
+    id="googlefonts/name/line_breaks",
     rationale="""
         There are some entries on the name table that may include more than one line
         of text. The Google Fonts team, though, prefers to keep the name table entries
@@ -254,7 +254,7 @@ def check_name_mandatory_entries(ttFont, style):
         For instance, some designers like to include the full text of a font license in
         the "copyright notice" entry, but for the GFonts collection this entry should
         only mention year, author and other basic info in a manner enforced by
-        `googlefonts:font_copyright`
+        `googlefonts/font_copyright`
     """,
     proposal="legacy:check/057",
 )
@@ -272,7 +272,7 @@ def check_name_line_breaks(ttFont):
 
 
 @check(
-    id="googlefonts:name/family_name_compliance",
+    id="googlefonts/name/family_name_compliance",
     rationale="""
         Checks the family name for compliance with the Google Fonts Guide.
         https://googlefonts.github.io/gf-guide/onboarding.html#new-fonts

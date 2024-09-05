@@ -4,10 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ##  Upcoming release: 0.13.0 (2024-Aug-??)
 ### Migration of checks
 #### Moved from Fontwerk to OpenType profile
-  - **[opentype:weight_class_fvar]:** "Checking if OS/2 usWeightClass matches fvar."
+  - **[opentype/weight_class_fvar]**: "Checking if OS/2 usWeightClass matches fvar."
 
 #### Moved from Google Fonts to OpenType profile
-  - **[opentype:slant_direction]**: "Checking direction of slnt axis angles."
+  - **[opentype/slant_direction]**: "Checking direction of slnt axis angles."
 
 #### Moved from Noto Fonts to Universal profile
   - **[cmap/format_12]**: "Check that format 12 cmap subtables are correctly constituted."
@@ -58,14 +58,14 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### Previously on the UFO profile
-  - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: remove usage of `ufoLib2` APIs. (PR #4802)
+  - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:** remove usage of `ufoLib2` APIs. (PR #4802)
 
 #### On the Universal profile
   - **[com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Check lookup indexes instead of feature indexes. (PR #4813)
 
 ### New checks
 #### Added to the Universal profile
-  - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs. (PR #4795)
+  - **EXPERIMENTAL - [com.daltonmaag/check/consistent_curve_type]:** checks that a consistent curve type is used across the font sources as well as within glyphs. (PR #4795)
   - **EXPERIMENTAL - [com.daltonmaag/check/no_open_corners]:** checks that sources don't contain open corners, intended for use in font projects with a roundness axis. (PR #4808)
   - **EXPERIMENTAL - [com.daltonmaag/check/designspace_has_consistent_groups]:** checks that all designspace sources have the same kerning groups. (PR #4814)
   - And all other pre-existing UFO checks as well.
@@ -75,7 +75,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - * **com.google.fonts/check/article/images** After being marked as **experimental** for 4 months since the 0.12.0a5 release (issue #4594)
 
 ### Removed checks
-  - **[com.google.fonts/check/metadata/has_tags]**: Check removed because a tool in the google/fonts repository will do the checking instead.
+  - **[com.google.fonts/check/metadata/has_tags]:** Check removed because a tool in the google/fonts repository will do the checking instead.
 
 
 ## 0.12.9 (2024-Jul-17)

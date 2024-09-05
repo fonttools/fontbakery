@@ -29,7 +29,7 @@ from fontbakery.profiles import adobefonts as adobefonts_profile
 def test_check_family_consistent_upm():
     """A group of fonts designed & produced as a family should have consistent
     units per em."""
-    check = CheckTester("adobefonts:family/consistent_upm")
+    check = CheckTester("adobefonts/family/consistent_upm")
 
     # these fonts have a consistent unitsPerEm of 1000:
     filenames = [
@@ -61,7 +61,7 @@ def _get_nameid_1_win_eng_record(name_table):
 def test_check_nameid_1_win_english():
     """Validate that font has a good nameID 1, Windows/Unicode/US-English
     `name` table record."""
-    check = CheckTester("adobefonts:nameid_1_win_english")
+    check = CheckTester("adobefonts/nameid_1_win_english")
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
     assert_PASS(check(ttFont))
@@ -92,7 +92,7 @@ def test_check_nameid_1_win_english():
 
 def test_check_unsupported_tables():
     """Check if font has any unsupported tables."""
-    check = CheckTester("adobefonts:unsupported_tables")
+    check = CheckTester("adobefonts/unsupported_tables")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -244,7 +244,7 @@ def test_check_override_os2_metrics_match_hhea():
 def test_check_override_varfont_valid_default_instance_nameids():
     """Check that overriden tests yield WARN instead of FAIL"""
     check = CheckTester(
-        "opentype:varfont/valid_default_instance_nameids",
+        "opentype/varfont/valid_default_instance_nameids",
         profile=adobefonts_profile,
     )
 
@@ -282,7 +282,7 @@ def test_check_override_varfont_valid_default_instance_nameids():
 def test_check_override_stat_has_axis_value_tables():
     """Check that overridden tests yield the right result."""
     check = CheckTester(
-        "opentype:stat_has_axis_value_tables",
+        "opentype/stat_has_axis_value_tables",
         profile=adobefonts_profile,
     )
 
@@ -329,7 +329,7 @@ def test_check_override_inconsistencies_between_fvar_stat():
 
 
 def test_check_override_weight_class_fvar():
-    check = CheckTester("opentype:weight_class_fvar", profile=adobefonts_profile)
+    check = CheckTester("opentype/weight_class_fvar", profile=adobefonts_profile)
 
     ttFont = TTFont(TEST_FILE("varfont/Oswald-VF.ttf"))
     ttFont["OS/2"].usWeightClass = 333
@@ -354,7 +354,7 @@ def test_check_override_fontbakery_version(mock_get):
 def test_check_override_match_familyname_fullfont():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
-        "opentype:name/match_familyname_fullfont",
+        "opentype/name/match_familyname_fullfont",
         profile=adobefonts_profile,
     )
 
@@ -408,7 +408,7 @@ def test_check_override_trailing_spaces():
 def test_check_override_bold_wght_coord():
     """Check that overriden tests yield WARN rather than FAIL."""
     check = CheckTester(
-        "googlefonts:varfont/bold_wght_coord", profile=adobefonts_profile
+        "googlefonts/varfont/bold_wght_coord", profile=adobefonts_profile
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
@@ -430,8 +430,8 @@ def test_check_override_bold_wght_coord():
 
 
 def test_check_STAT_strings():
-    """Check adobefonts:STAT_strings."""
-    check = CheckTester("adobefonts:STAT_strings")
+    """Check adobefonts/STAT_strings."""
+    check = CheckTester("adobefonts/STAT_strings")
 
     # This should FAIL (like `STAT_strings`, that it is based on)
     # because it uses "Italic" in names for 'wght' and 'wdth' axes.

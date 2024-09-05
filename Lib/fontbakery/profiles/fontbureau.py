@@ -1,8 +1,8 @@
 PROFILE = {
     "include_profiles": ["universal"],
     "pending_review": [
-        "opentype:weight_class_fvar",
-        "opentype:slant_direction",
+        "opentype/weight_class_fvar",
+        "opentype/slant_direction",
         "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
@@ -37,7 +37,7 @@ PROFILE = {
     ],
     "sections": {
         "Font Bureau Checks": [
-            "fontbureau:ytlc_sanity",
+            "fontbureau/ytlc_sanity",
         ],
     },
 }

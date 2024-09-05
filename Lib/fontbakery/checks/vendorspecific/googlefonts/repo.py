@@ -7,7 +7,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="googlefonts:repo/fb_report",
+    id="googlefonts/repo/fb_report",
     conditions=["family_directory"],
     rationale="""
         A FontBakery report is ephemeral and so should be used for posting issues on a
@@ -37,7 +37,7 @@ def check_repo_fb_report(family_directory):
 
 
 @check(
-    id="googlefonts:repo/upstream_yaml_has_required_fields",
+    id="googlefonts/repo/upstream_yaml_has_required_fields",
     rationale="""
         If a family has been pushed using the gftools packager, we must check that all
         the required fields in the upstream.yaml file have been populated.
@@ -61,7 +61,7 @@ def check_repo_upstream_yaml_has_required_fields(upstream_yaml):
 
 
 @check(
-    id="googlefonts:repo/zip_files",
+    id="googlefonts/repo/zip_files",
     conditions=["family_directory"],
     rationale="""
         Sometimes people check in ZIPs into their font project repositories. While we
@@ -93,7 +93,7 @@ def check_repo_zip_files(family_directory, config):
 
 
 @check(
-    id="googlefonts:repo/sample_image",
+    id="googlefonts/repo/sample_image",
     rationale="""
         In order to showcase what a font family looks like, the project's README.md
         file should ideally include a sample image and highlight it in the upper
@@ -167,7 +167,7 @@ def check_repo_sample_image(readme_contents, readme_directory, config):
 
 
 @check(
-    id="googlefonts:repo/vf_has_static_fonts",
+    id="googlefonts/repo/vf_has_static_fonts",
     conditions=["family_directory", "gfonts_repo_structure"],
     rationale="""
         Variable font family directories kept in the google/fonts git repo may include
@@ -211,7 +211,7 @@ def check_repo_vf_has_static_fonts(family_directory):
 
 
 @check(
-    id="googlefonts:repo/dirname_matches_nameid_1",
+    id="googlefonts/repo/dirname_matches_nameid_1",
     conditions=["gfonts_repo_structure"],
     proposal="https://github.com/fonttools/fontbakery/issues/2302",
     rationale="""

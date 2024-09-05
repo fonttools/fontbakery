@@ -13,7 +13,7 @@ from fontbakery.codetesting import (
 
 def test_check_glyf_unused_data():
     """Is there any unused data at the end of the glyf table?"""
-    check = CheckTester("opentype:glyf_unused_data")
+    check = CheckTester("opentype/glyf_unused_data")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     ttFont = TTFont(font)
@@ -41,7 +41,7 @@ def test_check_glyf_unused_data():
 
 def test_check_points_out_of_bounds():
     """Check for points out of bounds."""
-    check = CheckTester("opentype:points_out_of_bounds")
+    check = CheckTester("opentype/points_out_of_bounds")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_results_contain(check(ttFont), WARN, "points-out-of-bounds")
@@ -54,7 +54,7 @@ def test_check_glyf_non_transformed_duplicate_components():
     """
     Check glyphs do not have duplicate components which have the same x,y coordinates.
     """
-    check = CheckTester("opentype:glyf_non_transformed_duplicate_components")
+    check = CheckTester("opentype/glyf_non_transformed_duplicate_components")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))

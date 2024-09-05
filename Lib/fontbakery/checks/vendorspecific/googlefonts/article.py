@@ -4,7 +4,7 @@ from fontbakery.prelude import check, Message, FAIL, WARN, PASS
 
 
 @check(
-    id="googlefonts:article/images",
+    id="googlefonts/article/images",
     conditions=["family_directory"],
     rationale="""
         The purpose of this check is to ensure images (either raster or vector files)

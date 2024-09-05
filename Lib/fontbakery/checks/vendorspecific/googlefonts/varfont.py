@@ -5,7 +5,7 @@ from fontbakery.utils import markdown_table
 
 
 @check(
-    id="googlefonts:STAT",
+    id="googlefonts/STAT",
     conditions=["is_variable_font", "expected_font_names"],
     rationale="""
         Check a font's STAT table contains compulsory Axis Values which exist
@@ -114,7 +114,7 @@ def check_stat(ttFont, expected_font_names):
 
 
 @check(
-    id="googlefonts:fvar_instances",
+    id="googlefonts/fvar_instances",
     conditions=["is_variable_font"],
     rationale="""
         Check a font's fvar instance coordinates comply with our guidelines:
@@ -192,7 +192,7 @@ def check_fvar_instances(ttFont, ttFonts):
 
 
 @check(
-    id="googlefonts:varfont/generate_static",
+    id="googlefonts/varfont/generate_static",
     rationale="""
         Google Fonts may serve static fonts which have been generated from variable
         fonts. This check will attempt to generate a static ttf using fontTool's
@@ -239,7 +239,7 @@ def check_varfont_generate_static(ttFont):
 
 
 @check(
-    id="googlefonts:varfont/has_HVAR",
+    id="googlefonts/varfont/has_HVAR",
     rationale="""
         Not having a HVAR table can lead to costly text-layout operations on some
         platforms, which we want to avoid.
@@ -268,7 +268,7 @@ def check_varfont_has_HVAR(ttFont):
 
 
 @check(
-    id="googlefonts:varfont/bold_wght_coord",
+    id="googlefonts/varfont/bold_wght_coord",
     rationale="""
         The Open-Type spec's registered
         design-variation tag 'wght' available at
@@ -306,7 +306,7 @@ def check_varfont_bold_wght_coord(font):
 
 
 @check(
-    id="googlefonts:varfont/duplicate_instance_names",
+    id="googlefonts/varfont/duplicate_instance_names",
     rationale="""
         This check's purpose is to detect duplicate named instances names in a
         given variable font.

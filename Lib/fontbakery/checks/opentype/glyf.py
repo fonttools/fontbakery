@@ -6,7 +6,7 @@ from fontbakery.status import FAIL, PASS, WARN
 
 
 @check(
-    id="opentype:glyf_unused_data",
+    id="opentype/glyf_unused_data",
     rationale="""
         This check validates the structural integrity of the glyf table,
         by checking that all glyphs referenced in the loca table are
@@ -50,7 +50,7 @@ def check_glyf_unused_data(ttFont):
 
 
 @check(
-    id="opentype:points_out_of_bounds",
+    id="opentype/points_out_of_bounds",
     conditions=["is_ttf"],
     rationale="""
         The glyf table specifies a bounding box for each glyph. This check
@@ -99,7 +99,7 @@ def check_points_out_of_bounds(ttFont, config):
 
 
 @check(
-    id="opentype:glyf_non_transformed_duplicate_components",
+    id="opentype/glyf_non_transformed_duplicate_components",
     rationale="""
         There have been cases in which fonts had faulty double quote marks, with each
         of them containing two single quote marks as components with the same

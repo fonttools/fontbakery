@@ -5,7 +5,7 @@ from fontbakery.prelude import check, Message, PASS, FAIL
 
 
 @check(
-    id="adobefonts:family/consistent_upm",
+    id="adobefonts/family/consistent_upm",
     rationale="""
         While not required by the OpenType spec, we (Adobe) expect that a group
         of fonts designed & produced as a family have consistent units per em.
@@ -25,7 +25,7 @@ def check_family_consistent_upm(ttFonts):
 
 
 @check(
-    id="adobefonts:nameid_1_win_english",
+    id="adobefonts/nameid_1_win_english",
     rationale="""
         While not required by the OpenType spec, Adobe Fonts' pipeline requires
         every font to support at least nameID 1 (Font Family name) for platformID 3
@@ -64,7 +64,7 @@ def check_nameid_1_win_english(ttFont, has_name_table):
 
 
 @check(
-    id="adobefonts:unsupported_tables",
+    id="adobefonts/unsupported_tables",
     rationale="""
         Adobe Fonts' font-processing pipeline does not support all kinds of tables
         that can be included in OpenType font files.⏎
@@ -130,12 +130,12 @@ def check_unsupported_tables(ttFont):
 
 
 @check(
-    id="adobefonts:STAT_strings",
+    id="adobefonts/STAT_strings",
     conditions=["has_STAT_table"],
     rationale="""
         In the STAT table, the "Italic" keyword must not be used on AxisValues
         for variation axes other than 'ital' or 'slnt'. This is a more lenient
-        implementation of googlefonts:STAT_strings which allows "Italic"
+        implementation of googlefonts/STAT_strings which allows "Italic"
         only for the 'ital' axis.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2863",

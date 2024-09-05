@@ -55,7 +55,7 @@ def check_fontvalidator(font, config):
         "The table doesn't contain strings for Mac platform",
         "The PostScript string is not present for both required platforms",
         # FontBakery has got a native check for the xAvgCharWidth field
-        # which is: opentype:xavgcharwidth
+        # which is: opentype/xavgcharwidth
         "The xAvgCharWidth field does not equal the calculated value",
         # The optimal ordering suggested by FVal check W0020 seems to only be
         # relevant to performance optimizations on old versions of Windows

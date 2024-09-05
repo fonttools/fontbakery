@@ -4,9 +4,9 @@ PROFILE = {
         "universal",
     ],
     "exclude_checks": [
-        "opentype:family/panose_familytype",
-        "opentype:name/no_copyright_on_description",
-        "opentype:vendor_id",
+        "opentype/family/panose_familytype",
+        "opentype/name/no_copyright_on_description",
+        "opentype/vendor_id",
         "superfamily/list",
         "alt_caron",
         "cjk_chws_feature",
@@ -14,23 +14,23 @@ PROFILE = {
         "fontbakery_version",
         "math_signs_width",  # It really depends on the design and the intended use to make math symbols the same width.
         "os2_metrics_match_hhea",  # Removed in favor of new vmetrics check
-        "STAT_strings",  # replaced by adobefonts:STAT_strings
+        "STAT_strings",  # replaced by adobefonts/STAT_strings
     ],
     "pending_review": [
-        "typenetwork:fstype",  # DEPRECATED: if not really needed anymore, it would be good to delete it from the repo.
+        "typenetwork/fstype",  # DEPRECATED: if not really needed anymore, it would be good to delete it from the repo.
         #
-        "opentype:cff_ascii_strings",
-        "opentype:postscript_name",
-        "opentype:varfont/family_axis_ranges",
-        "opentype:weight_class_fvar",
+        "opentype/cff_ascii_strings",
+        "opentype/postscript_name",
+        "opentype/varfont/family_axis_ranges",
+        "opentype/weight_class_fvar",
         #
-        "googlefonts:gasp",
-        "googlefonts:glyphsets/shape_languages",
-        "googlefonts:metadata/primary_script",
-        "googlefonts:metadata/unreachable_subsetting",
-        "googlefonts:metadata/valid_nameid25",  # Previously this one had been marked as "temporarily excluded".
-        "googlefonts:negative_advance_width",
-        "googlefonts:STAT/axis_order",
+        "googlefonts/gasp",
+        "googlefonts/glyphsets/shape_languages",
+        "googlefonts/metadata/primary_script",
+        "googlefonts/metadata/unreachable_subsetting",
+        "googlefonts/metadata/valid_nameid25",  # Previously this one had been marked as "temporarily excluded".
+        "googlefonts/negative_advance_width",
+        "googlefonts/STAT/axis_order",
         #
         "caps_vertically_centered",  # Disabled: issue #4274
         "case_mapping",
@@ -70,35 +70,35 @@ PROFILE = {
     ],
     "sections": {
         "Type Network": [
-            "typenetwork:composite_glyphs",
-            "typenetwork:family/duplicated_names",
-            "typenetwork:family/equal_numbers_of_glyphs",
-            "typenetwork:family/tnum_horizontal_metrics",
-            "typenetwork:family/valid_strikeout",
-            "typenetwork:family/valid_underline",
-            "typenetwork:font_is_centered_vertically",
-            "typenetwork:glyph_coverage",
-            "typenetwork:marks_width",
-            "typenetwork:name/mandatory_entries",
-            "typenetwork:PUA_encoded_glyphs",
-            "typenetwork:usweightclass",
-            "typenetwork:varfont/axes_have_variation",
-            "typenetwork:varfont/fvar_axes_order",
-            "typenetwork:vertical_metrics",
+            "typenetwork/composite_glyphs",
+            "typenetwork/family/duplicated_names",
+            "typenetwork/family/equal_numbers_of_glyphs",
+            "typenetwork/family/tnum_horizontal_metrics",
+            "typenetwork/family/valid_strikeout",
+            "typenetwork/family/valid_underline",
+            "typenetwork/font_is_centered_vertically",
+            "typenetwork/glyph_coverage",
+            "typenetwork/marks_width",
+            "typenetwork/name/mandatory_entries",
+            "typenetwork/PUA_encoded_glyphs",
+            "typenetwork/usweightclass",
+            "typenetwork/varfont/axes_have_variation",
+            "typenetwork/varfont/fvar_axes_order",
+            "typenetwork/vertical_metrics",
         ],
         "Adobe Fonts": [
-            "adobefonts:family/consistent_upm",
-            "adobefonts:nameid_1_win_english",
-            "adobefonts:STAT_strings",
-            "adobefonts:unsupported_tables",
+            "adobefonts/family/consistent_upm",
+            "adobefonts/nameid_1_win_english",
+            "adobefonts/STAT_strings",
+            "adobefonts/unsupported_tables",
         ],
         "Fontwerk": [
-            "fontwerk:style_linking",
+            "fontwerk/style_linking",
         ],
         "Google Fonts": [
-            "googlefonts:family/equal_codepoint_coverage",
-            "googlefonts:varfont/bold_wght_coord",
-            "googlefonts:varfont/duplicate_instance_names",
+            "googlefonts/family/equal_codepoint_coverage",
+            "googlefonts/varfont/bold_wght_coord",
+            "googlefonts/varfont/duplicate_instance_names",
         ],
         "Outline Checks": [
             "outline_alignment_miss",
@@ -142,7 +142,7 @@ PROFILE = {
                 "reason": "This is a feature, not really needed to the font perform well.",
             },
         ],
-        "googlefonts:varfont/bold_wght_coord": [
+        "googlefonts/varfont/bold_wght_coord": [
             {
                 "code": "no-bold-instance",
                 "status": "WARN",
@@ -157,7 +157,7 @@ PROFILE = {
                 "the 'wght' axis.",
             },
         ],
-        "opentype:varfont/regular_ital_coord": [
+        "opentype/varfont/regular_ital_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
@@ -165,7 +165,7 @@ PROFILE = {
                 " having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_opsz_coord": [
+        "opentype/varfont/regular_opsz_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
@@ -173,7 +173,7 @@ PROFILE = {
                 " having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_slnt_coord": [
+        "opentype/varfont/regular_slnt_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
@@ -181,7 +181,7 @@ PROFILE = {
                 " having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_wdth_coord": [
+        "opentype/varfont/regular_wdth_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
@@ -189,7 +189,7 @@ PROFILE = {
                 " having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_wght_coord": [
+        "opentype/varfont/regular_wght_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
@@ -197,7 +197,7 @@ PROFILE = {
                 " having a Regular instance.",
             },
         ],
-        "opentype:gdef_non_mark_chars": [
+        "opentype/gdef_non_mark_chars": [
             {
                 "code": "non-mark-chars",
                 "status": "FAIL",
@@ -228,7 +228,7 @@ PROFILE = {
                 "reason": "It’s up to foundries to decide.",
             },
         ],
-        "opentype:name/match_familyname_fullfont": [
+        "opentype/name/match_familyname_fullfont": [
             {
                 "code": "mismatch-font-names",
                 "status": "WARN",

@@ -58,7 +58,7 @@ def is_claiming_to_be_cjk_font(font):
 
 
 @check(
-    id="googlefonts:glyph_coverage",
+    id="googlefonts/glyph_coverage",
     rationale="""
         Google Fonts expects that fonts in its collection support at least the minimal
         set of characters defined in the `GF-latin-core` glyph-set.
@@ -95,7 +95,7 @@ def check_glyph_coverage(ttFont, family_metadata, config):
 
 
 @check(
-    id="googlefonts:glyphsets/shape_languages",
+    id="googlefonts/glyphsets/shape_languages",
     rationale="""
         This check uses a heuristic to determine which GF glyphsets a font supports.
         Then it checks the font for correct shaping behaviour for all languages in

@@ -2,7 +2,7 @@ from fontbakery.prelude import check, disable, Message, WARN, FAIL
 
 
 @check(
-    id="googlefonts:version_bump",
+    id="googlefonts/version_bump",
     conditions=["api_gfonts_ttFont", "github_gfonts_ttFont"],
     proposal="legacy:check/117",
     rationale="""
@@ -43,7 +43,7 @@ def check_version_bump(ttFont, api_gfonts_ttFont, github_gfonts_ttFont):
 
 
 @check(
-    id="googlefonts:production_glyphs_similarity",
+    id="googlefonts/production_glyphs_similarity",
     conditions=["api_gfonts_ttFont"],
     proposal="legacy:check/118",
     rationale="""
@@ -107,7 +107,7 @@ def check_production_glyphs_similarity(ttFont, api_gfonts_ttFont, config):
 # More info at https://github.com/fonttools/fontbakery/issues/2581
 @disable
 @check(
-    id="googlefonts:production_encoded_glyphs",
+    id="googlefonts/production_encoded_glyphs",
     conditions=["api_gfonts_ttFont"],
     proposal="legacy:check/154",
 )

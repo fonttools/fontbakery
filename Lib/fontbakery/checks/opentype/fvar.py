@@ -5,7 +5,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="opentype:varfont/regular_wght_coord",
+    id="opentype/varfont/regular_wght_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wght' available at
@@ -35,7 +35,7 @@ def check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
 
 
 @check(
-    id="opentype:varfont/regular_wdth_coord",
+    id="opentype/varfont/regular_wdth_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wdth' available at
@@ -67,7 +67,7 @@ def check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
 
 
 @check(
-    id="opentype:varfont/regular_slnt_coord",
+    id="opentype/varfont/regular_slnt_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'slnt' available at
@@ -99,7 +99,7 @@ def check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
 
 
 @check(
-    id="opentype:varfont/regular_ital_coord",
+    id="opentype/varfont/regular_ital_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'ital' available at
@@ -131,7 +131,7 @@ def check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
 
 
 @check(
-    id="opentype:varfont/regular_opsz_coord",
+    id="opentype/varfont/regular_opsz_coord",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'opsz' available at
@@ -165,7 +165,7 @@ def check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
 
 
 @check(
-    id="opentype:varfont/wght_valid_range",
+    id="opentype/varfont/wght_valid_range",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wght' available at
@@ -193,7 +193,7 @@ def check_varfont_wght_valid_range(ttFont):
 
 
 @check(
-    id="opentype:varfont/wdth_valid_range",
+    id="opentype/varfont/wdth_valid_range",
     rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wdth' available at
@@ -230,7 +230,7 @@ def check_varfont_wdth_valid_range(ttFont):
 
 
 @check(
-    id="opentype:varfont/slnt_range",
+    id="opentype/varfont/slnt_range",
     rationale="""
         The OpenType spec says at
         https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt that:
@@ -261,7 +261,7 @@ def check_varfont_slnt_range(ttFont, slnt_axis):
 
 
 @check(
-    id="opentype:varfont/ital_range",
+    id="opentype/varfont/ital_range",
     rationale="""
         The OpenType spec says at
         https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_ital
@@ -288,7 +288,7 @@ def check_varfont_ital_range(ttFont, ital_axis):
 
 
 @check(
-    id="opentype:varfont/valid_axis_nameid",
+    id="opentype/varfont/valid_axis_nameid",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -323,7 +323,7 @@ def check_varfont_valid_axis_nameid(ttFont, has_name_table):
 
 
 @check(
-    id="opentype:varfont/valid_subfamily_nameid",
+    id="opentype/varfont/valid_subfamily_nameid",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -364,7 +364,7 @@ def check_varfont_valid_subfamily_nameid(ttFont, has_name_table):
 
 
 @check(
-    id="opentype:varfont/valid_postscript_nameid",
+    id="opentype/varfont/valid_postscript_nameid",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -407,7 +407,7 @@ def check_varfont_valid_postscript_nameid(ttFont, has_name_table):
 
 
 @check(
-    id="opentype:varfont/valid_default_instance_nameids",
+    id="opentype/varfont/valid_default_instance_nameids",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9.1
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -496,7 +496,7 @@ def check_varfont_valid_default_instance_nameids(ttFont, has_name_table):
 
 
 @check(
-    id="opentype:varfont/same_size_instance_records",
+    id="opentype/varfont/same_size_instance_records",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -532,7 +532,7 @@ def check_varfont_same_size_instance_records(ttFont):
 
 
 @check(
-    id="opentype:varfont/distinct_instance_records",
+    id="opentype/varfont/distinct_instance_records",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
         https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
@@ -577,7 +577,7 @@ def check_varfont_distinct_instance_records(ttFont, has_name_table):
 
 
 @check(
-    id="opentype:varfont/foundry_defined_tag_name",
+    id="opentype/varfont/foundry_defined_tag_name",
     rationale="""
         According to the Open-Type spec's syntactic requirements for
         foundry-defined design-variation axis tags available at
@@ -627,7 +627,7 @@ def check_varfont_foundry_defined_tag_name(ttFont):
 
 
 @check(
-    id="opentype:varfont/family_axis_ranges",
+    id="opentype/varfont/family_axis_ranges",
     rationale="""
         Between members of a family (such as Roman & Italic),
         the ranges of variable axes must be identical.
@@ -655,7 +655,7 @@ def check_varfont_family_axis_ranges(ttFonts):
 
 
 @check(
-    id="opentype:slant_direction",
+    id="opentype/slant_direction",
     conditions=["is_variable_font"],
     rationale="""
         The 'slnt' axis values are defined as negative values for a clockwise (right)

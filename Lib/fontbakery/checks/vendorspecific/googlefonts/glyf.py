@@ -10,7 +10,7 @@ from fontbakery.prelude import check, disable, FAIL, Message
 # https://github.com/fonttools/fontbakery/issues/1727
 @disable
 @check(
-    id="googlefonts:negative_advance_width",
+    id="googlefonts/negative_advance_width",
     rationale="""
         Advance width values in the Horizontal Metrics (htmx) table cannot be negative
         since they are encoded as unsigned 16-bit values. But some programs may infer

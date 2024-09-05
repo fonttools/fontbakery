@@ -26,7 +26,7 @@ def has_kerning_info(font):
 
 
 @check(
-    id="opentype:gpos_kerning_info",
+    id="opentype/gpos_kerning_info",
     proposal="legacy:check/063",
     rationale="""
             Well-designed fonts use kerning to improve the spacing between

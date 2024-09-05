@@ -2,7 +2,7 @@ from fontbakery.prelude import check, WARN, INFO, FAIL, Message
 
 
 @check(
-    id="googlefonts:meta/script_lang_tags",
+    id="googlefonts/meta/script_lang_tags",
     rationale="""
         The OpenType 'meta' table originated at Apple. Microsoft added it to OT with
         just two DataMap records:

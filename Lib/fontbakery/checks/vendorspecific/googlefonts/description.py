@@ -96,7 +96,7 @@ def github_gfonts_description(font: Font, network, config):
 
 
 @check(
-    id="googlefonts:description/has_article",
+    id="googlefonts/description/has_article",
     rationale="""
         Fonts may have a longer article about them, or a description, but
         not both - except for Noto fonts which should have both!
@@ -155,7 +155,7 @@ def check_description_has_article(font):
 
 
 @check(
-    id="googlefonts:description/has_unsupported_elements",
+    id="googlefonts/description/has_unsupported_elements",
     conditions=["description_and_article"],
     rationale="""
         The Google Fonts backend doesn't support the following html elements:
@@ -222,7 +222,7 @@ def check_description_has_unsupported_elements(
 
 
 @check(
-    id="googlefonts:description/broken_links",
+    id="googlefonts/description/broken_links",
     conditions=["network", "description_and_article_html"],
     rationale="""
         The snippet of HTML in the DESCRIPTION.en_us.html/ARTICLE.en_us.html file is
@@ -281,7 +281,7 @@ def check_description_broken_links(description_and_article_html, font):
 
 
 @check(
-    id="googlefonts:description/urls",
+    id="googlefonts/description/urls",
     conditions=["description_and_article_html"],
     rationale="""
         The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font
@@ -319,7 +319,7 @@ def check_description_urls(description_and_article_html):
 
 
 @check(
-    id="googlefonts:description/git_url",
+    id="googlefonts/description/git_url",
     conditions=["description_html", "not is_noto"],
     rationale="""
         The contents of the DESCRIPTION.en-us.html file are displayed on the
@@ -354,7 +354,7 @@ def check_description_git_url(description_html):
 
 
 @check(
-    id="googlefonts:description/valid_html",
+    id="googlefonts/description/valid_html",
     conditions=["description_and_article"],
     rationale="""
         Sometimes people write malformed HTML markup. This check should ensure the
@@ -409,7 +409,7 @@ def check_description_valid_html(descfile, description_and_article):
 
 
 @check(
-    id="googlefonts:description/min_length",
+    id="googlefonts/description/min_length",
     conditions=["description"],
     proposal="legacy:check/005",
     rationale="""
@@ -431,7 +431,7 @@ def check_description_min_length(description):
 
 
 @check(
-    id="googlefonts:description/eof_linebreak",
+    id="googlefonts/description/eof_linebreak",
     conditions=["description"],
     rationale="""
         Some older text-handling tools sometimes misbehave if the last line of data
@@ -455,7 +455,7 @@ def check_description_eof_linebreak(description):
 
 
 @check(
-    id="googlefonts:description/family_update",
+    id="googlefonts/description/family_update",
     rationale="""
         We want to ensure that any significant changes to the font family are
         properly mentioned in the DESCRIPTION file.

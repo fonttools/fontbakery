@@ -154,7 +154,7 @@ def cff_analysis(font):
 
 
 @check(
-    id="opentype:cff_call_depth",
+    id="opentype/cff_call_depth",
     conditions=["ttFont", "is_cff"],
     rationale="""
         Per "The Type 2 Charstring Format, Technical Note #5177",
@@ -179,7 +179,7 @@ def check_cff_call_depth(font):
 
 
 @check(
-    id="opentype:cff2_call_depth",
+    id="opentype/cff2_call_depth",
     conditions=["ttFont", "is_cff2"],
     rationale="""
         Per "The CFF2 CharString Format", the "Subr nesting, stack limit" is 10.
@@ -204,7 +204,7 @@ def check_cff2_call_depth(font):
 
 
 @check(
-    id="opentype:cff_deprecated_operators",
+    id="opentype/cff_deprecated_operators",
     conditions=["ttFont", "is_cff", "cff_analysis"],
     rationale="""
         The 'dotsection' operator and the use of 'endchar' to build accented characters
@@ -234,7 +234,7 @@ def check_cff_deprecated_operators(cff_analysis):
 
 
 @check(
-    id="opentype:cff_ascii_strings",
+    id="opentype/cff_ascii_strings",
     conditions=["ttFont", "is_cff", "cff_analysis"],
     rationale="""
         All CFF Table top dict string chars should fit into the ASCII range.

@@ -2,7 +2,7 @@ from fontbakery.prelude import check, FAIL, Message
 
 
 @check(
-    id="fontbureau:ytlc_sanity",
+    id="fontbureau/ytlc_sanity",
     rationale="""
         This check follows the values of the ytlc axis proposed by Font Bureau.
     """,

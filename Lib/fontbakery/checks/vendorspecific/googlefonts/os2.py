@@ -65,7 +65,7 @@ def registered_vendor_ids():
 
 
 @check(
-    id="googlefonts:vendor_id",
+    id="googlefonts/vendor_id",
     rationale="""
         Microsoft keeps a list of font vendors and their respective contact info. This
         list is updated regularly and is indexed by a 4-char "Vendor ID" which is
@@ -122,7 +122,7 @@ def check_vendor_id(ttFont):
 
 
 @check(
-    id="googlefonts:os2/use_typo_metrics",
+    id="googlefonts/os2/use_typo_metrics",
     rationale="""
         All fonts on the Google Fonts collection should have OS/2.fsSelection bit 7
         (USE_TYPO_METRICS) set. This requirement is part of the vertical metrics scheme
@@ -164,7 +164,7 @@ def check_os2_fsselectionbit7(fonts):
 
 
 @check(
-    id="googlefonts:fstype",
+    id="googlefonts/fstype",
     rationale="""
         The fsType in the OS/2 table is a legacy DRM-related field. Fonts in the
         Google Fonts collection must have it set to zero (also known as
@@ -224,7 +224,7 @@ def check_fstype(ttFont):
 
 
 @check(
-    id="googlefonts:usweightclass",
+    id="googlefonts/usweightclass",
     rationale="""
         Google Fonts expects variable fonts, static ttfs and static otfs to have
         differing OS/2 usWeightClass values.

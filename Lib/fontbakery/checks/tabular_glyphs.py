@@ -44,10 +44,10 @@ def format_glyphs_by_width(glyphs_by_width):
     return output
 
 
-# TODO: Compare this to googlefonts:family/tnum_horizontal_metrics as it seems that
+# TODO: Compare this to googlefonts/family/tnum_horizontal_metrics as it seems that
 #       it may be possible to merge the checks.
 #
-#       And see also typenetwork:family/tnum_horizontal_metrics
+#       And see also typenetwork/family/tnum_horizontal_metrics
 @check(
     id="tnum_glyphs_equal_widths",
     configs={"TEST_STR"},
