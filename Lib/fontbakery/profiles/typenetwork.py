@@ -90,6 +90,8 @@ PROFILE = {
             "googlefonts:family/equal_codepoint_coverage",
             "googlefonts:varfont/bold_wght_coord",
             "googlefonts:varfont/duplicate_instance_names",
+            #
+            "ligature_carets",
         ],
         "Outline Checks": [
             "outline_alignment_miss",
@@ -119,7 +121,7 @@ PROFILE = {
                 "the systems.",
             },
         ],
-        "googlefonts:ligature_carets": [
+        "ligature_carets": [
             {
                 "code": "lacks-caret-pos",
                 "status": "INFO",
