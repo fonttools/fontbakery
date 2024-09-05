@@ -38,6 +38,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[stylisticset_description]**: "Ensure Stylistic Sets have description."
   - **[varfont/consistent_axes]**: "Ensure that all variable font files have the same set of axes and axis ranges."
   - **[varfont/duplexed_axis_reflow]**: "Ensure VFs with duplexed axes do not vary horizontal advance."
+  - **[varfont/instances_in_order]**: ""Ensure the font's instances are in the correct order."
   - **[vttclean]**: "There must not be VTT Talk sources in the font."
 
 #### Moved from Fontwerk to Universal profile

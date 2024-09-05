@@ -64,6 +64,7 @@ PROFILE = {
         "ufo_required_fields",
         "ufo_unnecessary_fields",
         "varfont/duplexed_axis_reflow",
+        "varfont/instances_in_order",
         "vtt_volt_data",  # Very similar to 'vttclean' check, it may be a good idea to merge them.
     ],
     "sections": {

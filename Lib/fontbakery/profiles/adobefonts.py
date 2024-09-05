@@ -84,6 +84,7 @@ PROFILE = {
         "unwanted_tables",
         "varfont/consistent_axes",
         "varfont/duplexed_axis_reflow",
+        "varfont/instances_in_order",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
         "vttclean",
     ],
