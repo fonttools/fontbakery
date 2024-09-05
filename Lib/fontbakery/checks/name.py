@@ -74,8 +74,8 @@ def check_name_id_2(ttFont):
         into Hindi / Arabic / etc.
     """,
     proposal=[
-        "legacy:check/074",
         "https://github.com/fonttools/fontbakery/issues/1663",
+        "legacy:check/074",
     ],
 )
 def check_name_ascii_only_entries(ttFont):

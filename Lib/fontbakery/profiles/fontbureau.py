@@ -22,6 +22,7 @@ PROFILE = {
         "mandatory_avar_table",
         "missing_small_caps_glyphs",
         "name/family_and_style_max_length",
+        "name/ascii_only_entries",
         "no_mac_entries",
         "render_own_name",
         "smart_dropout",
