@@ -5,7 +5,7 @@ from fontbakery.utils import exit_with_install_instructions
 
 
 @check(
-    id="googlefonts:metadata/unsupported_subsets",
+    id="googlefonts/metadata/unsupported_subsets",
     rationale="""
         This check ensures that the subsets specified on a METADATA.pb file are
         actually supported (even if only partially) by the font files.
@@ -49,7 +49,7 @@ def check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints)
 
 
 @check(
-    id="googlefonts:metadata/unreachable_subsetting",
+    id="googlefonts/metadata/unreachable_subsetting",
     rationale="""
         This check ensures that all encoded glyphs in the font are covered by a
         subset declared in the METADATA.pb. Google Fonts splits the font into

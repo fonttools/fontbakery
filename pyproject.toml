@@ -61,7 +61,7 @@ dependencies = [
 beautifulsoup4 = [
     "beautifulsoup4 >= 4.7.1",
     # For parsing registered vendor IDs
-    # googlefonts:vendor_id produces an ERROR if Beautiful Soup 4
+    # googlefonts/vendor_id produces an ERROR if Beautiful Soup 4
     # version 4.0.1 to 4.6.1 or 4.7.0 is installed because of bugs in Beautiful Soup
     # (see https://github.com/fonttools/fontbakery/issues/4270)
 ]

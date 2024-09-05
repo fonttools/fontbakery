@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, INFO, SKIP
 
 
 @check(
-    id="googlefonts:STAT/axis_order",
+    id="googlefonts/STAT/axis_order",
     rationale="""
         This is (for now) a merely informative check to detect what's the axis ordering
         declared on the STAT table of fonts in the Google Fonts collection.

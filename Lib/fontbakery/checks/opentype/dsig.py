@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="opentype:dsig",
+    id="opentype/dsig",
     rationale="""
         Microsoft Office 2013 and below products expect fonts to have a digital
         signature declared in a DSIG table in order to implement OpenType features.

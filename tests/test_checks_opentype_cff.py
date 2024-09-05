@@ -12,7 +12,7 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
 def test_check_cff_call_depth():
-    check = CheckTester("opentype:cff_call_depth")
+    check = CheckTester("opentype/cff_call_depth")
 
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
@@ -45,7 +45,7 @@ def test_check_cff_call_depth():
 
 
 def test_check_cff2_call_depth():
-    check = CheckTester("opentype:cff2_call_depth")
+    check = CheckTester("opentype/cff2_call_depth")
 
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
@@ -78,7 +78,7 @@ def test_check_cff2_call_depth():
 
 
 def test_check_cff_deprecated_operators():
-    check = CheckTester("opentype:cff_deprecated_operators")
+    check = CheckTester("opentype/cff_deprecated_operators")
 
     # this font uses the deprecated 'dotsection' operator
     font = TEST_FILE("deprecated_operators/cff1_dotsection.otf")
@@ -103,7 +103,7 @@ def test_check_cff_deprecated_operators():
 
 
 def test_check_cff_strings():
-    check = CheckTester("opentype:cff_ascii_strings")
+    check = CheckTester("opentype/cff_ascii_strings")
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
 

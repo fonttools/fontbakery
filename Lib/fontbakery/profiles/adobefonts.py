@@ -5,8 +5,8 @@ Checks for Adobe Fonts (formerly known as Typekit).
 PROFILE = {
     "include_profiles": ["universal"],
     "exclude_checks": [
-        "opentype:name/no_copyright_on_description",
-        "opentype:xavgcharwidth",
+        "opentype/name/no_copyright_on_description",
+        "opentype/xavgcharwidth",
         #
         "designspace_has_consistent_codepoints",
         "designspace_has_consistent_glyphset",
@@ -18,31 +18,31 @@ PROFILE = {
         "ufo_recommended_fields",
         "ufo_required_fields",
         "ufo_unnecessary_fields",
-        "STAT_strings",  # replaced by adobefonts:STAT_strings
+        "STAT_strings",  # replaced by adobefonts/STAT_strings
         "transformed_components",
         "unreachable_glyphs",
         "whitespace_glyphnames",
         "whitespace_ink",
     ],
     "pending_review": [
-        "notofonts:cmap/alien_codepoints",  # Note: These two checks had not been previously marked as permanently excluded,
-        "notofonts:unicode_range_bits",  # so maybe there's still some change they may be considered useful here?
-        "opentype:caret_slope",
-        "opentype:dsig",
-        "opentype:fsselection",
-        "opentype:gdef_mark_chars",
-        "opentype:gdef_non_mark_chars",
-        "opentype:gdef_spacing_marks",
-        "opentype:italic_angle",
-        "opentype:italic_axis_in_stat",
-        "opentype:italic_axis_in_stat_is_boolean",
-        "opentype:italic_axis_last",
-        "opentype:mac_style",
-        "opentype:name/italic_names",
-        "opentype:slant_direction",
-        "opentype:varfont/family_axis_ranges",
-        "opentype:varfont/ital_range",
-        "opentype:vendor_id",
+        "notofonts/cmap/alien_codepoints",  # Note: These two checks had not been previously marked as permanently excluded,
+        "notofonts/unicode_range_bits",  # so maybe there's still some change they may be considered useful here?
+        "opentype/caret_slope",
+        "opentype/dsig",
+        "opentype/fsselection",
+        "opentype/gdef_mark_chars",
+        "opentype/gdef_non_mark_chars",
+        "opentype/gdef_spacing_marks",
+        "opentype/italic_angle",
+        "opentype/italic_axis_in_stat",
+        "opentype/italic_axis_in_stat_is_boolean",
+        "opentype/italic_axis_last",
+        "opentype/mac_style",
+        "opentype/name/italic_names",
+        "opentype/slant_direction",
+        "opentype/varfont/family_axis_ranges",
+        "opentype/varfont/ital_range",
+        "opentype/vendor_id",
         "alt_caron",
         "arabic_high_hamza",
         "arabic_spacing_symbols",
@@ -91,14 +91,14 @@ PROFILE = {
     ],
     "sections": {
         "Adobe Fonts Checks": [
-            "adobefonts:family/consistent_upm",
-            "adobefonts:nameid_1_win_english",
-            "adobefonts:unsupported_tables",
-            "adobefonts:STAT_strings",
+            "adobefonts/family/consistent_upm",
+            "adobefonts/nameid_1_win_english",
+            "adobefonts/unsupported_tables",
+            "adobefonts/STAT_strings",
         ],
         "Google Fonts": [
-            "googlefonts:varfont/duplicate_instance_names",
-            "googlefonts:varfont/bold_wght_coord",
+            "googlefonts/varfont/duplicate_instance_names",
+            "googlefonts/varfont/bold_wght_coord",
         ],
     },
     "overrides": {
@@ -155,14 +155,14 @@ PROFILE = {
                 "reason": "For Adobe, users shouldn't be bothered with a failed check if their internet connection isn't functional.",
             }
         ],
-        "opentype:name/match_familyname_fullfont": [
+        "opentype/name/match_familyname_fullfont": [
             {
                 "code": "mismatch-font-names",
                 "status": "WARN",
                 "reason": "Many CFF OpenType fonts in circulation are built with the Microsoft platform Full font name string identical to the PostScript FontName in the CFF Name INDEX. This practice was documented in the OpenType spec until version 1.5.",
             }
         ],
-        "googlefonts:varfont/bold_wght_coord": [
+        "googlefonts/varfont/bold_wght_coord": [
             {
                 "code": "no-bold-instance",
                 "status": "WARN",
@@ -174,42 +174,42 @@ PROFILE = {
                 "reason": "Adobe strongly recommends, but does not require having a Bold instance, and that instance should have coordinate 700 on the 'wght' axis.",
             },
         ],
-        "opentype:varfont/regular_ital_coord": [
+        "opentype/varfont/regular_ital_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
                 "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_opsz_coord": [
+        "opentype/varfont/regular_opsz_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
                 "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_slnt_coord": [
+        "opentype/varfont/regular_slnt_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
                 "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_wdth_coord": [
+        "opentype/varfont/regular_wdth_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
                 "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
             },
         ],
-        "opentype:varfont/regular_wght_coord": [
+        "opentype/varfont/regular_wght_coord": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
                 "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
             },
         ],
-        "opentype:varfont/valid_default_instance_nameids": [
+        "opentype/varfont/valid_default_instance_nameids": [
             {
                 "code": "invalid-default-instance-subfamily-name",
                 "status": "WARN",
@@ -223,7 +223,7 @@ PROFILE = {
                 "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
         ],
-        "opentype:stat_has_axis_value_tables": [
+        "opentype/stat_has_axis_value_tables": [
             {
                 "code": "missing-axis-value-table",
                 "status": "WARN",
@@ -245,7 +245,7 @@ PROFILE = {
                 "Fonts that do not meet this guideline might behave inconsistently so please carefully consider trying to meet it.",
             }
         ],
-        "opentype:weight_class_fvar": [
+        "opentype/weight_class_fvar": [
             {
                 "code": "bad-weight-class",
                 "status": "WARN",

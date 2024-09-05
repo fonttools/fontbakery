@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="opentype:kern_table",
+    id="opentype/kern_table",
     rationale="""
         Even though all fonts should have their kerning implemented in the GPOS table,
         there may be kerning info at the kern table as well.

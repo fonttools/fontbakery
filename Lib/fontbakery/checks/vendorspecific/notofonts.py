@@ -77,7 +77,7 @@ def _get_advance_width_for_char(ttFont, ch):
 
 
 @check(
-    id="notofonts:cmap/unexpected_subtables",
+    id="notofonts/cmap/unexpected_subtables",
     rationale="""
         There are just a few typical types of cmap subtables that are used in fonts.
         If anything different is declared in a font, it will be treated as a FAIL.
@@ -169,7 +169,7 @@ def unicoderange(ttFont):
 
 
 @check(
-    id="notofonts:unicode_range_bits",
+    id="notofonts/unicode_range_bits",
     rationale="""
         When the UnicodeRange bits on the OS/2 table are not properly set,
         some programs running on Windows may not recognize the font and use a
@@ -211,7 +211,7 @@ def check_unicode_range_bits(ttFont):
 
 
 @check(
-    id="notofonts:name/manufacturer",
+    id="notofonts/name/manufacturer",
     rationale="""
         Noto fonts must contain known manufacturer and manufacturer
         URL entries in the name table.
@@ -257,7 +257,7 @@ def check_manufacturer(ttFont):
 
 
 @check(
-    id="notofonts:name/designer",
+    id="notofonts/name/designer",
     rationale="""
         Noto fonts must contain known designer entries in the name table.
     """,
@@ -281,7 +281,7 @@ def check_designer(ttFont):
 
 
 @check(
-    id="notofonts:name/trademark",
+    id="notofonts/name/trademark",
     rationale="""
         Noto fonts must contain the correct trademark entry in the name table.
     """,
@@ -304,7 +304,7 @@ def check_name_trademark(ttFont):
 
 
 @check(
-    id="notofonts:os2/vendor",
+    id="notofonts/os2/vendor",
     rationale="""
         Vendor ID must be 'GOOG'
     """,
@@ -321,7 +321,7 @@ def check_os2_vendor(ttFont):
 
 
 @check(
-    id="notofonts:hmtx/encoded_latin_digits",
+    id="notofonts/hmtx/encoded_latin_digits",
     rationale="""
         Encoded Latin digits in Noto fonts should have equal advance widths.
     """,
@@ -348,7 +348,7 @@ def check_htmx_encoded_latin_digits(ttFont):
 
 
 @check(
-    id="notofonts:hmtx/comma_period",
+    id="notofonts/hmtx/comma_period",
     rationale="""
         If Latin comma and period are encoded in Noto fonts,
         they should have equal advance widths.
@@ -368,7 +368,7 @@ def check_htmx_comma_period(ttFont):
 
 
 @check(
-    id="notofonts:hmtx/whitespace_advances",
+    id="notofonts/hmtx/whitespace_advances",
     rationale="""
         Encoded whitespace in Noto fonts should have well-defined advance widths.
     """,
@@ -432,7 +432,7 @@ def check_htmx_whitespace_advances(ttFont, config, glyph_metrics_stats):
 
 
 @check(
-    id="notofonts:cmap/alien_codepoints",
+    id="notofonts/cmap/alien_codepoints",
     rationale="""
         Private Use Area codepoints and Surrogate Pairs should not be encoded.
     """,

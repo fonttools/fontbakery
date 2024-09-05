@@ -5,7 +5,7 @@ from fontbakery.checks.name import get_family_name, get_subfamily_name
 
 
 @check(
-    id="microsoft:copyright",
+    id="microsoft/copyright",
     rationale="""
         Check whether the copyright string exists and is not empty.
     """,
@@ -17,7 +17,7 @@ def check_copyright(ttFont):
 
 
 @check(
-    id="microsoft:version",
+    id="microsoft/version",
     rationale="""
         Check whether Name ID 5 starts with 'Version X.YY'
         where X and Y are digits.
@@ -36,7 +36,7 @@ def check_version(ttFont):
 
 
 @check(
-    id="microsoft:trademark",
+    id="microsoft/trademark",
     rationale="""
         Check whether Name ID 7 (trademark) exists and is not empty.
     """,
@@ -48,7 +48,7 @@ def check_trademark(ttFont):
 
 
 @check(
-    id="microsoft:manufacturer",
+    id="microsoft/manufacturer",
     rationale="""
         Check whether Name ID 8 (manufacturer) exists and is not empty.
     """,
@@ -70,7 +70,7 @@ def _ensure_name_id_exists(ttFont, name_id, name_name, negative_status=FAIL):
 
 
 @check(
-    id="microsoft:vendor_url",
+    id="microsoft/vendor_url",
     rationale="""
         Check whether vendor URL is pointing at microsoft.com
     """,
@@ -105,7 +105,7 @@ ms_license_description = (
 
 
 @check(
-    id="microsoft:license_description",
+    id="microsoft/license_description",
     rationale="""
         Check whether license description is correct.
     """,
@@ -128,7 +128,7 @@ def check_license_description(ttFont):
 
 
 @check(
-    id="microsoft:fstype",
+    id="microsoft/fstype",
     rationale="""
         The value of the OS/2.fstype field must be 8 (Editable embedding), meaning,
         according to the OpenType spec:
@@ -154,7 +154,7 @@ def check_fstype(ttFont):
 
 
 @check(
-    id="microsoft:vertical_metrics",
+    id="microsoft/vertical_metrics",
     rationale="""
         If OS/2.fsSelection.useTypoMetrics is not set, then
             hhea.ascender == OS/2.winAscent
@@ -207,7 +207,7 @@ def check_vertical_metrics(ttFont):
 
 
 @check(
-    id="microsoft:STAT_axis_values",
+    id="microsoft/STAT_axis_values",
     conditions=["has_STAT_table"],
     rationale="""
         Check whether STAT axis values are unique.
@@ -239,7 +239,7 @@ def check_STAT_axis_values(ttFont):
 
 
 @check(
-    id="microsoft:fvar_STAT_axis_ranges",
+    id="microsoft/fvar_STAT_axis_ranges",
     conditions=["has_STAT_table", "is_variable_font"],
     rationale="""
         Check fvar named instance axis values lie within a *single* STAT axis range.
@@ -338,7 +338,7 @@ def check_fvar_STAT_axis_ranges(ttFont):
 
 
 @check(
-    id="microsoft:STAT_table_eliding_bit",
+    id="microsoft/STAT_table_eliding_bit",
     conditions=["has_STAT_table"],
     rationale="""
         Validate STAT table eliding bit.
@@ -371,7 +371,7 @@ def check_STAT_table_eliding_bit(ttFont):
 
 
 @check(
-    id="microsoft:STAT_table_axis_order",
+    id="microsoft/STAT_table_axis_order",
     conditions=["has_STAT_table"],
     rationale="""
         Validate STAT table axisOrder.
@@ -415,7 +415,7 @@ def check_STAT_table_axis_order(ttFont):
 
 
 @check(
-    id="microsoft:office_ribz_req",
+    id="microsoft/office_ribz_req",
     rationale="""
         Office fonts:
         Name IDs 1 & 2 must be set for an RBIZ family model.
@@ -460,7 +460,7 @@ def check_repertoire(ttFont, character_repertoire, name, error_status=FAIL):
 
 
 @check(
-    id="microsoft:wgl4",
+    id="microsoft/wgl4",
     rationale="""
         Check whether the font complies with WGL4.
     """,
@@ -477,7 +477,7 @@ def check_office_wgl4(ttFont):
 
 
 @check(
-    id="microsoft:ogl2",
+    id="microsoft/ogl2",
     rationale="""
         Check whether the font complies with OGL2.
     """,

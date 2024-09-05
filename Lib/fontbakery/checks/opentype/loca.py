@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="opentype:loca/maxp_num_glyphs",
+    id="opentype/loca/maxp_num_glyphs",
     conditions=["is_ttf"],
     proposal="legacy:check/180",
     rationale="""

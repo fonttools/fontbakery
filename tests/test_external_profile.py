@@ -29,8 +29,8 @@ def test_external_profile():
             "include_profiles": ["opentype"],
             "sections": {
                 "Dalton Maag OpenType": [
-                    "opentype:family/panose_familytype",
-                    "opentype:varfont/regular_opsz_coord",
+                    "opentype/family/panose_familytype",
+                    "opentype/varfont/regular_opsz_coord",
                 ]
             },
         },
@@ -72,7 +72,7 @@ def test_profile_imports():
     # this is in docs/writing profiles
     profile_imports = ["universal"]
     # Probe some tests
-    expected_tests = ["opentype:unitsperem"]  # in head
+    expected_tests = ["opentype/unitsperem"]  # in head
     _test(profile_imports, expected_tests)
 
 
@@ -91,8 +91,8 @@ def test_in_and_exclude_checks_default():
 
     assert checks == opentype_checks
 
-    checks = profile_checks(fakemodule, {"exclude_checks": ["opentype:unitsperem"]})
-    assert "opentype:unitsperem" not in checks
+    checks = profile_checks(fakemodule, {"exclude_checks": ["opentype/unitsperem"]})
+    assert "opentype/unitsperem" not in checks
 
-    checks = profile_checks(fakemodule, {"explicit_checks": ["opentype:unitsperem"]})
-    assert checks == ["opentype:unitsperem"]
+    checks = profile_checks(fakemodule, {"explicit_checks": ["opentype/unitsperem"]})
+    assert checks == ["opentype/unitsperem"]

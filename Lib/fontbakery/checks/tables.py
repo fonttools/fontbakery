@@ -70,7 +70,7 @@ def check_required_tables(ttFont, config, is_variable_font):
     # required tables above. Perhaps split it into individual checks
     # with the correspondent rationales for each subset of required tables.
     #
-    # The `opentype:kern_table` check is a good example of a separate
+    # The `opentype/kern_table` check is a good example of a separate
     # check for a specific table providing a detailed description of
     # the rationale behind it.
 

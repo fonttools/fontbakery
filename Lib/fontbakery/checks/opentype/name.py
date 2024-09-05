@@ -11,7 +11,7 @@ from fontbakery.utils import markdown_table
 
 
 @check(
-    id="opentype:name/empty_records",
+    id="opentype/name/empty_records",
     rationale="""
         Check the name table for empty records,
         as this can cause problems in Adobe apps.
@@ -39,7 +39,7 @@ def check_name_empty_records(ttFont):
 
 
 @check(
-    id="opentype:name/no_copyright_on_description",
+    id="opentype/name/no_copyright_on_description",
     proposal="legacy:check/031",
     rationale="""
         The name table in a font file contains strings about the font;
@@ -132,7 +132,7 @@ def PANOSE_expected(family_type):
 
 
 @check(
-    id="opentype:monospace",
+    id="opentype/monospace",
     conditions=["glyph_metrics_stats", "is_ttf"],
     rationale="""
         There are various metadata in the OpenType spec to specify if a font is
@@ -296,7 +296,7 @@ def check_monospace(ttFont, glyph_metrics_stats):
 
 
 @check(
-    id="opentype:name/match_familyname_fullfont",
+    id="opentype/name/match_familyname_fullfont",
     rationale="""
         The FULL_FONT_NAME entry in the ‘name’ table should start with the same string
         as the Family Name (FONT_FAMILY_NAME, TYPOGRAPHIC_FAMILY_NAME or
@@ -412,7 +412,7 @@ def check_name_match_familyname_fullfont(ttFont):
 
 
 @check(
-    id="opentype:postscript_name",
+    id="opentype/postscript_name",
     proposal="https://github.com/miguelsousa/openbakery/issues/62",
     rationale="""
         The PostScript name is used by some applications to identify the font.
@@ -451,7 +451,7 @@ def check_postscript_name(ttFont):
 
 
 @check(
-    id="opentype:family_naming_recommendations",
+    id="opentype/family_naming_recommendations",
     proposal="legacy:check/071",
     rationale="""
         This check ensures that the length of various family name and style
@@ -542,7 +542,7 @@ def check_family_naming_recommendations(ttFont):
 
 
 @check(
-    id="opentype:name/postscript_vs_cff",
+    id="opentype/name/postscript_vs_cff",
     conditions=["is_cff"],
     rationale="""
         The PostScript name entries in the font's 'name' table should match
@@ -576,7 +576,7 @@ def check_name_postscript_vs_cff(ttFont):
 
 
 @check(
-    id="opentype:name/postscript_name_consistency",
+    id="opentype/name/postscript_name_consistency",
     conditions=["not is_cff"],  # e.g. TTF or CFF2
     rationale="""
         The PostScript name entries in the font's 'name' table should be
@@ -604,7 +604,7 @@ def check_name_postscript_name_consistency(ttFont):
 
 
 @check(
-    id="opentype:family/max_4_fonts_per_family_name",
+    id="opentype/family/max_4_fonts_per_family_name",
     rationale="""
         Per the OpenType spec:
 
@@ -643,7 +643,7 @@ def check_family_max_4_fonts_per_family_name(ttFonts):
 
 
 @check(
-    id="opentype:family/consistent_family_name",
+    id="opentype/family/consistent_family_name",
     rationale="""
         Per the OpenType spec:
 
@@ -724,7 +724,7 @@ def check_consistent_font_family_name(ttFonts):
 
 
 @check(
-    id="opentype:name/italic_names",
+    id="opentype/name/italic_names",
     conditions=["style"],
     rationale="""
         This check ensures that several entries in the name table

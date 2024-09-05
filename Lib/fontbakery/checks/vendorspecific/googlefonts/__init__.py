@@ -5,7 +5,7 @@ from fontbakery.utils import exit_with_install_instructions
 
 
 @check(
-    id="googlefonts:canonical_filename",
+    id="googlefonts/canonical_filename",
     rationale="""
         A font's filename must be composed as "<familyname>-<stylename>.ttf":
 

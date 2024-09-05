@@ -10,7 +10,7 @@ from fontbakery.codetesting import (
 
 
 def test_check_vendor_id():
-    check = CheckTester("fontwerk:vendor_id")
+    check = CheckTester("fontwerk/vendor_id")
 
     ttFont = TTFont(TEST_FILE("abeezee/ABeeZee-Italic.ttf"))
     assert_results_contain(
@@ -22,7 +22,7 @@ def test_check_vendor_id():
 
 
 def test_check_style_linking():
-    check = CheckTester("fontwerk:style_linking")
+    check = CheckTester("fontwerk/style_linking")
 
     font = TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf")
     assert_results_contain(check(font), FAIL, "style-linking-issue")
@@ -36,7 +36,7 @@ def test_check_style_linking():
 
 def test_check_names_match_default_fvar():
     """Checking if names match default fvar."""
-    check = CheckTester("fontwerk:names_match_default_fvar")
+    check = CheckTester("fontwerk/names_match_default_fvar")
 
     from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 

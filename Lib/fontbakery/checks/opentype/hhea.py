@@ -4,7 +4,7 @@ from fontbakery.message import Message
 
 
 @check(
-    id="opentype:maxadvancewidth",
+    id="opentype/maxadvancewidth",
     proposal="legacy:check/073",
     rationale="""
         The 'hhea' table contains a field which specifies the maximum
@@ -40,7 +40,7 @@ def check_maxadvancewidth(ttFont):
 
 
 @check(
-    id="opentype:caret_slope",
+    id="opentype/caret_slope",
     rationale="""
         Checks whether hhea.caretSlopeRise and hhea.caretSlopeRun
         match with post.italicAngle.

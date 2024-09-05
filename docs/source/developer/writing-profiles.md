@@ -55,7 +55,7 @@ PROFILE = {
     "My single check": [ "render_own_name" ]
   },
   "include_profiles": [ "opentype" ],
-  "exclude_checks": [ "opentype:family_naming_recommendations" ]
+  "exclude_checks": [ "opentype/family_naming_recommendations" ]
 }
 ```
 

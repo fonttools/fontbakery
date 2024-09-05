@@ -27,7 +27,7 @@ def _get_mark_class_glyphnames(ttFont):
 
 
 @check(
-    id="opentype:gdef_spacing_marks",
+    id="opentype/gdef_spacing_marks",
     rationale="""
         Glyphs in the GDEF mark glyph class should be non-spacing.
 
@@ -75,7 +75,7 @@ def check_gdef_spacing_marks(ttFont, config):
 
 
 @check(
-    id="opentype:gdef_mark_chars",
+    id="opentype/gdef_mark_chars",
     rationale="""
         Mark characters should be in the GDEF mark glyph class.
     """,
@@ -115,7 +115,7 @@ def check_gdef_mark_chars(ttFont, config):
 
 
 @check(
-    id="opentype:gdef_non_mark_chars",
+    id="opentype/gdef_non_mark_chars",
     rationale="""
         Glyphs in the GDEF mark glyph class become non-spacing and may be repositioned
         if they have mark anchors.

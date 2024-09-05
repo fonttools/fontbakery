@@ -30,7 +30,7 @@ def mada_ttFonts():
 
 def test_check_family_underline_thickness(mada_ttFonts):
     """Fonts have consistent underline thickness ?"""
-    check = CheckTester("opentype:family/underline_thickness")
+    check = CheckTester("opentype/family/underline_thickness")
 
     # We start with our reference Mada font family,
     # which we know has the same value of post.underlineThickness
@@ -59,7 +59,7 @@ def test_check_family_underline_thickness(mada_ttFonts):
 
 def test_check_post_table_version():
     """Font has acceptable post format version table?"""
-    check = CheckTester("opentype:post_table_version")
+    check = CheckTester("opentype/post_table_version")
 
     # create mock fonts for post format testing
 
@@ -145,7 +145,7 @@ def test_check_post_table_version():
 
 def test_check_italic_angle():
     """Checking post.italicAngle value."""
-    check = CheckTester("opentype:italic_angle")
+    check = CheckTester("opentype/italic_angle")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 

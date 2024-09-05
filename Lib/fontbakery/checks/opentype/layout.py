@@ -18,7 +18,7 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
 
 
 @check(
-    id="opentype:layout_valid_feature_tags",
+    id="opentype/layout_valid_feature_tags",
     rationale="""
         Incorrect tags can be indications of typos, leftover debugging code or
         questionable approaches, or user error in the font editor. Such typos can
@@ -62,7 +62,7 @@ def script_tags(ttFont):
 
 
 @check(
-    id="opentype:layout_valid_script_tags",
+    id="opentype/layout_valid_script_tags",
     rationale="""
         Incorrect script tags can be indications of typos, leftover debugging code
         or questionable approaches, or user error in the font editor. Such typos can
@@ -96,7 +96,7 @@ def language_tags(ttFont):
 
 
 @check(
-    id="opentype:layout_valid_language_tags",
+    id="opentype/layout_valid_language_tags",
     rationale="""
         Incorrect language tags can be indications of typos, leftover debugging code
         or questionable approaches, or user error in the font editor. Such typos can

@@ -7,7 +7,7 @@ from fontbakery.constants import FsSelection, MacStyle
 
 
 @check(
-    id="fontwerk:vendor_id",
+    id="fontwerk/vendor_id",
     rationale="""
         Vendor ID must be WERK for Fontwerk fonts.
     """,
@@ -24,7 +24,7 @@ def check_vendor_id(ttFont):
 
 
 @check(
-    id="fontwerk:names_match_default_fvar",
+    id="fontwerk/names_match_default_fvar",
     rationale="""
         Check if the font names match default fvar instance name.
     """,
@@ -102,7 +102,7 @@ def check_names_match_default_fvar(ttFont):
 
 
 @check(
-    id="fontwerk:style_linking",
+    id="fontwerk/style_linking",
     rationale="""
         Look for possible style linking issues.
     """,

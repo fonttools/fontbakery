@@ -77,7 +77,7 @@ def is_ofl(font):
 
 
 @check(
-    id="googlefonts:family/has_license",
+    id="googlefonts/family/has_license",
     conditions=["gfonts_repo_structure"],
     proposal="legacy:check/028",
     rationale="""
@@ -109,7 +109,7 @@ def check_family_has_license(licenses, config):
 
 
 @check(
-    id="googlefonts:license/OFL_copyright",
+    id="googlefonts/license/OFL_copyright",
     conditions=["license_contents"],
     rationale="""
         An OFL.txt file's first line should be the font copyright.
@@ -135,7 +135,7 @@ def check_license_OFL_copyright(license_contents):
 
 
 @check(
-    id="googlefonts:license/OFL_body_text",
+    id="googlefonts/license/OFL_body_text",
     conditions=["is_ofl", "license_contents"],
     rationale="""
         Check OFL body text is correct.
@@ -185,7 +185,7 @@ def check_license_OFL_body_text(license_contents):
 
 
 @check(
-    id="googlefonts:name/license",
+    id="googlefonts/name/license",
     conditions=["license_filename"],
     rationale="""
         A known licensing description must be provided in the NameID 14
@@ -272,7 +272,7 @@ def check_name_license(ttFont, license_filename):
 
 
 @check(
-    id="googlefonts:name/license_url",
+    id="googlefonts/name/license_url",
     rationale="""
         A known license URL must be provided in the NameID 14 (LICENSE INFO URL)
         entry of the name table.
@@ -430,7 +430,7 @@ def check_name_license_url(ttFont, familyname):
 
 
 @check(
-    id="googlefonts:metadata/license",
+    id="googlefonts/metadata/license",
     conditions=["family_metadata"],
     proposal="legacy:check/085",
     rationale="""
@@ -451,7 +451,7 @@ def check_metadata_license(family_metadata):
 
 
 @check(
-    id="googlefonts:epar",
+    id="googlefonts/epar",
     rationale="""
         The EPAR table is/was a way of expressing common licensing permissions and
         restrictions in metadata; while almost nothing supported it, Dave Crossland
@@ -477,7 +477,7 @@ def check_epar(ttFont):
 
 # Although this is a /name/ check, it's really about licensing
 @check(
-    id="googlefonts:name/rfn",
+    id="googlefonts/name/rfn",
     rationale="""
         Some designers adopt the "Reserved Font Name" clause of the OFL license. This
         means that the original author reserves the rights to the family name and other

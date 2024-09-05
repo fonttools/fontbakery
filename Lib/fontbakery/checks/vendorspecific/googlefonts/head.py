@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="googlefonts:unitsperem",
+    id="googlefonts/unitsperem",
     rationale="""
         Even though the OpenType spec allows unitsPerEm to be any value between 16
         and 16384, the Google Fonts project aims at a narrower set of reasonable values.

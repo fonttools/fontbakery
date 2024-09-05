@@ -13,7 +13,7 @@ from fontbakery.codetesting import (
 
 def test_check_loca_maxp_num_glyphs():
     """Does the number of glyphs in the loca table match the maxp table?"""
-    check = CheckTester("opentype:loca/maxp_num_glyphs")
+    check = CheckTester("opentype/loca/maxp_num_glyphs")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))

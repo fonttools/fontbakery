@@ -11,7 +11,7 @@ def GFAxisRegistry():
 
 
 @check(
-    id="googlefonts:metadata/axisregistry_bounds",
+    id="googlefonts/metadata/axisregistry_bounds",
     rationale="""
         Each axis range in a METADATA.pb file must be registered, and within the bounds
         of the axis definition in the Google Fonts Axis Registry, available at
@@ -41,7 +41,7 @@ def check_axisregistry_bounds(family_metadata):
 
 
 @check(
-    id="googlefonts:metadata/axisregistry_valid_tags",
+    id="googlefonts/metadata/axisregistry_valid_tags",
     rationale="""
         Ensure all axes in a METADATA.pb file are registered in the
         Google Fonts Axis Registry, available at
@@ -79,7 +79,7 @@ def check_axisregistry_valid_tags(family_metadata):
 
 
 @check(
-    id="googlefonts:axisregistry/fvar_axis_defaults",
+    id="googlefonts/axisregistry/fvar_axis_defaults",
     rationale="""
         Check that axis defaults have a corresponding fallback name registered at the
         Google Fonts Axis Registry, available at
@@ -123,7 +123,7 @@ def check_axisregistry_fvar_axis_defaults(ttFont):
 
 
 @check(
-    id="googlefonts:STAT/axisregistry",
+    id="googlefonts/STAT/axisregistry",
     rationale="""
         Check that particle names and values on STAT table match the fallback names
         in each axis entry at the Google Fonts Axis Registry, available at

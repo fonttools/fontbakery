@@ -113,7 +113,7 @@ def test_status_log_is_indented():
 def test_command_config_file():
     """Test if we can set checks using a config file."""
     config = tempfile.NamedTemporaryFile(delete=False)
-    config.write(b"explicit_checks = ['opentype:name/empty_records']")
+    config.write(b"explicit_checks = ['opentype/name/empty_records']")
     config.close()
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
     result = subprocess.run(

@@ -8,7 +8,7 @@ from fontbakery.utils import show_inconsistencies, bullet_list
 
 
 @check(
-    id="opentype:family/panose_familytype",
+    id="opentype/family/panose_familytype",
     proposal="legacy:check/010",
     rationale="""
     The [PANOSE value](https://monotype.github.io/panose/) in the OS/2 table is a
@@ -51,7 +51,7 @@ def check_family_panose_familytype(fonts: Iterable[Font], config):
 
 
 @check(
-    id="opentype:xavgcharwidth",
+    id="opentype/xavgcharwidth",
     proposal="legacy:check/034",
     rationale="""
     The OS/2.xAvgCharWidth field is used to calculate the width of a string of characters.
@@ -172,7 +172,7 @@ def check_xavgcharwidth(ttFont):
 
 
 @check(
-    id="opentype:fsselection_matches_macstyle",
+    id="opentype/fsselection_matches_macstyle",
     rationale="""
         The bold and italic bits in OS/2.fsSelection must match the bold and italic
         bits in head.macStyle per the OpenType spec.
@@ -216,7 +216,7 @@ def check_fsselection_matches_macstyle(ttFont):
 
 
 @check(
-    id="opentype:family/bold_italic_unique_for_nameid1",
+    id="opentype/family/bold_italic_unique_for_nameid1",
     conditions=["RIBBI_ttFonts"],
     rationale="""
         Per the OpenType spec: name ID 1 'is used in combination with Font Subfamily
@@ -271,7 +271,7 @@ def check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
 
 
 @check(
-    id="opentype:code_pages",
+    id="opentype/code_pages",
     rationale="""
         At least some programs (such as Word and Sublime Text) under Windows 7
         do not recognize fonts unless code page bits are properly set on the
@@ -315,7 +315,7 @@ def check_code_pages(ttFont):
 
 
 @check(
-    id="opentype:vendor_id",
+    id="opentype/vendor_id",
     rationale="""
         When a font project's Vendor ID is specified explicitly on FontBakery's
         configuration file, all binaries must have a matching vendor identifier
@@ -351,7 +351,7 @@ def check_vendor_id(config, ttFont):
 
 
 @check(
-    id="opentype:fsselection",
+    id="opentype/fsselection",
     conditions=["style"],
     proposal="legacy:check/129",
     rationale="""

@@ -2,16 +2,16 @@ PROFILE = {
     "include_profiles": ["googlefonts"],
     "sections": {
         "Noto Fonts": [
-            "notofonts:cmap/unexpected_subtables",
-            "notofonts:unicode_range_bits",
-            "notofonts:name/manufacturer",
-            "notofonts:name/designer",
-            "notofonts:name/trademark",
-            "notofonts:os2/vendor",
-            "notofonts:hmtx/encoded_latin_digits",
-            "notofonts:hmtx/comma_period",
-            "notofonts:hmtx/whitespace_advances",
-            "notofonts:cmap/alien_codepoints",
+            "notofonts/cmap/unexpected_subtables",
+            "notofonts/unicode_range_bits",
+            "notofonts/name/manufacturer",
+            "notofonts/name/designer",
+            "notofonts/name/trademark",
+            "notofonts/os2/vendor",
+            "notofonts/hmtx/encoded_latin_digits",
+            "notofonts/hmtx/comma_period",
+            "notofonts/hmtx/whitespace_advances",
+            "notofonts/cmap/alien_codepoints",
             #
             "cmap/format_12",  # While this check is still in googlefonts' pending review list, we have to explicitly add it here.
         ]
@@ -23,8 +23,8 @@ PROFILE = {
     # "minimal" font, so we accept the fact that there will be no Latin set and no
     # hinting information at all.
     "exclude_checks": [
-        "googlefonts:glyph_coverage",
-        "googlefonts:gasp",
+        "googlefonts/glyph_coverage",
+        "googlefonts/gasp",
         #
         "render_own_name",
         "smart_dropout",

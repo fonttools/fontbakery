@@ -7,7 +7,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="opentype:varfont/stat_axis_record_for_each_axis",
+    id="opentype/varfont/stat_axis_record_for_each_axis",
     rationale="""
         According to the OpenType spec, there must be an Axis Record
         for every axis defined in the fvar table.
@@ -33,7 +33,7 @@ def check_varfont_stat_axis_record_for_each_axis(ttFont, config):
 
 
 @check(
-    id="opentype:stat_has_axis_value_tables",
+    id="opentype/stat_has_axis_value_tables",
     rationale="""
         According to the OpenType spec, in a variable font, it is strongly recommended
         that axis value tables be included for every element of typographic subfamily
@@ -127,7 +127,7 @@ def check_stat_has_axis_value_tables(ttFont, is_variable_font):
 
 
 @check(
-    id="opentype:italic_axis_in_stat",
+    id="opentype/italic_axis_in_stat",
     rationale="""
         Check that related Upright and Italic VFs have a
         'ital' axis in STAT table.
@@ -200,7 +200,7 @@ def check_italic_axis_in_stat(fonts, config):
 
 
 @check(
-    id="opentype:italic_axis_in_stat_is_boolean",
+    id="opentype/italic_axis_in_stat_is_boolean",
     conditions=["style", "has_STAT_table"],
     rationale="""
         Check that the value of the 'ital' STAT axis is boolean (either 0 or 1),
@@ -283,7 +283,7 @@ def check_italic_axis_in_stat_is_boolean(ttFont, style):
 
 
 @check(
-    id="opentype:italic_axis_last",
+    id="opentype/italic_axis_last",
     conditions=["style", "has_STAT_table"],
     rationale="""
         Check that the 'ital' STAT axis is last in axis order.
@@ -314,7 +314,7 @@ def check_italic_axis_last(ttFont, style):
 
 
 @check(
-    id="opentype:weight_class_fvar",
+    id="opentype/weight_class_fvar",
     rationale="""
         According to Microsoft's OT Spec the OS/2 usWeightClass
         should match the fvar default value.
