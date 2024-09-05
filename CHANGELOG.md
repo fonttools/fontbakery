@@ -19,6 +19,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[cjk_not_enough_glyphs]**: "Any CJK font should contain at least a minimal set of 150 CJK characters."
   - **[color_cpal_brightness]**: "Color layers should have a minimum brightness."
   - **[colorfont_tables]**: "Ensure font has the expected color font tables."
+  - **[empty_glyph_on_gid1_for_colrv0]**: "Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."
   - **[family/control_chars]**: "Does font file include unacceptable control character glyphs?"
   - **[file_size]**: "Ensure files are not too large."
   - **[fontdata_namecheck]**: "Familyname must be unique according to namecheck.fontdata.com"
