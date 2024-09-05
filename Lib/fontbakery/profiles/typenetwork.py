@@ -126,7 +126,7 @@ PROFILE = {
                 "reason": "This is a feature, not really needed to the font perform well.",
             },
         ],
-        "googlefonts:kerning_for_non_ligated_sequences": [
+        "kerning_for_non_ligated_sequences": [
             {
                 "code": "lacks-kern-info",
                 "status": "INFO",
