@@ -43,6 +43,7 @@ PROFILE = {
         "designspace_has_consistent_groups",
         "designspace_has_default_master",
         "designspace_has_sources",
+        "empty_glyph_on_gid1_for_colrv0",
         "empty_letters",  # Previously this one had a note: "The check is broken"
         "file_size",
         "fontdata_namecheck",

@@ -18,6 +18,7 @@ PROFILE = {
         "designspace_has_consistent_groups",
         "designspace_has_default_master",
         "designspace_has_sources",
+        "empty_glyph_on_gid1_for_colrv0",
         "empty_letters",
         "family/control_chars",
         "file_size",

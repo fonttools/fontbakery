@@ -7,6 +7,7 @@ PROFILE = {
         "cmap/format_12",
         "color_cpal_brightness",
         "colorfont_tables",
+        "empty_glyph_on_gid1_for_colrv0",
         "empty_letters",
         "family/control_chars",
         "file_size",

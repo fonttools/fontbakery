@@ -32,6 +32,7 @@ PROFILE = {
             "color_cpal_brightness",
             "colorfont_tables",
             "contour_count",
+            "empty_glyph_on_gid1_for_colrv0",
             "empty_letters",
             "family/control_chars",
             "family/single_directory",
