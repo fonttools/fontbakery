@@ -35,6 +35,7 @@ PROFILE = {
         "caps_vertically_centered",  # Disabled: issue #4274
         "case_mapping",
         "cmap/format_12",
+        "cjk_not_enough_glyphs",
         "color_cpal_brightness",
         "colorfont_tables",
         "designspace_has_consistent_codepoints",

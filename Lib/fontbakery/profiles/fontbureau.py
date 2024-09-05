@@ -3,6 +3,7 @@ PROFILE = {
     "pending_review": [
         "opentype:weight_class_fvar",
         "opentype:slant_direction",
+        "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
         "colorfont_tables",

@@ -10,6 +10,7 @@ from fontbakery.status import WARN, SKIP
 
 
 def test_check_cjk_not_enough_glyphs():
+    "Any CJK font should contain at least a minimal set of 150 CJK characters."
     check = CheckTester("cjk_not_enough_glyphs")
 
     ttFont = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))

@@ -48,6 +48,7 @@ PROFILE = {
         "arabic_spacing_symbols",
         "case_mapping",
         "cjk_chws_feature",  # was temporarily removed
+        "cjk_not_enough_glyphs",
         "color_cpal_brightness",
         "colorfont_tables",
         "contour_count",  # was temporarily removed
