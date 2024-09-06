@@ -282,11 +282,18 @@ def check_linegaps(ttFont):
 def check_typoascender_exceeds_Agrave(ttFont):
     """Checking that the typoAscender exceeds the yMax of the /Agrave."""
 
-    if "OS/2" not in ttFont:
+    # This check modifies the font file with `.draw(pen)`
+    # so here we'll work with a copy of the object so that we
+    # do not affect other checks:
+    from copy import deepcopy
+
+    ttFont_copy = deepcopy(ttFont)
+
+    if "OS/2" not in ttFont_copy:
         yield FAIL, Message("lacks-OS/2", "Font file lacks OS/2 table")
         return
 
-    glyphset = ttFont.getGlyphSet()
+    glyphset = ttFont_copy.getGlyphSet()
 
     if "Agrave" not in glyphset and "uni00C0" not in glyphset:
         yield SKIP, Message(
@@ -304,7 +311,7 @@ def check_typoascender_exceeds_Agrave(ttFont):
 
     yMax = pen.bounds[-1]
 
-    typoAscender = ttFont["OS/2"].sTypoAscender
+    typoAscender = ttFont_copy["OS/2"].sTypoAscender
 
     if typoAscender < yMax:
         yield FAIL, Message(

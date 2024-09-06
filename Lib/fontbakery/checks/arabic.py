@@ -73,11 +73,17 @@ def check_arabic_spacing_symbols(ttFont):
 def check_arabic_high_hamza(ttFont):
     """Check that glyph for U+0675 ARABIC LETTER HIGH HAMZA is not a mark."""
     from fontTools.pens.areaPen import AreaPen
+    from copy import deepcopy
+
+    # This check modifies the font file with `.draw(pen)`
+    # so here we'll work with a copy of the object so that we
+    # do not affect other checks:
+    ttFont_copy = deepcopy(ttFont)
 
     ARABIC_LETTER_HAMZA = 0x0621
     ARABIC_LETTER_HIGH_HAMZA = 0x0675
 
-    cmap = ttFont.getBestCmap()
+    cmap = ttFont_copy.getBestCmap()
     if ARABIC_LETTER_HAMZA not in cmap or ARABIC_LETTER_HIGH_HAMZA not in cmap:
         yield SKIP, Message(
             "glyphs-missing",
@@ -85,10 +91,10 @@ def check_arabic_high_hamza(ttFont):
         )
         return
 
-    if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
-        class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
-        reverseCmap = ttFont["cmap"].buildReversed()
-        glyphOrder = ttFont.getGlyphOrder()
+    if "GDEF" in ttFont_copy and ttFont_copy["GDEF"].table.GlyphClassDef:
+        class_def = ttFont_copy["GDEF"].table.GlyphClassDef.classDefs
+        reverseCmap = ttFont_copy["cmap"].buildReversed()
+        glyphOrder = ttFont_copy.getGlyphOrder()
         for name in glyphOrder:
             if ARABIC_LETTER_HIGH_HAMZA in reverseCmap.get(name, set()):
                 if name in class_def and class_def[name] == 3:
@@ -100,14 +106,14 @@ def check_arabic_high_hamza(ttFont):
     # Also validate the bounding box of the glyph and compare
     # it to U+0621 expecting them to have roughly the same size
     # (within a certain tolerance margin)
-    glyph_set = ttFont.getGlyphSet()
+    glyph_set = ttFont_copy.getGlyphSet()
     area_pen = AreaPen(glyph_set)
 
-    glyph_set[get_glyph_name(ttFont, ARABIC_LETTER_HAMZA)].draw(area_pen)
+    glyph_set[get_glyph_name(ttFont_copy, ARABIC_LETTER_HAMZA)].draw(area_pen)
     hamza_area = area_pen.value
 
     area_pen.value = 0
-    glyph_set[get_glyph_name(ttFont, ARABIC_LETTER_HIGH_HAMZA)].draw(area_pen)
+    glyph_set[get_glyph_name(ttFont_copy, ARABIC_LETTER_HIGH_HAMZA)].draw(area_pen)
     high_hamza_area = area_pen.value
 
     if abs((high_hamza_area - hamza_area) / hamza_area) > 0.1:

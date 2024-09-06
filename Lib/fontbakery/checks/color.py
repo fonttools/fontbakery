@@ -145,11 +145,12 @@ def check_empty_glyph_on_gid1_for_colrv0(ttFont):
         " This could be the space glyph."
     )
     from fontTools.pens.areaPen import AreaPen
-    from copy import deepcopy
 
     # This check modifies the font file with `.draw(pen)`
     # so here we'll work with a copy of the object so that we
     # do not affect other checks:
+    from copy import deepcopy
+
     ttFont_copy = deepcopy(ttFont)
 
     glyphOrder = ttFont_copy.getGlyphOrder()
