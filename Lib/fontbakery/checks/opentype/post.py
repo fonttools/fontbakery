@@ -128,8 +128,14 @@ def check_italic_angle(ttFont, style):
     import math
     from beziers.path import BezierPath, Line, Point
     from fontTools.pens.boundsPen import BoundsPen
+    from copy import deepcopy
 
-    value = ttFont["post"].italicAngle
+    # This check modifies the font file with `.draw(boundspen)`
+    # so here we'll work with a copy of the object so that we
+    # do not affect other checks:
+    ttFont_copy = deepcopy(ttFont)
+
+    value = ttFont_copy["post"].italicAngle
 
     # Calculating italic angle from the font's glyph outlines
     def x_leftmost_intersection(paths, y):
@@ -157,7 +163,7 @@ def check_italic_angle(ttFont, style):
     bad_glyphs = []
     for glyph_name in GLYPHS_TO_CHECK:
         # Get bounds
-        glyphset = ttFont.getGlyphSet()
+        glyphset = ttFont_copy.getGlyphSet()
         if glyph_name not in glyphset:
             continue
         boundspen = BoundsPen(glyphset)
@@ -169,13 +175,13 @@ def check_italic_angle(ttFont, style):
     calculated_italic_angle = None
     for glyph_name in GLYPHS_TO_CHECK:
         try:
-            paths = BezierPath.fromFonttoolsGlyph(ttFont, glyph_name)
+            paths = BezierPath.fromFonttoolsGlyph(ttFont_copy, glyph_name)
         except KeyError:
             continue
 
         # Get bounds
-        boundspen = BoundsPen(ttFont.getGlyphSet())
-        ttFont.getGlyphSet()[glyph_name].draw(boundspen)
+        boundspen = BoundsPen(ttFont_copy.getGlyphSet())
+        ttFont_copy.getGlyphSet()[glyph_name].draw(boundspen)
         bounds = boundspen.bounds
         if not bounds:
             continue
@@ -273,14 +279,14 @@ def check_italic_angle(ttFont, style):
 
     # Checking if italicAngle matches font style:
     if "Italic" in style:
-        if ttFont["post"].italicAngle == 0:
+        if ttFont_copy["post"].italicAngle == 0:
             passed = False
             yield FAIL, Message(
                 "zero-italic",
                 "Font is italic, so post.italicAngle should be non-zero.",
             )
     else:
-        if ttFont["post"].italicAngle != 0:
+        if ttFont_copy["post"].italicAngle != 0:
             passed = False
             yield FAIL, Message(
                 "non-zero-upright",
@@ -298,4 +304,4 @@ def check_italic_angle(ttFont, style):
         )
 
     if passed:
-        yield PASS, (f"Value of post.italicAngle is {value}" f' with style="{style}".')
+        yield PASS, (f'Value of post.italicAngle is {value} with style="{style}".')
