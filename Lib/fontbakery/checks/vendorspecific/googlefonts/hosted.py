@@ -55,14 +55,23 @@ def check_version_bump(ttFont, api_gfonts_ttFont, github_gfonts_ttFont):
 )
 def check_production_glyphs_similarity(ttFont, api_gfonts_ttFont, config):
     """Glyphs are similiar to Google Fonts version?"""
+
+    # This check modifies the font file with `.draw(pen)`
+    # so here we'll work with a copy of the object so that we
+    # do not affect other checks:
+    from copy import deepcopy
+
+    ttFont_copy = deepcopy(ttFont)
+    api_gfonts_ttFont_copy = deepcopy(api_gfonts_ttFont)
+
     from fontbakery.utils import pretty_print_list
 
-    def glyphs_surface_area(ttFont):
+    def glyphs_surface_area(a_ttFont):
         """Calculate the surface area of a glyph's ink"""
         from fontTools.pens.areaPen import AreaPen
 
         glyphs = {}
-        glyph_set = ttFont.getGlyphSet()
+        glyph_set = a_ttFont.getGlyphSet()
         area_pen = AreaPen(glyph_set)
 
         for glyph in glyph_set.keys():
@@ -74,13 +83,13 @@ def check_production_glyphs_similarity(ttFont, api_gfonts_ttFont, config):
         return glyphs
 
     bad_glyphs = []
-    these_glyphs = glyphs_surface_area(ttFont)
-    gfonts_glyphs = glyphs_surface_area(api_gfonts_ttFont)
+    these_glyphs = glyphs_surface_area(ttFont_copy)
+    gfonts_glyphs = glyphs_surface_area(api_gfonts_ttFont_copy)
 
     shared_glyphs = set(these_glyphs) & set(gfonts_glyphs)
 
-    this_upm = ttFont["head"].unitsPerEm
-    gfonts_upm = api_gfonts_ttFont["head"].unitsPerEm
+    this_upm = ttFont_copy["head"].unitsPerEm
+    gfonts_upm = api_gfonts_ttFont_copy["head"].unitsPerEm
 
     for glyph in shared_glyphs:
         # Normalize area difference against comparison's upm

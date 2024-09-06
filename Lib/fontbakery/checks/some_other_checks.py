@@ -110,10 +110,18 @@ def check_family_single_directory(fonts):
 )
 def check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
+
+    # This check modifies the font file with `.draw(pen)`
+    # so here we'll work with a copy of the object so that we
+    # do not affect other checks:
+    from copy import deepcopy
+
+    ttFont_copy = deepcopy(ttFont)
+
     from fontTools.pens.boundsPen import BoundsPen
 
     SOME_UPPERCASE_GLYPHS = ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]
-    glyphSet = ttFont.getGlyphSet()
+    glyphSet = ttFont_copy.getGlyphSet()
 
     for glyphname in SOME_UPPERCASE_GLYPHS:
         if glyphname not in glyphSet.keys():
@@ -131,10 +139,10 @@ def check_caps_vertically_centered(ttFont):
         highest_point = pen.bounds[3]
         highest_point_list.append(highest_point)
 
-    upm = ttFont["head"].unitsPerEm
+    upm = ttFont_copy["head"].unitsPerEm
     error_margin = upm * 0.05
     average_cap_height = sum(highest_point_list) / len(highest_point_list)
-    descender = ttFont["hhea"].descent
+    descender = ttFont_copy["hhea"].descent
     top_margin = upm - average_cap_height
     difference = abs(top_margin - abs(descender))
     vertically_centered = difference <= error_margin
