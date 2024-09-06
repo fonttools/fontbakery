@@ -75,7 +75,7 @@ def pair_kerning(font, left, right):
 
 
 @check(
-    id="iso15008_proportions",
+    id="iso15008/proportions",
     rationale="""
         According to ISO 15008, fonts used for in-car displays should not be
         too narrow or too wide.
@@ -114,7 +114,7 @@ def check_iso15008_proportions(ttFont):
 
 
 @check(
-    id="iso15008_stem_width",
+    id="iso15008/stem_width",
     rationale="""
         According to ISO 15008, fonts used for in-car displays should
         not be too light or too bold.
@@ -146,7 +146,7 @@ def check_iso15008_stem_width(ttFont):
 
 
 @check(
-    id="iso15008_intercharacter_spacing",
+    id="iso15008/intercharacter_spacing",
     rationale="""
         According to ISO 15008, fonts used for in-car displays should not
         be too narrow or too wide.
@@ -232,7 +232,7 @@ def check_iso15008_intercharacter_spacing(font, ttFont):
 
 
 @check(
-    id="iso15008_interword_spacing",
+    id="iso15008/interword_spacing",
     rationale="""
         According to ISO 15008, fonts used for in-car displays
         should not be too narrow or too wide.
@@ -284,7 +284,7 @@ def check_iso15008_interword_spacing(font, ttFont):
 
 
 @check(
-    id="iso15008_interline_spacing",
+    id="iso15008/interline_spacing",
     rationale="""
         According to ISO 15008, fonts used for in-car displays
         should not be too narrow or too wide.
