@@ -145,15 +145,21 @@ def check_empty_glyph_on_gid1_for_colrv0(ttFont):
         " This could be the space glyph."
     )
     from fontTools.pens.areaPen import AreaPen
+    from copy import deepcopy
 
-    glyphOrder = ttFont.getGlyphOrder()
-    glyphSet = ttFont.getGlyphSet()
+    # This check modifies the font file with `.draw(pen)`
+    # so here we'll work with a copy of the object so that we
+    # do not affect other checks:
+    ttFont_copy = deepcopy(ttFont)
+
+    glyphOrder = ttFont_copy.getGlyphOrder()
+    glyphSet = ttFont_copy.getGlyphSet()
     pen = AreaPen(glyphSet)
     gid1 = glyphSet[glyphOrder[1]]
     gid1.draw(pen)
     area = pen.value
 
-    if "COLR" in ttFont.keys() and ttFont["COLR"].version == 0 and area != 0:
+    if "COLR" in ttFont_copy.keys() and ttFont_copy["COLR"].version == 0 and area != 0:
         yield FAIL, Message(
             "gid1-has-contours",
             "This is a COLR font. As a workaround for a rendering bug in"
