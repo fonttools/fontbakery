@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long  # This is data, not code
 PROFILE = {
     "include_profiles": ["universal"],
     "exclude_checks": [

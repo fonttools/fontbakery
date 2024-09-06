@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long  # This is data, not code
 PROFILE = {
     "sections": {
         "OpenType Specification Checks": [
