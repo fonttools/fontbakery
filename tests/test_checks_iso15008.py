@@ -27,7 +27,7 @@ def test_extra_needed_exit(monkeypatch):
 
 def test_check_iso15008_proportions():
     """Check if 0.65 => (H width / H height) => 0.80"""
-    check = CheckTester("iso15008_proportions")
+    check = CheckTester("iso15008/proportions")
 
     # Cabin has a proportion of 0.7, so that's good.
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
@@ -54,7 +54,7 @@ def test_check_iso15008_proportions():
 
 def test_check_iso15008_stem_width():
     """Check if 0.10 <= (stem width / ascender) <= 0.82"""
-    check = CheckTester("iso15008_stem_width")
+    check = CheckTester("iso15008/stem_width")
 
     font = TEST_FILE("cabin/Cabin-SemiBold.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -77,7 +77,7 @@ def test_check_iso15008_stem_width():
 
 def test_check_iso15008_intercharacter_spacing():
     """Check if spacing between characters is adequate for display use"""
-    check = CheckTester("iso15008_intercharacter_spacing")
+    check = CheckTester("iso15008/intercharacter_spacing")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -113,7 +113,7 @@ def test_check_iso15008_intercharacter_spacing():
 
 def test_check_iso15008_interword_spacing():
     """Check if spacing between words is adequate for display use"""
-    check = CheckTester("iso15008_interword_spacing")
+    check = CheckTester("iso15008/interword_spacing")
 
     font = TEST_FILE("cabin/CabinCondensed-Bold.ttf")
     # lm space is 112; m+space+l space is 286; 286/112 = 255%
@@ -128,7 +128,7 @@ def test_check_iso15008_interword_spacing():
 
 def test_check_iso15008_interline_spacing():
     """Check if spacing between lines is adequate for display use"""
-    check = CheckTester("iso15008_interline_spacing")
+    check = CheckTester("iso15008/interline_spacing")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with a good font...")
