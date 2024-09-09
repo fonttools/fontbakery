@@ -186,7 +186,6 @@ def check_family_control_chars(ttFonts):
 )
 def check_mandatory_glyphs(ttFont):
     """Font contains '.notdef' as its first glyph?"""
-    passed = True
     NOTDEF = ".notdef"
     glyph_order = ttFont.getGlyphOrder()
 
@@ -198,14 +197,12 @@ def check_mandatory_glyphs(ttFont):
         return
 
     if glyph_order[0] != NOTDEF:
-        passed = False
         yield WARN, Message(
             "notdef-not-first", f"The {NOTDEF!r} should be the font's first glyph."
         )
 
     cmap = ttFont.getBestCmap()  # e.g. {65: 'A', 66: 'B', 67: 'C'} or None
     if cmap and NOTDEF in cmap.values():
-        passed = False
         rev_cmap = {name: val for val, name in reversed(sorted(cmap.items()))}
         yield WARN, Message(
             "notdef-has-codepoint",
@@ -214,20 +211,16 @@ def check_mandatory_glyphs(ttFont):
         )
 
     if not glyph_has_ink(ttFont, NOTDEF):
-        passed = False
         yield FAIL, Message(
             "notdef-is-blank",
             f"The {NOTDEF!r} glyph should contain a drawing, but it is blank.",
         )
 
-    if passed:
-        yield PASS, "OK"
-
 
 @check(
     id="missing_small_caps_glyphs",
     rationale="""
-        Ensure small caps glyphs must be available if
+        Ensure small caps glyphs are available if
         a font declares smcp or c2sc OT features.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3154",
