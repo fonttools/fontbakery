@@ -314,7 +314,7 @@ def check_typoascender_exceeds_Agrave(ttFont):
     typoAscender = ttFont_copy["OS/2"].sTypoAscender
 
     if typoAscender < yMax:
-        yield FAIL, Message(
+        yield WARN, Message(
             "typoAscender",
             f"OS/2.sTypoAscender value should be greater than {yMax},"
             f" but got {typoAscender} instead",
