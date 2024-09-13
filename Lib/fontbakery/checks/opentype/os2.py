@@ -9,15 +9,15 @@ from fontbakery.utils import show_inconsistencies, bullet_list
 
 @check(
     id="opentype/family/panose_familytype",
-    proposal="legacy:check/010",
     rationale="""
-    The [PANOSE value](https://monotype.github.io/panose/) in the OS/2 table is a
-    way of classifying a font based on its visual appearance and characteristics.
+        The [PANOSE value](https://monotype.github.io/panose/) in the OS/2 table is a
+        way of classifying a font based on its visual appearance and characteristics.
 
-    The first field in the PANOSE classification is the family type: 2 means Latin
-    Text, 3 means Latin Script, 4 means Latin Decorative, 5 means Latin Symbol.
-    This check ensures that within a family, all fonts have the same family type.
-""",
+        The first field in the PANOSE classification is the family type: 2 means Latin
+        Text, 3 means Latin Script, 4 means Latin Decorative, 5 means Latin Symbol.
+        This check ensures that within a family, all fonts have the same family type.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_family_panose_familytype(fonts: Iterable[Font], config):
     """Fonts have consistent PANOSE family type?"""
@@ -52,14 +52,15 @@ def check_family_panose_familytype(fonts: Iterable[Font], config):
 
 @check(
     id="opentype/xavgcharwidth",
-    proposal="legacy:check/034",
     rationale="""
-    The OS/2.xAvgCharWidth field is used to calculate the width of a string of characters.
-    It is the average width of all non-zero width glyphs in the font.
+        The OS/2.xAvgCharWidth field is used to calculate the width of a string of
+        characters. It is the average width of all non-zero width glyphs in the font.
 
-    This check ensures that the value is correct. A failure here may indicate
-    a bug in the font compiler, rather than something that the designer can
-    do anything about.""",
+        This check ensures that the value is correct. A failure here may indicate
+        a bug in the font compiler, rather than something that the designer can
+        do anything about.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_xavgcharwidth(ttFont):
     """Check if OS/2 xAvgCharWidth is correct."""
@@ -353,7 +354,6 @@ def check_vendor_id(config, ttFont):
 @check(
     id="opentype/fsselection",
     conditions=["style"],
-    proposal="legacy:check/129",
     rationale="""
     The OS/2.fsSelection field is a bit field used to specify the stylistic
     qualities of the font - in particular, it specifies to some operating
@@ -364,6 +364,7 @@ def check_vendor_id(config, ttFont):
     font style. For a family of static fonts created in GlyphsApp, this is
     set by using the style linking checkboxes in the exports settings.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_fsselection(ttFont, style):
     """Checking OS/2 fsSelection value."""

@@ -17,7 +17,7 @@ from fontbakery.constants import LATEST_TTFAUTOHINT_VERSION, NameID
         In this scenario it makes sense to simply toggle all 4 flags ON for all font
         sizes.
     """,
-    proposal="legacy:check/062",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_gasp(ttFont):
     """Is the Grid-fitting and Scan-conversion Procedure ('gasp') table
@@ -146,7 +146,7 @@ def check_has_ttfautohint_params(ttFont):
     rationale="""
         Check if font has been hinted with an outdated version of ttfautohint.
     """,
-    proposal="legacy:check/056",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_old_ttfautohint(ttFont):
     """Font has old ttfautohint applied?"""

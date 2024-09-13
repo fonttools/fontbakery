@@ -12,7 +12,6 @@ from fontbakery.testable import TTCFont
 
 @check(
     id="ots",
-    proposal="legacy:check/036",
     rationale="""
        The OpenType Sanitizer (OTS) is a tool that checks that the font is
        structually well-formed and passes various sanity checks. It is used by
@@ -22,6 +21,7 @@ from fontbakery.testable import TTCFont
        This check runs OTS on the font and reports any errors or warnings that
        it finds.
        """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_ots(font):
     """Checking with ots-sanitize."""

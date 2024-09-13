@@ -35,7 +35,7 @@ from fontbakery.utils import bullet_list
         - A gasp table is necessary if a designer wants to influence the sizes
           at which grayscaling is used under Windows. Etc.
     """,
-    proposal="legacy:check/052",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_required_tables(ttFont, config, is_variable_font):
     """Font contains all required tables?"""
@@ -123,7 +123,7 @@ def check_required_tables(ttFont, config, is_variable_font):
         can sometimes sneak into final release files, which should only have
         OpenType spec tables.
     """,
-    proposal="legacy:check/053",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_unwanted_tables(ttFont):
     """Are there unwanted tables?"""

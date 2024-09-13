@@ -86,8 +86,8 @@ def registered_vendor_ids():
         check, since your ID will soon be included in one of our upcoming releases.
     """,
     proposal=[
-        "legacy:check/018",
         "https://github.com/fonttools/fontbakery/issues/3943",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_vendor_id(ttFont):
@@ -175,7 +175,7 @@ def check_os2_fsselectionbit7(fonts):
         More detailed info is available at:
         https://docs.microsoft.com/en-us/typography/opentype/spec/os2#fstype
     """,
-    proposal="legacy:check/016",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_fstype(ttFont):
     """Checking OS/2 fsType does not impose restrictions."""
@@ -241,7 +241,7 @@ def check_fstype(ttFont):
         Glyphsapp users can change the usWeightClass value of an instance by adding
         a 'weightClass' customParameter.
     """,
-    proposal="legacy:check/020",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_usweightclass(font, ttFonts):
     """

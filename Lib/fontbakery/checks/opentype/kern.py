@@ -26,9 +26,9 @@ from fontbakery.message import Message
         as a good-to-have (but optional) feature.
     """,
     proposal=[
-        "legacy:check/066",
         "https://github.com/fonttools/fontbakery/issues/1675",
         "https://github.com/fonttools/fontbakery/issues/3148",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_kern_table(ttFont):

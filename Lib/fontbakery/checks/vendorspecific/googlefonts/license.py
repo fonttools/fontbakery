@@ -79,12 +79,12 @@ def is_ofl(font):
 @check(
     id="googlefonts/family/has_license",
     conditions=["gfonts_repo_structure"],
-    proposal="legacy:check/028",
     rationale="""
         A license file is required for all fonts in the Google Fonts collection.
         This checks that the font's directory contains a file named OFL.txt or
         LICENSE.txt.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_family_has_license(licenses, config):
     """Check font has a license."""
@@ -211,7 +211,7 @@ def check_license_OFL_body_text(license_contents):
 
         When in doubt, please choose OFL for new font projects.
     """,
-    proposal="legacy:check/029",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_license(ttFont, license_filename):
     """Check copyright namerecords match license file."""
@@ -297,8 +297,8 @@ def check_name_license(ttFont, license_filename):
     """,
     conditions=["familyname"],
     proposal=[
-        "legacy:check/030",
         "https://github.com/fonttools/fontbakery/issues/4358",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_name_license_url(ttFont, familyname):
@@ -432,12 +432,12 @@ def check_name_license_url(ttFont, familyname):
 @check(
     id="googlefonts/metadata/license",
     conditions=["family_metadata"],
-    proposal="legacy:check/085",
     rationale="""
         The license field in METADATA.pb must contain one of the
         three values "APACHE2", "UFL" or "OFL". (New fonts should
         generally be OFL unless there are special circumstances.)
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_license(family_metadata):
     """METADATA.pb license is "APACHE2", "UFL" or "OFL"?"""

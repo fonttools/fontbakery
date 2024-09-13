@@ -21,7 +21,7 @@ from fontbakery.utils import exit_with_install_instructions
 
         - Familyname-Italic[wght].ttf
     """,
-    proposal="legacy:check/001",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_canonical_filename(ttFont):
     """Checking file is named canonically."""

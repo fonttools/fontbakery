@@ -8,11 +8,11 @@ from fontbakery.constants import NameID
 
 @check(
     id="opentype/family/equal_font_versions",
-    proposal="legacy:check/014",
     rationale="""
         Within a family released at the same time, all members of the family
         should have the same version number in the head table.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_family_equal_font_versions(ttFonts):
     """Make sure all font files have the same version value."""
@@ -53,7 +53,7 @@ def check_family_equal_font_versions(ttFonts):
         But 1000 is a commonly used value. And 2000 may become
         increasingly more common on Variable Fonts.
     """,
-    proposal="legacy:check/043",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_unitsperem(ttFont):
     """Checking unitsPerEm value is reasonable."""
@@ -110,7 +110,6 @@ def parse_version_string(name: str) -> float:
 
 @check(
     id="opentype/font_version",
-    proposal="legacy:check/044",
     rationale="""
             The OpenType specification provides for two fields which contain
             the version number of the font: fontRevision in the head table,
@@ -118,6 +117,7 @@ def parse_version_string(name: str) -> float:
             different applications will report different version numbers for
             the font.
         """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_font_version(ttFont):
     """Checking font version fields (head and name table)."""
@@ -187,7 +187,7 @@ def check_font_version(ttFont):
         actual style of the font as inferred by its filename.
     """,
     conditions=["style"],
-    proposal="legacy:check/131",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_mac_style(font):
     """Checking head.macStyle value."""

@@ -282,9 +282,6 @@ class TerminalReporter(FontbakeryReporter):
                 if not isinstance(moreinfo, list):
                     moreinfo = [moreinfo]
 
-                # Here I remove the "legacy" entries because they lack an actual
-                # url which the users could access to read more about the check
-                moreinfo = [mi for mi in moreinfo if "legacy" not in mi]
                 if moreinfo:
                     moreinfo_str = (
                         "    [rationale-title]More info:[/] " + moreinfo[0] + "\n"

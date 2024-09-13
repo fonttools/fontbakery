@@ -8,11 +8,9 @@ from fontbakery.message import Message
     rationale="""
         Microsoft Office 2013 and below products expect fonts to have a digital
         signature declared in a DSIG table in order to implement OpenType features.
-        The EOL date for Microsoft Office 2013 products is 4/11/2023.
-        This issue does not impact Microsoft Office 2016 and above products.
+        The EOL date for Microsoft Office 2013 products was 4/11/2023.
 
-        As we approach the EOL date, it is now considered better to
-        completely remove the table.
+        This issue does not impact Microsoft Office 2016 and above products. It is now considered better to completely remove the table.
 
         But if you still want your font to support OpenType features on Office 2013,
         then you may find it handy to add a fake signature on a placeholder DSIG table
@@ -22,12 +20,12 @@ from fontbakery.message import Message
         Reference: https://github.com/fonttools/fontbakery/issues/1845
     """,
     proposal=[
-        "legacy:check/045",
         "https://github.com/fonttools/fontbakery/issues/3398",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_dsig(ttFont):
-    """Does the font have a DSIG table?"""
+    """The font should not need a DSIG table anymore."""
     if "DSIG" in ttFont:
         yield WARN, Message(
             "found-DSIG",
