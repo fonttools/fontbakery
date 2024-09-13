@@ -1,4 +1,4 @@
-from fontbakery.prelude import FAIL, SKIP, Message, check
+from fontbakery.prelude import PASS, FAIL, SKIP, Message, check
 from fontbakery.utils import get_glyph_name
 
 
@@ -123,3 +123,54 @@ def check_arabic_high_hamza(ttFont):
             " the same size the arabic letter hamza (U+0621),"
             " but a different glyph outline area was detected.",
         )
+
+
+@check(
+    id="allah_ligature",
+    rationale="""
+        Ensure that the allah ligature, if present in a font, is correctly
+        formed in the presence of manually placed tashkeel marks.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4727",
+)
+def com_google_fonts_check_allah_ligature(ttFont):
+    """Ensure correct formation of allah ligature in the presence of tashkeel marks."""
+
+    cmap = ttFont["cmap"].getBestCmap()
+    allah_unicode = 0xFDF2
+
+    if allah_unicode not in cmap.keys():
+        yield SKIP, "Font does not contain the allah ligature."
+        return
+
+    allah_glyphname = cmap[allah_unicode]
+
+    from vharfbuzz import Vharfbuzz
+
+    vharfbuzz = Vharfbuzz(ttFont.reader.file.name)
+
+    def shape(text):
+        buf = vharfbuzz.shape(text)
+        return vharfbuzz.serialize_buf(buf, glyphsonly=True)
+
+    # Even though the font contains the allah ligature, it's generally not used
+    if shape("الله") != allah_glyphname:
+        yield PASS, (
+            "The allah ligature is present but not substituted for "
+            "plain 'allah' input string."
+        )
+        return
+
+    # The allah ligature is used, so we need to check if it's correctly formed
+    plain_allah = shape("الله")
+    allah_with_tashkeel = shape("اللَّهُ")
+
+    if plain_allah in allah_with_tashkeel.split("|"):
+        yield FAIL, Message(
+            "wrong-allah-with-tashkeel",
+            "The basic allah ligature (U+FDF2) is used in the presence of tashkeel marks. ",
+        )
+
+    # TODO:
+    # add check that checks whether the damma is placed on the heh, not the lam
+    # see IBM Plex Sans Arabic v1.004

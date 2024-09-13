@@ -32,6 +32,7 @@ PROFILE = {
         "googlefonts/negative_advance_width",
         "googlefonts/STAT/axis_order",
         #
+        "allah_ligature",
         "caps_vertically_centered",  # Disabled: issue #4274
         "case_mapping",
         "cmap/format_12",

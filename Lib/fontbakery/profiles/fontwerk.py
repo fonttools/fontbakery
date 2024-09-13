@@ -17,6 +17,7 @@ PROFILE = {
         "fontdata_namecheck",
     ],
     "pending_review": [
+        "allah_ligature",
         "typographic_family_name",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
         #
