@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ##  Upcoming release: 0.13.0a0 (2024-Sep-13)
 ### Noteworthy code-changes
+  - **Profile owners,**  please take a look at the **pending_review** lists in your profile definitions. If you move them to **exclude_checks** it means you do not want the check in your profile. If you just remove from **pending_review**, then the check becomes effective in your profile. And if you do nothing, the checks still not reviewed will continue being automatically excluded from your profile.
   - This release adopts a new naming scheme for checks. We had reports of users getting confused by the meaning of the reverse domain names included as prefixes of check-IDs, such as **com.google.fonts**. The real meaning was that the organization identified by such domain was the first contributor of a given check implementation. But some users were confused thinking that it mean the check belong to that organization's vendor-specific profile.
   - Now profiles do not include that reverse domain prefix. And do not also have the `"/check/"` keywork anymore. As an example, **com.google.fonts/check/tabular_kerning** (on the Universal profile) is now simply called **tabular_kerning**
   - Also, there's been a large number of checks migrated among profiles. Mosly towards the Universal one.
