@@ -1423,3 +1423,17 @@ def test_check_gsub_smallcaps_before_ligatures():
     smcp_feature.LookupListIndex = [1]
     liga_feature.LookupListIndex = [0]
     assert_results_contain(check(ttFont), FAIL, "feature-ordering")
+
+
+def test_check_missing_small_caps_glyphs():
+    """Check small caps glyphs are available."""
+    check = CheckTester("missing_small_caps_glyphs")
+
+    ttFont = TTFont(TEST_FILE("cormorantunicase/CormorantUnicase-Bold.ttf"))
+    assert_PASS(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("varfont/Georama[wdth,wght].ttf"))
+    assert_results_contain(check(ttFont), FAIL, "missing-smcp")
+
+    ttFont = TTFont(TEST_FILE("ubuntusans/UbuntuSans[wdth,wght].ttf"))
+    assert_results_contain(check(ttFont), FAIL, "missing-c2sc")

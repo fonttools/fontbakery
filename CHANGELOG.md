@@ -16,6 +16,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[opentype/gdef_spacing_marks]:** Clarify log-message about glyphs that seem to be spacing. (issue #4824)
 
 #### On the Universal profile
+  - **[case_mapping]:** Dynamically exclude incomplete Greek glyphs (PR #4721)
+  - **[missing_small_caps_glyphs]:** Rewrote it from scratch, marked it as **experimental** (issue #4713)
   - **[name/family_and_style_max_length"]:** Use nameID 16 (Typographic family name) to determine name length if it exists. (PR #4811)
   - **[typoascender_exceeds_Agrave]:** Downgrade from FAIL to WARN. (PR #4828 / issue #3170)
 

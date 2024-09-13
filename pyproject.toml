@@ -48,6 +48,7 @@ dependencies = [
     "ufolint",
     "ufo2ft >= 2.25.2",  # script lists for Unicode 14.0 were updated on v2.25.2
     "uharfbuzz",
+    "unicodedataplus",
     "vharfbuzz >= 0.2.0",
 ]
 
