@@ -92,12 +92,12 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="Standard" />
-<meta name="git_commit_id" content="3fa0ee489e47db9983163147ce5ab52486da9b0c" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/3fa0ee489e47db9983163147ce5ab52486da9b0c/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="f021ff8f1b85c6a59cc86ca1125158c1e55bd69f" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f021ff8f1b85c6a59cc86ca1125158c1e55bd69f/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="04/15/2024" />
+<meta name="ms.date" content="09/12/2024" />
 <meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -108,8 +108,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-05-31 03:32 AM" />
-<meta name="word_count" content="4859" />
+<meta name="updated_at" content="2024-09-13 02:02 AM" />
+<meta name="word_count" content="5011" />
 
 
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
@@ -139,7 +139,8 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/3589a59e.site-ltr.css ">
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2640f025.site-ltr.css ">
 
 	
 
@@ -156,7 +157,6 @@
 			context: {
 			},
 			hasBinaryRating: true,
-			hasGithubIssues: false,
 			feedbackHelpLinkType:'',
 			feedbackHelpLinkUrl:'',
 			standardFeedback: true,
@@ -190,11 +190,11 @@
 	};
 	</script>
 	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
-	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
 
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/12bcaea5.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b99e2028.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -506,7 +506,7 @@ Table of contents						</span>
 														<li>
 Article														</li>
 															<li class="visibility-hidden-visual-diff">
-																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-04-15T08:00:00Z" data-article-date-source="calculated">04/15/2024</time>
+																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-09-12T08:00:00Z" data-article-date-source="calculated">09/12/2024</time>
 															</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
@@ -611,6 +611,10 @@ Article														</li>
 <td>San Sagittarius</td>
 </tr>
 <tr>
+<td>3011</td>
+<td><a href="https://svgup.com/" data-linktype="external">LuxSVG</a></td>
+</tr>
+<tr>
 <td>1ASC</td>
 <td><a href="https://www.monotype.com/" data-linktype="external">Ascender Corporation</a></td>
 </tr>
@@ -628,7 +632,7 @@ Article														</li>
 </tr>
 <tr>
 <td>1KTF</td>
-<td><a href="http://www.kieftype.com" data-linktype="external">Kief Type Foundry</a></td>
+<td>Kief Type Foundry</td>
 </tr>
 <tr>
 <td>1UKR</td>
@@ -685,6 +689,10 @@ Article														</li>
 <tr>
 <td>50FX</td>
 <td><a href="https://50fox.com/" data-linktype="external">50Fox Studio</a></td>
+</tr>
+<tr>
+<td>53VN</td>
+<td><a href="https://seun.design/" data-linktype="external">Seun Badejo</a></td>
 </tr>
 <tr>
 <td>5PTS</td>
@@ -800,6 +808,10 @@ Article														</li>
 <tr>
 <td>AC</td>
 <td><a href="http://www.allcapstype.com/" data-linktype="external">AllCaps</a></td>
+</tr>
+<tr>
+<td>ACT2</td>
+<td><a href="https://twitter.com/AnselZhong" data-linktype="external">Ansel Zhong (白云岫)</a></td>
 </tr>
 <tr>
 <td>ACUT</td>
@@ -958,8 +970,20 @@ Article														</li>
 <td>Osam Ando</td>
 </tr>
 <tr>
+<td>ANDR</td>
+<td><a href="https://www.andresimard.ca/" data-linktype="external">André Simard Typedesigner</a></td>
+</tr>
+<tr>
+<td>anir</td>
+<td><a href="https://fonts.atipra.in/" data-linktype="external">Dr Anirban Mitra</a></td>
+</tr>
+<tr>
 <td>ANRT</td>
 <td><a href="http://www.anrt-nancy.fr" data-linktype="external">Atelier National de Recherche Typographique</a></td>
+</tr>
+<tr>
+<td>ANSL</td>
+<td><a href="https://twitter.com/AnselZhong" data-linktype="external">Ansel Zhong (白云岫)</a></td>
 </tr>
 <tr>
 <td>anty</td>
@@ -1023,7 +1047,7 @@ Article														</li>
 </tr>
 <tr>
 <td>ARMA</td>
-<td><a href="http://www.armankhorramak.com" data-linktype="external">Arman Khorramak</a></td>
+<td>Arman Khorramak</td>
 </tr>
 <tr>
 <td>ARPH</td>
@@ -1040,6 +1064,10 @@ Article														</li>
 <tr>
 <td>ART</td>
 <td><a href="http://www.asr.me " data-linktype="external">Alex Rosario Type</a></td>
+</tr>
+<tr>
+<td>ARTA</td>
+<td><a href="http://tarumian.am/" data-linktype="external">Tarumian</a></td>
 </tr>
 <tr>
 <td>ARTE</td>
@@ -1102,8 +1130,20 @@ Article														</li>
 <td><a href="https://twitter.com/artakana" data-linktype="external">aratakana</a></td>
 </tr>
 <tr>
+<td>ATKS</td>
+<td>ATK Studio</td>
+</tr>
+<tr>
 <td>ATLR</td>
 <td><a href="https://www.mathieutriay.com/" data-linktype="external">Atelier Triay</a></td>
+</tr>
+<tr>
+<td>ATLS</td>
+<td><a href="http://www.atlasfonts.com/" data-linktype="external">Atlas Fonts</a></td>
+</tr>
+<tr>
+<td>ATPK</td>
+<td>Atelier Pickard</td>
 </tr>
 <tr>
 <td>ATS</td>
@@ -1148,6 +1188,10 @@ Article														</li>
 <tr>
 <td>AX86</td>
 <td><a href="https://www.ax86.net/" data-linktype="external">ax86.net</a></td>
+</tr>
+<tr>
+<td>AY</td>
+<td><a href="https://justfont.com/tearsfont/" data-linktype="external">Alen Yang</a></td>
 </tr>
 <tr>
 <td>AYRE</td>
@@ -1197,6 +1241,10 @@ Article														</li>
 <td><a href="https://benbusby.com/" data-linktype="external">Ben Busby</a></td>
 </tr>
 <tr>
+<td>BBBB</td>
+<td><a href="https://beakorsh.com/" data-linktype="external">Bea Korsh Type Design</a></td>
+</tr>
+<tr>
 <td>BBFF</td>
 <td>Bangla Borno Font Foundry.</td>
 </tr>
@@ -1211,6 +1259,10 @@ Article														</li>
 <tr>
 <td>BBTF</td>
 <td><a href="https://buerobauer.com" data-linktype="external">buero bauer</a></td>
+</tr>
+<tr>
+<td>BBTL</td>
+<td><a href="https://www.banglagraphy.xyz/" data-linktype="external">Banglagraphy Bangla Type Library</a></td>
 </tr>
 <tr>
 <td>BBTY</td>
@@ -1509,6 +1561,10 @@ Article														</li>
 <td>B/W Fontworks</td>
 </tr>
 <tr>
+<td>BWJC</td>
+<td><a href="https://bwjfont.fmdns.cn/" data-linktype="external">不务鸡字体</a></td>
+</tr>
+<tr>
 <td>BwT</td>
 <td><a href="http://www.brandingwithtype.com" data-linktype="external">Branding with Type</a></td>
 </tr>
@@ -1602,6 +1658,10 @@ Article														</li>
 <tr>
 <td>CBDO</td>
 <td><a href="http://www.borgeslettering.com" data-linktype="external">Borges Lettering & Design</a></td>
+</tr>
+<tr>
+<td>CBWJ</td>
+<td><a href="https://github.com/buwuzhengyedexiaoji" data-linktype="external">不务正业的小鸡 (cod'dte)</a></td>
 </tr>
 <tr>
 <td>CCCT</td>
@@ -1774,6 +1834,9 @@ Article														</li>
 <tr>
 <td>CSCF</td>
 <td><a href="https://casasin.com/" data-linktype="external">Casasin Custom Fonts</a></td>
+</tr>
+<tr>
+<td>CSDA</td><td><a href="http://www.creative-sauce.com/" data-linktype="external">Creative Sauce FZ LLC</a></td>
 </tr>
 <tr>
 <td>csmp</td>
@@ -2085,7 +2148,7 @@ Article														</li>
 </tr>
 <tr>
 <td>DYNA</td>
-<td><a href="http://www.dynalab.com/" data-linktype="external">DynaComware</a></td>
+<td><a href="https://www.dynacw.com/global-index.html" data-linktype="external">DynaComware</a></td>
 </tr>
 <tr>
 <td>DZRF</td>
@@ -2204,7 +2267,7 @@ Article														</li>
 </tr>
 <tr>
 <td>ESD</td>
-<td><a href="https://enricosogari.com/" data-linktype="external">Sogari Design</a></td>
+<td>Sogari Design</td>
 </tr>
 <tr>
 <td>ESIG</td>
@@ -2296,7 +2359,7 @@ Article														</li>
 </tr>
 <tr>
 <td>FBI</td>
-<td><a href="http://www.fontbureau.com/" data-linktype="external">The Font Bureau, Inc.</a></td>
+<td>The Font Bureau, Inc.</td>
 </tr>
 <tr>
 <td>FBRC</td>
@@ -2317,6 +2380,10 @@ Article														</li>
 <tr>
 <td>FCAN</td>
 <td><a href="http://www.joanna.briggs.ca/" data-linktype="external">fontage canada</a></td>
+</tr>
+<tr>
+<td>FCB</td>
+<td><a href="https://fontclubbelgica.xyz/" data-linktype="external">Font Club Belgica</a></td>
 </tr>
 <tr>
 <td>FCTP</td>
@@ -2413,6 +2480,10 @@ Article														</li>
 <tr>
 <td>FKT</td>
 <td>Formerly Known</td>
+</tr>
+<tr>
+<td>FL</td>
+<td>Flight Mode Foundry</td>
 </tr>
 <tr>
 <td>FM</td>
@@ -2589,6 +2660,10 @@ Article														</li>
 <tr>
 <td>FT</td>
 <td><a href="http://www.formulatype.com/" data-linktype="external">Formula Type</a></td>
+</tr>
+<tr>
+<td>FTC</td>
+<td><a href="https://www.behance.net/fridaytype" data-linktype="external">Farida Kurniawan</a></td>
 </tr>
 <tr>
 <td>FTDS</td>
@@ -2886,7 +2961,7 @@ Article														</li>
 </tr>
 <tr>
 <td>HAMZ</td>
-<td><a href="https://www.hamzehnaghdi.com/" data-linktype="external">Hamzeh Naghdi</a></td>
+<td>Hamzeh Naghdi</td>
 </tr>
 <tr>
 <td>hano</td>
@@ -3165,7 +3240,7 @@ Article														</li>
 </tr>
 <tr>
 <td>INFS</td>
-<td><a href="https://infernalsoft.co.uk" data-linktype="external">iNfernalSoft</a></td>
+<td>iNfernalSoft</td>
 </tr>
 <tr>
 <td>INGA</td>
@@ -3454,6 +3529,10 @@ Article														</li>
 <td>Machine Kerning</td>
 </tr>
 <tr>
+<td>KEYA</td>
+<td><a href="https://keyavadgama.com/" data-linktype="external">Keya Vadgama</a></td>
+</tr>
+<tr>
 <td>KF</td>
 <td><a href="http://www.karakta.com/" data-linktype="external">Karakta Fonthome</a></td>
 </tr>
@@ -3587,7 +3666,7 @@ Article														</li>
 </tr>
 <tr>
 <td>KUBA</td>
-<td><a href="http://www.ifonty.pl" data-linktype="external">Kuba Tatarkiewicz</a></td>
+<td>Kuba Tatarkiewicz</td>
 </tr>
 <tr>
 <td>KUSH</td>
@@ -3781,6 +3860,10 @@ Article														</li>
 <td><a href="https://shawnlukas.com/" data-linktype="external">Shawn Lukas</a></td>
 </tr>
 <tr>
+<td>LKTF</td>
+<td><a href="https://payhip.com/Lktype" data-linktype="external">LEE KEDAH</a></td>
+</tr>
+<tr>
 <td>LL75</td>
 <td>Lior Livne</td>
 </tr>
@@ -3853,6 +3936,10 @@ Article														</li>
 <td><a href="http://www.letterspace.com/" data-linktype="external">LetterPerfect Fonts</a></td>
 </tr>
 <tr>
+<td>LPKL</td>
+<td><a href="https://lipikola.com/" data-linktype="external">Lipikola Type Foundry</a></td>
+</tr>
+<tr>
 <td>LS</td>
 <td><a href="https://www.lettersoup.de/" data-linktype="external">lettersoup</a></td>
 </tr>
@@ -3919,6 +4006,10 @@ Article														</li>
 <tr>
 <td>LVRC</td>
 <td><a href="https://arnaudchemin.com/" data-linktype="external">Lovercase</a></td>
+</tr>
+<tr>
+<td>LVSC</td>
+<td><a href="https://www.leviathan.science" data-linktype="external">Leviathan Science</a></td>
 </tr>
 <tr>
 <td>LXGW</td>
@@ -4029,7 +4120,7 @@ Article														</li>
 </tr>
 <tr>
 <td>MCTF</td>
-<td>Monoco Type Foundry</td>
+<td><a href="https://monocotype.com/" data-linktype="external">Monoco Type Foundry</a></td>
 </tr>
 <tr>
 <td>MD</td>
@@ -4146,6 +4237,14 @@ Article														</li>
 <tr>
 <td>MLBU</td>
 <td><a href="http://www.malibudreamdesigns.com" data-linktype="external">Malibu Dream Designs, LLC</a></td>
+</tr>
+<tr>
+<td>MLF</td>
+<td>PGML Communications Pty Ltd</td>
+</tr>
+<tr>
+<td>MLFN</td>
+<td><a href="https://monolinefonts.com/" data-linktype="external">Monoline Fonts</a></td>
 </tr>
 <tr>
 <td>MLFM</td>
@@ -4372,6 +4471,10 @@ Article														</li>
 <td><a href="https://mulat.org/" data-linktype="external">mulat</a></td>
 </tr>
 <tr>
+<td>MUNC</td>
+<td><a href="https://munchfonts.com/" data-linktype="external">munchfonts</a></td>
+</tr>
+<tr>
 <td>MUSA</td>
 <td><a href="https://opentype.jp/" data-linktype="external">Musashi System</a></td>
 </tr>
@@ -4425,6 +4528,10 @@ Article														</li>
 <tr>
 <td>N&G</td>
 <td>Nikish</td>
+</tr>
+<tr>
+<td>n8  </td>
+<td>Nathan Willis</td>
 </tr>
 <tr>
 <td>NaN</td>
@@ -4563,6 +4670,10 @@ Article														</li>
 <td><a href="http://www.nnstudio.pw" data-linktype="external">NN Type Foundry</a></td>
 </tr>
 <tr>
+<td>NNSS</td>
+<td><a href="https://github.com/HACKERSam2011" data-linktype="external">NANOFONT-StaticStudios</a>
+</td></tr>
+<tr>
 <td>NONO</td>
 <td><a href="https://www.nouvellenoire.ch/" data-linktype="external">Nouvelle Noire Type Foundry</a></td>
 </tr>
@@ -4632,7 +4743,7 @@ Article														</li>
 </tr>
 <tr>
 <td>NYPE</td>
-<td><a href="http://www.naipe.xyz/" data-linktype="external">Naipe Foundry</a></td>
+<td>Naipe Foundry</td>
 </tr>
 </table>
 <h2 id="o">O</h2>
@@ -4678,6 +4789,10 @@ Article														</li>
 <td><a href="http://www.omar-type.com/" data-linktype="external">omar-type foundry</a></td>
 </tr>
 <tr>
+<td>OMG</td>
+<td><a href="https://tosche.net/fonts" data-linktype="external">Omega Type Foundry</a></td>
+</tr>
+<tr>
 <td>OMNI</td>
 <td><a href="https://omnitype.ch/" data-linktype="external">Omnitype</a></td>
 </tr>
@@ -4692,6 +4807,10 @@ Article														</li>
 <tr>
 <td>ONES</td>
 <td><a href="https://ones.com.tr/" data-linktype="external">Ones Technology</a></td>
+</tr>
+<tr>
+<td>OO</td>
+<td>Outline Online</td>
 </tr>
 <tr>
 <td>OPTM</td>
@@ -4746,6 +4865,10 @@ Article														</li>
 <td><a href="https://otlab.ru/" data-linktype="external">OTLab Rus</a></td>
 </tr>
 <tr>
+<td>OTTO</td>
+<td><a href="https://ottotype.com/" data-linktype="external">Otto Type Co.</a></td>
+</tr>
+<tr>
 <td>OTTS</td>
 <td><a href="https://onetenthestudio.com/" data-linktype="external">OneTen The Studio</a></td>
 </tr>	
@@ -4756,6 +4879,10 @@ Article														</li>
 <tr>
 <td>OURT</td>
 <td><a href="http://www.ourtype.com" data-linktype="external">Ourtype</a></td>
+</tr>
+<tr>
+<td>OVER</td>
+<td><a href="https://overtype.ru/" data-linktype="external">Overtype</a></td>
 </tr>
 <tr>
 <td>OZTY</td>
@@ -4970,7 +5097,7 @@ Article														</li>
 </tr>
 <tr>
 <td>pstu</td>
-<td><a href="http://www.pseudonym.no" data-linktype="external">Pseudonym Type Studio</a></td>
+<td>Pseudonym Type Studio</td>
 </tr>
 <tr>
 <td>PSY</td>
@@ -4987,6 +5114,10 @@ Article														</li>
 <tr>
 <td>PTF</td>
 <td><a href="http://www.typofonderie.com" data-linktype="external">Porchez Typofonderie</a></td>
+</tr>
+<tr>
+<td>PTHF</td>
+<td>Pathfinders Type Foundry</td>
 </tr>
 <tr>
 <td>PTMI</td>
@@ -5047,6 +5178,10 @@ Article														</li>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>R667</td>
+<td><a href="https://remedy667.com/" data-linktype="external">Remedy667</a></td>
+</tr>
+<tr>
 <td>R777</td>
 <td>SanSLit</td>
 </tr>
@@ -5069,6 +5204,10 @@ Article														</li>
 <tr>
 <td>RDGR</td>
 <td><a href="http://www.philippneumeyer.com/" data-linktype="external">Rüdiger</a></td>
+</tr>
+<tr>
+<td>RDMK</td>
+<td><a href="https://randommaerks.github.io/" data-linktype="external">RandomMaerks</a></td>
 </tr>
 <tr>
 <td>READ</td>
@@ -5219,8 +5358,8 @@ Article														</li>
 <td>RudynFluffy</td>
 </tr>
 <tr>
-<td>VOLK</td>
-<td><a href="http://radmirvolk.design/" data-linktype="external">Radmir Volk</a></td>
+<td>RUNE</td>
+<td><a href="https://runerevival.online/fonts" data-linktype="external">Rune Revival</a></td>
 </tr>
 <tr>
 <td>RVLR</td>
@@ -5454,6 +5593,10 @@ Article														</li>
 <td><a href="https://salecharacter.com/" data-linktype="external">Sale Character</a></td>
 </tr>
 <tr>
+<td>SLDE</td>
+<td><a href="https://typedesigner.de/" data-linktype="external">Sergej Lebedev</a></td>
+</tr>
+<tr>
 <td>SLFN</td>
 <td><a href="https://www.singlelinefonts.com/" data-linktype="external">Single Line Fonts</a></td>
 </tr>
@@ -5472,6 +5615,10 @@ Article														</li>
 <tr>
 <td>SN</td>
 <td>SourceNet</td>
+</tr>
+<tr>
+<td>SNTR</td>
+<td>Sintra Beatz LLC</td>
 </tr>
 <tr>
 <td>SOBF</td>
@@ -5639,7 +5786,7 @@ Article														</li>
 </tr>
 <tr>
 <td>SYRC</td>
-<td><a href="http://www.bethmardutho.org/" data-linktype="external">Syriac Computing Institute</a></td>
+<td>Syriac Computing Institute</td>
 </tr>
 <tr>
 <td>SYRF</td>
@@ -5667,6 +5814,10 @@ Article														</li>
 <tr>
 <td>T&T</td>
 <td><a href="https://blog.naver.com/andfont" data-linktype="external">TYPE&type</a></td>
+</tr>
+<tr>
+<td>TAB</td>
+<td><a href="https://tosche.net/fonts" data-linktype="external">Tabular Type Foundry</a></td>
 </tr>
 <tr>
 <td>TAFS</td>
@@ -5701,12 +5852,12 @@ Article														</li>
 <td><a href="http://www.typeco.com/" data-linktype="external">Typeco</a></td>
 </tr>
 <tr>
-<td>TCO</td>
-<td>Type Colony</td>
-</tr>
-<tr>
 <td>TCH</td>
 <td>Darryl Cook</td>
+</tr>
+<tr>
+<td>TCO</td>
+<td>Type Colony</td>
 </tr>
 <tr>
 <td>TD</td>
@@ -5823,6 +5974,10 @@ Article														</li>
 <tr>
 <td>TJS</td>
 <td><a href="http://www.typejockeys.com" data-linktype="external">Typejockeys</a></td>
+</tr>
+<tr>
+<td>TKSW</td>
+<td><a href="https://github.com/takushun-wu/" data-linktype="external">Takushun Wu</a></td>
 </tr>
 <tr>
 <td>Tlab</td>
@@ -6239,6 +6394,10 @@ Article														</li>
 <td><a href="https://www.berndvolmer.com/" data-linktype="external">Bernd Volmer</a></td>
 </tr>
 <tr>
+<td>VOLK</td>
+<td><a href="http://radmirvolk.design/" data-linktype="external">Radmir Volk</a></td>
+</tr>
+<tr>
 <td>VOLT</td>
 <td><a href="http://www.volto.one/" data-linktype="external">volto.one</a></td>
 </tr>
@@ -6365,6 +6524,10 @@ Article														</li>
 <td>WS</td>
 <td><a href="https://wienerschriften.at/" data-linktype="external">WS · Schriftmanufaktur</a></td>
 </tr>
+<tr>
+<td>WZGF</td>
+<td><a href="https://github.com/HACKERSam2011" data-linktype="external">WenzhouHanziMakeGroup (温州字工坊)</a></td>
+</tr>
 </table>
 <h2 id="x">X</h2>
 <table>
@@ -6421,7 +6584,7 @@ Article														</li>
 </tr>
 <tr>
 <td>YDI</td>
-<td>YOON Design Group</td>
+<td><a href="http://yoondesign.com" data-linktype="external">YOONDESIGN Inc.</a></td>
 </tr>
 <tr>
 <td>YDS</td>
@@ -6595,35 +6758,6 @@ Article														</li>
 
 <div class="display-flex flex-wrap-wrap margin-top-xxs">
 </div>
-</section>
-<section class="feedback-section position-relative" data-bi-name="feedback-section">
-    <h2 id="feedback" class="title is-3 margin-top-sm">Feedback</h2>
-
-    <div class="alert choose-feedback-type padding-bottom-sm">
-		<p id="git-issues-deprecation-notice">
-			<span class="icon margin-right-xxs" aria-hidden="true">
-				<span class="docon docon-status-info-outline">
-			</span>
-			</span>Coming soon: Throughout 2024 we will be phasing out GitHub Issues as the feedback mechanism for content and replacing it with a new feedback system. For more information see: <a href="https://aka.ms/ContentUserFeedback" data-bi-name="content-user-feedback">https://aka.ms/ContentUserFeedback</a>.		</p>
-
-        <p id="send-feedback-about" class="margin-top-sm">Submit and view feedback for</p>
-
-        <div class="choose-feedback-buttons buttons margin-top-xs">
-			<a class="button feedback-type-product github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
-				<span class="icon" aria-hidden="true">
-					<span class="docon docon-brand-github"></span>
-				</span>
-				<span>This page</span>
-			</a>
-        </div>
-    </div>
-
-    <div class="action-container display-flex justify-content-flex-end margin-block-xxs">
-        <a class="view-on-github has-external-link-indicator" data-bi-name="view-on-github" href="https://github.com//issues">
-            <span aria-hidden="true" class="docon docon-brand-github"></span>
-            <span>View all page feedback</span>
-        </a>
-    </div>
 </section>
 						<!-- end feedback section -->
 
