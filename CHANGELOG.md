@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ##  Upcoming release: 0.13.0 (2024-Sep-??)
 ### Changes to existing checks
+#### On the Opentype profile
+  - **[opentype/gdef_spacing_marks]:** Clarify log-message about glyphs that seem to be spacing. (issue #4824)
+
 #### On the Universal profile
   - **[name/family_and_style_max_length"]:** Use nameID 16 (Typographic family name) to determine name length if it exists. (PR #4811)
   - **[typoascender_exceeds_Agrave]:** Downgrade from FAIL to WARN. (PR #4828 / issue #3170)

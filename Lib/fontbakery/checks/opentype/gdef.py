@@ -63,8 +63,9 @@ def check_gdef_spacing_marks(ttFont, config):
             formatted_list = "\t " + pretty_print_list(config, sorted(glyphs), sep=", ")
             yield WARN, Message(
                 "spacing-mark-glyphs",
-                f"The following spacing glyphs may be in"
-                f" the GDEF mark glyph class by mistake:\n"
+                f"The following glyphs seem to be spacing (because they have width > 0"
+                f" on the hmtx table) so they may be in the GDEF mark glyph class"
+                f" by mistake, or they should have zero width instead:\n"
                 f"{formatted_list}",
             )
     else:
