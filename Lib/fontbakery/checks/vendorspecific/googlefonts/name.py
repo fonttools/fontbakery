@@ -10,12 +10,12 @@ from fontbakery.utils import markdown_table
 
 @check(
     id="googlefonts/name/unwanted_chars",
-    proposal="legacy:check/019",
     rationale="""
         We don't want non-ASCII characters in name table entries; in particular,
         copyright, trademark and registered symbols should be written using
         their ASCII counterparts: e.g. (c), (tm) and (r) respectively.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_unwanted_chars(ttFont):
     """Substitute copyright, registered and trademark
@@ -45,7 +45,7 @@ def check_name_unwanted_chars(ttFont):
 
         Longer strings are likely instances of the FontLab bug.
     """,
-    proposal="legacy:check/032",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_description_max_length(ttFont):
     """Description strings in the name table must not exceed 200 characters."""
@@ -69,12 +69,12 @@ def check_name_description_max_length(ttFont):
 
 @check(
     id="googlefonts/name/version_format",
-    proposal="legacy:check/055",
     rationale="""
         For Google Fonts, the version string must be in the format "Version X.Y".
         The version number must be greater than or equal to 1.000. (Additional
         information following the numeric version number is acceptable.)
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_version_format(ttFont):
     """Version format is correct in 'name' table?"""
@@ -109,7 +109,7 @@ def check_name_version_format(ttFont):
         Font family names which start with a numeral are often not discoverable
         in Windows applications.
     """,
-    proposal="legacy:check/067",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_familyname_first_char(ttFont):
     """Make sure family name does not begin with a digit."""
@@ -211,13 +211,13 @@ def check_font_names(ttFont, ttFonts):
 @check(
     id="googlefonts/name/mandatory_entries",
     conditions=["style"],
-    proposal="legacy:check/156",
     rationale="""
         We require all fonts to have values for their font family name,
         font subfamily name, full font name, and postscript name. For RIBBI
         fonts, we also require values for the typographic family name and
         typographic subfamily name.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_mandatory_entries(ttFont, style):
     """Font has all mandatory 'name' table entries?"""
@@ -256,7 +256,7 @@ def check_name_mandatory_entries(ttFont, style):
         only mention year, author and other basic info in a manner enforced by
         `googlefonts/font_copyright`
     """,
-    proposal="legacy:check/057",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_line_breaks(ttFont):
     """Name table entries should not contain line-breaks."""

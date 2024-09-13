@@ -15,7 +15,7 @@ from fontbakery.status import FAIL, PASS, WARN
         problem with the font compiler.
     """,
     conditions=["is_ttf"],
-    proposal="legacy:check/069",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_glyf_unused_data(ttFont):
     """Is there any unused data at the end of the glyf table?"""

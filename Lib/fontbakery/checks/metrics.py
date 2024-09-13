@@ -36,7 +36,7 @@ def vmetrics(collection):
         the 'typo' values, whilst avoiding clipping by setting the 'win' values to
         values greater than the yMax and absolute yMin.
     """,
-    proposal="legacy:check/040",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_family_win_ascent_and_descent(ttFont, vmetrics):
     """Checking OS/2 usWinAscent & usWinDescent."""
@@ -117,7 +117,7 @@ def check_family_win_ascent_and_descent(ttFont, vmetrics):
         macOS, GNU+Linux and Windows. Note that fixing this issue in a previously
         released font may cause reflow in user documents and unhappy users.
     """,
-    proposal="legacy:check/042",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_os2_metrics_match_hhea(ttFont):
     """Checking OS/2 Metrics match hhea Metrics."""

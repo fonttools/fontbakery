@@ -182,7 +182,7 @@ def check_family_control_chars(ttFonts):
         Pre-v1.8, it was recommended that fonts should also contain 'space', 'CR'
         and '.null' glyphs. This might have been relevant for MacOS 9 applications.
     """,
-    proposal="legacy:check/046",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_mandatory_glyphs(ttFont):
     """Font contains '.notdef' as its first glyph?"""
@@ -531,7 +531,6 @@ def unreachable_glyphs(ttFont, config):
 
 @check(
     id="whitespace_glyphs",
-    proposal="legacy:check/047",
     rationale="""
         The OpenType specification recommends that fonts should contain
         glyphs for the following whitespace characters:
@@ -544,6 +543,7 @@ def unreachable_glyphs(ttFont, config):
         recommended to have a glyph for the tab character (U+0009) and the
         soft hyphen (U+00AD), but these are not mandatory.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     """Font contains glyphs for whitespace characters?"""

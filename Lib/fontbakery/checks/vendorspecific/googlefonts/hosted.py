@@ -4,12 +4,12 @@ from fontbakery.prelude import check, disable, Message, WARN, FAIL
 @check(
     id="googlefonts/version_bump",
     conditions=["api_gfonts_ttFont", "github_gfonts_ttFont"],
-    proposal="legacy:check/117",
     rationale="""
         We check that the version number has been bumped since the last release on
         Google Fonts. This helps to ensure that the version being PRed is newer than
         the one currently hosted on fonts.google.com.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_version_bump(ttFont, api_gfonts_ttFont, github_gfonts_ttFont):
     """Version number has increased since previous release on Google Fonts?"""
@@ -45,13 +45,13 @@ def check_version_bump(ttFont, api_gfonts_ttFont, github_gfonts_ttFont):
 @check(
     id="googlefonts/production_glyphs_similarity",
     conditions=["api_gfonts_ttFont"],
-    proposal="legacy:check/118",
     rationale="""
         We check that the glyphs in the font are similar to the glyphs in the
         version hosted on fonts.google.com. We do not expect updated fonts to
         have exactly the same glyphs as the previous version, but we do expect
         the changes to be minimal.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_production_glyphs_similarity(ttFont, api_gfonts_ttFont, config):
     """Glyphs are similiar to Google Fonts version?"""
@@ -118,7 +118,7 @@ def check_production_glyphs_similarity(ttFont, api_gfonts_ttFont, config):
 @check(
     id="googlefonts/production_encoded_glyphs",
     conditions=["api_gfonts_ttFont"],
-    proposal="legacy:check/154",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_production_encoded_glyphs(ttFont, api_gfonts_ttFont):
     """Check font has same encoded glyphs as version hosted on

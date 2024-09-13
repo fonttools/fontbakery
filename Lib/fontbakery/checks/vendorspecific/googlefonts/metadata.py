@@ -288,14 +288,14 @@ def check_metadata_category(family_metadata):
 @check(
     id="googlefonts/metadata/menu_and_latin",
     conditions=["family_metadata"],
-    proposal=[
-        "legacy:check/086",
-        "https://github.com/fonttools/fontbakery/issues/912#issuecomment-237935444",
-    ],
     rationale="""
         The 'menu' and 'latin' subsets are mandatory in METADATA.pb for the
         font to display correctly on the Google Fonts website.
     """,
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/912#issuecomment-237935444",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
+    ],
 )
 def check_metadata_menu_and_latin(family_metadata):
     """METADATA.pb should contain at least "menu" and "latin" subsets."""
@@ -320,11 +320,11 @@ def check_metadata_menu_and_latin(family_metadata):
 @check(
     id="googlefonts/metadata/subsets_order",
     conditions=["family_metadata"],
-    proposal="legacy:check/087",
     rationale="""
         The subsets listed in the METADATA.pb file should be sorted in
         alphabetical order.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_subsets_order(family_metadata):
     """METADATA.pb subsets should be alphabetically ordered."""
@@ -400,12 +400,12 @@ def check_metadata_single_cjk_subset(family_metadata):
 @check(
     id="googlefonts/metadata/copyright",
     conditions=["family_metadata"],
-    proposal="legacy:check/088",
     rationale="""
         The METADATA.pb file includes a copyright field for each font
         file in the family. The value of this field should be the same
         for all fonts in the family.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_copyright(family_metadata, config):
     """METADATA.pb: Copyright notice is the same in all fonts?"""
@@ -424,12 +424,12 @@ def check_metadata_copyright(family_metadata, config):
 @check(
     id="googlefonts/metadata/familyname",
     conditions=["family_metadata"],
-    proposal="legacy:check/089",
     rationale="""
         The METADATA.pb file includes a family name field for each font
         file in the family. The value of this field should be the same
         for all fonts in the family.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_familyname(family_metadata, config):
     """Check that METADATA.pb family values are all the same."""
@@ -448,11 +448,11 @@ def check_metadata_familyname(family_metadata, config):
 @check(
     id="googlefonts/metadata/has_regular",
     conditions=["family_metadata"],
-    proposal="legacy:check/090",
     rationale="""
         According to Google Fonts standards, families should have a Regular
         style.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_has_regular(font):
     """Ensure there is a regular style defined in METADATA.pb."""
@@ -471,8 +471,10 @@ def check_metadata_has_regular(font):
 @check(
     id="googlefonts/metadata/regular_is_400",
     conditions=["family_metadata", "has_regular_style"],
-    proposal="legacy:check/091",
-    rationale="The weight of the regular style should be set to 400.",
+    rationale="""
+        The weight of the regular style should be set to 400.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_regular_is_400(family_metadata):
     """METADATA.pb: Regular should be 400."""
@@ -491,7 +493,6 @@ def check_metadata_regular_is_400(family_metadata):
 @check(
     id="googlefonts/metadata/nameid/post_script_name",
     conditions=["font_metadata"],
-    proposal="legacy:093",
     rationale="""
         This check ensures that the PostScript name declared in the METADATA.pb file
         matches the PostScript name declared in the name table of the font file.
@@ -499,6 +500,7 @@ def check_metadata_regular_is_400(family_metadata):
         case. But if there were manual changes to the METADATA.pb file, a mismatch
         could occur.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_nameid_post_script_name(ttFont, font_metadata):
     """Checks METADATA.pb font.post_script_name matches
@@ -545,7 +547,7 @@ def check_metadata_nameid_post_script_name(ttFont, font_metadata):
     conditions=["font_metadata", "style"],
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/4086",
-        "legacy:check/095",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_metadata_nameid_font_name(ttFont, style, font_metadata):
@@ -586,7 +588,6 @@ def check_metadata_nameid_font_name(ttFont, style, font_metadata):
 @check(
     id="googlefonts/metadata/match_fullname_postscript",
     conditions=["font_metadata"],
-    proposal="legacy:check/096",
     rationale="""
         The font.full_name and font.post_script_name fields in the
         METADATA.pb file should be consistent - i.e. when all non-alphabetic
@@ -594,6 +595,7 @@ def check_metadata_nameid_font_name(ttFont, style, font_metadata):
         prevent inconsistencies when one or the other value has been
         manually edited in the METADATA.pb file.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_match_fullname_postscript(font_metadata):
     """METADATA.pb font.full_name and font.post_script_name
@@ -618,12 +620,12 @@ def check_metadata_match_fullname_postscript(font_metadata):
     conditions=["font_metadata", "not is_variable_font"],
     # FIXME: We'll want to review this once
     #        naming rules for varfonts are settled.
-    proposal="legacy:check/097",
     rationale="""
         For static fonts, this checks that the font filename as declared in
         the METADATA.pb file matches the post_script_name field. i.e.
         SomeFont-Regular.ttf should have a PostScript name of SomeFont-Regular.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_match_filename_postscript(font_metadata):
     """METADATA.pb font.filename and font.post_script_name
@@ -644,11 +646,11 @@ def check_metadata_match_filename_postscript(font_metadata):
 @check(
     id="googlefonts/metadata/valid_full_name_values",
     conditions=["style", "font_metadata"],
-    proposal="legacy:check/099",
     rationale="""
         This check ensures that the font.full_name field in the METADATA.pb
         file contains the family name of the font.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_valid_full_name_values(font):
     """METADATA.pb font.full_name field contains font name in right format?"""
@@ -677,7 +679,6 @@ def check_metadata_valid_full_name_values(font):
         "style",
         "family_metadata",
     ],
-    proposal="legacy:check/100",
     rationale="""
         This check ensures that the font.filename field in the METADATA.pb
         is correct and well-formatted; we check well-formatting because we
@@ -686,6 +687,7 @@ def check_metadata_valid_full_name_values(font):
         filename appears in the font.filename field in METADATA.pb, then all
         is good.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_valid_filename_values(font, family_metadata):
     """METADATA.pb font.filename field contains font name in right format?"""
@@ -707,11 +709,11 @@ def check_metadata_valid_filename_values(font, family_metadata):
 @check(
     id="googlefonts/metadata/valid_post_script_name_values",
     conditions=["font_metadata", "font_familynames"],
-    proposal="legacy:check/101",
     rationale="""
         Ensures that the postscript name in METADATA.pb contains the font's
         family name (with no spaces) as detected from the font binary.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_valid_post_script_name_values(font_metadata, font_familynames):
     """METADATA.pb font.post_script_name field
@@ -811,13 +813,13 @@ def check_metadata_filenames(fonts, family_directory, family_metadata):
 @check(
     id="googlefonts/metadata/unique_full_name_values",
     conditions=["family_metadata"],
-    proposal="legacy:check/083",
     rationale="""
         Each font field in the METADATA.pb file should have a unique
         "full_name" value. If this is not the case, it may indicate that
         the font files have been incorrectly named, or that the METADATA.pb
         file has been incorrectly edited.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_unique_full_name_values(family_metadata):
     """METADATA.pb: check if fonts field only has
@@ -837,12 +839,12 @@ def check_metadata_unique_full_name_values(family_metadata):
 @check(
     id="googlefonts/metadata/unique_weight_style_pairs",
     conditions=["family_metadata"],
-    proposal="legacy:check/084",
     rationale="""
         Each font field in the METADATA.pb file should have a unique
         style and weight. If there are duplications, it may indicate that
         that the METADATA.pb file has been incorrectly edited.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_unique_weight_style_pairs(family_metadata):
     """METADATA.pb: check if fonts field
@@ -862,7 +864,6 @@ def check_metadata_unique_weight_style_pairs(family_metadata):
 @check(
     id="googlefonts/metadata/reserved_font_name",
     conditions=["font_metadata", "not rfn_exception"],
-    proposal="legacy:check/103",
     rationale="""
         Unless an exception has been granted, we expect fonts on
         Google Fonts not to use the "Reserved Font Name" clause in their
@@ -876,6 +877,7 @@ def check_metadata_unique_weight_style_pairs(family_metadata):
         then delivers the font with the same name, which could be seen as a
         violation of the reserved font name clause.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_reserved_font_name(font_metadata):
     """Copyright notice on METADATA.pb should not contain 'Reserved Font Name'."""
@@ -892,7 +894,6 @@ def check_metadata_reserved_font_name(font_metadata):
 @check(
     id="googlefonts/metadata/nameid/family_and_full_names",
     conditions=["font_metadata"],
-    proposal="legacy:check/108",
     rationale="""
         This check ensures that the family name declared in the METADATA.pb file
         matches the family name declared in the name table of the font file,
@@ -902,6 +903,7 @@ def check_metadata_reserved_font_name(font_metadata):
         case. But if there were manual changes to the METADATA.pb file, a mismatch
         could occur.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_nameid_family_and_full_names(ttFont, font_metadata):
     """METADATA.pb font.name and font.full_name fields match
@@ -942,12 +944,12 @@ def check_metadata_nameid_family_and_full_names(ttFont, font_metadata):
         "family_metadata",  # that's the family-wide metadata!
         "font_metadata",
     ],  # and this one's specific to a single file
-    proposal="legacy:check/110",
     rationale="""
         This check ensures that the 'name' field in each font's entry in
         the METADATA.pb file matches the 'name' field at the top level of
         the METADATA.pb.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_match_name_familyname(family_metadata, font_metadata):
     """METADATA.pb: Check font name is the same as family name."""
@@ -963,12 +965,12 @@ def check_metadata_match_name_familyname(family_metadata, font_metadata):
 @check(
     id="googlefonts/metadata/canonical_weight_value",
     conditions=["font_metadata"],
-    proposal="legacy:check/111",
     rationale="""
         This check ensures that the font weight declared in the METADATA.pb file
         has a canonical value. The canonical values are multiples of 100 between
         100 and 900.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_canonical_weight_value(font_metadata):
     """METADATA.pb: Check that font weight has a canonical value."""
@@ -995,8 +997,8 @@ def check_metadata_canonical_weight_value(font_metadata):
     """,
     conditions=["font_metadata"],
     proposal=[
-        "legacy:check/112",
         "https://github.com/fonttools/fontbakery/issues/2683",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_metadata_os2_weightclass(font, font_metadata):
@@ -1084,7 +1086,6 @@ def check_metadata_os2_weightclass(font, font_metadata):
 @check(
     id="googlefonts/metadata/match_weight_postscript",
     conditions=["font_metadata", "not is_variable_font"],
-    proposal="legacy:check/113",
     rationale="""
         The METADATA.pb file has a field for each font file called 'weight',
         with a numeric value from 100 to 900. This check ensures that the
@@ -1092,6 +1093,7 @@ def check_metadata_os2_weightclass(font, font_metadata):
         postScriptName. For example, a font with a postScriptName ending in
         'Bold' should have a weight value of 700.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_match_weight_postscript(font_metadata):
     """METADATA.pb weight matches postScriptName for static fonts."""
@@ -1139,7 +1141,6 @@ def check_metadata_match_weight_postscript(font_metadata):
 @check(
     id="googlefonts/metadata/canonical_style_names",
     conditions=["font_metadata"],
-    proposal="legacy:check/115",
     rationale="""
         If the style is set to 'normal' in the METADATA.pb file, we expect a
         non-italic font - i.e. the font's macStyle bit 1 should be set to 0,
@@ -1149,6 +1150,7 @@ def check_metadata_match_weight_postscript(font_metadata):
         not the case, it can indicate an italic font was incorrectly marked
         as 'normal' in the METADATA.pb file or vice versa.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_metadata_canonical_style_names(font, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""

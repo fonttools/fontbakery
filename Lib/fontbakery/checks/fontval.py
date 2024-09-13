@@ -7,7 +7,6 @@ from fontbakery.utils import exit_with_install_instructions
 
 @check(
     id="fontvalidator",
-    proposal="legacy:check/037",
     rationale="""
         Microsoft Font Validator is a tool that can be used to check for
         various problems with a font file. Fonts which report errors in
@@ -15,6 +14,7 @@ from fontbakery.utils import exit_with_install_instructions
         Windows applications. This check runs Microsoft Font Validator
         on the font and reports any errors or warnings that it finds.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",
 )
 def check_fontvalidator(font, config):
     """Checking with Microsoft Font Validator."""

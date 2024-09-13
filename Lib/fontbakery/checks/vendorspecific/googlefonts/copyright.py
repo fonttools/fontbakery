@@ -26,7 +26,7 @@ from fontbakery.utils import show_inconsistencies
     severity=10,  # max severity because licensing mistakes can cause legal problems.
     proposal=[
         "https://github.com/fonttools/fontbakery/pull/2383",
-        "legacy:check/155",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_font_copyright(ttFont, font_metadata, config):

@@ -9,7 +9,7 @@ from fontbakery.prelude import check, Message, FAIL
 
         Values above 4000 would likely result in unreasonable filesize increases.
     """,
-    proposal="legacy:check/116",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_unitsperem(ttFont):
     """Stricter unitsPerEm criteria for Google Fonts."""

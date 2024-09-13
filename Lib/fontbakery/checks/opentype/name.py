@@ -40,13 +40,13 @@ def check_name_empty_records(ttFont):
 
 @check(
     id="opentype/name/no_copyright_on_description",
-    proposal="legacy:check/031",
     rationale="""
         The name table in a font file contains strings about the font;
         there are entries for a copyright field and a description. If the
         copyright entry is being used correctly, then there should not
         be any copyright information in the description entry.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_no_copyright_on_description(ttFont):
     """Description strings in the name table must not contain copyright info."""
@@ -176,7 +176,7 @@ def PANOSE_expected(family_type):
 
         Source: https://typedrawers.com/discussion/comment/45140/#Comment_45140
     """,
-    proposal="legacy:check/033",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_monospace(ttFont, glyph_metrics_stats):
     """Checking correctness of monospaced metadata."""
@@ -315,7 +315,7 @@ def check_monospace(ttFont, glyph_metrics_stats):
 
         https://docs.microsoft.com/en-us/typography/opentype/otspec150/name#name-ids
     """,
-    proposal="legacy:check/068",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_name_match_familyname_fullfont(ttFont):
     """Does full font name begin with the font family name?"""
@@ -452,12 +452,12 @@ def check_postscript_name(ttFont):
 
 @check(
     id="opentype/family_naming_recommendations",
-    proposal="legacy:check/071",
     rationale="""
         This check ensures that the length of various family name and style
         name strings in the name table are within the maximum length
         recommended by the OpenType specification.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_family_naming_recommendations(ttFont):
     """Font follows the family naming recommendations?"""

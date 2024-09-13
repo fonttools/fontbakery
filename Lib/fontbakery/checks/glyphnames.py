@@ -26,9 +26,8 @@ from fontbakery.utils import get_glyph_name, pretty_print_list
         https://github.com/adobe-type-tools/agl-specification
     """,
     proposal=[
-        "legacy:check/058",
-        # issue #2832 increased the limit to 63 chars
-        "https://github.com/fonttools/fontbakery/issues/2832",
+        "https://github.com/fonttools/fontbakery/issues/2832",  # increase to 63 chars
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_valid_glyphnames(ttFont, config):
@@ -93,7 +92,7 @@ def check_valid_glyphnames(ttFont, config):
     rationale="""
         Duplicate glyph names prevent font installation on Mac OS X.
     """,
-    proposal="legacy:check/059",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     misc_metadata={"affects": [("Mac", "unspecified")]},
 )
 def check_unique_glyphnames(ttFont):
@@ -142,7 +141,7 @@ def check_unique_glyphnames(ttFont):
         This check enforces adherence to recommended whitespace
         (codepoints 0020 and 00A0) glyph names according to the Adobe Glyph List.
     """,
-    proposal="legacy:check/048",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_whitespace_glyphnames(ttFont):
     """Font has **proper** whitespace glyph names?"""

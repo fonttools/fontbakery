@@ -69,7 +69,7 @@ def check_name_trailing_spaces(ttFont):
         the user would store the files from a single family spreaded
         in several separate directories).
     """,
-    proposal="legacy:check/002",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_family_single_directory(fonts):
     """Checking all files are in the same directory."""
@@ -158,13 +158,13 @@ def check_caps_vertically_centered(ttFont):
 
 @check(
     id="whitespace_ink",
-    proposal="legacy:check/049",
     rationale="""
            This check ensures that certain whitespace glyphs are empty.
            Certain text layout engines will assume that these glyphs are empty,
            and will not draw them; if they were in fact not designed to be
            empty, the result will be text layout that is not as expected.
        """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_whitespace_ink(ttFont):
     """Whitespace glyphs have ink?"""
@@ -308,7 +308,7 @@ def check_legacy_accents(ttFont):
         feature in a VarFont. The expected contour count data for this check is
         currently optimized for the typical construction of glyphs in static fonts.
     """,
-    proposal="legacy:check/153",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_contour_count(ttFont, config):
     """Check if each glyph has the recommended amount of contours.
@@ -664,7 +664,7 @@ def check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
     """,
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/3843",
-        "legacy:check/050",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_whitespace_widths(ttFont):

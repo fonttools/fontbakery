@@ -230,8 +230,8 @@ def check_description_has_unsupported_elements(
         all hyperlinks in it must be properly working.
     """,
     proposal=[
-        "legacy:check/003",
         "https://github.com/fonttools/fontbakery/issues/4110",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_description_broken_links(description_and_article_html, font):
@@ -367,8 +367,8 @@ def check_description_git_url(description_html):
         description file or edited by hand.
     """,
     proposal=[
-        "legacy:check/004",
         "https://github.com/fonttools/fontbakery/issues/2664",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_description_valid_html(descfile, description_and_article):
@@ -411,7 +411,6 @@ def check_description_valid_html(descfile, description_and_article):
 @check(
     id="googlefonts/description/min_length",
     conditions=["description"],
-    proposal="legacy:check/005",
     rationale="""
         The DESCRIPTION.en_us.html file is intended to provide a brief overview of
         the font family. It should be long enough to be useful to users, but not so
@@ -420,6 +419,7 @@ def check_description_valid_html(descfile, description_and_article):
         We chose 200 bytes as a minimum length because it suggests that someone has
         taken the time to write "something sensible" about the font.
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_description_min_length(description):
     """DESCRIPTION.en_us.html must have more than 200 bytes."""

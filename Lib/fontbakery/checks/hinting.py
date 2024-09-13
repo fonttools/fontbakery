@@ -61,7 +61,7 @@ def hinting_stats(font: Font):
         This check is merely informative, displaying an useful comparison of filesizes
         of hinted versus unhinted font files.
     """,
-    proposal="legacy:check/054",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_hinting_impact(font):
     """Show hinting filesize impact."""
@@ -121,7 +121,7 @@ def check_hinting_impact(font):
         Generally this occurs with unhinted fonts; if you are not using autohinting,
         use gftools-fix-nonhinting (or just gftools-fix-font) to fix this issue.
     """,
-    proposal="legacy:check/072",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_smart_dropout(ttFont):
     """Ensure smart dropout control is enabled in "prep" table instructions."""

@@ -12,7 +12,7 @@ from fontbakery.message import Message
         If thicknesses are not family consistent, words set on the same line which have
         different styles look strange.
     """,
-    proposal="legacy:check/008",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     misc_metadata={"affects": [("InDesign", "unspecified")]},
 )
 def check_family_underline_thickness(ttFonts):
@@ -75,10 +75,10 @@ def check_family_underline_thickness(ttFonts):
         and post format 3 for CFF builds.
     """,
     proposal=[
-        "legacy:check/015",
         "https://github.com/google/fonts/issues/215",
         "https://github.com/fonttools/fontbakery/issues/2638",
         "https://github.com/fonttools/fontbakery/issues/3635",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def opentype_post_table_version(ttFont):
@@ -121,7 +121,7 @@ def opentype_post_table_version(ttFont):
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/post
     """,
-    proposal="legacy:check/130",
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_italic_angle(ttFont, style):
     """Checking post.italicAngle value."""

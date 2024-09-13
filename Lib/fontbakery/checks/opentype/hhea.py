@@ -5,12 +5,12 @@ from fontbakery.message import Message
 
 @check(
     id="opentype/maxadvancewidth",
-    proposal="legacy:check/073",
     rationale="""
         The 'hhea' table contains a field which specifies the maximum
         advance width. This value should be consistent with the maximum
         advance width of all glyphs specified in the 'hmtx' table.
-       """,
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
 def check_maxadvancewidth(ttFont):
     """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""

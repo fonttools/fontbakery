@@ -75,7 +75,7 @@ def check_name_id_2(ttFont):
     """,
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/1663",
-        "legacy:check/074",
+        "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
 def check_name_ascii_only_entries(ttFont):
