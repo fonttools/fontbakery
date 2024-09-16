@@ -17,6 +17,7 @@ import os
 import subprocess
 import sys
 from typing import Text, Optional
+from copy import deepcopy
 
 from fontTools.pens.basePen import BasePen
 from fontTools.ttLib import TTFont
@@ -537,19 +538,19 @@ def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
     if table not in ttFont or not ttFont[table].table.LookupList:
         return
 
+    # This function mutates the TTF; deep copy to avoid this, and so avoid
+    # issues with concurrent tests that also use ttFont.
+    # See https://github.com/fonttools/fontbakery/issues/4834
+    ttFont = deepcopy(ttFont)
+
     extension_type = 9 if table == "GPOS" else 7
 
     for lookup in ttFont[table].table.LookupList.Lookup:
         if lookup.LookupType == extension_type:
             for xt in lookup.SubTable:
-                original_LookupType = xt.LookupType
-                try:
-                    xt.SubTable = [xt.ExtSubTable]
-                    xt.LookupType = xt.ExtSubTable.LookupType
-                    callback(xt, *args)
-                finally:
-                    del xt.SubTable
-                    xt.LookupType = original_LookupType
+                xt.SubTable = [xt.ExtSubTable]
+                xt.LookupType = xt.ExtSubTable.LookupType
+                callback(xt, *args)
         else:
             callback(lookup, *args)
 

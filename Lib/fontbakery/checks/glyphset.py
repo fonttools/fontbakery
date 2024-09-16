@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -369,6 +371,11 @@ def check_soft_hyphen(ttFont):
 )
 def unreachable_glyphs(ttFont, config):
     """Check font contains no unreachable glyphs"""
+
+    # remove_lookup_outputs() mutates the TTF; deep copy to avoid this, and so
+    # avoid issues with concurrent tests that also use ttFont.
+    # See https://github.com/fonttools/fontbakery/issues/4834
+    ttFont = deepcopy(ttFont)
 
     def remove_lookup_outputs(all_glyphs, lookup):
         if lookup.LookupType == 1:  # Single:
