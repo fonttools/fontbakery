@@ -3933,6 +3933,56 @@ def test_check_fvar_instances(fp, mod, result):
 
 
 @pytest.mark.parametrize(
+    """fp,mod,result,code""",
+    [
+        (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), [], PASS, None),
+        # Drop weight has so this should fail since gf version has it
+        (
+            TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"),
+            ["wght", None, None],
+            FAIL,
+            "missing-axes",
+        ),
+        # Change ranges of weight axis to 500-600, this should fail since gf version has 400-700
+        (
+            TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"),
+            ["wght", 500, None],
+            FAIL,
+            "axis-min-out-of-range",
+        ),
+        (
+            TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"),
+            ["wght", None, 600],
+            FAIL,
+            "axis-max-out-of-range",
+        ),
+    ],
+)
+def test_check_axes_match(fp, mod, result, code):
+    """Check if the axes match between the font and the Google Fonts version."""
+    check = CheckTester("googlefonts/axes_match")
+    ttFont = TTFont(fp)
+    if mod:
+        name, min_val, max_val = mod
+        if not min_val and not max_val:
+            ttFont["fvar"].axes = [a for a in ttFont["fvar"].axes if a.axisTag != name]
+        else:
+            axis = next(a for a in ttFont["fvar"].axes if a.axisTag == name)
+            axis.minValue = min_val or axis.minValue
+            axis.maxValue = max_val or axis.maxValue
+
+    if result == PASS:
+        assert_PASS(check(ttFont), "with a good font")
+    elif result == FAIL:
+        assert_results_contain(
+            check(ttFont),
+            FAIL,
+            code,
+            "with a bad font",
+        )
+
+
+@pytest.mark.parametrize(
     """fps,new_stat,result""",
     [
         # Fail (we didn't really know what we were doing at this stage)
