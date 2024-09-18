@@ -8,6 +8,7 @@ PROFILE = {
         "opentype/vendor_id",
         #
         "alt_caron",
+        "caps_vertically_centered",  # Disabled: issue #4274
         "cjk_chws_feature",
         "designspace_has_consistent_codepoints",  # < TypeNetwork doesn’t check designspace files.
         "designspace_has_consistent_glyphset",  #   <
@@ -41,7 +42,6 @@ PROFILE = {
         "googlefonts/negative_advance_width",
         "googlefonts/STAT/axis_order",
         #
-        "caps_vertically_centered",
         "case_mapping",
         "cmap/format_12",
         "cjk_not_enough_glyphs",
