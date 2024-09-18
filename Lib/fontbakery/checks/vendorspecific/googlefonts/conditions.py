@@ -181,29 +181,31 @@ def familyname(font):
 
 
 @condition(Font)
+def google_familyname(font):
+    # Google Fonts may not use the font's nameID 1 or 16 as the family name.
+    # Instead, GF uses the metadata.display_name and if this isn't
+    # available, it'll use the metadata.name. If neither of these are
+    # available, it means the font isn't hosted on Google Fonts yet so
+    # we'll use the font's best familyname.
+    return (
+        font.family_metadata.display_name
+        or font.family_metadata.name
+        or font.best_familyname
+    )
+
+
+@condition(Font)
 def best_familyname(font):
     return font.ttFont["name"].getBestFamilyName()
 
 
 @condition(Font)
 def listed_on_gfonts_api(font):
-    if not font.context.network:
+    if not font.context.network or not font.google_familyname:
         return
-
-    if not font.familyname:
-        return False
-
-    from fontbakery.utils import split_camel_case
-
-    # Some families such as "Libre Calson Text" have camelcased filenames
-    # ("LibreCalsonText-Regular.ttf") and require us to split in order
-    # to find it in the GFonts metadata:
-    from_camelcased_name = split_camel_case(font.familyname)
-
     for item in font.context.production_metadata["familyMetadataList"]:
-        if item["family"] == font.familyname or item["family"] == from_camelcased_name:
+        if item["family"] == font.google_familyname:
             return True
-
     return False
 
 
@@ -285,8 +287,8 @@ def remote_styles(font):
 
     # download_family_from_Google_Fonts
     dl_url = "https://fonts.google.com/download/list?family={}"
-    family = font.best_familyname
-    url = dl_url.format(family.replace(" ", "%20"))
+    family_name = font.google_familyname
+    url = dl_url.format(family_name.replace(" ", "%20"))
     data = json.loads(requests.get(url, timeout=10).text[5:])
     remote_fonts = []
     for item in data["manifest"]["fileRefs"]:
@@ -298,15 +300,32 @@ def remote_styles(font):
             continue
         file_obj = download_file(dl_url)
         if file_obj:
-            remote_fonts.append([filename, TTFont(file_obj)])
+            remote_fonts.append(TTFont(file_obj))
 
     rstyles = {}
-    for remote_filename, remote_font in remote_fonts:
-        remote_style = os.path.splitext(remote_filename)[0]
-        if "-" in remote_style:
-            remote_style = remote_style.split("-")[1]
-        rstyles[remote_style] = remote_font
+    for remote_font in remote_fonts:
+        if "fvar" in remote_font:
+            for instance in remote_font["fvar"].instances:
+                inst_subfamily = (
+                    remote_font["name"]
+                    .getName(instance.subfamilyNameID, 3, 1, 0x409)
+                    .toUnicode()
+                )
+                rstyles[inst_subfamily] = remote_font
+        else:
+            rstyles[font["name"].getBestSubFamilyName()] = remote_font
     return rstyles
+
+
+@condition(Font)
+def remote_style(font):
+    font_style = font.ttFont["name"].getBestSubFamilyName()
+    remote_styles = font.remote_styles
+    if not remote_styles:
+        return None
+    if font_style in remote_styles:
+        return remote_styles[font.style]
+    return None
 
 
 @condition(Font)
