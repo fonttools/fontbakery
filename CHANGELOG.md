@@ -2,6 +2,10 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (a4?) (2024-Nov-??)
+### Changes to existing checks
+### On the TypeNetwork profile
+  - **[typenetwork/usweightclass]:** Fix weightclass check. (PR #4878)
+
 ### Deprecated checks
 #### Removed from the OpenType profile
   - **DEPRECATED - [opentype/dsig]:** Merged into **[unwanted_tables]** on the `Universal` profile. (issue #4865)
