@@ -11,24 +11,6 @@ from fontbakery.codetesting import (
 check_statuses = (ERROR, FAIL, WARN, INFO, PASS, SKIP)
 
 
-def test_check_fstype():
-    """Checking OS/2 fsType"""
-    check = CheckTester("typenetwork/fstype")
-
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-    for value in [0, 1, 2, 4, 8, 0x0100, 0x0200]:
-        ttFont["OS/2"].fsType = value
-        if value == 4:
-            assert_PASS(check(ttFont), "with a good font.")
-        else:
-            assert_results_contain(
-                check(ttFont),
-                WARN,
-                "no-preview-print",
-                "with a bad fstype value.",
-            )
-
-
 # ========= TODO: Implement code-test: ============
 #  typenetwork/glyph_coverage
 #  """Type Network expects that fonts in its catalog support at least the

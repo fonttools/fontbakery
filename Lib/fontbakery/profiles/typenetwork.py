@@ -18,8 +18,6 @@ PROFILE = {
         "superfamily/list",
     ],
     "pending_review": [
-        "typenetwork/fstype",  # DEPRECATED: if not really needed anymore, it would be good to delete it from the repo.
-        #
         "opentype/cff_ascii_strings",
         "opentype/postscript_name",
         "opentype/varfont/family_axis_ranges",
