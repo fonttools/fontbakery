@@ -9,6 +9,11 @@ PROFILE = {
         #
         "alt_caron",
         "cjk_chws_feature",
+        "designspace_has_consistent_codepoints",  # < TypeNetwork doesn’t check designspace files.
+        "designspace_has_consistent_glyphset",  #   <
+        "designspace_has_consistent_groups",  #     <
+        "designspace_has_default_master",  #        <
+        "designspace_has_sources",  #               <
         "family/single_directory",  # Sometimes we want to run the profile on multiple fonts.
         "fontbakery_version",
         "math_signs_width",  # It really depends on the design and the intended use to make math symbols the same width.
@@ -37,11 +42,6 @@ PROFILE = {
         "cjk_not_enough_glyphs",
         "color_cpal_brightness",
         "colorfont_tables",
-        "designspace_has_consistent_codepoints",
-        "designspace_has_consistent_glyphset",
-        "designspace_has_consistent_groups",
-        "designspace_has_default_master",
-        "designspace_has_sources",
         "empty_glyph_on_gid1_for_colrv0",
         "file_size",
         "fontdata_namecheck",
