@@ -671,7 +671,7 @@ def check_usweightclass(font, tn_expected_os2_weight):
     """Checking OS/2 usWeightClass."""
     failed = False
     expected_value = tn_expected_os2_weight["weightClass"]
-    weight_name = tn_expected_os2_weight["name"]
+    weight_name = tn_expected_os2_weight["name"].lower()
     os2_value = font.ttFont["OS/2"].usWeightClass
 
     fail_message = "OS/2 usWeightClass is '{}' when it should be '{}'."
@@ -705,25 +705,19 @@ def check_usweightclass(font, tn_expected_os2_weight):
                 "no-value", no_value_message.format(os2_value, weight_name)
             )
 
-        elif "Thin" in weight_name.split(" "):
+        elif "thin" in weight_name.split(" "):
             if os2_value not in expected_value:
                 failed = True
                 yield FAIL, Message(
                     "bad-value", fail_message.format(os2_value, expected_value)
                 )
-            if os2_value == 100:
-                failed = True
-                yield WARN, Message("warn-value", warn_message.format(os2_value, 250))
 
-        elif "ExtraLight" in weight_name.split(" "):
+        elif "extralight" in weight_name.split(" "):
             if os2_value not in expected_value:
                 failed = True
                 yield FAIL, Message(
                     "bad-value", fail_message.format(os2_value, expected_value)
                 )
-            if os2_value == 200:
-                failed = True
-                yield WARN, Message("warn-value", warn_message.format(os2_value, 275))
 
         elif os2_value != expected_value:
             failed = True
