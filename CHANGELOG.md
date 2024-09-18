@@ -12,6 +12,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - As this is the **"a0" pre-release**, there may be additional migrations and renames of checks, before we make an actual **v0.13.0** release. Please open an issue if you have suggestions of better names or better profile allocations.
   - **[FontBakeryCondition:remote_styles]:** Use the Google Fonts family name to fetch the family. (PR #4838)
 
+### New checks
+#### Added to the Google Fonts profile
+  - **[googlefonts/axes_match]**: Check the font isn't missing any axes and the axes have the same range as the Google Fonts version. (PR #4836)
+
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[googlefonts/glyphsets/shape_languages]:** Improve formatting of output to avoid excessively long reports. (issue #4781)

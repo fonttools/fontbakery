@@ -17,6 +17,7 @@ PROFILE = {
         "fontdata_namecheck",
     ],
     "pending_review": [
+        "googlefonts/axes_match",
         "typographic_family_name",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
         #
