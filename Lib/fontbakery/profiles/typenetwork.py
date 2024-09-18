@@ -21,6 +21,11 @@ PROFILE = {
         "os2_metrics_match_hhea",  # Removed in favor of new vmetrics check
         "STAT_strings",  # replaced by adobefonts/STAT_strings
         "superfamily/list",
+        "ufolint",  #                             < TypeNetwork doesn’t check .ufo files.
+        "ufo_features_default_languagesystem",  # <
+        "ufo_recommended_fields",  #              <
+        "ufo_required_fields",  #                 <
+        "ufo_unnecessary_fields",  #              <
     ],
     "pending_review": [
         "opentype/cff_ascii_strings",
@@ -57,11 +62,6 @@ PROFILE = {
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
         "typographic_family_name",
-        "ufolint",
-        "ufo_features_default_languagesystem",
-        "ufo_recommended_fields",
-        "ufo_required_fields",
-        "ufo_unnecessary_fields",
         "varfont/duplexed_axis_reflow",
         "varfont/instances_in_order",
         "varfont/unsupported_axes",
