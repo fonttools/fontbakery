@@ -15,10 +15,19 @@ PROFILE = {
         "math_signs_width",  # It really depends on the design and the intended use to make math symbols the same width.
         "os2_metrics_match_hhea",  # Removed in favor of new vmetrics check
         "STAT_strings",  # replaced by adobefonts/STAT_strings
+        "designspace_has_consistent_codepoints", # We (TN) doesn’t check designspace files
+        "designspace_has_consistent_glyphset", # We (TN) doesn’t check designspace files
+        "designspace_has_consistent_groups", # We (TN) doesn’t check designspace files
+        "designspace_has_default_master", # We (TN) doesn’t check designspace files
+        "designspace_has_sources", # We (TN) doesn’t check designspace files
+        "caps_vertically_centered",  # Disabled: issue #4274
+        "ufolint", # We (TN) doesn’t check .ufo files
+        "ufo_features_default_languagesystem", # We (TN) doesn’t check .ufo files
+        "ufo_recommended_fields", # We (TN) doesn’t check .ufo files
+        "ufo_required_fields", # We (TN) doesn’t check .ufo files
+        "ufo_unnecessary_fields", # We (TN) doesn’t check .ufo files
     ],
     "pending_review": [
-        "typenetwork/fstype",  # DEPRECATED: if not really needed anymore, it would be good to delete it from the repo.
-        #
         "opentype/cff_ascii_strings",
         "opentype/postscript_name",
         "opentype/varfont/family_axis_ranges",
@@ -32,17 +41,13 @@ PROFILE = {
         "googlefonts/negative_advance_width",
         "googlefonts/STAT/axis_order",
         #
-        "caps_vertically_centered",  # Disabled: issue #4274
+
         "case_mapping",
         "cmap/format_12",
         "cjk_not_enough_glyphs",
         "color_cpal_brightness",
         "colorfont_tables",
-        "designspace_has_consistent_codepoints",
-        "designspace_has_consistent_glyphset",
-        "designspace_has_consistent_groups",
-        "designspace_has_default_master",
-        "designspace_has_sources",
+
         "empty_glyph_on_gid1_for_colrv0",
         "file_size",
         "fontdata_namecheck",
@@ -57,11 +62,6 @@ PROFILE = {
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
         "typographic_family_name",
-        "ufolint",
-        "ufo_features_default_languagesystem",
-        "ufo_recommended_fields",
-        "ufo_required_fields",
-        "ufo_unnecessary_fields",
         "varfont/duplexed_axis_reflow",
         "varfont/instances_in_order",
         "varfont/unsupported_axes",
