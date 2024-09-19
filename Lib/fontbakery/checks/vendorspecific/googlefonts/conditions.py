@@ -187,6 +187,8 @@ def google_familyname(font):
     # available, it'll use the metadata.name. If neither of these are
     # available, it means the font isn't hosted on Google Fonts yet so
     # we'll use the font's best familyname.
+    if not font.family_metadata:
+        return font.best_familyname
     return (
         font.family_metadata.display_name
         or font.family_metadata.name
