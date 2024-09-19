@@ -1,7 +1,27 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0a0 (2024-Sep-13)
+##  Upcoming release: 0.13.0a2 (2024-Sep-??)
+  - ...
+
+
+##  0.13.0a1 (2024-Sep-19)
+### Noteworthy code-changes
+  - **[FontBakeryCondition:remote_styles]:** Use the Google Fonts family name to fetch the family. (PR #4838)
+
+### New checks
+#### Added to the Google Fonts profile
+  - **[googlefonts/axes_match]**: Check the font isn't missing any axes and the axes have the same range as the Google Fonts version. (PR #4836)
+
+### Changes to existing checks
+#### On the Universal profile
+  - **[unreachable_glyphs]:** Avoid mutation of TTFont to fix issues with concurrent tests. (issue #4834)
+
+#### On the Google Fonts profile
+  - **[googlefonts/glyphsets/shape_languages]:** Improve formatting of output to avoid excessively long reports. (issue #4781)
+
+
+##  0.13.0a0 (2024-Sep-13)
 ### Noteworthy code-changes
   - **Profile owners,**  please take a look at the **pending_review** lists in your profile definitions. If you move them to **exclude_checks** it means you do not want the check in your profile. If you just remove from **pending_review**, then the check becomes effective in your profile. And if you do nothing, the checks still not reviewed will continue being automatically excluded from your profile.
   - This release adopts a new naming scheme for checks. We had reports of users getting confused by the meaning of the reverse domain names included as prefixes of check-IDs, such as **com.google.fonts**. The real meaning was that the organization identified by such domain was the first contributor of a given check implementation. But some users were confused thinking that it mean the check belong to that organization's vendor-specific profile.
@@ -10,16 +30,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - The checks themselves also moved around in the code-repository, in an attempt to remove any resemblance of profile allocation within the **/Lib/fontbakery/checks/** directory, which should be seen as a general pool of check implementations. As much as possible, profile definition should happen inside **/Lib/fontbakery/profiles** instead.
   - The exception to this are the checks that are surely vendor-specific. All those were placed in sub-directories inside **Lib/fontbakery/checks/**, such as **Lib/fontbakery/checks/vendorspecific/microsoft/**.
   - As this is the **"a0" pre-release**, there may be additional migrations and renames of checks, before we make an actual **v0.13.0** release. Please open an issue if you have suggestions of better names or better profile allocations.
-  - **[FontBakeryCondition:remote_styles]:** Use the Google Fonts family name to fetch the family. (PR #4838)
-
-### New checks
-#### Added to the Google Fonts profile
-  - **[googlefonts/axes_match]**: Check the font isn't missing any axes and the axes have the same range as the Google Fonts version. (PR #4836)
 
 ### Changes to existing checks
-#### On the Google Fonts profile
-  - **[googlefonts/glyphsets/shape_languages]:** Improve formatting of output to avoid excessively long reports. (issue #4781)
-
 #### On the Opentype profile
   - **[opentype/gdef_spacing_marks]:** Clarify log-message about glyphs that seem to be spacing. (issue #4824)
 
