@@ -12,6 +12,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - As this is the **"a0" pre-release**, there may be additional migrations and renames of checks, before we make an actual **v0.13.0** release. Please open an issue if you have suggestions of better names or better profile allocations.
 
 ### Changes to existing checks
+#### On the Google Fonts profile
+  - **[googlefonts/glyphsets/shape_languages]:** Improve formatting of output to avoid excessively long reports. (issue #4781)
+
 #### On the Opentype profile
   - **[opentype/gdef_spacing_marks]:** Clarify log-message about glyphs that seem to be spacing. (issue #4824)
 

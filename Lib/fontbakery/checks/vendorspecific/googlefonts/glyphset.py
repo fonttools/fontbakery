@@ -113,44 +113,55 @@ def check_glyphsets_shape_languages(ttFont, config):
     from glyphsets import languages_per_glyphset, get_glyphsets_fulfilled
 
     def table_of_results(level, results):
+        from fontbakery.utils import pretty_print_list
+
         results_table = []
-        name = shaperglot_languages[language_code]["name"]
-        language = f"{language_code} ({name})"
-        messages = set()
-        for result in results:
-            if result.message not in messages:
-                results_table.append(
-                    {"Language": language, f"{level} messages": result.message}
-                )
-                messages.add(result.message)
-                language = " ^ "
+
+        for message, languages in results.items():
+            results_table.append(
+                {
+                    f"{level} messages": message,
+                    "Languages": pretty_print_list(config, languages, quiet=True),
+                }
+            )
         return markdown_table(results_table)
 
     shaperglot_checker = Checker(ttFont.reader.file.name)
     shaperglot_languages = Languages()
     any_glyphset_supported = False
 
+    warns = {}
+    fails = {}
     glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
     for glyphset in glyphsets_fulfilled:
-        percentage_fulfilled = glyphsets_fulfilled[glyphset]["percentage"]
-        if percentage_fulfilled > 0.8:
+        if glyphsets_fulfilled[glyphset]["percentage"] > 0.8:
             any_glyphset_supported = True
             for language_code in languages_per_glyphset(glyphset):
                 reporter = shaperglot_checker.check(shaperglot_languages[language_code])
+                name = shaperglot_languages[language_code]["name"]
+                language_string = f"{language_code} ({name})"
 
-                if reporter.fails:
-                    yield FAIL, Message(
-                        "failed-language-shaping",
-                        f"{glyphset} glyphset:\n\n"
-                        f"{table_of_results('FAIL', reporter.fails)}\n\n",
-                    )
+                for w in reporter.warns:
+                    if w.message not in warns.keys():
+                        warns[w.message] = []
+                    warns[w.message].append(language_string)
 
-                if reporter.warns:
-                    yield WARN, Message(
-                        "warning-language-shaping",
-                        f"{glyphset} glyphset:\n\n"
-                        f"{table_of_results('WARN', reporter.warns)}\n\n",
-                    )
+                for f in reporter.fails:
+                    if f.message not in fails.keys():
+                        fails[f.message] = []
+                    fails[f.message].append(language_string)
+
+    if fails:
+        yield FAIL, Message(
+            "failed-language-shaping",
+            f"{glyphset} glyphset:\n{table_of_results('FAIL', fails)}\n",
+        )
+
+    if warns:
+        yield WARN, Message(
+            "warning-language-shaping",
+            f"{glyphset} glyphset:\n{table_of_results('WARN', warns)}\n",
+        )
 
     if not any_glyphset_supported:
         yield FAIL, Message(
