@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - The checks themselves also moved around in the code-repository, in an attempt to remove any resemblance of profile allocation within the **/Lib/fontbakery/checks/** directory, which should be seen as a general pool of check implementations. As much as possible, profile definition should happen inside **/Lib/fontbakery/profiles** instead.
   - The exception to this are the checks that are surely vendor-specific. All those were placed in sub-directories inside **Lib/fontbakery/checks/**, such as **Lib/fontbakery/checks/vendorspecific/microsoft/**.
   - As this is the **"a0" pre-release**, there may be additional migrations and renames of checks, before we make an actual **v0.13.0** release. Please open an issue if you have suggestions of better names or better profile allocations.
+  - **[FontBakeryCondition:remote_styles]:** Use the Google Fonts family name to fetch the family. (PR #4838)
 
 ### Changes to existing checks
 #### On the Google Fonts profile
