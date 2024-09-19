@@ -30,6 +30,8 @@ git status
 # Create a branch for the final tweaks prior to release:
 git checkout -b preparing_v0_8_2
 
+# Make sure googlefonts "always latest" dependencies are up-to-date at pyproject.toml
+
 # Update the cached list of vendor IDs:
 wget https://docs.microsoft.com/en-us/typography/vendors/ --output-document=Lib/fontbakery/data/fontbakery-microsoft-vendorlist.cache
 git add -p
