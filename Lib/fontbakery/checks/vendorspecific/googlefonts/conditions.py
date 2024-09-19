@@ -323,9 +323,7 @@ def remote_style(font):
     remote_styles = font.remote_styles
     if not remote_styles:
         return None
-    if font_style in remote_styles:
-        return remote_styles[font.style]
-    return None
+    return remote_styles.get(font_style)
 
 
 @condition(Font)
