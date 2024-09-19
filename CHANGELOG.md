@@ -20,6 +20,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Google Fonts profile
   - **[googlefonts/glyphsets/shape_languages]:** Improve formatting of output to avoid excessively long reports. (issue #4781)
 
+### Promotion of previously experimental checks
+#### Made effective on the Universal profile
+  - * **[varfont/instances_in_order]**: "Ensure the font's instances are in the correct order." Was experimental since March/2024. (issue #3334)
+
 
 ##  0.13.0a0 (2024-Sep-13)
 ### Noteworthy code-changes
