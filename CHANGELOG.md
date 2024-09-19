@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ##  0.13.0a1 (2024-Sep-19)
 ### Noteworthy code-changes
   - **[FontBakeryCondition:remote_styles]:** Use the Google Fonts family name to fetch the family. (PR #4838)
+  - This release drops support for Python 3.8
 
 ### New checks
 #### Added to the Google Fonts profile
