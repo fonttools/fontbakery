@@ -382,7 +382,7 @@ def check_description_valid_html(descfile, description_and_article):
         if "<html>" in content or "</html>" in content:
             yield FAIL, Message(
                 "html-tag",
-                f"{source} should not have an <html> tag,"
+                f"{source} should not have an \\<html\\> tag,"
                 f" since it should only be a snippet that will"
                 f" later be included in the Google Fonts"
                 f" font family specimen webpage.",
@@ -404,7 +404,7 @@ def check_description_valid_html(descfile, description_and_article):
 
         if "<p>" not in content or "</p>" not in content:
             yield FAIL, Message(
-                "lacks-paragraph", f"{descfile} does not include an HTML <p> tag."
+                "lacks-paragraph", f"{descfile} does not include an HTML \\<p\\> tag."
             )
 
 
