@@ -315,7 +315,7 @@ def check_varfont_has_HVAR(ttFont):
 @check(
     id="googlefonts/varfont/bold_wght_coord",
     rationale="""
-        The Open-Type spec's registered
+        The OpenType spec's registered
         design-variation tag 'wght' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
         does not specify a required value for the 'Bold' instance of a variable font.

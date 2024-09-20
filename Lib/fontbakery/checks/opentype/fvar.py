@@ -7,7 +7,7 @@ from fontbakery.message import Message
 @check(
     id="opentype/varfont/regular_wght_coord",
     rationale="""
-        According to the Open-Type spec's
+        According to the OpenType spec's
         registered design-variation tag 'wght' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
 
@@ -37,7 +37,7 @@ def check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
 @check(
     id="opentype/varfont/regular_wdth_coord",
     rationale="""
-        According to the Open-Type spec's
+        According to the OpenType spec's
         registered design-variation tag 'wdth' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
 
@@ -69,7 +69,7 @@ def check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
 @check(
     id="opentype/varfont/regular_slnt_coord",
     rationale="""
-        According to the Open-Type spec's
+        According to the OpenType spec's
         registered design-variation tag 'slnt' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_slnt
 
@@ -101,7 +101,7 @@ def check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
 @check(
     id="opentype/varfont/regular_ital_coord",
     rationale="""
-        According to the Open-Type spec's
+        According to the OpenType spec's
         registered design-variation tag 'ital' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_ital
 
@@ -133,7 +133,7 @@ def check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
 @check(
     id="opentype/varfont/regular_opsz_coord",
     rationale="""
-        According to the Open-Type spec's
+        According to the OpenType spec's
         registered design-variation tag 'opsz' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
 
@@ -167,7 +167,7 @@ def check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
 @check(
     id="opentype/varfont/wght_valid_range",
     rationale="""
-        According to the Open-Type spec's
+        According to the OpenType spec's
         registered design-variation tag 'wght' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
 
@@ -195,7 +195,7 @@ def check_varfont_wght_valid_range(ttFont):
 @check(
     id="opentype/varfont/wdth_valid_range",
     rationale="""
-        According to the Open-Type spec's
+        According to the OpenType spec's
         registered design-variation tag 'wdth' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
 
@@ -579,7 +579,7 @@ def check_varfont_distinct_instance_records(ttFont, has_name_table):
 @check(
     id="opentype/varfont/foundry_defined_tag_name",
     rationale="""
-        According to the Open-Type spec's syntactic requirements for
+        According to the OpenType spec's syntactic requirements for
         foundry-defined design-variation axis tags available at
         https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxisreg
 
