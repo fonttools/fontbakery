@@ -2,7 +2,8 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0a2 (2024-Sep-??)
-  - ...
+  - #### Added to the Universal Profile
+  - **[com.google.fonts/check/caps_vertically_centered]:** Adding back and correcting the caps centered check. (If possible, the uppercase glyphs should be vertically centered in the em box. (issue #4139))
 
 
 ##  0.13.0a1 (2024-Sep-19)

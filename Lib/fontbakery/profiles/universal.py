@@ -24,7 +24,7 @@ PROFILE = {
             "alt_caron",
             "arabic_high_hamza",
             "arabic_spacing_symbols",
-            # "caps_vertically_centered",  # Disabled: issue #4274
+            "caps_vertically_centered",
             "case_mapping",
             "cjk_chws_feature",
             "cjk_not_enough_glyphs",
