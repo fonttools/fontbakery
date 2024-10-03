@@ -142,25 +142,11 @@ def check_caps_vertically_centered(ttFont):
     average_cap_height = sum(highest_point_list) / len(highest_point_list)
     average_descender = sum(lowest_point_list) / len(lowest_point_list)
     
-    # Calcul des marges
-    top_margin = ttFont["hhea"].ascent - average_cap_height  # Inversé pour correspondre à l'espacement
-    bottom_margin = abs(ttFont["hhea"].descent) + average_descender  # Correction du calcul
+    top_margin = ttFont["hhea"].ascent - average_cap_height  
+    bottom_margin = abs(ttFont["hhea"].descent) + average_descender  
 
     difference = abs(top_margin - bottom_margin)
-    
-    # Debugging
-    print(f"Average Cap Height: {average_cap_height}")
-    print(f"Ascender: {ttFont['hhea'].ascent}")
-    print(f"Top Margin: {top_margin}")
 
-    print(f"Average Descender: {average_descender}")
-    print(f"Descender: {ttFont['hhea'].descent}")
-    print(f"Bottom Margin: {bottom_margin}")
-
-    print(f"Error Margin: {error_margin}")
-    print(f"Difference: {difference}")
-
-    # Vérification des marges
     if difference > error_margin:
         yield WARN, Message(
             "vertical-metrics-not-centered",
