@@ -19,9 +19,11 @@ David Libre
 Gentium Book Plus
 Gentium Plus
 Harmattan
+Hubot Sans
 Intel One Mono
 Lateef
 Mingzat
+Mona Sans
 Narnoor
 Nuosu SIL
 Rammetto One
