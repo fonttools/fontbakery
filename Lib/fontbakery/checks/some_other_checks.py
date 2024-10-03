@@ -144,7 +144,7 @@ def check_caps_vertically_centered(ttFont):
     error_margin = (line_spacing_factor * upm) * 0.18
     average_cap_height = sum(highest_point_list) / len(highest_point_list)
     average_descender = sum(lowest_point_list) / len(lowest_point_list)
-    top_margin = upm - average_cap_height - abs(ttFont["hhea"].descent)
+    top_margin = average_cap_height - ttFont["hhea"].ascent
     bottom_margin = abs(ttFont["hhea"].descent) - average_descender
     difference = abs(top_margin - bottom_margin)
     vertically_centered = difference <= error_margin
