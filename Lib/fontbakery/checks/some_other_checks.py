@@ -106,7 +106,6 @@ def check_family_single_directory(fonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4139",
 )
-
 def check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
 
@@ -141,9 +140,9 @@ def check_caps_vertically_centered(ttFont):
     error_margin = (line_spacing_factor * upm) * 0.18
     average_cap_height = sum(highest_point_list) / len(highest_point_list)
     average_descender = sum(lowest_point_list) / len(lowest_point_list)
-    
-    top_margin = ttFont["hhea"].ascent - average_cap_height  
-    bottom_margin = abs(ttFont["hhea"].descent) + average_descender  
+
+    top_margin = ttFont["hhea"].ascent - average_cap_height
+    bottom_margin = abs(ttFont["hhea"].descent) + average_descender
 
     difference = abs(top_margin - bottom_margin)
 
