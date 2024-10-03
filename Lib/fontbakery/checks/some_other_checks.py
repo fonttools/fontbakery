@@ -3,7 +3,6 @@ from typing import List
 
 from fontbakery.prelude import (
     check,
-    disable,
     Message,
     PASS,
     FAIL,
@@ -92,7 +91,6 @@ def check_family_single_directory(fonts):
         )
 
 
-@disable
 @check(
     id="caps_vertically_centered",
     rationale="""
@@ -111,14 +109,10 @@ def check_family_single_directory(fonts):
 def check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
 
-    # This check modifies the font file with `.draw(pen)`
-    # so here we'll work with a copy of the object so that we
-    # do not affect other checks:
     from copy import deepcopy
+    from fontTools.pens.boundsPen import BoundsPen
 
     ttFont_copy = deepcopy(ttFont)
-
-    from fontTools.pens.boundsPen import BoundsPen
 
     SOME_UPPERCASE_GLYPHS = ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]
     glyphSet = ttFont_copy.getGlyphSet()
@@ -128,26 +122,31 @@ def check_caps_vertically_centered(ttFont):
             yield SKIP, Message(
                 "lacks-ascii",
                 "The implementation of this check relies on a few samples"
-                " of uppercase latin characteres that are not available in this font.",
+                " of uppercase latin characters that are not available in this font.",
             )
             return
 
     highest_point_list = []
+    lowest_point_list = []
     for glyphName in SOME_UPPERCASE_GLYPHS:
         pen = BoundsPen(glyphSet)
         glyphSet[glyphName].draw(pen)
-        highest_point = pen.bounds[3]
+        _, lowest_point, _, highest_point = pen.bounds
         highest_point_list.append(highest_point)
+        lowest_point_list.append(lowest_point)
 
     upm = ttFont_copy["head"].unitsPerEm
-    error_margin = upm * 0.05
+    line_spacing_factor = 1.20
+    error_margin = (line_spacing_factor * upm) * 0.18
     average_cap_height = sum(highest_point_list) / len(highest_point_list)
-    descender = ttFont_copy["hhea"].descent
-    top_margin = upm - average_cap_height
-    difference = abs(top_margin - abs(descender))
-    vertically_centered = difference <= error_margin
+    average_descender = sum(lowest_point_list) / len(lowest_point_list)
 
-    if not vertically_centered:
+    top_margin = ttFont["hhea"].ascent - average_cap_height
+    bottom_margin = abs(ttFont["hhea"].descent) + average_descender
+
+    difference = abs(top_margin - bottom_margin)
+
+    if difference > error_margin:
         yield WARN, Message(
             "vertical-metrics-not-centered",
             "Uppercase glyphs are not vertically centered in the em box.",

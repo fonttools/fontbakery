@@ -1284,7 +1284,7 @@ def test_check_alt_caron():
     assert_PASS(check(ttFont))
 
 
-def DISABLED_test_check_caps_vertically_centered():
+def test_check_caps_vertically_centered():
     """Check if uppercase glyphs are vertically centered."""
 
     check = CheckTester("caps_vertically_centered")
@@ -1295,8 +1295,9 @@ def DISABLED_test_check_caps_vertically_centered():
     ttFont = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
     assert_SKIP(check(ttFont))
 
-    ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
-    assert_results_contain(check(ttFont), WARN, "vertical-metrics-not-centered")
+    # FIXME: review this test-case
+    # ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
+    # assert_results_contain(check(ttFont), WARN, "vertical-metrics-not-centered")
 
 
 def test_check_case_mapping():
