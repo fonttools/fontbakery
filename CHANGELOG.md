@@ -5,6 +5,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - **[FontBakeryCondition:remote_styles]:** Fetching static fonts no longer raises an error. (PR # #4863)
 
+### New checks
+#### Added to the Universal profile
+  - **[overlapping_path_segments]:** Check there are no overlapping path segments. (PR #4853)
+
 ### Migration of checks
 #### Moved from OpenType to Universal profile
   - **[name/no_copyright_on_description]**: Adding copyright information to the description name entry is bad practice but is not a breach of specification. (issue #4857)

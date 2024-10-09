@@ -10,6 +10,7 @@ PROFILE = {
         "opentype/cff_ascii_strings",
         "opentype/slant_direction",
         "opentype/weight_class_fvar",
+        #
         "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
@@ -38,6 +39,7 @@ PROFILE = {
         "name/family_and_style_max_length",
         "no_debugging_tables",
         "no_mac_entries",
+        "overlapping_path_segments",
         "render_own_name",
         "smart_dropout",
         "stylisticset_description",

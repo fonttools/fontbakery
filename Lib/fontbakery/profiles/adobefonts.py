@@ -26,6 +26,7 @@ PROFILE = {
     "pending_review": [
         "notofonts/cmap/alien_codepoints",  # Note: These two checks had not been previously marked as permanently excluded,
         "notofonts/unicode_range_bits",  # so maybe there's still some change they may be considered useful here?
+        #
         "opentype/caret_slope",
         "opentype/dsig",
         "opentype/fsselection",
@@ -41,6 +42,7 @@ PROFILE = {
         "opentype/varfont/family_axis_ranges",
         "opentype/varfont/ital_range",
         "opentype/vendor_id",
+        #
         "alt_caron",
         "arabic_high_hamza",
         "arabic_spacing_symbols",
@@ -70,6 +72,7 @@ PROFILE = {
         "name/italic_names",
         "no_debugging_tables",
         "no_mac_entries",
+        "overlapping_path_segments",
         "render_own_name",
         "smart_dropout",
         "soft_hyphen",

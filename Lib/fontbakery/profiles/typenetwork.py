@@ -54,6 +54,7 @@ PROFILE = {
         "legacy_accents",
         "name/ascii_only_entries",
         "no_debugging_tables",
+        "overlapping_path_segments",
         "render_own_name",
         "tabular_kerning",
         "typoascender_exceeds_Agrave",
