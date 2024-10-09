@@ -90,7 +90,6 @@ PROFILE = {
             "varfont/unsupported_axes",
             "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
             "vttclean",
-            "whitespace_glyphnames",
             "whitespace_glyphs",
             "whitespace_ink",
             "whitespace_widths",
