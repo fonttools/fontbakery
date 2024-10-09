@@ -25,6 +25,7 @@ PROFILE = {
         "name/family_and_style_max_length",
         "name/ascii_only_entries",
         "no_mac_entries",
+        "overlapping_path_segments",
         "render_own_name",
         "smart_dropout",
         "stylisticset_description",

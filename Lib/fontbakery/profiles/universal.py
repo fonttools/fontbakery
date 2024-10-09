@@ -67,6 +67,7 @@ PROFILE = {
             "no_mac_entries",
             "os2_metrics_match_hhea",
             "ots",
+            "overlapping_path_segments",
             "required_tables",
             "render_own_name",
             "rupee",

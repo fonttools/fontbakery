@@ -18,6 +18,7 @@ PROFILE = {
     ],
     "pending_review": [
         "googlefonts/axes_match",
+        "overlapping_path_segments",
         "typographic_family_name",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
         #
