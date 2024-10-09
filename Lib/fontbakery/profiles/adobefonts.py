@@ -21,7 +21,6 @@ PROFILE = {
         "STAT_strings",  # replaced by adobefonts/STAT_strings
         "transformed_components",
         "unreachable_glyphs",
-        "whitespace_glyphnames",
         "whitespace_ink",
     ],
     "pending_review": [
