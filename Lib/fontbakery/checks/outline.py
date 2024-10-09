@@ -5,7 +5,7 @@ from beziers.path import BezierPath
 
 from fontbakery.callable import condition, check
 from fontbakery.testable import Font
-from fontbakery.status import PASS, WARN
+from fontbakery.status import PASS, WARN, FAIL
 from fontbakery.message import Message
 from fontbakery.utils import bullet_list
 
@@ -382,3 +382,35 @@ def check_outline_direction(ttFont, outlines_dict, config):
             f"The following glyphs have a counter-clockwise outer contour:\n\n"
             f"{formatted_list}",
         )
+
+
+@check(
+    id="overlaying_segments",
+    rationale="""
+        Some rasterizers have issues when rendering glyphs that have overlaying segments.
+    """,
+    conditions=["outlines_dict", "is_ttf"],
+    proposal="https://github.com/google/fonts/issues/7594#issuecomment-2401909084",
+)
+def check_overlaying_segments(ttFont, outlines_dict, config):
+    """Check there are no overlaying glyph segments"""
+    failed = []
+    for glyph, outlines in outlines_dict.items():
+        seen = set()
+        for p in outlines:
+            for seg in p.asSegments():
+                normal = ((seg.start.x, seg.start.y), (seg.end.x, seg.end.y))
+                flipped = ((seg.end.x, seg.end.y), (seg.start.x, seg.start.y))
+                if normal in seen or flipped in seen:
+                    failed.append(
+                        f"{glyph[1]}: {seg} has the same coordinates as a previous segment."
+                    )
+                seen.add(normal)
+    if failed:
+        yield FAIL, Message(
+            "overlaying-segments",
+            f"The following glyphs have overlaying segments:\n\n"
+            f"{bullet_list(config, failed, bullet='*')}",
+        )
+    else:
+        yield PASS, "No overlaying segments found."

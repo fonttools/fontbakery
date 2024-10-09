@@ -2,6 +2,10 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0a2 (2024-Oct-??)
+### New checks
+#### Added to the outline profile
+  - **[overlaying_segments]:** Check there are no overlaying glyph segments
+
 ### Deprecated checks
 #### Removed from the Universal profile
   - **DEPRECATED - [whitespace_glyphnames]:** This check lacked a solid enough rationale. We may want to substitute it in the future by a full AGL-compliance check, if needed. (issue #4851)

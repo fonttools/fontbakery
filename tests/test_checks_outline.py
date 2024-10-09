@@ -1,5 +1,5 @@
 from fontTools.ttLib import TTFont
-from fontbakery.status import WARN, SKIP
+from fontbakery.status import WARN, SKIP, FAIL
 from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
@@ -154,3 +154,17 @@ def test_check_outline_direction():
 
     font = TEST_FILE("wonky_paths/OutlineTest.ttf")
     assert_PASS(check(font))
+
+
+def test_check_overlaying_segments():
+    check = CheckTester("overlaying_segments")
+
+    # Check a font that contains overlaying segments
+    filename = TEST_FILE("overlaying_segments/Figtree[wght].ttf")
+    results = check(filename)
+    assert_results_contain(results, FAIL, "overlaying-segments")
+
+    # check a font that doesn't contain overlaying segments
+    filename = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+    results = check(filename)
+    assert_PASS(results)

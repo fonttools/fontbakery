@@ -117,6 +117,7 @@ PROFILE = {
             "outline_jaggy_segments",
             "outline_semi_vertical",
             "outline_short_segments",
+            "overlaying_segments",
         ],
         "Font File Checks": [
             "googlefonts/axisregistry/fvar_axis_defaults",
