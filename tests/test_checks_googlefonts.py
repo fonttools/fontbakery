@@ -4331,7 +4331,7 @@ def test_check_article_images():
     # Test case for ARTICLE with missing visual files
     family_directory = portable_path("data/test/article_missing_visual_file")
     assert_results_contain(
-        check(MockFont(family_directory=family_directory)), WARN, "missing-visual-file"
+        check(MockFont(family_directory=family_directory)), FATAL, "missing-visual-file"
     )
 
     #    TODO:
