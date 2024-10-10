@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.prelude import check, Message, FAIL, WARN, PASS
+from fontbakery.prelude import check, Message, FATAL, FAIL, WARN, PASS
 
 
 @check(
@@ -78,7 +78,7 @@ def check_article_images(config, family_directory):
         yield WARN, Message("missing-visual-asset", "Article page lacks visual assets.")
 
     if missing_files:
-        yield WARN, Message(
+        yield FATAL, Message(
             "missing-visual-file",
             f"Visual asset files are missing:\n{bullet_list(config, missing_files)}",
         )
