@@ -4,7 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ##  Upcoming release: 0.13.0a2 (2024-Oct-??)
 ### Migration of checks
 #### Moved from OpenType to Universal profile
-  - **[name/no_copyright_on_description]**: Adding copyright information to the description name entry is bad practice but is not a breach of specification (issue #4857)
+  - **[name/no_copyright_on_description]**: Adding copyright information to the description name entry is bad practice but is not a breach of specification. (issue #4857)
+  - **[name/italic_names]**: This check uses the filename to determine whether the font should have various italic bits set. File naming is a matter for the OpenType specification. (issue #4858)
 
 ### Changes to existing checks
 #### On the Google Fonts profile
