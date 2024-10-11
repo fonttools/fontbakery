@@ -5,7 +5,6 @@ Checks for Adobe Fonts (formerly known as Typekit).
 PROFILE = {
     "include_profiles": ["universal"],
     "exclude_checks": [
-        "opentype/name/no_copyright_on_description",
         "opentype/xavgcharwidth",
         #
         "designspace_has_consistent_codepoints",
@@ -13,6 +12,7 @@ PROFILE = {
         "designspace_has_consistent_groups",
         "designspace_has_default_master",
         "designspace_has_sources",
+        "name/no_copyright_on_description",
         "ufolint",
         "ufo_features_default_languagesystem",
         "ufo_recommended_fields",

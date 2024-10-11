@@ -40,7 +40,6 @@ PROFILE = {
             "opentype/name/empty_records",
             "opentype/name/italic_names",
             "opentype/name/match_familyname_fullfont",
-            "opentype/name/no_copyright_on_description",
             "opentype/name/postscript_name_consistency",
             "opentype/name/postscript_vs_cff",
             "opentype/points_out_of_bounds",

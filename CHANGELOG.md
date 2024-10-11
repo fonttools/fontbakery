@@ -2,6 +2,10 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0a2 (2024-Oct-??)
+### Migration of checks
+#### Moved from OpenType to Universal profile
+  - **[name/no_copyright_on_description]**: Adding copyright information to the description name entry is bad practice but is not a breach of specification (issue #4857)
+
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[googlefonts/article/images]:** Missing image files are now reported at **FATAL** level. (issue #4848)

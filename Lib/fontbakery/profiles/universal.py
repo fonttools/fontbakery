@@ -61,6 +61,7 @@ PROFILE = {
             "name/ascii_only_entries",
             "name/family_and_style_max_length",
             "name/trailing_spaces",
+            "name/no_copyright_on_description",
             "no_debugging_tables",
             "no_mac_entries",
             "os2_metrics_match_hhea",
