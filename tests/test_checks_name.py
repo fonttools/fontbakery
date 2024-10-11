@@ -3,6 +3,7 @@ from fontTools.ttLib import TTFont
 
 from fontbakery.codetesting import (
     assert_PASS,
+    assert_SKIP,
     assert_results_contain,
     CheckTester,
     GLYPHSAPP_TEST_FILE,
@@ -243,3 +244,78 @@ def test_check_name_no_copyright_on_description():
     assert_results_contain(
         check(ttFont), FAIL, "copyright-on-description", "with a bad font..."
     )
+
+
+def test_check_italic_names():
+    check = CheckTester("name/italic_names")
+
+    def get_name(font, nameID):
+        for entry in font["name"].names:
+            if entry.nameID == nameID:
+                return entry.toUnicode()
+
+    def set_name(font, nameID, string):
+        for record in font["name"].names:
+            if record.nameID == nameID:
+                old_string = record.toUnicode()
+                if string != old_string:
+                    font["name"].setName(
+                        string,
+                        record.nameID,
+                        record.platformID,
+                        record.platEncID,
+                        record.langID,
+                    )
+
+    # Fonts without Name ID 16 & 17
+
+    # PASS or SKIP
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_SKIP(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Italic.ttf"))
+    assert_PASS(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Medium.ttf"))
+    assert_SKIP(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Bold.ttf"))
+    assert_SKIP(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-BoldItalic.ttf"))
+    assert_PASS(check(ttFont))
+
+    # FAIL
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Italic.ttf"))
+    set_name(ttFont, 1, get_name(ttFont, 1) + " Italic")
+    assert_results_contain(check(ttFont), FAIL, "bad-familyname")
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Italic.ttf"))
+    set_name(ttFont, 2, "Regular")
+    assert_results_contain(check(ttFont), FAIL, "bad-subfamilyname")
+
+    # This file is faulty as-is
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-MediumItalic.ttf"))
+    assert_results_contain(check(ttFont), FAIL, "bad-subfamilyname")
+    # Fix it
+    set_name(ttFont, 1, "Cabin Medium")
+    set_name(ttFont, 2, "Italic")
+    assert_PASS(check(ttFont))
+
+    # Fonts with Name ID 16 & 17
+
+    # PASS or SKIP
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
+    assert_SKIP(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
+    assert_PASS(check(ttFont))
+
+    # FAIL
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
+    set_name(ttFont, 16, "Shantell Sans Italic")
+    assert_results_contain(check(ttFont), FAIL, "bad-typographicfamilyname")
+
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
+    set_name(ttFont, 17, "Light")
+    assert_results_contain(check(ttFont), FAIL, "bad-typographicsubfamilyname")

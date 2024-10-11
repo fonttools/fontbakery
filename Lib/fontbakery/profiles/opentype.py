@@ -38,7 +38,6 @@ PROFILE = {
             "opentype/maxadvancewidth",
             "opentype/monospace",
             "opentype/name/empty_records",
-            "opentype/name/italic_names",
             "opentype/name/match_familyname_fullfont",
             "opentype/name/postscript_name_consistency",
             "opentype/name/postscript_vs_cff",
