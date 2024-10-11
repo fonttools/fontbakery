@@ -5,16 +5,17 @@ PROFILE = {
     ],
     "exclude_checks": [
         "opentype/family/panose_familytype",
-        "opentype/name/no_copyright_on_description",
         "opentype/vendor_id",
-        "superfamily/list",
+        #
         "alt_caron",
         "cjk_chws_feature",
         "family/single_directory",  # Sometimes we want to run the profile on multiple fonts.
         "fontbakery_version",
         "math_signs_width",  # It really depends on the design and the intended use to make math symbols the same width.
+        "name/no_copyright_on_description",
         "os2_metrics_match_hhea",  # Removed in favor of new vmetrics check
         "STAT_strings",  # replaced by adobefonts/STAT_strings
+        "superfamily/list",
     ],
     "pending_review": [
         "typenetwork/fstype",  # DEPRECATED: if not really needed anymore, it would be good to delete it from the repo.

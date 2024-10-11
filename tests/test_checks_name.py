@@ -225,3 +225,21 @@ def test_check_name_no_mac_entries():
 
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     assert_PASS(check(font), "with a font without Mac names")
+
+
+def test_check_name_no_copyright_on_description():
+    """Description strings in the name table must not contain copyright info."""
+    check = CheckTester("name/no_copyright_on_description")
+
+    # Our reference Mada Regular is know to be good here.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    assert_PASS(check(ttFont), "with a good font...")
+
+    # here we add a "Copyright" string to a NameID.DESCRIPTION
+    for i, name in enumerate(ttFont["name"].names):
+        if name.nameID == NameID.DESCRIPTION:
+            ttFont["name"].names[i].string = "Copyright".encode(name.getEncoding())
+
+    assert_results_contain(
+        check(ttFont), FAIL, "copyright-on-description", "with a bad font..."
+    )
