@@ -16,7 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Google Fonts profile
   - **[googlefonts/article/images]:** Missing image files are now reported at **FATAL** level. (issue #4848)
-  - **[googlefonts/axes_match]:** Only run on variable fonts. This stops fontbakery producing an error on static fonts.
+  - **[googlefonts/axes_match]:** Only run on variable fonts. This stops fontbakery producing an error on static fonts. (PR # #4863)
 
 ### Deprecated checks
 #### Removed from the Universal profile
