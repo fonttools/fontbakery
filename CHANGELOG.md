@@ -1,7 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0a2 (2024-Oct-16)
+##  Upcoming release: 0.13.0a3 (2024-Oct-??)
+  - ...
+
+
+##  0.13.0a2 (2024-Oct-16)
 ### Noteworthy code-changes
   - **[FontBakeryCondition:remote_styles]:** Fetching static fonts no longer raises an error. (PR # #4863)
 
