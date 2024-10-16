@@ -6,7 +6,7 @@ from fontbakery.utils import markdown_table
 
 @check(
     id="googlefonts/axes_match",
-    conditions=["remote_style"],
+    conditions=["is_variable_font", "remote_style"],
     rationale="""
         An updated font family must include the same axes found in the Google "
         Fonts version, with the same axis ranges.
