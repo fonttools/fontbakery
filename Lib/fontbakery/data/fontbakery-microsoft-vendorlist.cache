@@ -1,60 +1,4 @@
-<!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<html
+<!DOCTYPE html><html
 	class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light"
 	lang="en-us"
 	dir="ltr"
@@ -68,10 +12,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta property="og:title" content="Registered font vendors - Typography" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://learn.microsoft.com/en-us/typography/vendors/" />
-			<meta property="og:description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
-
-	<meta property="og:image" content="https://learn.microsoft.com/en-us/media/open-graph-image.png" />
+	<meta property="og:url" content="https://learn.microsoft.com/en-us/typography/vendors/" /><meta property="og:description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." /><meta property="og:image" content="https://learn.microsoft.com/en-us/media/open-graph-image.png" />
 
 	<meta property="og:image:alt" content="Microsoft Learn" />
 
@@ -79,10 +20,7 @@
 
 	<meta name="twitter:site" content="@MicrosoftLearn" />
 
-	<meta name="color-scheme" content="light dark">
-
-
-	<meta name="author" content="alib-ms" />
+	<meta name="color-scheme" content="light dark"><meta name="author" content="alib-ms" />
 <meta name="breadcrumb_path" content="/typography/breadcrumbs/toc.json" />
 <meta name="depot_name" content="Win.typography" />
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
@@ -110,43 +48,27 @@
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
 <meta name="updated_at" content="2024-09-13 02:02 AM" />
 <meta name="word_count" content="5011" />
-
-
-	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
+<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
 	
-
-
 	<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c0439c36-80e3-415f-8e4c-6951e3f1b136" data-source="generated" />
-
 	<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c6f99e62-1cf6-4b71-af9b-649b05f80cce" data-source="generated" />
-
 	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/000aaee4-f890-4b0a-bd33-24fb2aefa882" data-source="generated" />
-
 	
-
-
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/2812d699-d85f-4a7f-839d-44e218b35d24" data-source="generated" />
-
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/3f56b378-07a9-4fa1-afe8-9889fdc77628" data-source="generated" />
-
 	<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/57828563-e363-48c1-ac42-c4d23fb7ba52" data-source="generated" />
-
-	
-
-
-	<meta name="scope" content="typography" />
-	<meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
-<link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
-	<title>Registered font vendors - Typography | Microsoft Learn</title>
-
-
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2640f025.site-ltr.css ">
-
-	
+	<meta name="scope" content="typography" /><meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" /><link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical"><title>Registered font vendors - Typography | Microsoft Learn</title><link rel="stylesheet" href="/static/assets/0.4.028446020/styles/site-ltr.css">
 
 	<script id="msdocs-script">
-	var msDocs = {
-		data: {
+	var msDocs = {environment: {
+			supportLevel: 'production',
+			accessLevel: 'online',
+			reviewFeatures: false,
+			systemContent: true,
+			azurePortalHostname: 'portal.azure.com',
+			legacyHosting: false,
+			siteName: 'learn',
+		},data: {
 			timeOrigin: Date.now(),
 			contentLocale: 'en-us',
 			contentDir: 'ltr',
@@ -154,8 +76,7 @@
 			userDir: 'ltr',
 			pageTemplate: 'Conceptual',
 			brand: '',
-			context: {
-			},
+			context: {},
 			hasBinaryRating: true,
 			feedbackHelpLinkType:'',
 			feedbackHelpLinkUrl:'',
@@ -164,44 +85,22 @@
 			enableTutorialFeedback: false,
 			feedbackSystem: 'Standard',
 			feedbackGitHubRepo: '',
-			feedbackProductUrl: '',
-			extendBreadcrumb: false,
-			isEditDisplayable: false,
+			feedbackProductUrl: '',extendBreadcrumb: false,isEditDisplayable: false,
 			hideViewSource: false,
 			hasPageActions: true,
 			hasPrintButton: true,
 			hasBookmark: true,
 			hasShare: true,
 			isPermissioned: false,
-			isPrivateUnauthorized: false,
-			hasRecommendations: true,
-			contributors: [
-						{ name: "alib-ms", url: "https://github.com/alib-ms" },
-						{ name: "DhurataJ", url: "https://github.com/DhurataJ" },
-						{ name: "kturetz", url: "https://github.com/kturetz" },
-						{ name: "PeterCon", url: "https://github.com/PeterCon" },
-						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
-						{ name: "mijacobs", url: "https://github.com/mijacobs" },
-						{ name: "v-nihar", url: "https://github.com/v-nihar" },
-						{ name: "VSC-Service-Account", url: "https://github.com/VSC-Service-Account" }
-],
-		},
+			isPrivateUnauthorized: false,hasRecommendations: true,contributors: [{ name: "alib-ms", url: "https://github.com/alib-ms" },{ name: "DhurataJ", url: "https://github.com/DhurataJ" },{ name: "kturetz", url: "https://github.com/kturetz" },{ name: "PeterCon", url: "https://github.com/PeterCon" },{ name: "WorkNihar", url: "https://github.com/WorkNihar" },{ name: "mijacobs", url: "https://github.com/mijacobs" },{ name: "v-nihar", url: "https://github.com/v-nihar" },{ name: "VSC-Service-Account", url: "https://github.com/VSC-Service-Account" }],},
 		functions:{}
 	};
-	</script>
-	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
-	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script>
-
-	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
-
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b99e2028.index-docs.js"></script>
-</head>
+	</script><script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script><script src="/static/assets/0.4.028446020/global/deprecation.js"></script><script src="/static/assets/0.4.028446020/scripts/en-us/index-docs.js"></script></head>
 
 <body lang="en-us" dir="ltr">
 	<div class="header-holder has-default-focus">
-		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 padding-xs has-text-centered has-body-background" tabindex="1">Skip to main content</a>
-
-		<div hidden id="cookie-consent-holder" data-test-id="cookie-consent-container"></div>
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 padding-xs has-text-centered has-body-background" tabindex="1">Skip to main content</a><div hidden id="cookie-consent-holder" data-test-id="cookie-consent-container"></div>
 
 		<div id="unsupported-browser" style="
 			background-color: white;
@@ -222,8 +121,7 @@
 						padding: 6px 12px;
 						border-radius: 2px;
 						display: inline-block;
-						">
-Download Microsoft Edge					</a>
+						">Download Microsoft Edge</a>
 					<a href="https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge"
 						style="
 							background-color: white;
@@ -232,8 +130,7 @@ Download Microsoft Edge					</a>
 							color: #171717;
 							border-radius: 2px;
 							display: inline-block;
-							">
-More info about Internet Explorer and Microsoft Edge					</a>
+							">More info about Internet Explorer and Microsoft Edge</a>
 				</div>
 			</div>
 		</div>
@@ -244,49 +141,34 @@ More info about Internet Explorer and Microsoft Edge					</a>
 			<div id="ms--mobile-nav" class="site-header display-none-tablet padding-inline-none gap-none" data-bi-name="mobile-header" data-test-id="mobile-header"></div>
 			<div id="ms--primary-nav" class="site-header display-none display-flex-tablet" data-bi-name="L1-header" data-test-id="primary-header"></div>
 			<div id="ms--secondary-nav" class="site-header display-none display-flex-tablet" data-bi-name="L2-header" data-test-id="secondary-header"></div>
-		</header>
-
-
-			<div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+		</header><div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
 				<div class="content-header-controls margin-xxs margin-inline-sm-tablet">
 					<button type="button" class="contents-button button button-sm margin-right-xxs" data-bi-name="contents-expand" aria-haspopup="true" data-contents-button>
 						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
-						<span class="contents-expand-title">
-Table of contents						</span>
+						<span class="contents-expand-title">Table of contents</span>
 					</button>
 					<button type="button" class="ap-collapse-behavior ap-expanded button button-sm" data-bi-name="ap-collapse" aria-controls="action-panel">
 						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
 						<span>Exit focus mode</span>
 					</button>
 				</div>
-			</div>
-
-		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			</div><div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
 			<!-- liquid-tag banners sectional -->
 		</div>
 	</div>
 
 	<div class="mainContainer  uhf-container has-default-focus" data-bi-name="body">
 
-		<div class="columns has-large-gaps is-gapless-mobile ">
-
-			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+		<div class="columns has-large-gaps is-gapless-mobile "><div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
 				<nav id="affixed-left-container" class="margin-top-sm-tablet position-sticky display-flex flex-direction-column" aria-label="Primary"></nav>
-			</div>
-
-			<!-- .primary-holder -->
+			</div><!-- .primary-holder -->
 			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
 				<!--div.columns -->
-				<div class="columns is-gapless-mobile has-large-gaps ">
+				<div class="columns is-gapless-mobile has-large-gaps "><div id="main-column" class="column  is-full is-8-desktop">
 
-
-					<div id="main-column" class="column  is-full is-8-desktop">
-
-						<main id="main" class="" role="main" data-bi-name="content" lang="en-us" dir="ltr">
-							<!-- article-header -->
+						<main id="main" class="" role="main" data-bi-name="content" lang="en-us" dir="ltr"><!-- article-header -->
 							<div id="article-header" class="background-color-body margin-top-sm-tablet margin-bottom-xs display-none-print">
-								<div class="display-flex align-items-center ">
-									<details id="article-header-breadcrumbs-overflow-popover" class="popover" data-for="article-header-breadcrumbs">
+								<div class="display-flex align-items-center "><details id="article-header-breadcrumbs-overflow-popover" class="popover" data-for="article-header-breadcrumbs">
 										<summary class="button button-clear button-primary button-sm inner-focus" aria-label="All breadcrumbs">
 											<span class="icon">
 												<span class="docon docon-more"></span>
@@ -297,11 +179,7 @@ Table of contents						</span>
 										</div>
 									</details>
 
-									<bread-crumbs id="article-header-breadcrumbs" data-test-id="article-header-breadcrumbs" class="overflow-hidden flex-grow-1 margin-right-sm margin-right-md-tablet margin-right-lg-desktop margin-left-negative-xxs padding-left-xxs"></bread-crumbs>
-
-									<div id="article-header-page-actions"  class="opacity-none margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch">
-
-										<a
+									<bread-crumbs id="article-header-breadcrumbs" data-test-id="article-header-breadcrumbs" class="overflow-hidden flex-grow-1 margin-right-sm margin-right-md-tablet margin-right-lg-desktop margin-left-negative-xxs padding-left-xxs"></bread-crumbs><div id="article-header-page-actions"  class="opacity-none margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch"><a
 											id="lang-link-tablet"
 											class="button button-primary button-clear button-sm display-none display-inline-flex-tablet"
 											title="Read in English" data-bi-name="language-toggle"
@@ -311,9 +189,7 @@ Table of contents						</span>
 												<span class="docon docon-locale-globe"></span>
 											</span>
 											<span class="is-visually-hidden" data-read-in-link-text>Read in English</span>
-										</a>
-
-											<button
+										</a><button
 												type="button"
 												class="collection button button-clear button-sm button-primary display-none display-inline-flex-tablet"
 												data-list-type="collection"
@@ -323,35 +199,24 @@ Table of contents						</span>
 													<span class="docon docon-circle-addition"></span>
 												</span>
 												<span class="collection-status is-visually-hidden">Save</span>
-											</button>
-										
-
-											<a	data-contenteditbtn
+											</button><a	data-contenteditbtn
 												class="button button-clear button-sm text-decoration-none button-primary display-none display-inline-flex-tablet"
 												aria-label="Edit"
 												title="Edit This Document"
 												data-bi-name="edit"
-
 													hidden
-
-														href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
-											>
+														href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md">
 												<span class="icon margin-none" aria-hidden="true">
 													<span class="docon docon-edit-outline"></span>
 												</span>
 											</a>
-										
-
-
-										
 										<details class="popover popover-right" id="article-header-page-actions-overflow">
 											<summary class="justify-content-flex-start button button-clear button-sm button-primary" aria-label="More actions" title="More actions">
 												<span class="icon" aria-hidden="true">
 													<span class="docon docon-more-vertical"></span>
 												</span>
 											</summary>
-											<div class="popover-content padding-xs">
-													<button
+											<div class="popover-content padding-xs"><button
 														data-page-action-item="overflow-mobile"
 														type="button"
 														class="justify-content-flex-start button-block button-sm has-inner-focus button button-clear display-none-tablet"
@@ -360,11 +225,7 @@ Table of contents						</span>
 														data-popover-close>
 														<span class="icon">
 															<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
-														</span>
-															<span class="contents-expand-title">Table of contents</span>
-													</button>
-
-												<a
+														</span><span class="contents-expand-title">Table of contents</span></button><a
 													id="lang-link-overflow"
 													class="justify-content-flex-start button-sm has-inner-focus button button-clear button-block display-none-tablet"
 													title="Read in English" data-bi-name="language-toggle"
@@ -377,9 +238,7 @@ Table of contents						</span>
 														<span class="docon docon-locale-globe"></span>
 													</span>
 													<span data-read-in-link-text>Read in English</span>
-												</a>
-
-													<button
+												</a><button
 														type="button"
 														class="collection justify-content-flex-start button button-clear button-sm has-inner-focus button-block display-none-tablet"
 														data-list-type="collection"
@@ -409,31 +268,22 @@ Table of contents						</span>
 															<span class="docon docon-circle-addition"></span>
 														</span>
 														<span class="plan-status">Add to Plan</span>
-													</button>
-
-
-													<a	data-contenteditbtn
+													</button><a	data-contenteditbtn
 														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
 														aria-label="Edit"
 														title="Edit This Document"
 														data-bi-name="edit"
-
 															hidden
-
-																href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
-													>
+																href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md">
 														<span class="icon" aria-hidden="true">
 															<span class="docon docon-edit-outline"></span>
 														</span>
 														<span>Edit</span>
-													</a>
-
-												<div aria-hidden="true" class="margin-none" data-page-action-item="overflow-all"></div>
+													</a><div aria-hidden="true" class="margin-none" data-page-action-item="overflow-all"></div>
 														<hr class="display-none-tablet margin-bottom-xxs margin-top-xxs" />
 														<h4 class="font-size-sm padding-left-xxs">Share via</h4>
 
-													
-														<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start share-facebook" data-bi-name="facebook" data-page-action-item="overflow-all">
+													<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start share-facebook" data-bi-name="facebook" data-page-action-item="overflow-all">
 															<span class="icon" aria-hidden="true">
 																<span class="docon docon-facebook-share font-size-md color-primary"></span>
 															</span>
@@ -456,8 +306,7 @@ Table of contents						</span>
 																<span class="docon docon-mail-message font-size-sm color-primary"></span>
 															</span>
 															<span class="margin-left-xxs">Email</span>
-														</a>
-													<hr />
+														</a><hr />
 													<button
 														class="button button-block button-clear button-sm justify-content-flex-start has-inner-focus margin-top-xxs"
 														title="Print"
@@ -473,49 +322,25 @@ Table of contents						</span>
 														</span>
 														<span class="margin-left-xxs">Print</span>
 													</button>
-												
 											</div>
 										</details>
 										
-									</div>
-								</div>
+									</div></div>
 							</div>
-							<!-- end article-header -->
-
-
-							<div>
+							<!-- end article-header --><div>
 								<button type="button" class="border contents-button button button-clear button-sm is-hidden-tablet has-inner-focus" data-bi-name="contents-expand" data-contents-button hidden>
 									<span class="icon">
 										<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
-									</span>
-										<span class="contents-expand-title">Table of contents</span>
-								</button>
-							</div>
+									</span><span class="contents-expand-title">Table of contents</span></button>
+							</div><!-- end mobile-contents button  -->
 
-							<!-- end mobile-contents button  -->
-
-							<div class="content ">
-
-
-								<h1 id="registered-font-vendors">Registered font vendors</h1>
-
-
-									<div class="display-flex justify-content-space-between align-items-center flex-wrap-wrap page-metadata-container">
+							<div class="content "><h1 id="registered-font-vendors">Registered font vendors</h1><div class="display-flex justify-content-space-between align-items-center flex-wrap-wrap page-metadata-container">
 										<div class="margin-right-xxs">
-											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
-														<li>
-Article														</li>
-															<li class="visibility-hidden-visual-diff">
-																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-09-12T08:00:00Z" data-article-date-source="calculated">09/12/2024</time>
-															</li>
-														<li class="contributors-holder display-none-print">
-															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
-																	8 contributors
-															</button>
-														</li>
-											</ul>
+											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr"><li>Article</li><li class="visibility-hidden-visual-diff"><time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-09-12T08:00:00Z" data-article-date-source="calculated">09/12/2024</time>
+															</li><li class="contributors-holder display-none-print">
+															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">8 contributors</button>
+														</li></ul>
 										</div>
-
 <div id="user-feedback" class="margin-block-xxs display-none-print" data-hide-on-archived>
 	<button
 		id="user-feedback-button"
@@ -530,20 +355,14 @@ Article														</li>
 		</span>
 		<span>Feedback</span>
 	</button>
-</div>
-									</div>
-
-										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" aria-label="In this article">
+</div></div><nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" aria-label="In this article">
 											<h2 id="ms--in-this-article" class="title is-6 margin-block-xs">In this article</h2>
-										</nav>
-
-								<!-- <content> -->
-									<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
+										</nav><!-- <content> --><p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
 <p>To learn more about how to register a vendor ID or to update vendor details for a registered ID, please see <a href="register" data-linktype="relative-path">Register as a typography vendor</a>.</p>
 <h2 id="0-9-">[0-9, !$…]</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -722,20 +541,20 @@ Article														</li>
 <td>9999</td>
 <td>Cricut Market</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="a">A</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
-<td>A&S</td>
-<td><a href="http://www.signfonts.com" data-linktype="external">Art&Sign Studio</a></td>
+<td>A&amp;S</td>
+<td><a href="http://www.signfonts.com" data-linktype="external">Art&amp;Sign Studio</a></td>
 </tr>
 <tr>
-<td>A&TP</td>
-<td><a href="https://github.com/ashishdes/Braah" data-linktype="external">Art & Type</a></td>
+<td>A&amp;TP</td>
+<td><a href="https://github.com/ashishdes/Braah" data-linktype="external">Art &amp; Type</a></td>
 </tr>
 <tr>
 <td>A70</td>
@@ -1201,11 +1020,11 @@ Article														</li>
 <td>AZLS</td>
 <td>Azalea Software, Inc.</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="b">B</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -1213,8 +1032,8 @@ Article														</li>
 <td><a href="https://borno52.com/" data-linktype="external">Borno52 Font Foundry</a></td>
 </tr>
 <tr>
-<td>B&H</td>
-<td>Bigelow & Holmes</td>
+<td>B&amp;H</td>
+<td>Bigelow &amp; Holmes</td>
 </tr>
 <tr>
 <td>BABA</td>
@@ -1534,7 +1353,7 @@ Article														</li>
 </tr>
 <tr>
 <td>BTF</td>
-<td><a href="https://banglatypefoundry.com/" data-linktype="external">Bangla Type Foundry</td>
+<td><a href="https://banglatypefoundry.com/" data-linktype="external">Bangla Type Foundry</a></td>
 </tr>
 <tr>
 <td>BTFF</td>
@@ -1572,24 +1391,24 @@ Article														</li>
 <td>BZER</td>
 <td>Bézier</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="c">C</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
-<td>C&B</td>
-<td><a href="http://www.coppersandbrasses.com" data-linktype="external">Coppers & Brasses</a></td>
+<td>C&amp;B</td>
+<td><a href="http://www.coppersandbrasses.com" data-linktype="external">Coppers &amp; Brasses</a></td>
 </tr>
 <tr>
-<td>C&C</td>
-<td><a href="http://www.carterandcone.com/" data-linktype="external">Carter & Cone</a></td>
+<td>C&amp;C</td>
+<td><a href="http://www.carterandcone.com/" data-linktype="external">Carter &amp; Cone</a></td>
 </tr>
 <tr>
-<td>C&G</td>
-<td><a href="http://www.c-and-g.co.jp/" data-linktype="external">C&G Inc.</a></td>
+<td>C&amp;G</td>
+<td><a href="http://www.c-and-g.co.jp/" data-linktype="external">C&amp;G Inc.</a></td>
 </tr>
 <tr>
 <td>C21</td>
@@ -1641,7 +1460,7 @@ Article														</li>
 </tr>
 <tr>
 <td>CASL</td>
-<td>H.W. Caslon & Company Ltd.</td>
+<td>H.W. Caslon &amp; Company Ltd.</td>
 </tr>
 <tr>
 <td>CATG</td>
@@ -1657,7 +1476,7 @@ Article														</li>
 </tr>
 <tr>
 <td>CBDO</td>
-<td><a href="http://www.borgeslettering.com" data-linktype="external">Borges Lettering & Design</a></td>
+<td><a href="http://www.borgeslettering.com" data-linktype="external">Borges Lettering &amp; Design</a></td>
 </tr>
 <tr>
 <td>CBWJ</td>
@@ -1890,16 +1709,16 @@ Article														</li>
 <td>CZOO</td>
 <td><a href="https://czoo.dk/" data-linktype="external">Creative ZOO</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="d">D</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
-<td>D&ST</td>
-<td><a href="http://www.dotsstripestype.com" data-linktype="external">Dots&Stripes Type</a></td>
+<td>D&amp;ST</td>
+<td><a href="http://www.dotsstripestype.com" data-linktype="external">Dots&amp;Stripes Type</a></td>
 </tr>
 <tr>
 <td>D502</td>
@@ -2154,11 +1973,11 @@ Article														</li>
 <td>DZRF</td>
 <td>Dzus Rhythm Font Foundry</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="e">E</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2306,11 +2125,11 @@ Article														</li>
 <td>EVER</td>
 <td><a href="http://www.evertype.com/" data-linktype="external">Evertype</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="f">F</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2403,7 +2222,7 @@ Article														</li>
 </tr>
 <tr>
 <td>FeoN</td>
-<td><a href="http://www.feorag.com/" data-linktype="external">Fe&ograve;rag N&igrave;cBhr&igrave;de</a></td>
+<td><a href="http://www.feorag.com/" data-linktype="external">Feòrag NìcBhrìde</a></td>
 </tr>
 <tr>
 <td>FeTy</td>
@@ -2467,7 +2286,7 @@ Article														</li>
 </tr>
 <tr>
 <td>FJTY</td>
-<td>Frank Jonen - Illustration & Typography</td>
+<td>Frank Jonen - Illustration &amp; Typography</td>
 </tr>
 <tr>
 <td>FK</td>
@@ -2725,11 +2544,11 @@ Article														</li>
 <td>FY</td>
 <td>Fontyou</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="g">G</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2738,7 +2557,7 @@ Article														</li>
 </tr>
 <tr>
 <td>GAKU</td>
-<td>Gakumon</a></td>
+<td>Gakumon</td>
 </tr>
 <tr>
 <td>GALA</td>
@@ -2916,11 +2735,11 @@ Article														</li>
 <td>GYST</td>
 <td><a href="https://www.instagram.com/groteskly.yours/" data-linktype="external">Groteskly Yours</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="h">H</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2928,8 +2747,8 @@ Article														</li>
 <td><a href="http://www.hurmedesign.fi" data-linktype="external">Hurme Design</a></td>
 </tr>
 <tr>
-<td>H&FJ</td>
-<td><a href="http://www.typography.com/" data-linktype="external">Hoefler & Frere-Jones</a></td>
+<td>H&amp;FJ</td>
+<td><a href="http://www.typography.com/" data-linktype="external">Hoefler &amp; Frere-Jones</a></td>
 </tr>
 <tr>
 <td>HA</td>
@@ -2954,7 +2773,7 @@ Article														</li>
 <tr>
 <td>HAL</td>
 <td><a href="https://type.hanli.eu/" data-linktype="external">HAL Typefaces</a></td></tr>
-</tr>
+
 <tr>
 <td>HALB</td>
 <td>HALBFETT</td>
@@ -3021,7 +2840,7 @@ Article														</li>
 </tr>
 <tr>
 <td>HFJ</td>
-<td>Hoefler & Frere-Jones (replaced by H&FJ)</td>
+<td>Hoefler &amp; Frere-Jones (replaced by H&amp;FJ)</td>
 </tr>
 <tr>
 <td>HH</td>
@@ -3129,7 +2948,7 @@ Article														</li>
 </tr>
 <tr>
 <td>HY</td>
-<td><a href="http://www.hanyang.co.kr/" data-linktype="external">HanYang Information & Communication</a></td>
+<td><a href="http://www.hanyang.co.kr/" data-linktype="external">HanYang Information &amp; Communication</a></td>
 </tr>
 <tr>
 <td>HYPE</td>
@@ -3143,11 +2962,11 @@ Article														</li>
 <td>HZ</td>
 <td><a href="https://zasepa.com/" data-linktype="external">Hubert Zasępa</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="i">I</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3322,11 +3141,11 @@ Article														</li>
 <td>IWA</td>
 <td><a href="http://www.iwatafont.co.jp/" data-linktype="external">Iwata Corporation</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="j">J</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3367,7 +3186,7 @@ Article														</li>
 </tr>
 <tr>
 <td>JBLT</td>
-<td><a href="http://www.jblt.co" data-linktype="external">JEAN-BAPTISTE LEV&#201;E TYPOGRAPHY</a></td>
+<td><a href="http://www.jblt.co" data-linktype="external">JEAN-BAPTISTE LEVÉE TYPOGRAPHY</a></td>
 </tr>
 <tr>
 <td>JCF</td>
@@ -3481,11 +3300,11 @@ Article														</li>
 <td>JYT</td>
 <td><a href="https://justyourtype.de/" data-linktype="external">Just Your Type</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="k">K</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3493,8 +3312,8 @@ Article														</li>
 <td><a href="http://www.kvant.org" data-linktype="external">Kvant Type Foundry</a></td>
 </tr>
 <tr>
-<td>K&C</td>
-<td><a href="https://www.kernsandcairns.com/" data-linktype="external">Kerns & Cairns</a></td>
+<td>K&amp;C</td>
+<td><a href="https://www.kernsandcairns.com/" data-linktype="external">Kerns &amp; Cairns</a></td>
 </tr>
 <tr>
 <td>ka</td>
@@ -3594,7 +3413,7 @@ Article														</li>
 </tr>
 <tr>
 <td>KMRS</td>
-<td><a href="https://www.khemarasoft.com/font/" data-linktype="external">Mony Sath & Chhit Wornnarith - KhemaraSoft</td>
+<td><a href="https://www.khemarasoft.com/font/" data-linktype="external">Mony Sath &amp; Chhit Wornnarith - KhemaraSoft</a></td>
 </tr>
 <tr>
 <td>KNON</td>
@@ -3670,17 +3489,17 @@ Article														</li>
 </tr>
 <tr>
 <td>KUSH</td>
-<td>KushJain</a></td>
+<td>KushJain</td>
 </tr>
 <tr>
 <td>KWKK</td>
 <td><a href="http://kiwi-kawagoto.com/" data-linktype="external">キウイ皮ごと齧る</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="l">L</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3745,7 +3564,7 @@ Article														</li>
 </tr>
 <tr>
 <td>LBV</td>
-<td>La Bolde Vita</a></td>
+<td>La Bolde Vita</td>
 </tr>
 <tr>
 <td>LCMT</td>
@@ -4015,11 +3834,11 @@ Article														</li>
 <td>LXGW</td>
 <td><a href="https://github.com/lxgw" data-linktype="external">LXGW (落霞孤鹜 / 霞鹜)</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="m">M</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -4128,7 +3947,7 @@ Article														</li>
 </tr>
 <tr>
 <td>MDIV</td>
-<td>Dhivehi Type Foundry</a></td>
+<td>Dhivehi Type Foundry</td>
 </tr>
 <tr>
 <td>MDSN</td>
@@ -4396,7 +4215,7 @@ Article														</li>
 </tr>
 <tr>
 <td>MRSW</td>
-<td><a href="http://www.morisawa.co.jp/" data-linktype="external">Morisawa & Company, Ltd.</a></td>
+<td><a href="http://www.morisawa.co.jp/" data-linktype="external">Morisawa &amp; Company, Ltd.</a></td>
 </tr>
 <tr>
 <td>MRV</td>
@@ -4518,15 +4337,15 @@ Article														</li>
 <td>MYNT</td>
 <td><a href="https://myntconnect.co/" data-linktype="external">Arif Rahman</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="n">N</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
-<td>N&G</td>
+<td>N&amp;G</td>
 <td>Nikish</td>
 </tr>
 <tr>
@@ -4567,7 +4386,7 @@ Article														</li>
 </tr>
 <tr>
 <td>ncnd</td>
-<td>&cond</td>
+<td>&amp;cond</td>
 </tr>
 <tr>
 <td>NDCT</td>
@@ -4745,11 +4564,11 @@ Article														</li>
 <td>NYPE</td>
 <td>Naipe Foundry</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="o">O</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -4888,11 +4707,11 @@ Article														</li>
 <td>OZTY</td>
 <td>Oz Type</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="p">P</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -5143,11 +4962,11 @@ Article														</li>
 <td>PYTE</td>
 <td><a href="http://www.thepytefoundry.net" data-linktype="external">The Pyte Foundry</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="q">Q</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -5170,11 +4989,11 @@ Article														</li>
 <td>QUE</td>
 <td><a href="https://github.com/alerque" data-linktype="external">Alerque</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="r">R</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -5381,11 +5200,11 @@ Article														</li>
 <td>RYT</td>
 <td>Ra'ey Type</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="s">S</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -5404,8 +5223,8 @@ Article														</li>
 <td>SALT</td>
 <td>Solonka Type Foundry</td>
 </tr>
-</td>
-<td>SAMT</td>
+
+<tr><td>SAMT</td>
 <td><a href="https://www.myfonts.com/search/samtype/" data-linktype="external">Samtype</a></td>
 </tr>
 <tr>
@@ -5646,7 +5465,7 @@ Article														</li>
 </tr>
 <tr>
 <td>SPIR</td>
-<td>Spiratype</a></td>
+<td>Spiratype</td>
 </tr>
 <tr>
 <td>SPT</td>
@@ -5706,7 +5525,7 @@ Article														</li>
 </tr>
 <tr>
 <td>STF</td>
-<td><a href="http://www.briansooyco.com/" data-linktype="external">Brian Sooy & Co + Sooy Type Foundry</a></td>
+<td><a href="http://www.briansooyco.com/" data-linktype="external">Brian Sooy &amp; Co + Sooy Type Foundry</a></td>
 </tr>
 <tr>
 <td>STFD</td>
@@ -5800,20 +5619,20 @@ Article														</li>
 <td>szgs</td>
 <td>Szabó Gergely Sándor</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="t">T</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
-<td>T&S </td>
-<td><a href="http://typeandstyle.design/" data-linktype="external">Type & Style</a></td>
+<td>T&amp;S </td>
+<td><a href="http://typeandstyle.design/" data-linktype="external">Type &amp; Style</a></td>
 </tr>
 <tr>
-<td>T&T</td>
-<td><a href="https://blog.naver.com/andfont" data-linktype="external">TYPE&type</a></td>
+<td>T&amp;T</td>
+<td><a href="https://blog.naver.com/andfont" data-linktype="external">TYPE&amp;type</a></td>
 </tr>
 <tr>
 <td>TAB</td>
@@ -5877,7 +5696,7 @@ Article														</li>
 </tr>
 <tr>
 <td>TDR</td>
-<td>Tansin A. Darcos & Co.</td>
+<td>Tansin A. Darcos &amp; Co.</td>
 </tr>
 <tr>
 <td>TERM</td>
@@ -5981,7 +5800,7 @@ Article														</li>
 </tr>
 <tr>
 <td>Tlab</td>
-<td><a href="http://www.tlabfont.com" data-linktype="external">PYJ&Typolab (박윤정&타이포랩)</a></td>
+<td><a href="http://www.tlabfont.com" data-linktype="external">PYJ&amp;Typolab (박윤정&amp;타이포랩)</a></td>
 </tr>
 <tr>
 <td>TLIN</td>
@@ -6251,11 +6070,11 @@ Article														</li>
 <td>TYTA</td>
 <td><a href="http://www.typetailors.com" data-linktype="external">TYPE TAILORS</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="u">U</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -6330,11 +6149,11 @@ Article														</li>
 <td>UTF</td>
 <td><a href="https://undercase.xyz/" data-linktype="external">Undercase Type Foundry</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="v">V</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -6347,7 +6166,7 @@ Article														</li>
 </tr>
 <tr>
 <td>VILE</td>
-<td><a href="https://www.fontmonger.com/" data-linktype="external">Font Monger & Chris Vile Fonts</a></td>
+<td><a href="https://www.fontmonger.com/" data-linktype="external">Font Monger &amp; Chris Vile Fonts</a></td>
 </tr>
 <tr>
 <td>VINT</td>
@@ -6363,7 +6182,7 @@ Article														</li>
 </tr>
 <tr>
 <td>VLKF</td>
-<td><a href="http://www.visualogik.com/" data-linktype="external">Visualogik Technology & Design</a></td>
+<td><a href="http://www.visualogik.com/" data-linktype="external">Visualogik Technology &amp; Design</a></td>
 </tr>
 <tr>
 <td>VLNL</td>
@@ -6445,11 +6264,11 @@ Article														</li>
 <td>VZWO</td>
 <td><a href="https://www.viktorzumegen.de/" data-linktype="external">VZWO | Viktor Zumegen</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="w">W</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -6474,7 +6293,7 @@ Article														</li>
 </tr>
 <tr>
 <td>WCYS</td>
-<td><a href="https://wcys.co/" data-linktype="external">WCYS & Co.</a></td>
+<td><a href="https://wcys.co/" data-linktype="external">WCYS &amp; Co.</a></td>
 </tr>
 <tr>
 <td>WEBF</td>
@@ -6528,11 +6347,11 @@ Article														</li>
 <td>WZGF</td>
 <td><a href="https://github.com/HACKERSam2011" data-linktype="external">WenzhouHanziMakeGroup (温州字工坊)</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="x">X</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -6567,16 +6386,16 @@ Article														</li>
 <td>XYZ</td>
 <td><a href="http://www.xyztype.com" data-linktype="external">XYZ Type LLC</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="y">Y</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
-<td>Y&Y</td>
-<td>Y&Y, Inc.</td>
+<td>Y&amp;Y</td>
+<td>Y&amp;Y, Inc.</td>
 </tr>
 <tr>
 <td>YADS</td>
@@ -6638,11 +6457,11 @@ Article														</li>
 <td>YYYY</td>
 <td>Yellow Type Foundry</td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="z">Z</h2>
 <table>
-   <tr align="left">
-    <th width ="50">ID</th>
+   <tbody><tr align="left">
+    <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -6697,28 +6516,16 @@ Article														</li>
 <td>ZTFN</td>
 <td><a href="https://www.zetafonts.com/" data-linktype="external">Zetafonts</a></td>
 </tr>
-</table>
+</tbody></table>
 <h2 id="external-links-disclaimer">External links disclaimer</h2>
 <p>External Web sites listed here are not under the control of Microsoft. Accordingly, Microsoft can make no representation concerning the content of these sites to you, nor can the fact that Microsoft has given you this listing serve as an endorsement by Microsoft of any of these sites. Microsoft is providing external links only as a convenience to you. This is to inform you that Microsoft has not tested any software found on these sites and therefore cannot make any representations regarding the quality, safety or suitability of any software found there. There are inherent dangers in the use of any software found on the Internet, and Microsoft cautions you to make sure that you completely understand the risks before retrieving any software on the Internet.</p>
-
-							</div>
-
-								<div id="ms--inline-notifications" class="margin-block-xs" data-bi-name="inline-notification"></div>
-
-							<div id="assertive-live-region" role="alert" aria-live="assertive" class="visually-hidden" aria-relevant="additions" aria-atomic="true"></div>
+</div><div id="ms--inline-notifications" class="margin-block-xs" data-bi-name="inline-notification"></div><div id="assertive-live-region" role="alert" aria-live="assertive" class="visually-hidden" aria-relevant="additions" aria-atomic="true"></div>
 							<div id="polite-live-region" role="status" aria-live="polite" class="visually-hidden" aria-relevant="additions" aria-atomic="true"></div>
 							<!-- </content> -->
 
-						</main>
+						</main><!-- recommendations section --><!-- end recommendations section -->
 
-
-
-
-						<!-- recommendations section -->
-						<!-- end recommendations section -->
-
-						<!-- feedback section -->
-<section id="site-user-feedback-footer" class="font-size-sm margin-top-md" data-test-id="site-user-feedback-footer" data-bi-name="site-feedback-section">
+						<!-- feedback section --><section id="site-user-feedback-footer" class="font-size-sm margin-top-md" data-test-id="site-user-feedback-footer" data-bi-name="site-feedback-section">
 	<hr class="hr" />
 	<h2 id="feedback" class="title is-3">Feedback</h2>
 	<div class="display-flex flex-wrap-wrap align-items-center">
@@ -6753,18 +6560,11 @@ Article														</li>
 				<span>No</span>
 			</button>
 		</div>
-	</div>
+	</div><div class="display-flex flex-wrap-wrap margin-top-xxs"></div>
 
+</section><!-- end feedback section -->
 
-<div class="display-flex flex-wrap-wrap margin-top-xxs">
-</div>
-</section>
-						<!-- end feedback section -->
-
-						<!-- feedback report section -->
-						<!-- end feedback report section -->
-
-							<aside
+						<!-- feedback report section --><!-- end feedback report section --><aside
 								id="ms--additional-resources-mobile"
 								aria-label="Additional resources"
 								class="display-none-desktop display-none-print"
@@ -6775,15 +6575,7 @@ Article														</li>
 								<section id="right-rail-training-mobile" data-bi-name="learning-resources-card" hidden></section>
 								<section id="right-rail-events-mobile" data-bi-name="events-card" hidden></section>
 								<section id="right-rail-qna-mobile" data-bi-name="qna-link-card" hidden></section>
-							</aside>
-
-						<div class="border-top is-visible-interactive has-default-focus margin-top-sm ">
-
-
-
-	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
-	<div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop">
-			<a
+							</aside><div class="border-top is-visible-interactive has-default-focus margin-top-sm "><footer id="footer-interactive" data-bi-name="footer" class="footer-layout"><div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop"><a
 				data-mscc-ic="false"
 				class="locale-selector-link button button-sm button-clear flex-shrink-0"
 				href="#"
@@ -6791,8 +6583,7 @@ Article														</li>
 					<span class="icon" aria-hidden="true">
 						<span class="docon docon-world"></span>
 					</span>
-					<span class="local-selector-link-text"></span></a>
-		<div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
+					<span class="local-selector-link-text"></span></a><div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
 <a
 	href="https://aka.ms/yourcaliforniaprivacychoices"
 	class="button button-sm button-clear flex-shrink-0"
@@ -6817,6 +6608,7 @@ Article														</li>
 	</svg>
 	<span>Your Privacy Choices</span>
 </a>
+
 		</div>
 		<div class="flex-shrink-0">
 <div class="dropdown has-caret-up">
@@ -6852,8 +6644,7 @@ Article														</li>
 							</svg>
 						</span>
 					</span>
-					<span>
-Light					</span>
+					<span>Light</span>
 				</button>
 			</li>
 			<li class="theme display-block" role="menuitem">
@@ -6876,8 +6667,7 @@ Light					</span>
 							</svg>
 						</span>
 					</span>
-					<span>
-Dark					</span>
+					<span>Dark</span>
 				</button>
 			</li>
 			<li class="theme display-block" role="menuitem">
@@ -6900,31 +6690,21 @@ Dark					</span>
 							</svg>
 						</span>
 					</span>
-					<span>
-High contrast					</span>
+					<span>High contrast</span>
 				</button>
 			</li>
 		</ul>
 	</div>
 </div>
+
 		</div>
 	</div>
 	<ul class="links" data-bi-name="footerlinks">
-		<li class="manage-cookies-holder" hidden></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
+		<li class="manage-cookies-holder" hidden></li><li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
 				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
-					<li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2024</li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li><li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li><li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li><li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li><li>&copy; Microsoft 2024</li>
 	</ul>
-</footer>
-						</div>
-
-					</div>
-
-						<div
+</footer></div></div><div
 							id="ms--additional-resources"
 							class="right-container column is-4-desktop display-none display-block-desktop"
 							data-bi-name="pageactions"
@@ -6941,9 +6721,7 @@ High contrast					</span>
 								</nav>
 								<section id="right-rail-qna" class="margin-top-xxs" data-bi-name="qna-link-card" hidden></section>
 							</div>
-						</div>
-
-				</div>
+						</div></div>
 				<!--end of div.columns -->
 
 			</section>
@@ -6958,13 +6736,7 @@ High contrast					</span>
 	</div>
 	<!--end of .mainContainer -->
 
-	<section class="border-top has-default-focus is-hidden-interactive margin-top-sm ">
-
-
-
-	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
-	<div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop">
-			<a
+	<section class="border-top has-default-focus is-hidden-interactive margin-top-sm "><footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo"><div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop"><a
 				data-mscc-ic="false"
 				class="locale-selector-link button button-sm button-clear flex-shrink-0"
 				href="#"
@@ -6972,8 +6744,7 @@ High contrast					</span>
 					<span class="icon" aria-hidden="true">
 						<span class="docon docon-world"></span>
 					</span>
-					<span class="local-selector-link-text"></span></a>
-		<div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
+					<span class="local-selector-link-text"></span></a><div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
 <a
 	href="https://aka.ms/yourcaliforniaprivacychoices"
 	class="button button-sm button-clear flex-shrink-0"
@@ -6998,6 +6769,7 @@ High contrast					</span>
 	</svg>
 	<span>Your Privacy Choices</span>
 </a>
+
 		</div>
 		<div class="flex-shrink-0">
 <div class="dropdown has-caret-up">
@@ -7033,8 +6805,7 @@ High contrast					</span>
 							</svg>
 						</span>
 					</span>
-					<span>
-Light					</span>
+					<span>Light</span>
 				</button>
 			</li>
 			<li class="theme display-block" role="menuitem">
@@ -7057,8 +6828,7 @@ Light					</span>
 							</svg>
 						</span>
 					</span>
-					<span>
-Dark					</span>
+					<span>Dark</span>
 				</button>
 			</li>
 			<li class="theme display-block" role="menuitem">
@@ -7081,26 +6851,22 @@ Dark					</span>
 							</svg>
 						</span>
 					</span>
-					<span>
-High contrast					</span>
+					<span>High contrast</span>
 				</button>
 			</li>
 		</ul>
 	</div>
 </div>
+
 		</div>
 	</div>
 	<ul class="links" data-bi-name="footerlinks">
-		<li class="manage-cookies-holder" hidden></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
+		<li class="manage-cookies-holder" hidden></li><li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
 				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
-					<li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
-				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2024</li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li><li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li><li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li><li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li><li>&copy; Microsoft 2024</li>
 	</ul>
 </footer>
+
 	</section>
 
 	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
