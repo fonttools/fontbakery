@@ -315,7 +315,7 @@ def remote_styles(font):
                 )
                 rstyles[inst_subfamily] = remote_font
         else:
-            rstyles[font["name"].getBestSubFamilyName()] = remote_font
+            rstyles[remote_font["name"].getBestSubFamilyName()] = remote_font
     return rstyles
 
 
