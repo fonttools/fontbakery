@@ -78,7 +78,7 @@ shaperglot = [
 googlefontsalwayslatest = [
     "axisregistry >= 0.4.11, == 0.4.*",
     "gflanguages >= 0.6.4, == 0.6.*",
-    "gfsubsets >= 2024.5.9",
+    "gfsubsets >= 2024.9.25",
     "glyphsets >= 1.0.0, == 1.*",
     "shaperglot >= 0.6.3, == 0.6.*",
 ]
