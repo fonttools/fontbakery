@@ -73,6 +73,7 @@ def check_name_description_max_length(ttFont):
         For Google Fonts, the version string must be in the format "Version X.Y".
         The version number must be greater than or equal to 1.000. (Additional
         information following the numeric version number is acceptable.)
+        The "Version " prefix is a recommendation given by the OpenType spec.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
@@ -99,6 +100,8 @@ def check_name_version_format(ttFont):
                 f" (nameID={NameID.VERSION_STRING}) value must"
                 f' follow the pattern "Version X.Y" with X.Y'
                 f" greater than or equal to 1.000."
+                f' The "Version " prefix is a recommendation'
+                f" given by the OpenType spec."
                 f' Current version string is: "{ventry}"',
             )
 
