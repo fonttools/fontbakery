@@ -81,7 +81,6 @@ PROFILE = {
         "Name table checks": [
             "googlefonts/name/family_name_compliance",
             "googlefonts/name/line_breaks",
-            "googlefonts/name/unwanted_chars",
         ],
         "Licensing Checks": [
             "googlefonts/family/has_license",

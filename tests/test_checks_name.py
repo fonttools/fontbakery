@@ -57,9 +57,9 @@ def test_check_typographic_family_name(test_ttFont):
     # TODO: test a FAIL case
 
 
-def test_check_name_ascii_only_entries():
-    """Are there non-ASCII characters in ASCII-only NAME table entries?"""
-    check = CheckTester("name/ascii_only_entries")
+def test_check_name_char_restrictions():
+    """Are there disallowed characters in the restricted NAME table entries?"""
+    check = CheckTester("name/char_restrictions")
 
     # Our reference Merriweather Regular is known to be good
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -67,67 +67,90 @@ def test_check_name_ascii_only_entries():
     # So it must PASS the check:
     assert_PASS(check(ttFont), "with a good font...")
 
-    #  The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
-    #  For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that
-    #  string should be the same in CFF fonts which also have this
-    #  requirement in the OpenType spec.
+    #  The OpenType spec requires a subset of ASCII
+    #  (any printable characters except "[]{}()<>/%") for
+    #  POSTSCRIPT_NAME (nameID 6),
+    #  POSTSCRIPT_CID_NAME (nameID 20), and
+    #  an even smaller subset ("a-zA-Z0-9") for
+    #  VARIATIONS_POSTSCRIPT_NAME_PREFIX (nameID 25).
 
-    # Let's check detection of both. First nameId 6:
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.POSTSCRIPT_NAME:
-            ttFont["name"].names[i].string = "Infração".encode(encoding="utf-8")
+    # Choose an arbitrary name entry to mess up with:
+    index = 5
+
+    # And check detection on nameId 6:
+    ttFont["name"].names[index].nameID = NameID.POSTSCRIPT_NAME
+    ttFont["name"].names[index].string = "ILike{Braces}!".encode(encoding="utf_16_be")
 
     assert_results_contain(
         check(ttFont),
         FAIL,
         "bad-string",
-        "with non-ascii on nameID 6 entry (Postscript name)...",
+        "with disallowed characters on nameID 6 entry (Postscript name)...",
     )
 
     assert_results_contain(
         check(ttFont),
         FAIL,
-        "non-ascii-strings",
-        "with non-ascii on nameID 6 entry (Postscript name)...",
+        "bad-strings",
+        "with disallowed characters on nameID 6 entry (Postscript name)...",
     )
 
     # Then reload the good font
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
-    # And check detection of a problem on nameId 0:
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.COPYRIGHT_NOTICE:
-            ttFont["name"].names[i].string = "Infração".encode(encoding="utf-8")
+    # And check detection of a problem on nameId 20:
+    ttFont["name"].names[index].nameID = NameID.POSTSCRIPT_CID_NAME
+    ttFont["name"].names[index].string = "Infração".encode(encoding="utf_16_be")
 
     assert_results_contain(
         check(ttFont),
         FAIL,
         "bad-string",
-        "with non-ascii on nameID 0 entry (Copyright notice)...",
+        "with disallowed characters on nameID 20 entry (Postscript CID findfont name)...",
     )
 
     assert_results_contain(
         check(ttFont),
         FAIL,
-        "non-ascii-strings",
-        "with non-ascii on nameID 0 entry (Copyright notice)...",
+        "bad-strings",
+        "with disallowed characters on nameID 20 entry (Postscript CID findfont name)...",
+    )
+
+    # Then reload the good font again
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+
+    # And check detection of a problem on nameId 25.
+    # In this case the exclamation mark alone should be sufficient to trigger the error:
+    ttFont["name"].names[index].nameID = NameID.VARIATIONS_POSTSCRIPT_NAME_PREFIX
+    ttFont["name"].names[index].string = "ILikeSimpleStuff!".encode(
+        encoding="utf_16_be"
+    )
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "bad-string",
+        "with disallowed characters on nameID 25 entry (Variations Postscript name prefix)...",
+    )
+
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "bad-strings",
+        "with disallowed characters on nameID 25 entry (Variations Postscript name prefix)...",
     )
 
     # Reload the good font once more:
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
-    #  Note:
-    #  A common place where we find non-ASCII strings is on name table
-    #  entries with NameID > 18, which are expressly for localising
-    #  the ASCII-only IDs into Hindi / Arabic / etc.
-
     # Let's check a good case of a non-ascii on the name table then!
-    # Choose an arbitrary name entry to mess up with:
-    index = 5
-
     ttFont["name"].names[index].nameID = 19
-    ttFont["name"].names[index].string = "Fantástico!".encode(encoding="utf-8")
-    assert_PASS(check(ttFont), "with non-ascii on entries with nameId > 18...")
+    ttFont["name"].names[index].string = "[{<(Fantástico! /%)>}]".encode(
+        encoding="utf_16_be"
+    )
+    assert_PASS(
+        check(ttFont),
+        "with various characters on entries with unrestricted nameId...",
+    )
 
 
 def test_check_name_family_and_style_max_length():

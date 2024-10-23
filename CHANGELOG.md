@@ -2,7 +2,13 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0a3 (2024-Oct-??)
-  - ...
+### Deprecated checks
+#### Removed from the Google Fonts profile
+  - **DEPRECATED - [googlefonts/name/unwanted_chars]:** (PR #4869 / issue #2854)
+
+### Changes to existing checks
+#### On the Universal Profile
+  - **[name/ascii_only_entries]:** Renamed to **[name/char_restrictions]**; Improve and apply character repertoire restrictions only where necessary. (PR #4869 / issue #1718)
 
 
 ##  0.13.0a2 (2024-Oct-16)

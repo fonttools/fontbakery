@@ -9,31 +9,6 @@ from fontbakery.utils import markdown_table
 
 
 @check(
-    id="googlefonts/name/unwanted_chars",
-    rationale="""
-        We don't want non-ASCII characters in name table entries; in particular,
-        copyright, trademark and registered symbols should be written using
-        their ASCII counterparts: e.g. (c), (tm) and (r) respectively.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
-)
-def check_name_unwanted_chars(ttFont):
-    """Substitute copyright, registered and trademark
-    symbols in name table entries."""
-    replacement_map = [("\u00a9", "(c)"), ("\u00ae", "(r)"), ("\u2122", "(tm)")]
-    for name in ttFont["name"].names:
-        string = str(name.string, encoding=name.getEncoding())
-        for mark, ascii_repl in replacement_map:
-            new_string = string.replace(mark, ascii_repl)
-            if string != new_string:
-                yield FAIL, Message(
-                    "unwanted-chars",
-                    f"NAMEID #{name.nameID} contains symbols that"
-                    f" should be replaced by '{ascii_repl}'.",
-                )
-
-
-@check(
     id="googlefonts/name/description_max_length",
     rationale="""
         An old FontLab version had a bug which caused it to store copyright notices

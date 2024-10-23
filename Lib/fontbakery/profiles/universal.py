@@ -58,7 +58,7 @@ PROFILE = {
             "mandatory_glyphs",
             "math_signs_width",
             "missing_small_caps_glyphs",
-            "name/ascii_only_entries",
+            "name/char_restrictions",
             "name/family_and_style_max_length",
             "name/trailing_spaces",
             "name/no_copyright_on_description",
