@@ -67,7 +67,7 @@ PROFILE = {
         "mandatory_avar_table",
         "math_signs_width",
         "missing_small_caps_glyphs",
-        "name/ascii_only_entries",
+        "name/char_restrictions",
         "name/family_and_style_max_length",
         "name/italic_names",
         "no_debugging_tables",

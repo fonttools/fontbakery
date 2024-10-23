@@ -218,6 +218,7 @@ class NameID(enum.IntEnum):
     WWS_SUBFAMILY_NAME = 22
     LIGHT_BACKGROUND_PALETTE = 23
     DARK_BACKGROUD_PALETTE = 24
+    VARIATIONS_POSTSCRIPT_NAME_PREFIX = 25
 
 
 class GlyphClass(enum.IntEnum):

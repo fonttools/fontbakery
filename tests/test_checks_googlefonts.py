@@ -794,20 +794,6 @@ def test_check_glyph_coverage():
     assert_PASS(check(ttFont))
 
 
-def test_check_name_unwanted_chars():
-    """Substitute copyright, registered and trademark
-    symbols in name table entries."""
-    check = CheckTester("googlefonts/name/unwanted_chars")
-
-    # Our reference Mada Regular is know to be bad here.
-    font = TEST_FILE("mada/Mada-Regular.ttf")
-    assert_results_contain(check(font), FAIL, "unwanted-chars", "with a bad font...")
-
-    # Our reference Cabin Regular is know to be good here.
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_PASS(check(font), "with a good font...")
-
-
 def test_check_usweightclass():
     """Checking OS/2 usWeightClass."""
     check = CheckTester("googlefonts/usweightclass")

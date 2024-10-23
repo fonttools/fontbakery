@@ -52,7 +52,7 @@ PROFILE = {
         "hinting_impact",
         "integer_ppem_if_hinted",
         "legacy_accents",
-        "name/ascii_only_entries",
+        "name/char_restrictions",
         "no_debugging_tables",
         "overlapping_path_segments",
         "render_own_name",
