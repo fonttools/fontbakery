@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Universal Profile
   - **[name/ascii_only_entries]:** Renamed to **[name/char_restrictions]**; Improve and apply character repertoire restrictions only where necessary. (PR #4869 / issue #1718)
+  - **[opentype/vendor_id]:** Pads the configured vendor ID to four characters, to accurately match what it will actually be in the OS/2 table.
 
 
 ##  0.13.0a2 (2024-Oct-16)
