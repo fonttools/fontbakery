@@ -340,7 +340,10 @@ def check_vendor_id(config, ttFont):
         yield FAIL, Message("lacks-OS/2", "The required OS/2 table is missing.")
         return
 
-    config_vendor_id = config["vendor_id"]
+    # vendor ID is a 4-byte ASCII string, per the OpenType spec
+    # so this pads the string to 4 bytes if it's shorter
+    config_vendor_id = config["vendor_id"].ljust(4)
+
     font_vendor_id = ttFont["OS/2"].achVendID
 
     if config_vendor_id != font_vendor_id:
