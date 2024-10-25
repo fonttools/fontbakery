@@ -1,5 +1,5 @@
 from fontTools.ttLib import TTFont
-from fontbakery.status import WARN, SKIP, FAIL
+from fontbakery.status import WARN, SKIP
 from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
