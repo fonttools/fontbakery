@@ -5,7 +5,7 @@ from beziers.path import BezierPath
 
 from fontbakery.callable import condition, check
 from fontbakery.testable import Font
-from fontbakery.status import PASS, WARN, FAIL
+from fontbakery.status import PASS, WARN
 from fontbakery.message import Message
 from fontbakery.utils import bullet_list
 
