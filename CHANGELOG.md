@@ -11,6 +11,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[name/ascii_only_entries]:** Renamed to **[name/char_restrictions]**; Improve and apply character repertoire restrictions only where necessary. (PR #4869 / issue #1718)
   - **[opentype/vendor_id]:** Pads the configured vendor ID to four characters, to accurately match what it will actually be in the OS/2 table.
 
+#### On the Outline Profile
+  - **[overlapping_path_segments]:** Downgrade to warn since its raising many false positives.
+
 
 ##  0.13.0a2 (2024-Oct-16)
 ### Noteworthy code-changes

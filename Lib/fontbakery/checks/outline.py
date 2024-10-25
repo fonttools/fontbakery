@@ -412,7 +412,7 @@ def check_overlapping_path_segments(ttFont, outlines_dict, config):
                     )
                 seen.add(normal)
     if failed:
-        yield FAIL, Message(
+        yield WARN, Message(
             "overlapping-path-segments",
             f"The following glyphs have overlapping path segments:\n\n"
             f"{bullet_list(config, failed, bullet='*')}",
