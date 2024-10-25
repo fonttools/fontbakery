@@ -1,7 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0a3 (2024-Oct-??)
+##  Upcoming release: 0.13.0a4 (2024-Nov-??)
+  - ...
+
+
+## 0.13.0a3 (2024-Oct-25)
 ### Deprecated checks
 #### Removed from the Google Fonts profile
   - **DEPRECATED - [googlefonts/name/unwanted_chars]:** (PR #4869 / issue #2854)
