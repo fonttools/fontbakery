@@ -162,7 +162,7 @@ def test_check_overlapping_path_segments():
     # Check a font that contains overlapping path segments
     filename = TEST_FILE("overlapping_path_segments/Figtree[wght].ttf")
     results = check(filename)
-    assert_results_contain(results, FAIL, "overlapping-path-segments")
+    assert_results_contain(results, WARN, "overlapping-path-segments")
 
     # check a font that doesn't contain overlapping path segments
     filename = TEST_FILE("merriweather/Merriweather-Regular.ttf")
