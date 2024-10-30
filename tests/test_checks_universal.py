@@ -684,6 +684,7 @@ def test_check_unwanted_tables():
     check = CheckTester("unwanted_tables")
 
     unwanted_tables = [
+        "DSIG",
         "FFTM",  # FontForge
         "TTFA",  # TTFAutohint
         "TSI0",  # TSI* = VTT

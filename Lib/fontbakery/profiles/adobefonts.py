@@ -28,7 +28,6 @@ PROFILE = {
         "notofonts/unicode_range_bits",  # so maybe there's still some change they may be considered useful here?
         #
         "opentype/caret_slope",
-        "opentype/dsig",
         "opentype/fsselection",
         "opentype/gdef_mark_chars",
         "opentype/gdef_non_mark_chars",
