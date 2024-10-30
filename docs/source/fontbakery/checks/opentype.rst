@@ -14,12 +14,6 @@ CFF table checks
 .. automodule:: fontbakery.checks.opentype.cff
     :members:
 
-DSIG table checks
-*****************
-
-.. automodule:: fontbakery.checks.opentype.dsig
-    :members:
-
 fvar table checks
 *****************
 

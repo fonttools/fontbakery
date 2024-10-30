@@ -8,7 +8,6 @@ PROFILE = {
             "opentype/cff_call_depth",
             "opentype/cff_deprecated_operators",
             "opentype/code_pages",
-            "opentype/dsig",
             "opentype/family/bold_italic_unique_for_nameid1",
             "opentype/family/consistent_family_name",
             "opentype/family/equal_font_versions",
