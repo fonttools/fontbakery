@@ -58,6 +58,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### On the TypeNetwork profile
   - **[typenetwork/usweightclass]:** Fix weightclass check. (PR #4878)
 
+#### On the Google Fonts Profile
+  - **[googlefonts/STAT/axisregistry]:** Allow MORF axis to have user defined AxisValues (PR #4874)
+
 ### Deprecated checks
 #### Removed from the OpenType profile
   - **DEPRECATED - [opentype/dsig]:** Merged into **[unwanted_tables]** on the `Universal` profile. (issue #4865)
