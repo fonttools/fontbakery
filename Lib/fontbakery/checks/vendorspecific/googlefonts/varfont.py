@@ -160,10 +160,13 @@ def check_stat(ttFont, expected_font_names):
 
 @check(
     id="googlefonts/fvar_instances",
-    conditions=["is_variable_font"],
+    conditions=["is_variable_font", "not has_morf_axis"],
     rationale="""
         Check a font's fvar instance coordinates comply with our guidelines:
         https://googlefonts.github.io/gf-guide/variable.html#fvar-instances
+
+        This check is skipped for fonts that have a Morph (MORF) axis
+        since we allow users to define their own custom instances.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
