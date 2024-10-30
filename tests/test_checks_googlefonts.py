@@ -3521,6 +3521,8 @@ def test_check_STAT_gf_axisregistry():
     """
     Validate STAT particle names and values match the fallback names in GFAxisRegistry.
     """
+    from fontTools.otlLib.builder import buildStatTable
+
     check = CheckTester("googlefonts/STAT/axisregistry")
 
     # Our reference varfont, CabinVF,
@@ -3548,6 +3550,33 @@ def test_check_STAT_gf_axisregistry():
     # requires them.
     ttFont["STAT"].table.AxisValueArray = None
     assert_results_contain(check(ttFont), FAIL, "missing-axis-values")
+
+    # Let's add a MORF Axis with custom axisvalues
+    stat = [
+        {
+            "tag": "MORF",
+            "name": "Morph",
+            "values": [
+                {"name": "Foo", "value": 0},
+                {"name": "Bar", "value": 100},
+            ],
+        },
+        {
+            "tag": "wght",
+            "name": "Weight",
+            "values": [
+                {"name": "Regular", "value": 400, "flags": 0x2},
+                {"name": "Bold", "value": 700},
+            ],
+        },
+    ]
+    buildStatTable(ttFont, stat)
+    assert_PASS(check(ttFont))
+
+    # Let's make a weight axisvalue incorrect.
+    stat[1]["values"][1]["value"] = 800
+    buildStatTable(ttFont, stat)
+    assert_results_contain(check(ttFont), FAIL, "bad-coordinate")
 
 
 def test_check_metadata_consistent_axis_enumeration():

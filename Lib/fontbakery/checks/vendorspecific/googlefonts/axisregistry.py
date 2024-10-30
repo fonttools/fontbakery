@@ -170,6 +170,10 @@ def check_STAT_axisregistry_names(ttFont):
             continue
 
         axis = ttFont["STAT"].table.DesignAxisRecord.Axis[axis_value.AxisIndex]
+        # If a family has a MORF axis, we allow users to define their own
+        # axisValues for this axis.
+        if axis.AxisTag == "MORF":
+            continue
         if axis.AxisTag in GFAxisRegistry().keys():
             fallbacks = GFAxisRegistry()[axis.AxisTag].fallback
             fallbacks = {f.name: f.value for f in fallbacks}
