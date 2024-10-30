@@ -55,6 +55,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **ufo_unnecessary_fields** (.ufo files)
 
 ### Changes to existing checks
+### On the Google Fonts profile
+  - **[googlefonts/fvar_instances]:** Skip if font has MORF axis. We allow designers to define their own custom fvar instances if the font has a Morph axis. They spend a significant amount of time drawing custom shapes for this axis so it is the right call imo. (PR #4880)
+
 ### On the TypeNetwork profile
   - **[typenetwork/usweightclass]:** Fix weightclass check. (PR #4878)
 

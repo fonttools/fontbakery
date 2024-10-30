@@ -3421,6 +3421,15 @@ def test_check_varfont_instance_names(vf_ttFont):
         "bad-fvar-instances",
         "with a variable font which does not have correct instance names.",
     )
+    # Let's see if the check is skipped if a font contains a MORF axis.
+    # We allow fonts with a MORF axis to have custom fvar instances.
+    from fontTools.ttLib.tables._f_v_a_r import Axis
+
+    vf_ttFont3 = copy(vf_ttFont)
+    morf_axis = Axis()
+    morf_axis.axisTag = "MORF"
+    vf_ttFont3["fvar"].axes.append(morf_axis)
+    assert_SKIP(check(vf_ttFont3))
 
 
 def test_check_varfont_duplicate_instance_names(vf_ttFont):

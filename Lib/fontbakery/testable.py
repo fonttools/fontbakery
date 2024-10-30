@@ -167,6 +167,10 @@ class Font(Testable):
         return "wdth" in self.axes_by_tag
 
     @cached_property
+    def has_morf_axis(self):
+        return "MORF" in self.axes_by_tag
+
+    @cached_property
     def family_directory(self):
         """Get the path of font project directory."""
         return os.path.dirname(self.file) or "."
