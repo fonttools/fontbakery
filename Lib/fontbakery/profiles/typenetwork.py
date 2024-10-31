@@ -9,17 +9,26 @@ PROFILE = {
         #
         "alt_caron",
         "caps_vertically_centered",  # Disabled: issue #4274
+        "cmap/format_12",
         "cjk_chws_feature",
+        "cjk_not_enough_glyphs",
+        "color_cpal_brightness",  # Color fonts check.
+        "colorfont_tables",  # Color fonts check.
         "designspace_has_consistent_codepoints",  # < TypeNetwork doesn’t check designspace files.
         "designspace_has_consistent_glyphset",  #   <
         "designspace_has_consistent_groups",  #     <
         "designspace_has_default_master",  #        <
         "designspace_has_sources",  #               <
+        "empty_glyph_on_gid1_for_colrv0",  # Color fonts check.
         "family/single_directory",  # Sometimes we want to run the profile on multiple fonts.
+        "file_size",
+        "fontval",  # Temporarily disabled
         "fontbakery_version",
+        "hinting_impact",
         "math_signs_width",  # It really depends on the design and the intended use to make math symbols the same width.
         "name/no_copyright_on_description",
         "os2_metrics_match_hhea",  # Removed in favor of new vmetrics check
+        "render_own_name",
         "STAT_strings",  # replaced by adobefonts/STAT_strings
         "superfamily/list",
         "ufolint",  #                             < TypeNetwork doesn’t check .ufo files.
@@ -27,45 +36,12 @@ PROFILE = {
         "ufo_recommended_fields",  #              <
         "ufo_required_fields",  #                 <
         "ufo_unnecessary_fields",  #              <
+        "vtt_volt_data",  # Very similar to 'vttclean' check, it may be a good idea to merge them.
+        "varfont/unsupported_axes",  # Despite discouraging its use, TN accepts fonts with ital axis.
     ],
     "pending_review": [
-        "opentype/cff_ascii_strings",
-        "opentype/postscript_name",
-        "opentype/varfont/family_axis_ranges",
-        "opentype/weight_class_fvar",
-        #
-        "googlefonts/gasp",
-        "googlefonts/glyphsets/shape_languages",
-        "googlefonts/metadata/primary_script",
-        "googlefonts/metadata/unreachable_subsetting",
-        "googlefonts/metadata/valid_nameid25",  # Previously this one had been marked as "temporarily excluded".
-        "googlefonts/negative_advance_width",
-        "googlefonts/STAT/axis_order",
-        #
-        "case_mapping",
-        "cmap/format_12",
-        "cjk_not_enough_glyphs",
-        "color_cpal_brightness",
-        "colorfont_tables",
-        "empty_glyph_on_gid1_for_colrv0",
-        "file_size",
-        "fontdata_namecheck",
-        "fontval",  # Temporarily disabled
-        "gsub/smallcaps_before_ligatures",
-        "hinting_impact",
-        "integer_ppem_if_hinted",
-        "legacy_accents",
-        "name/char_restrictions",
-        "no_debugging_tables",
+        "name/char_restrictions",  # This was originally called name/ascii_only_entries. Please review https://github.com/fonttools/fontbakery/pull/4869
         "overlapping_path_segments",
-        "render_own_name",
-        "tabular_kerning",
-        "typoascender_exceeds_Agrave",
-        "typographic_family_name",
-        "varfont/duplexed_axis_reflow",
-        "varfont/instances_in_order",
-        "varfont/unsupported_axes",
-        "vtt_volt_data",  # Very similar to 'vttclean' check, it may be a good idea to merge them.
     ],
     "sections": {
         "Type Network": [
@@ -96,8 +72,10 @@ PROFILE = {
         ],
         "Google Fonts": [
             "googlefonts/family/equal_codepoint_coverage",
+            # "googlefonts/negative_advance_width",  # See https://github.com/fonttools/fontbakery/pull/1727
             "googlefonts/varfont/bold_wght_coord",
             "googlefonts/varfont/duplicate_instance_names",
+            "googlefonts/STAT/axis_order",
         ],
         "Outline Checks": [
             "outline_alignment_miss",
@@ -107,7 +85,7 @@ PROFILE = {
             "outline_short_segments",
         ],
         "Shaping Checks": [
-            "dotted_circle",  # This one is included, but it would be good to be reviewed.
+            "dotted_circle",
             "soft_dotted",
         ],
     },
