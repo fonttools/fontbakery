@@ -26,46 +26,21 @@ PROFILE = {
         "ufo_recommended_fields", # We (TN) doesn’t check .ufo files
         "ufo_required_fields", # We (TN) doesn’t check .ufo files
         "ufo_unnecessary_fields", # We (TN) doesn’t check .ufo files
-    ],
-    "pending_review": [
-        "opentype/cff_ascii_strings",
-        "opentype/postscript_name",
-        "opentype/varfont/family_axis_ranges",
-        "opentype/weight_class_fvar",
-        #
-        "googlefonts/gasp",
         "googlefonts/glyphsets/shape_languages",
         "googlefonts/metadata/primary_script",
         "googlefonts/metadata/unreachable_subsetting",
-        "googlefonts/metadata/valid_nameid25",  # Previously this one had been marked as "temporarily excluded".
-        "googlefonts/negative_advance_width",
-        "googlefonts/STAT/axis_order",
-        #
-
-        "case_mapping",
         "cmap/format_12",
         "cjk_not_enough_glyphs",
-        "color_cpal_brightness",
-        "colorfont_tables",
-
-        "empty_glyph_on_gid1_for_colrv0",
-        "file_size",
-        "fontdata_namecheck",
-        "fontval",  # Temporarily disabled
-        "gsub/smallcaps_before_ligatures",
+        "color_cpal_brightness", # Color fonts 
+        "colorfont_tables", # Color fonts 
+        "empty_glyph_on_gid1_for_colrv0", # Color fonts 
         "hinting_impact",
-        "integer_ppem_if_hinted",
-        "legacy_accents",
-        "name/ascii_only_entries",
-        "no_debugging_tables",
         "render_own_name",
-        "tabular_kerning",
-        "typoascender_exceeds_Agrave",
-        "typographic_family_name",
-        "varfont/duplexed_axis_reflow",
-        "varfont/instances_in_order",
-        "varfont/unsupported_axes",
         "vtt_volt_data",  # Very similar to 'vttclean' check, it may be a good idea to merge them.
+        "varfont/unsupported_axes", # Despite we don’t encourage the use, TN accept fonts with ital axis. 
+        "file_size",
+        "googlefonts/metadata/valid_nameid25",
+        "fontval",  # Temporarily disabled
     ],
     "sections": {
         "Type Network": [
@@ -98,6 +73,8 @@ PROFILE = {
             "googlefonts/family/equal_codepoint_coverage",
             "googlefonts/varfont/bold_wght_coord",
             "googlefonts/varfont/duplicate_instance_names",
+            "googlefonts/negative_advance_width",
+            "googlefonts/STAT/axis_order",
         ],
         "Outline Checks": [
             "outline_alignment_miss",
@@ -107,7 +84,7 @@ PROFILE = {
             "outline_short_segments",
         ],
         "Shaping Checks": [
-            "dotted_circle",  # This one is included, but it would be good to be reviewed.
+            "dotted_circle",
             "soft_dotted",
         ],
     },
