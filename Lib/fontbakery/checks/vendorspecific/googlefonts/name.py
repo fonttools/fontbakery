@@ -116,6 +116,15 @@ def check_name_familyname_first_char(ttFont):
 )
 def check_font_names(ttFont, ttFonts):
     """Check font names are correct"""
+    if "fvar" in ttFont and "MORF" in [a.axisTag for a in ttFont["fvar"].axes]:
+        yield WARN, Message(
+            "morf-axis",
+            "Font has a Morph axis. This check only works on fonts that "
+            "have a wght axis. Since users can define their own stylenames "
+            "for Morph families, please manually check that the family works "
+            "on major platforms. You can use Agu Display as a reference.",
+        )
+        return
     expected_names = expected_font_names(ttFont, ttFonts)
 
     def style_names(nametable):

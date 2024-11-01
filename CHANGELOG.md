@@ -1,11 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0 (a5?) (2024-Nov-??)
+##  Upcoming release: 0.13.0 (a5?) (2024-Nov-08)
   - ...
 
 
-##  0.13.0a4 (2024-Nov-01)
+##  0.13.0a4 (2024-Nov-05)
 ### Noteworthy release notes
   - Thanks Guido Ferreyra for updating the TypeNetwork profile based on its "pending_review" list of recent checks that had been added since his last review (summary of changes listed below). **Other profile owners should consider doing the same.** (PR #4878)
 
@@ -57,6 +57,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 ### On the Google Fonts profile
   - **[googlefonts/fvar_instances]:** Skip if font has MORF axis. We allow designers to define their own custom fvar instances if the font has a Morph axis. They spend a significant amount of time drawing custom shapes for this axis so it is the right call imo. (PR #4880)
+  - **[googlefonts/font_names]:** Raise WARN for families with MORF axis. (PR #4881)
 
 ### On the TypeNetwork profile
   - **[typenetwork/usweightclass]:** Fix weightclass check. (PR #4878)
