@@ -7,7 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ##  0.13.0a4 (2024-Nov-05)
 ### Noteworthy release notes
-  - Thanks Guido Ferreyra for updating the TypeNetwork profile based on its "pending_review" list of recent checks that had been added since his last review (summary of changes listed below). **Other profile owners should consider doing the same.** (PR #4878)
+  - Thanks Guido Ferreyra for updating the TypeNetwork profile based on its "pending_review" list of recent checks that had been added since his last review (summary of changes listed below). **Other profile owners should consider doing the same.** (PRs #4878 and #4882)
 
 #### TypeNetwork review: approved checks:
  - **opentype/cff_ascii_strings**
@@ -29,6 +29,8 @@ A more detailed list of changes is available in the corresponding milestones for
  - **varfont/instances_in_order**
  - **name/ascii_only_entries**
  - **dotted_circle**
+ - **name/char_restrictions**
+ - **overlapping_path_segments**
 
 #### TypeNetwork review: excluded checks:
   - **caps_vertically_centered**

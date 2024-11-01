@@ -39,10 +39,6 @@ PROFILE = {
         "vtt_volt_data",  # Very similar to 'vttclean' check, it may be a good idea to merge them.
         "varfont/unsupported_axes",  # Despite discouraging its use, TN accepts fonts with ital axis.
     ],
-    "pending_review": [
-        "name/char_restrictions",  # This was originally called name/ascii_only_entries. Please review https://github.com/fonttools/fontbakery/pull/4869
-        "overlapping_path_segments",
-    ],
     "sections": {
         "Type Network": [
             "typenetwork/composite_glyphs",
