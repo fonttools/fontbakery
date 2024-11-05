@@ -10,32 +10,31 @@ A more detailed list of changes is available in the corresponding milestones for
   - Thanks Guido Ferreyra for updating the TypeNetwork profile based on its "pending_review" list of recent checks that had been added since his last review (summary of changes listed below). **Other profile owners should consider doing the same.** (PRs #4878 and #4882)
 
 #### TypeNetwork review: approved checks:
- - **opentype/cff_ascii_strings**
- - **opentype/postscript_name**
- - **opentype/varfont/family_axis_ranges**
- - **opentype/weight_class_fvar**
- - **googlefonts/negative_advance_width** (cherry-picked from gfonts profile)
- - **googlefonts/STAT/axis_order** (cherry-picked from gfonts profile)
- - **case_mapping**
- - **fontdata_namecheck**
- - **gsub/smallcaps_before_ligatures**
- - **integer_ppem_if_hinted**
- - **legacy_accents**
- - **no_debugging_tables**
- - **tabular_kerning**
- - **typoascender_exceeds_Agrave**
- - **typographic_family_name**
- - **varfont/duplexed_axis_reflow**
- - **varfont/instances_in_order**
- - **name/ascii_only_entries**
- - **dotted_circle**
- - **name/char_restrictions**
- - **overlapping_path_segments**
+  - **case_mapping**
+  - **dotted_circle**
+  - **fontdata_namecheck**
+  - **googlefonts/negative_advance_width** (cherry-picked from gfonts profile)
+  - **googlefonts/STAT/axis_order** (cherry-picked from gfonts profile)
+  - **gsub/smallcaps_before_ligatures**
+  - **integer_ppem_if_hinted**
+  - **legacy_accents**
+  - **name/char_restrictions**
+  - **no_debugging_tables**
+  - **opentype/cff_ascii_strings**
+  - **opentype/postscript_name**
+  - **opentype/varfont/family_axis_ranges**
+  - **opentype/weight_class_fvar**
+  - **overlapping_path_segments**
+  - **tabular_kerning**
+  - **typoascender_exceeds_Agrave**
+  - **typographic_family_name**
+  - **varfont/duplexed_axis_reflow**
+  - **varfont/instances_in_order**
 
 #### TypeNetwork review: excluded checks:
   - **caps_vertically_centered**
-  - **cmap/format_12**
   - **cjk_not_enough_glyphs**
+  - **cmap/format_12**
   - **color_cpal_brightness** (Color font check)
   - **colorfont_tables** (Color font check)
   - **designspace_has_consistent_codepoints** (TypeNetwork doesn’t check designspace files.)
@@ -44,17 +43,17 @@ A more detailed list of changes is available in the corresponding milestones for
   - **designspace_has_default_master** (designspace files)
   - **designspace_has_sources** (designspace files)
   - **empty_glyph_on_gid1_for_colrv0** (Color font check)
-  - **hinting_impact**
-  - **render_own_name**
-  - **vtt_volt_data** (Very similar to 'vttclean' check, it may be a good idea to merge them.)
-  - **varfont/unsupported_axes** (Despite discouraging its use, TN accepts fonts with ital axis.)
   - **file_size**
   - **fontval** (Temporarily disabled)
-  - **ufolint** (TypeNetwork doesn’t check .ufo files.)
+  - **hinting_impact**
+  - **render_own_name**
   - **ufo_features_default_languagesystem** (.ufo files)
+  - **ufolint** (TypeNetwork doesn’t check .ufo files.)
   - **ufo_recommended_fields** (.ufo files)
   - **ufo_required_fields** (.ufo files)
   - **ufo_unnecessary_fields** (.ufo files)
+  - **varfont/unsupported_axes** (Despite discouraging its use, TN accepts fonts with ital axis.)
+  - **vtt_volt_data** (Very similar to 'vttclean' check, it may be a good idea to merge them.)
 
 ### Changes to existing checks
 ### On the Google Fonts profile
