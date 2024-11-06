@@ -8,7 +8,7 @@ from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables.otTables import AxisValueRecord
 import requests
 
-from fontbakery.status import WARN, FAIL, PASS, SKIP
+from fontbakery.status import WARN, FAIL, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -173,7 +173,7 @@ def test_check_override_family_win_ascent_and_descent():
 
     # Now fix the value of 'OS/2.usWinAscent'. The overridden check should PASS.
     os2_table.usWinAscent = y_max
-    assert_PASS(check(ttFont), PASS)
+    assert_PASS(check(ttFont))
 
     # Now mess up the 'OS/2.usWinDescent' value. The overridden check should just WARN.
     os2_table.usWinDescent = abs(y_min) - 10
@@ -206,7 +206,7 @@ def test_check_override_os2_metrics_match_hhea():
 
     # Our reference Mada Black is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Black.ttf"))
-    assert_PASS(check(ttFont), PASS)
+    assert_PASS(check(ttFont))
 
     os2_table = ttFont["OS/2"]
     hhea_table = ttFont["hhea"]
@@ -359,7 +359,7 @@ def test_check_override_match_familyname_fullfont():
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
-    assert_PASS(check(ttFont), PASS)
+    assert_PASS(check(ttFont))
 
     # Change the Full Font Name string for Microsoft platform record
     full_font_name = "SourceSansPro-Semibold"
@@ -382,7 +382,7 @@ def test_check_override_trailing_spaces():
     check = CheckTester("name/trailing_spaces", profile=adobefonts_profile)
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
-    assert_PASS(check(ttFont), PASS)
+    assert_PASS(check(ttFont))
 
     # Add a trailing space to the License string for Microsoft platform record
     name_table = ttFont["name"]
