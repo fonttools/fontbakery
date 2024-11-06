@@ -977,7 +977,6 @@ def check_alt_caron(ttFont):
         This check attempts to detect this kind of mistake.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3020",
-    experimental="Since 2024/Jun/10",
     conditions=["is_ttf"],
 )
 def check_gsub_smallcaps_before_ligatures(ttFont):

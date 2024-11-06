@@ -138,7 +138,6 @@ def check_tnum_glyphs_equal_widths(ttFont):
         not intended to be used as tabular numerals.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4440",
-    experimental="Since 2024/Jun/04",
 )
 def check_tabular_kerning(ttFont):
     """Check tabular widths don't have kerning."""

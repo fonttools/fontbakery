@@ -5,7 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-##  0.13.0a4 (2024-Nov-05)
+##  0.13.0a4 (2024-Nov-06)
 ### Noteworthy release notes
   - Thanks Guido Ferreyra for updating the TypeNetwork profile based on its "pending_review" list of recent checks that had been added since his last review (summary of changes listed below). **Other profile owners should consider doing the same.** (PRs #4878 and #4882)
 
@@ -54,6 +54,16 @@ A more detailed list of changes is available in the corresponding milestones for
   - **ufo_unnecessary_fields** (.ufo files)
   - **varfont/unsupported_axes** (Despite discouraging its use, TN accepts fonts with ital axis.)
   - **vtt_volt_data** (Very similar to 'vttclean' check, it may be a good idea to merge them.)
+
+### Previously experimental checks now made effective
+The dates indicate when each check was originally implemented as temporarily experimental.
+
+#### Promoted on Universal profile
+  - 2024/Jun/04: **tabular_kerning**
+  - 2024/Jun/10: **gsub/smallcaps_before_ligatures**
+
+#### Promoted on Opentype profile
+  - 2024/Jun/20: **opentype/cff_ascii_strings**
 
 ### Changes to existing checks
 ### On the Google Fonts profile
