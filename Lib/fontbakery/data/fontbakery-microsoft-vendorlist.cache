@@ -30,12 +30,12 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="Standard" />
-<meta name="git_commit_id" content="f021ff8f1b85c6a59cc86ca1125158c1e55bd69f" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f021ff8f1b85c6a59cc86ca1125158c1e55bd69f/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="486e0e746ccaf047c421c8312e18d8e3c871ba67" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/486e0e746ccaf047c421c8312e18d8e3c871ba67/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="09/12/2024" />
+<meta name="ms.date" content="10/28/2024" />
 <meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -46,8 +46,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-09-13 02:02 AM" />
-<meta name="word_count" content="5011" />
+<meta name="updated_at" content="2024-10-28 03:38 PM" />
+<meta name="word_count" content="5062" />
 <meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
 	
 	<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c0439c36-80e3-415f-8e4c-6951e3f1b136" data-source="generated" />
@@ -57,7 +57,7 @@
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/2812d699-d85f-4a7f-839d-44e218b35d24" data-source="generated" />
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/3f56b378-07a9-4fa1-afe8-9889fdc77628" data-source="generated" />
 	<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/57828563-e363-48c1-ac42-c4d23fb7ba52" data-source="generated" />
-	<meta name="scope" content="typography" /><meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" /><link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical"><title>Registered font vendors - Typography | Microsoft Learn</title><link rel="stylesheet" href="/static/assets/0.4.028446020/styles/site-ltr.css">
+	<meta name="scope" content="typography" /><meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" /><link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical"><title>Registered font vendors - Typography | Microsoft Learn</title><link rel="stylesheet" href="/static/assets/0.4.028616137/styles/site-ltr.css">
 
 	<script id="msdocs-script">
 	var msDocs = {environment: {
@@ -96,11 +96,11 @@
 		functions:{}
 	};
 	</script><script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
-	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script><script src="/static/assets/0.4.028446020/global/deprecation.js"></script><script src="/static/assets/0.4.028446020/scripts/en-us/index-docs.js"></script></head>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script><script src="/static/assets/0.4.028616137/global/deprecation.js"></script><script src="/static/assets/0.4.028616137/scripts/en-us/index-docs.js"></script></head>
 
 <body lang="en-us" dir="ltr">
 	<div class="header-holder has-default-focus">
-		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 padding-xs has-text-centered has-body-background" tabindex="1">Skip to main content</a><div hidden id="cookie-consent-holder" data-test-id="cookie-consent-container"></div>
+		<a href="#main" style="z-index: 1070" class="outline-color-text visually-hidden-until-focused position-fixed inner-focus focus-visible top-0 left-0 right-0 padding-xs text-align-center  has-body-background" tabindex="1">Skip to main content</a><div hidden id="cookie-consent-holder" data-test-id="cookie-consent-container"></div>
 
 		<div id="unsupported-browser" style="
 			background-color: white;
@@ -336,7 +336,7 @@
 
 							<div class="content "><h1 id="registered-font-vendors">Registered font vendors</h1><div class="display-flex justify-content-space-between align-items-center flex-wrap-wrap page-metadata-container">
 										<div class="margin-right-xxs">
-											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr"><li>Article</li><li class="visibility-hidden-visual-diff"><time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-09-12T08:00:00Z" data-article-date-source="calculated">09/12/2024</time>
+											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr"><li>Article</li><li class="visibility-hidden-visual-diff"><time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-10-28T08:00:00Z" data-article-date-source="calculated">10/28/2024</time>
 															</li><li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">8 contributors</button>
 														</li></ul>
@@ -681,6 +681,10 @@
 <td>Monotype Imaging (replaced by MONO)</td>
 </tr>
 <tr>
+<td>AGIA</td>
+<td>LaMagia</td>
+</tr>
+<tr>
 <td>AID</td>
 <td><a href="http://www.artisticimposter.com" data-linktype="external">Artistic Imposter Design</a></td>
 </tr>
@@ -754,7 +758,7 @@
 </tr>
 <tr>
 <td>ALTR</td>
-<td><a href="https://www.brandnewtype.com/" data-linktype="external">alterType</a></td>
+<td>alterType</td>
 </tr>
 <tr>
 <td>ALTS</td>
@@ -855,6 +859,10 @@
 <tr>
 <td>ARFS</td>
 <td><a href="https://andrepeat.com/" data-linktype="external">And Repeat</a></td>
+</tr>
+<tr>
+<td>ARGN</td>
+<td><a href="https://argon.red/" data-linktype="external">Alpha Argon</a></td>
 </tr>
 <tr>
 <td>ARIN</td>
@@ -1116,6 +1124,10 @@
 <td><a href="http://bonezdesignz.com" data-linktype="external">Bonez Designz</a></td>
 </tr>
 <tr>
+<td>BE</td>
+<td><a href="https://www.aboutcontact.com/" data-linktype="external">typografie</a></td>
+</tr>
+<tr>
 <td>BEAR</td>
 <td><a href="https://kara-lynn.info/pages/topo-typo.html" data-linktype="external">Topography Typography</a></td>
 </tr>
@@ -1126,6 +1138,10 @@
 <tr>
 <td>BERT</td>
 <td><a href="http://www.bertholdtypes.com/" data-linktype="external">Berthold</a></td>
+</tr>
+<tr>
+<td>BEST</td>
+<td><a href="https://bespoketype.com/" data-linktype="external">Bespoke Type</a></td>
 </tr>
 <tr>
 <td>BF</td>
@@ -1174,6 +1190,10 @@
 <tr>
 <td>bizf</td>
 <td><a href="http://www.bizfonts.com/" data-linktype="external">Bizfonts.com</a></td>
+</tr>
+<tr>
+<td>BJHa</td>
+<td><a href="https://bjh21.me.uk/" data-linktype="external">Ben Harris</a></td>
 </tr>
 <tr>
 <td>BL</td>
@@ -1257,7 +1277,7 @@
 </tr>
 <tr>
 <td>BNT</td>
-<td><a href="https://www.brandnewtype.com/" data-linktype="external">Brand New Type</a></td>
+<td>Brand New Type</td>
 </tr>
 <tr>
 <td>BOGG</td>
@@ -1286,6 +1306,10 @@
 <tr>
 <td>BORW</td>
 <td>em2 Solutions</td>
+</tr>
+<tr>
+<td>BOUF</td>
+<td>Bou Fonts</td>
 </tr>
 <tr>
 <td>BOYB</td>
@@ -1567,6 +1591,10 @@
 <td>Gutenberg Labo</td>
 </tr>
 <tr>
+<td>CLNT</td>
+<td><a href="https://cloanto.com/kb/13-206" data-linktype="external">Cloanto</a></td>
+</tr>
+<tr>
 <td>CLT</td>
 <td><a href="http://www.collletttivo.it/" data-linktype="external">Collletttivo</a></td>
 </tr>
@@ -1581,6 +1609,10 @@
 <tr>
 <td>CMJK</td>
 <td><a href="http://www.slantedhall.com/type" data-linktype="external">Slanted Hall</a></td>
+</tr>
+<tr>
+<td>CMMA</td>
+<td><a href="https://www.commatype.com/" data-linktype="external">Comma Type</a></td>
 </tr>
 <tr>
 <td>CNTY</td>
@@ -1648,7 +1680,7 @@
 </tr>
 <tr>
 <td>CRRT</td>
-<td><a href="http://www.carrottype.com" data-linktype="external">Carrot Type</a></td>
+<td>Carrot Type</td>
 </tr>
 <tr>
 <td>CSCF</td>
@@ -1830,6 +1862,10 @@
 <td><a href="https://ducksoup.design" data-linktype="external">Duck Soup Design</a></td>
 </tr>
 <tr>
+<td>dmol</td>
+<td><a href="https://www.dmoles.net/" data-linktype="external">David Moles</a></td>
+</tr>
+<tr>
 <td>DNF</td>
 <td><a href="https://derangednekofoundry.design" data-linktype="external">Deranged Neko Foundry</a></td>
 </tr>
@@ -1944,6 +1980,10 @@
 <tr>
 <td>dtpT</td>
 <td><a href="http://www.dtptypes.com/" data-linktype="external">dtpTypes Limited</a></td>
+</tr>
+<tr>
+<td>DTSM</td>
+<td><a href="https://space.bilibili.com/34117449" data-linktype="external">Shimada Mizuki (Ender7 Tina / 岛田水木)</a></td>
 </tr>
 <tr>
 <td>DTZM</td>
@@ -2314,7 +2354,7 @@
 </tr>
 <tr>
 <td>FMLJ</td>
-<td><a href="https://familjen.se/" data-linktype="external">Familjen</a></td>
+<td>Familjen</td>
 </tr>
 <tr>
 <td>FNBD</td>
@@ -2482,7 +2522,7 @@
 </tr>
 <tr>
 <td>FTC</td>
-<td><a href="https://www.behance.net/fridaytype" data-linktype="external">Farida Kurniawan</a></td>
+<td><a href="https://www.behance.net/fridaytype" data-linktype="external">Fridaytype</a></td>
 </tr>
 <tr>
 <td>FTDS</td>
@@ -3775,6 +3815,10 @@
 <td>Linnea Type</td>
 </tr>
 <tr>
+<td>LTRK</td>
+<td>Letterka Type Foundry / Olga Kovalenko</td>
+</tr>
+<tr>
 <td>Ltrm</td>
 <td><a href="http://www.lettermin.com" data-linktype="external">Lettermin type and design</a></td>
 </tr>
@@ -4198,6 +4242,10 @@
 <td><a href="http://www.motaitalic.com" data-linktype="external">Mota Italic</a></td>
 </tr>
 <tr>
+<td>MOTF</td>
+<td>Mostardesign Type Foundry SAS</td>
+</tr>
+<tr>
 <td>MPTG</td>
 <td><a href="https://www.typogama.com/" data-linktype="external">Typogama</a></td>
 </tr>
@@ -4554,7 +4602,7 @@
 </tr>
 <tr>
 <td>NX</td>
-<td><a href="https://www.noxakar.com/" data-linktype="external">Noxakar</a></td>
+<td>Noxakar</td>
 </tr>
 <tr>
 <td>NYCM</td>
@@ -5129,6 +5177,10 @@
 <td><a href="http://www.rampageraptor.com" data-linktype="external">Rampage Raptor</a></td>
 </tr>
 <tr>
+<td>RR</td>
+<td><a href="https://www.philippneumeyer.com/" data-linktype="external">Rüdiger</a></td>
+</tr>
+<tr>
 <td>RR41</td>
 <td><a href="https://www.r41.it/" data-linktype="external">Reber R41</a></td>
 </tr>
@@ -5350,6 +5402,10 @@
 <tr>
 <td>SHOW</td>
 <td><a href="http://www.showmefonts.com/" data-linktype="external">Show Me Fonts</a></td>
+</tr>
+<tr>
+<td>SHRB</td>
+<td>Shorba Type Foundry</td>
 </tr>
 <tr>
 <td>SHRP</td>
@@ -6024,7 +6080,7 @@
 </tr>
 <tr>
 <td>TYME</td>
-<td><a href="http://www.typemefonts.com" data-linktype="external">type me! Font Foundry</a></td>
+<td>type me! Font Foundry</td>
 </tr>
 <tr>
 <td>TYPA</td>
