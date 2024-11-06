@@ -240,7 +240,6 @@ def check_cff_deprecated_operators(cff_analysis):
         All CFF Table top dict string chars should fit into the ASCII range.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4619",
-    experimental="Since 2024/Jun/20",
 )
 def check_cff_ascii_strings(cff_analysis):
     """Does the font's CFF table top dict strings fit into the ASCII range?"""
