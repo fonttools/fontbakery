@@ -4,7 +4,7 @@ from fontbakery.constants import (
     RIBBI_STYLE_NAMES,
     NameID,
 )
-from fontbakery.prelude import check, disable, Message, FAIL, WARN, SKIP
+from fontbakery.prelude import check, disable, Message, PASS, FAIL, WARN, SKIP
 from fontbakery.utils import get_name_entry_strings
 
 
