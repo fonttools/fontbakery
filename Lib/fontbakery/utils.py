@@ -241,6 +241,12 @@ def name_entry_id(name):
     )  # pylint: disable=consider-using-f-string
 
 
+def remove_cmap_entry(font, cp):
+    """Helper method that removes a codepoint entry from all the tables in cmap."""
+    for subtable in font["cmap"].tables:
+        subtable.cmap.pop(cp, None)
+
+
 def get_glyph_name(font: TTFont, codepoint: int) -> Optional[str]:
     next_best_cmap = font.getBestCmap()
 
