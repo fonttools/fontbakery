@@ -51,6 +51,7 @@ PROFILE = {
         "color_cpal_brightness",
         "colorfont_tables",
         "contour_count",  # was temporarily removed
+        "epar",
         "empty_glyph_on_gid1_for_colrv0",
         "family/control_chars",
         "file_size",

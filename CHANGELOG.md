@@ -1,10 +1,18 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0 (a5?) (2024-Nov-08)
+##  Upcoming release: 0.13.0 (2024-Nov-15)
+  - **Users are encouraged to try the pre-releases as we're approaching the date when we'll cut a final v0.13.0 release...**
+
+
+##  Possibly the last pre-release: 0.13.0a5 (2024-Nov-08)
 ### Changes to existing checks
 ### On the Universal profile
   - **[gsub/smallcaps_before_ligatures]:** renamed to **[smallcaps_before_ligatures]** (removing the `gsub/` prefix).
+
+### Migration of checks
+#### Moved from Google Fonts to Universal profile
+  - **[epar]**: The EPAR table is/was a way of expressing common licensing permissions and restrictions in metadata; while almost nothing supported it, Dave Crossland wonders that having this INFO-level check could help make it more popular. (issues #226 and #818)
 
 
 ##  0.13.0a4 (2024-Nov-06)
