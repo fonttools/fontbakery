@@ -2,7 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (a5?) (2024-Nov-08)
-  - ...
+### Changes to existing checks
+### On the Universal profile
+  - **[gsub/smallcaps_before_ligatures]:** renamed to **[smallcaps_before_ligatures]** (removing the `gsub/` prefix).
 
 
 ##  0.13.0a4 (2024-Nov-06)
