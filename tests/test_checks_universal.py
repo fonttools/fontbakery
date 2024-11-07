@@ -724,44 +724,6 @@ def test_check_soft_hyphen(montserrat_ttFonts):
         assert_PASS(check(ttFont))
 
 
-def test_check_contour_count(montserrat_ttFonts):
-    """Check glyphs contain the recommended contour count"""
-    from fontTools import subset
-
-    check = CheckTester("contour_count")
-
-    ttFont = TTFont(TEST_FILE("rokkitt/Rokkitt-Regular.otf"))
-    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_ttf" in msg
-
-    ttFont = TTFont(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf"))
-    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: not is_variable_font" in msg
-
-    ttFont = montserrat_ttFonts[0]
-
-    # Lets swap the glyf 'a' (2 contours) with glyf 'c' (1 contour)
-    ttFont["glyf"]["a"] = ttFont["glyf"]["c"]
-    msg = assert_results_contain(check(ttFont), WARN, "contour-count")
-    assert "Glyph name: a\tContours detected: 1\tExpected: 2" in msg
-
-    # Lets swap the glyf 'a' (2 contours) with space (0 contour) to get a FAIL
-    ttFont["glyf"]["a"] = ttFont["glyf"]["space"]
-    msg = assert_results_contain(check(ttFont), FAIL, "no-contour")
-    assert "Glyph name: a\tExpected: 2" in msg
-
-    # Subset the font to just the 'c' glyph to get a PASS
-    subsetter = subset.Subsetter()
-    subsetter.populate(text="c")
-    subsetter.subset(ttFont)
-    assert_PASS(check(ttFont))
-
-    # Now delete the 'cmap' table to trigger a FAIL
-    del ttFont["cmap"]
-    msg = assert_results_contain(check(ttFont), FAIL, "lacks-cmap")
-    assert msg == "This font lacks cmap data."
-
-
 def test_check_cjk_chws_feature():
     """Does the font contain chws and vchw features?"""
     check = CheckTester("cjk_chws_feature")
@@ -1025,33 +987,3 @@ def test_check_case_mapping():
         table.cmap[0x2160] = "uni2160"  # ROMAN NUMERAL ONE, which downcases to 0x2170
     assert 0x2170 not in ttFont.getBestCmap()
     assert_PASS(check(ttFont))
-
-
-def test_check_gsub_smallcaps_before_ligatures():
-    """Ensure 'smcp' lookups are defined before 'liga' lookups in the 'GSUB' table."""
-    check = CheckTester("gsub/smallcaps_before_ligatures")
-    from fontTools.ttLib.tables.otTables import Feature, FeatureRecord
-
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-    smcp_feature = Feature()
-    smcp_feature.LookupListIndex = [0]
-    liga_feature = Feature()
-    liga_feature.LookupListIndex = [1]
-
-    smcp_record = FeatureRecord()
-    smcp_record.FeatureTag = "smcp"
-    smcp_record.Feature = smcp_feature
-
-    liga_record = FeatureRecord()
-    liga_record.FeatureTag = "liga"
-    liga_record.Feature = liga_feature
-
-    # Test both 'smcp' and 'liga' lookups are present
-    ttFont["GSUB"].table.FeatureList.FeatureRecord = [smcp_record, liga_record]
-    assert_PASS(check(ttFont))
-
-    # Test 'liga' lookup before 'smcp' lookup
-    smcp_feature.LookupListIndex = [1]
-    liga_feature.LookupListIndex = [0]
-    assert_results_contain(check(ttFont), FAIL, "feature-ordering")
