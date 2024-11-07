@@ -68,7 +68,6 @@ PROFILE = {
         ],
         "Google Fonts": [
             "googlefonts/family/equal_codepoint_coverage",
-            # "googlefonts/negative_advance_width",  # See https://github.com/fonttools/fontbakery/pull/1727
             "googlefonts/varfont/bold_wght_coord",
             "googlefonts/varfont/duplicate_instance_names",
             "googlefonts/STAT/axis_order",
