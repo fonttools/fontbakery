@@ -9,6 +9,7 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 
+
 def test_check_smallcaps_before_ligatures():
     """Ensure 'smcp' lookups are defined before 'liga' lookups in the 'GSUB' table."""
     check = CheckTester("smallcaps_before_ligatures")
