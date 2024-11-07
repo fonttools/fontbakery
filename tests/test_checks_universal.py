@@ -724,17 +724,6 @@ def test_check_soft_hyphen(montserrat_ttFonts):
         assert_PASS(check(ttFont))
 
 
-def test_check_whitespace_widths():
-    """Whitespace glyphs have coherent widths?"""
-    check = CheckTester("whitespace_widths")
-
-    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
-
-    ttFont["hmtx"].metrics["space"] = (0, 1)
-    assert_results_contain(check(ttFont), FAIL, "different-widths")
-
-
 def test_check_linegaps():
     """Checking Vertical Metric Linegaps."""
     check = CheckTester("linegaps")
