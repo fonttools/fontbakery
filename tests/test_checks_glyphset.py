@@ -9,6 +9,7 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.status import FAIL
+from fontbakery.utils import remove_cmap_entry
 
 
 def test_check_missing_small_caps_glyphs():
@@ -81,4 +82,36 @@ def test_check_family_control_chars():
         FAIL,
         "unacceptable",
         "with multiple bad fonts that have multiple bad chars...",
+    )
+
+
+def test_check_whitespace_glyphs():
+    """Font contains glyphs for whitespace characters?"""
+    check = CheckTester("whitespace_glyphs")
+
+    # Our reference Mada Regular font is good here:
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    assert_PASS(check(ttFont), "with a good font...")
+
+    # We remove the nbsp char (0x00A0)
+    remove_cmap_entry(ttFont, 0x00A0)
+
+    # And make sure the problem is detected:
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "missing-whitespace-glyph-0x00A0",
+        "with a font lacking a nbsp (0x00A0)...",
+    )
+
+    # restore original Mada Regular font:
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+    # And finally do the same with the space character (0x0020):
+    remove_cmap_entry(ttFont, 0x0020)
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "missing-whitespace-glyph-0x0020",
+        "with a font lacking a space (0x0020)...",
     )
