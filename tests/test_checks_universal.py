@@ -1,4 +1,3 @@
-import os
 import io
 from unittest.mock import patch, MagicMock
 
@@ -13,7 +12,6 @@ from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
     TEST_FILE,
-    MockFont,
 )
 from fontbakery.checks.fontbakery import is_up_to_date
 from fontbakery.testable import Font
