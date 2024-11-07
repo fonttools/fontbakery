@@ -6,6 +6,7 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 
+
 def test_check_family_single_directory():
     """Fonts are all in the same directory."""
     check = CheckTester("family/single_directory")
