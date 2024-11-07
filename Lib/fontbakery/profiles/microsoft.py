@@ -22,6 +22,7 @@ PROFILE = {
         "designspace_has_sources",
         "empty_glyph_on_gid1_for_colrv0",
         "empty_letters",
+        "epar",
         "family/control_chars",
         "file_size",
         "fvar_name_entries",

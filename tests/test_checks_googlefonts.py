@@ -1068,24 +1068,6 @@ def test_check_has_ttfautohint_params(
     assert_results_contain(check(font), expected_status, expected_keyword, reason)
 
 
-@check_id("googlefonts/epar")
-def test_check_epar(check):
-    """EPAR table present in font?"""
-
-    # Our reference Mada Regular lacks an EPAR table:
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-    # So it must emit an INFO message inviting the designers
-    # to learn more about it:
-    assert_results_contain(
-        check(ttFont), INFO, "lacks-EPAR", "with a font lacking an EPAR table..."
-    )
-
-    # add a fake EPAR table to validate the PASS code-path:
-    ttFont["EPAR"] = "foo"
-    assert_PASS(check(ttFont), "with a good font...")
-
-
 @check_id("googlefonts/name/familyname_first_char")
 def test_check_name_familyname_first_char(check):
     """Make sure family name does not begin with a digit."""

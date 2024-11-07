@@ -122,7 +122,6 @@ PROFILE = {
             "googlefonts/canonical_filename",
             "googlefonts/cjk_vertical_metrics",
             "googlefonts/cjk_vertical_metrics_regressions",
-            "googlefonts/epar",
             "googlefonts/font_names",
             "googlefonts/fstype",
             "googlefonts/fvar_instances",
