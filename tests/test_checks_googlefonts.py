@@ -1061,7 +1061,9 @@ def test_check_name_version_format(check):
     ],
 )
 @check_id("googlefonts/has_ttfautohint_params")
-def test_check_has_ttfautohint_params(check, expected_status, expected_keyword, reason, font):
+def test_check_has_ttfautohint_params(
+    check, expected_status, expected_keyword, reason, font
+):
     """Font has ttfautohint params?"""
     assert_results_contain(check(font), expected_status, expected_keyword, reason)
 
@@ -1813,7 +1815,7 @@ def test_check_metadata_filenames(check):
 @check_id("googlefonts/metadata/nameid/family_and_full_names")
 def test_check_metadata_nameid_family_and_full_names(check):
     """METADATA.pb font.name and font.full_name fields
-       match the values declared on the name table?"""
+    match the values declared on the name table?"""
 
     # Our reference Merriweather Regular is known to be good here.
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -1962,7 +1964,7 @@ def test_check_metadata_os2_weightclass(check):
 @check_id("googlefonts/metadata/consistent_repo_urls")
 def test_check_metadata_consistent_repo_urls(check):
     """METADATA.pb: Check URL on copyright string
-       is the same as in repository_url field."""
+    is the same as in repository_url field."""
 
     # The problem was first seen on a project with these diverging values:
     # copyright: "Copyright 2022 The Delicious Handrawn Project Authors
@@ -2914,7 +2916,6 @@ def test_check_vertical_metrics(check, requests_mock):
 
 @check_id("googlefonts/vertical_metrics_regressions")
 def test_check_vertical_metrics_regressions(check):
-
     def new_context():
         context = MockContext(
             testables=[Font(x) for x in cabin_fonts], config={"skip_network": False}
@@ -3057,7 +3058,6 @@ def test_check_vertical_metrics_regressions(check):
 
 @check_id("googlefonts/cjk_vertical_metrics")
 def test_check_cjk_vertical_metrics(check, requests_mock):
-
     requests_mock.get(
         "http://fonts.google.com/metadata/fonts",
         json={
@@ -3200,7 +3200,6 @@ def test_check_cjk_vertical_metrics_regressions(check):
 
 @check_id("googlefonts/fvar_instances")
 def test_check_varfont_instance_coordinates(check, vf_ttFont):
-
     # OpenSans-Roman-VF is correct
     assert_PASS(
         check(vf_ttFont), "with a variable font which has correct instance coordinates."
@@ -3222,7 +3221,6 @@ def test_check_varfont_instance_coordinates(check, vf_ttFont):
 
 @check_id("googlefonts/fvar_instances")
 def test_check_varfont_instance_names(check, vf_ttFont):
-
     assert_PASS(
         check(vf_ttFont), "with a variable font which has correct instance names."
     )
@@ -3266,7 +3264,6 @@ def test_check_varfont_instance_names(check, vf_ttFont):
 
 @check_id("googlefonts/varfont/duplicate_instance_names")
 def test_check_varfont_duplicate_instance_names(check, vf_ttFont):
-
     assert_PASS(
         check(vf_ttFont), "with a variable font which has unique instance names."
     )
@@ -3361,7 +3358,7 @@ def test_check_gf_axisregistry_fvar_axis_defaults(check):
 @check_id("googlefonts/STAT/axisregistry")
 def test_check_STAT_gf_axisregistry(check):
     """Validate STAT particle names and values
-       match the fallback names in GFAxisRegistry."""
+    match the fallback names in GFAxisRegistry."""
     from fontTools.otlLib.builder import buildStatTable
 
     # Our reference varfont, CabinVF,
@@ -3520,7 +3517,7 @@ def test_check_metadata_designer_profiles(check, requests_mock):
 @check_id("googlefonts/description/family_update")
 def test_check_description_family_update(check, requests_mock):
     """On a family update, the DESCRIPTION.en_us.html
-       file should ideally also be updated."""
+    file should ideally also be updated."""
 
     font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
     ABEEZEE_DESC = (
@@ -3708,7 +3705,7 @@ def test_check_metadata_unsupported_subsets(check):
 @check_id("googlefonts/metadata/category_hints")
 def test_check_metadata_category_hints(check):
     """Check if category on METADATA.pb matches
-       what can be inferred from the family name."""
+    what can be inferred from the family name."""
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with a familyname without any of the keyword hints...")
