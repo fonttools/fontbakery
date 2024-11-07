@@ -11,7 +11,7 @@ from fontbakery.status import WARN
 
 def test_check_gpos_kerning_info():
     """Does GPOS table have kerning information?"""
-    check = CheckTester("opentype/gpos_kerning_info")
+    check = CheckTester("gpos_kerning_info")
 
     # Our reference Mada Regular is known to have kerning-info
     # exclusively on an extension subtable
@@ -51,10 +51,6 @@ def test_check_gpos_kerning_info():
         check(ttFont), WARN, "lacks-kern-info", "with a font lacking a GPOS table..."
     )
 
-
-def test_check_gpos_kerning_info_monospaced_font():
-    """Does GPOS table have kerning information in a monospaced font?"""
-    check = CheckTester("opentype/gpos_kerning_info")
     # Even though our reference Overpass Mono lacks kerning info
     # it is a monospaced font and this is expected:
     font = TEST_FILE("overpassmono/OverpassMono-Regular-post-edit.subset.ttf")
