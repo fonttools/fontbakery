@@ -14,6 +14,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Moved from Google Fonts to Universal profile
   - **[epar]**: The EPAR table is/was a way of expressing common licensing permissions and restrictions in metadata; while almost nothing supported it, Dave Crossland wonders that having this INFO-level check could help make it more popular. (issues #226 and #818)
 
+#### Moved from OpenType to Universal profile
+  - **[gpos_kerning_info]:** The OpenType spec does not require that GPOS kerning to be present. (issue #4886)
+
 
 ##  0.13.0a4 (2024-Nov-06)
 ### Noteworthy release notes

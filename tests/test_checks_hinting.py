@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import FAIL, INFO
 
 
-def test_check_hinting_impact():
+@check_id("hinting_impact")
+def test_check_hinting_impact(check):
     """Show hinting filesize impact."""
-    check = CheckTester("hinting_impact")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_results_contain(
@@ -24,9 +24,9 @@ def test_check_hinting_impact():
     )
 
 
-def test_check_integer_ppem_if_hinted():
+@check_id("integer_ppem_if_hinted")
+def test_check_integer_ppem_if_hinted(check):
     """PPEM must be an integer on hinted fonts."""
-    check = CheckTester("integer_ppem_if_hinted")
 
     # Our reference Merriweather Regular is hinted, but does not set
     # the "rounded PPEM" flag (bit 3 on the head table flags) as
@@ -42,9 +42,9 @@ def test_check_integer_ppem_if_hinted():
     assert_PASS(check(ttFont), "with a good font...")
 
 
-def test_check_smart_dropout():
+@check_id("smart_dropout")
+def test_check_smart_dropout(check):
     """Ensure smart dropout control is enabled in "prep" table instructions."""
-    check = CheckTester("smart_dropout")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
 
@@ -60,9 +60,9 @@ def test_check_smart_dropout():
     assert_results_contain(check(ttFont), FAIL, "lacks-smart-dropout")
 
 
-def test_check_vttclean():
+@check_id("vttclean")
+def test_check_vttclean(check):
     """There must not be VTT Talk sources in the font."""
-    check = CheckTester("vttclean")
 
     good_font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(good_font))

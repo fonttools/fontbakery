@@ -23,7 +23,6 @@ PROFILE = {
             "opentype/gdef_spacing_marks",
             "opentype/glyf_non_transformed_duplicate_components",
             "opentype/glyf_unused_data",
-            "opentype/gpos_kerning_info",
             "opentype/italic_angle",
             "opentype/italic_axis_in_stat",
             "opentype/italic_axis_in_stat_is_boolean",

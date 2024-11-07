@@ -46,6 +46,7 @@ PROFILE = {
             "freetype_rasterizer",
             "glyf_nested_components",
             "gpos7",
+            "gpos_kerning_info",
             "hinting_impact",
             "inconsistencies_between_fvar_stat",
             "integer_ppem_if_hinted",
