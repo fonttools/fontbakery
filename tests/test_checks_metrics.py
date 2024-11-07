@@ -1,7 +1,7 @@
 from fontTools.ttLib import TTFont
 import pytest
 
-from fontbakery.status import FAIL
+from fontbakery.status import FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
@@ -178,3 +178,33 @@ def test_check_caps_vertically_centered():
     # FIXME: review this test-case
     # ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
     # assert_results_contain(check(ttFont), WARN, "vertical-metrics-not-centered")
+
+
+def test_check_linegaps():
+    """Checking Vertical Metric Linegaps."""
+    check = CheckTester("linegaps")
+
+    # Our reference Mada Regular is know to be bad here.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+    # But just to be sure, we first explicitely set
+    # the values we're checking for:
+    ttFont["hhea"].lineGap = 1
+    ttFont["OS/2"].sTypoLineGap = 0
+    assert_results_contain(check(ttFont), WARN, "hhea", "with non-zero hhea.lineGap...")
+
+    # Then we run the check with a non-zero OS/2.sTypoLineGap:
+    ttFont["hhea"].lineGap = 0
+    ttFont["OS/2"].sTypoLineGap = 1
+    assert_results_contain(
+        check(ttFont), WARN, "OS/2", "with non-zero OS/2.sTypoLineGap..."
+    )
+
+    # And finaly we fix it by making both values equal to zero:
+    ttFont["hhea"].lineGap = 0
+    ttFont["OS/2"].sTypoLineGap = 0
+    assert_PASS(check(ttFont))
+
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont["OS/2"]
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
