@@ -2433,46 +2433,6 @@ def test_condition_familyname_with_spaces():
     )
 
 
-# Temporarily disabling this code-test since check/negative_advance_width itself
-# is disabled waiting for an implementation targetting the
-# actual root cause of the issue.
-@pytest.mark.skip("FIXME: https://github.com/fonttools/fontbakery/issues/1727")
-@check_id("googlefonts/negative_advance_width")
-def test_check_negative_advance_width(check):
-    """Check that advance widths cannot be inferred as negative."""
-
-    # Our reference Cabin Regular is good
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-
-    # So it must PASS
-    assert_PASS(check(ttFont), "with a good font...")
-
-    # We then change values in an arbitrary glyph
-    # in the glyf table in order to cause the problem:
-    glyphName = "J"
-    coords = ttFont["glyf"].glyphs[glyphName].coordinates
-
-    # FIXME:
-    # Note: I thought this was the proper way to induce the
-    # issue, but now I think I'll need to look more
-    # carefully at sample files providedby MarcFoley
-    # to see what's really at play here and how the relevant
-    # data is encoded into the affected OpenType files.
-    rightSideX = coords[-3][0]
-    # leftSideX: (make right minus left a negative number)
-    coords[-4][0] = rightSideX + 1
-
-    ttFont["glyf"].glyphs[glyphName].coordinates = coords
-
-    # and now this should FAIL:
-    assert_results_contain(
-        check(ttFont),
-        FAIL,
-        "bad-coordinates",
-        "with bad coordinates on the glyf table...",
-    )
-
-
 @check_id("googlefonts/varfont/generate_static")
 def test_check_varfont_generate_static(check):
     """Check a static ttf can be generated from a variable font."""
