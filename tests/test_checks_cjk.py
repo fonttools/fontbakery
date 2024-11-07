@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import WARN, SKIP
 
 
-def test_check_cjk_not_enough_glyphs():
+@check_id("cjk_not_enough_glyphs")
+def test_check_cjk_not_enough_glyphs(check):
     "Any CJK font should contain at least a minimal set of 150 CJK characters."
-    check = CheckTester("cjk_not_enough_glyphs")
 
     ttFont = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
     assert_PASS(check(ttFont))

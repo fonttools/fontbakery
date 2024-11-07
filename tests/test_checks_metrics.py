@@ -1,12 +1,12 @@
 from fontTools.ttLib import TTFont
 import pytest
 
+from conftest import check_id
 from fontbakery.status import FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
@@ -50,9 +50,9 @@ def mada_ttFonts():
     return [TTFont(path) for path in paths]
 
 
-def test_check_family_win_ascent_and_descent(mada_ttFonts):
+@check_id("family/win_ascent_and_descent")
+def test_check_family_win_ascent_and_descent(check, mada_ttFonts):
     """Checking OS/2 usWinAscent & usWinDescent."""
-    check = CheckTester("family/win_ascent_and_descent")
 
     # Mada Regular is know to be bad
     # single font input
@@ -62,6 +62,7 @@ def test_check_family_win_ascent_and_descent(mada_ttFonts):
         "OS/2.usWinAscent value should be"
         " equal or greater than 880, but got 776 instead"
     )
+
     # multi font input
     check_results = check(mada_ttFonts)
     message = assert_results_contain([check_results[0]], FAIL, "ascent")
@@ -101,9 +102,9 @@ def test_check_family_win_ascent_and_descent(mada_ttFonts):
     assert message == "Font file lacks OS/2 table"
 
 
-def test_check_os2_metrics_match_hhea():
+@check_id("os2_metrics_match_hhea")
+def test_check_os2_metrics_match_hhea(check):
     """Checking OS/2 Metrics match hhea Metrics."""
-    check = CheckTester("os2_metrics_match_hhea")
 
     # Our reference Mada Regular is know to be faulty here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -142,8 +143,9 @@ def test_check_os2_metrics_match_hhea():
     assert message == "Mada-Black.ttf lacks a 'OS/2' table."
 
 
-def test_check_family_vertical_metrics(montserrat_ttFonts):
-    check = CheckTester("family/vertical_metrics")
+@check_id("family/vertical_metrics")
+def test_check_family_vertical_metrics(check, montserrat_ttFonts):
+    """Each font in a family must have the same set of vertical metrics values."""
 
     assert_PASS(check(montserrat_ttFonts), "with multiple good fonts...")
 
@@ -164,10 +166,9 @@ def test_check_family_vertical_metrics(montserrat_ttFonts):
     assert msg == "Montserrat-BoldItalic.ttf lacks a 'hhea' table."
 
 
-def test_check_caps_vertically_centered():
+@check_id("caps_vertically_centered")
+def test_check_caps_vertically_centered(check):
     """Check if uppercase glyphs are vertically centered."""
-
-    check = CheckTester("caps_vertically_centered")
 
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont))
@@ -180,9 +181,9 @@ def test_check_caps_vertically_centered():
     # assert_results_contain(check(ttFont), WARN, "vertical-metrics-not-centered")
 
 
-def test_check_linegaps():
+@check_id("linegaps")
+def test_check_linegaps(check):
     """Checking Vertical Metric Linegaps."""
-    check = CheckTester("linegaps")
 
     # Our reference Mada Regular is know to be bad here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))

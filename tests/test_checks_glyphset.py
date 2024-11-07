@@ -1,21 +1,15 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.checks.glyphset import can_shape
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     portable_path,
     TEST_FILE,
 )
 from fontbakery.status import FAIL
 from fontbakery.utils import remove_cmap_entry
-
-
-def test_check_missing_small_caps_glyphs():
-    """Ensure small caps glyphs are available."""
-    # check = CheckTester("missing_small_caps_glyphs")
-    # TODO: Implement-me!
 
 
 def test_can_shape():
@@ -26,9 +20,9 @@ def test_can_shape():
     assert not can_shape(font, "こんにちは")
 
 
-def test_check_render_own_name():
+@check_id("render_own_name")
+def test_check_render_own_name(check):
     """Check family directory name."""
-    check = CheckTester("render_own_name")
 
     ttFont = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
     assert_PASS(check(ttFont))
@@ -37,9 +31,9 @@ def test_check_render_own_name():
     assert_results_contain(check(ttFont), FAIL, "render-own-name")
 
 
-def test_check_family_control_chars():
+@check_id("family/control_chars")
+def test_check_family_control_chars(check):
     """Are any unacceptable control characters present in font files?"""
-    check = CheckTester("family/control_chars")
 
     good_font = TEST_FILE(
         "bad_character_set/control_chars/FontbakeryTesterCCGood-Regular.ttf"
@@ -85,9 +79,9 @@ def test_check_family_control_chars():
     )
 
 
-def test_check_whitespace_glyphs():
+@check_id("whitespace_glyphs")
+def test_check_whitespace_glyphs(check):
     """Font contains glyphs for whitespace characters?"""
-    check = CheckTester("whitespace_glyphs")
 
     # Our reference Mada Regular font is good here:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))

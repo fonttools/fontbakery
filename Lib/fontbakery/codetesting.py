@@ -33,7 +33,6 @@ from fontbakery.profile import Section
 from fontbakery.testable import FILE_TYPES, CheckRunContext, Font, GlyphsFile, Ufo
 from fontbakery.result import Subresult
 
-
 PATH_TEST_DATA = "data/test/"
 PATH_TEST_DATA_GLYPHS_FILES = f"{PATH_TEST_DATA}glyphs_files/"
 

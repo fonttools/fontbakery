@@ -1,17 +1,17 @@
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.profiles import googlefonts
 from fontbakery.status import FAIL, WARN
 
 
-def test_check_file_size():
+# This needs a profile to inject configuration data
+@check_id("file_size", profile=googlefonts)
+def test_check_file_size(check):
     """Ensure files are not too large."""
-    # This needs a profile to inject configuration data
-    check = CheckTester("file_size", profile=googlefonts)
 
     assert_PASS(check(TEST_FILE("mada/Mada-Regular.ttf")))
 

@@ -5,12 +5,12 @@ from fontTools.ttLib import TTFont
 import pytest
 import requests
 
+from conftest import check_id
 from fontbakery.status import INFO, WARN, FAIL, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.checks.fontbakery import is_up_to_date
@@ -89,9 +89,9 @@ def test_style_condition():
         assert Font(TEST_FILE(filename)).style == expected
 
 
-def test_check_valid_glyphnames():
+@check_id("valid_glyphnames")
+def test_check_valid_glyphnames(check):
     """Glyph names are all valid?"""
-    check = CheckTester("valid_glyphnames")
 
     # We start with a good font file:
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
@@ -153,9 +153,9 @@ def test_check_valid_glyphnames():
     assert cff2_skip_msg in message
 
 
-def test_check_unique_glyphnames():
+@check_id("unique_glyphnames")
+def test_check_unique_glyphnames(check):
     """Font contains unique glyph names?"""
-    check = CheckTester("unique_glyphnames")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -200,9 +200,9 @@ def test_check_unique_glyphnames():
     assert cff2_skip_msg in message
 
 
-def test_check_ttx_roundtrip():
+@check_id("ttx_roundtrip")
+def test_check_ttx_roundtrip(check):
     """Checking with fontTools.ttx"""
-    check = CheckTester("ttx_roundtrip")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(font))
@@ -214,9 +214,9 @@ def test_check_ttx_roundtrip():
     #                        FAIL, None) # FIXME: This needs a message keyword
 
 
-def test_check_name_trailing_spaces():
+@check_id("name/trailing_spaces")
+def test_check_name_trailing_spaces(check):
     """Name table entries must not have trailing spaces."""
-    check = CheckTester("name/trailing_spaces")
 
     # Our reference Cabin Regular is known to be good:
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -237,9 +237,9 @@ def test_check_name_trailing_spaces():
         ttFont["name"].names[i].string = good_string.encode(entry.getEncoding())
 
 
-def test_check_ots():
+@check_id("ots")
+def test_check_ots(check):
     """Checking with ots-sanitize."""
-    check = CheckTester("ots")
 
     fine_font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(fine_font))
@@ -307,6 +307,8 @@ class MockDistribution:
 @patch("requests.get")
 def test_check_fontbakery_version(mock_get, mock_installed):
     """Check if FontBakery is up-to-date"""
+    from fontbakery.codetesting import CheckTester
+
     check = CheckTester("fontbakery_version")
 
     # Any of the test fonts can be used here.
@@ -352,6 +354,8 @@ def test_check_fontbakery_version(mock_get, mock_installed):
 @pytest.mark.xfail(reason="Often happens until rebasing")
 def test_check_fontbakery_version_live_apis():
     """Check if FontBakery is up-to-date. (No API-mocking edition)"""
+    from fontbakery.codetesting import CheckTester
+
     check = CheckTester("fontbakery_version")
 
     # Any of the test fonts can be used here.
@@ -364,11 +368,10 @@ def test_check_fontbakery_version_live_apis():
     assert_PASS(check(font))
 
 
-def test_check_mandatory_glyphs():
+@check_id("mandatory_glyphs")
+def test_check_mandatory_glyphs(check):
     """Font contains the first few mandatory glyphs (.null or NULL, CR and space)?"""
     from fontTools import subset
-
-    check = CheckTester("mandatory_glyphs")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -409,9 +412,9 @@ def test_check_mandatory_glyphs():
     )
 
 
-def test_check_required_tables():
+@check_id("required_tables")
+def test_check_required_tables(check):
     """Font contains all required tables ?"""
-    check = CheckTester("required_tables")
 
     REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"]
 
@@ -554,9 +557,9 @@ def test_check_required_tables():
         del ttFont.reader.tables[optional]
 
 
-def test_check_unwanted_tables():
+@check_id("unwanted_tables")
+def test_check_unwanted_tables(check):
     """Are there unwanted tables ?"""
-    check = CheckTester("unwanted_tables")
 
     unwanted_tables = [
         "DSIG",
@@ -611,9 +614,9 @@ def test_glyph_has_ink():
     assert glyph_has_ink(cff2_test_font, "space") is False
 
 
-def test_check_rupee():
+@check_id("rupee")
+def test_check_rupee(check):
     """Ensure indic fonts have the Indian Rupee Sign glyph."""
-    check = CheckTester("rupee")
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
@@ -633,9 +636,9 @@ def test_check_rupee():
     assert msg == "Please add a glyph for Indian Rupee Sign (₹) at codepoint U+20B9."
 
 
-def test_check_unreachable_glyphs():
+@check_id("unreachable_glyphs")
+def test_check_unreachable_glyphs(check):
     """Check font contains no unreachable glyphs."""
-    check = CheckTester("unreachable_glyphs")
 
     font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_PASS(check(font))
@@ -703,9 +706,9 @@ def test_check_unreachable_glyphs():
     assert_PASS(check(ttFont))
 
 
-def test_check_soft_hyphen(montserrat_ttFonts):
+@check_id("soft_hyphen")
+def test_check_soft_hyphen(check, montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
-    check = CheckTester("soft_hyphen")
     for ttFont in montserrat_ttFonts:
         # Montserrat has a softhyphen...
         assert_results_contain(check(ttFont), WARN, "softhyphen")
@@ -714,9 +717,9 @@ def test_check_soft_hyphen(montserrat_ttFonts):
         assert_PASS(check(ttFont))
 
 
-def test_check_case_mapping():
+@check_id("case_mapping")
+def test_check_case_mapping(check):
     """Ensure the font supports case swapping for all its glyphs."""
-    check = CheckTester("case_mapping")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     # Glyph present in the font                  Missing case-swapping counterpart
