@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import FAIL, WARN
 
 
-def test_check_empty_letters():
+@check_id("empty_letters")
+def test_check_empty_letters(check):
     """Validate that empty glyphs are found."""
-    check = CheckTester("empty_letters")
 
     # this OT-CFF font has inked glyphs for all letters
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))

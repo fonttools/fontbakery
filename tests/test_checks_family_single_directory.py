@@ -1,15 +1,16 @@
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_family_single_directory():
+@check_id("family/single_directory")
+def test_check_family_single_directory(check):
     """Fonts are all in the same directory."""
-    check = CheckTester("family/single_directory")
+
     same_dir = [
         TEST_FILE("cabin/Cabin-Thin.ttf"),
         TEST_FILE("cabin/Cabin-ExtraLight.ttf"),

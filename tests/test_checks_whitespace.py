@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_whitespace_widths():
+@check_id("whitespace_widths")
+def test_check_whitespace_widths(check):
     """Whitespace glyphs have coherent widths?"""
-    check = CheckTester("whitespace_widths")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -20,9 +20,9 @@ def test_check_whitespace_widths():
     assert_results_contain(check(ttFont), FAIL, "different-widths")
 
 
-def test_check_whitespace_ink():
+@check_id("whitespace_ink")
+def test_check_whitespace_ink(check):
     """Whitespace glyphs have ink?"""
-    check = CheckTester("whitespace_ink")
 
     test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(test_font))

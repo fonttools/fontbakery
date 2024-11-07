@@ -1,15 +1,15 @@
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_freetype_rasterizer():
+@check_id("freetype_rasterizer")
+def test_check_freetype_rasterizer(check):
     """Ensure that the font can be rasterized by FreeType."""
-    check = CheckTester("freetype_rasterizer")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with a good font...")

@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import FAIL
 
 
-def test_check_glyf_nested_components():
+@check_id("glyf_nested_components")
+def test_check_glyf_nested_components(check):
     """Ensure glyphs do not have components which are themselves components."""
-    check = CheckTester("glyf_nested_components")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))

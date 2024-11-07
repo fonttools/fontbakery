@@ -3,9 +3,9 @@ import sys
 
 import pytest
 
-from conftest import ImportRaiser, remove_import_raiser
+from conftest import check_id, ImportRaiser, remove_import_raiser
 
-from fontbakery.codetesting import TEST_FILE, assert_results_contain, CheckTester
+from fontbakery.codetesting import TEST_FILE, assert_results_contain
 from fontbakery.status import ERROR
 
 
@@ -25,9 +25,9 @@ def test_extra_needed_exit(monkeypatch):
     not shutil.which("FontValidator"),
     reason="FontValidator is not installed on your system",
 )
-def test_check_fontvalidator():
+@check_id("fontvalidator")
+def test_check_fontvalidator(check):
     """MS Font Validator checks"""
-    check = CheckTester("fontvalidator")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     config = {}

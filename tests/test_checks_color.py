@@ -1,17 +1,17 @@
 from fontTools.ttLib import newTable, TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import FAIL, WARN
 
 
-def test_check_colorfont_tables():
+@check_id("colorfont_tables")
+def test_check_colorfont_tables(check):
     """Ensure font has the expected color font tables."""
-    check = CheckTester("colorfont_tables")
 
     ttFont = TTFont(TEST_FILE("color_fonts/noto-glyf_colr_1.ttf"))
     assert "SVG " not in ttFont.keys()
@@ -72,9 +72,9 @@ def test_check_colorfont_tables():
     assert_PASS(check(ttFont), "with a good font without SVG or COLR tables.")
 
 
-def test_check_color_cpal_brightness():
+@check_id("color_cpal_brightness")
+def test_check_color_cpal_brightness(check):
     """Color layers should have a minimum brightness"""
-    check = CheckTester("color_cpal_brightness")
 
     font = TEST_FILE("color_fonts/AmiriQuranColored_too_dark.ttf")
     assert_results_contain(
@@ -88,7 +88,8 @@ def test_check_color_cpal_brightness():
     assert_PASS(check(font), "with a colrv0 font with good layer colors")
 
 
-def test_check_empty_glyph_on_gid1_for_colrv0():
+@check_id("empty_glyph_on_gid1_for_colrv0")
+def test_check_empty_glyph_on_gid1_for_colrv0(check):
     """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
 
     def gid1area(ttFont):
@@ -100,8 +101,6 @@ def test_check_empty_glyph_on_gid1_for_colrv0():
         gid1 = glyphSet[glyphOrder[1]]
         gid1.draw(pen)
         return pen.value
-
-    check = CheckTester("empty_glyph_on_gid1_for_colrv0")
 
     ttFont = TTFont(TEST_FILE("color_fonts/AmiriQuranColored_gid1_notempty.ttf"))
     assert (

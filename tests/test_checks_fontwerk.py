@@ -1,16 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_vendor_id():
-    check = CheckTester("fontwerk/vendor_id")
+@check_id("fontwerk/vendor_id")
+def test_check_vendor_id(check):
+    """Checking OS/2 achVendID."""
 
     ttFont = TTFont(TEST_FILE("abeezee/ABeeZee-Italic.ttf"))
     assert_results_contain(
@@ -21,8 +22,9 @@ def test_check_vendor_id():
     assert_PASS(check(ttFont), "'WERK' is correct.")
 
 
-def test_check_style_linking():
-    check = CheckTester("fontwerk/style_linking")
+@check_id("fontwerk/style_linking")
+def test_check_style_linking(check):
+    """Checking style linking entries"""
 
     font = TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf")
     assert_results_contain(check(font), FAIL, "style-linking-issue")
@@ -34,9 +36,9 @@ def test_check_style_linking():
     assert_PASS(check(font), "Style linking looks good.")
 
 
-def test_check_names_match_default_fvar():
+@check_id("fontwerk/names_match_default_fvar")
+def test_check_names_match_default_fvar(check):
     """Checking if names match default fvar."""
-    check = CheckTester("fontwerk/names_match_default_fvar")
 
     from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 

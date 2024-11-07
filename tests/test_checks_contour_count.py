@@ -1,11 +1,11 @@
 from fontTools.ttLib import TTFont
 import pytest
 
+from conftest import check_id
 from fontbakery.status import FAIL, WARN, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
@@ -35,11 +35,10 @@ def montserrat_ttFonts():
     return [TTFont(path) for path in paths]
 
 
-def test_check_contour_count(montserrat_ttFonts):
+@check_id("contour_count")
+def test_check_contour_count(check, montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
     from fontTools import subset
-
-    check = CheckTester("contour_count")
 
     ttFont = TTFont(TEST_FILE("rokkitt/Rokkitt-Regular.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
