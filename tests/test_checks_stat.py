@@ -6,7 +6,7 @@ from fontbakery.codetesting import (
     CheckTester,
     TEST_FILE,
 )
-from fontbakery.status import FAIL
+from fontbakery.status import FAIL, SKIP
 
 
 def test_check_inconsistencies_between_fvar_stat():
@@ -29,3 +29,43 @@ def test_check_inconsistencies_between_fvar_stat():
     assert_results_contain(
         check(ttFont), FAIL, "missing-fvar-instance-axis-value", "missing in STAT table"
     )
+
+
+def test_check_STAT_in_statics():
+    """Checking STAT table on static fonts."""
+    check = CheckTester("STAT_in_statics")
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert "Unfulfilled Conditions: has_STAT_table" in msg
+
+    ttFont = TTFont(TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert "Unfulfilled Conditions: not is_variable_font" in msg
+
+    # Remove fvar table to make FontBakery think it is dealing with a static font
+    del ttFont["fvar"]
+
+    # We know that our reference RobotoSerif varfont (which the check is induced
+    # here to think it is a static font) has multiple records per design axis in its
+    # STAT table:
+    msg = assert_results_contain(check(ttFont), FAIL, "multiple-STAT-entries")
+    assert "The STAT table has more than a single entry for the 'opsz' axis (5)" in msg
+
+    # Remove all entries except the very first one:
+    stat = ttFont["STAT"].table
+    stat.AxisValueArray.AxisCount = 1
+    stat.AxisValueArray.AxisValue = [stat.AxisValueArray.AxisValue[0]]
+
+    # It should PASS now
+    assert_PASS(check(ttFont))
+
+
+def test_check_STAT_strings():
+    check = CheckTester("STAT_strings")
+
+    good = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))
+    assert_PASS(check(good))
+
+    bad = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Italic.ttf"))
+    assert_results_contain(check(bad), FAIL, "bad-italic")
