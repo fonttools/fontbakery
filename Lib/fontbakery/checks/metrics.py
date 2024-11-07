@@ -342,7 +342,6 @@ def check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
 
     from copy import deepcopy
-    from fontTools.pens.boundsPen import BoundsPen
 
     ttFont_copy = deepcopy(ttFont)
 
