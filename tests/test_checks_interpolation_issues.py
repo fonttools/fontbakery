@@ -1,17 +1,18 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import SKIP, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_interpolation_issues():
+@check_id("interpolation_issues")
+def test_check_interpolation_issues(check):
     """Detect any interpolation issues in the font."""
-    check = CheckTester("interpolation_issues")
+
     # With a good font
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
     assert_PASS(check(ttFont))

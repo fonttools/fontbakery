@@ -1,16 +1,17 @@
 from fontTools.ttLib import TTFont
+
+from conftest import check_id
 from fontbakery.status import WARN, SKIP
 from fontbakery.codetesting import (
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
     assert_PASS,
 )
 
 
-def test_check_outline_alignment_miss():
+@check_id("outline_alignment_miss")
+def test_check_outline_alignment_miss(check):
     """Check for misaligned points."""
-    check = CheckTester("outline_alignment_miss")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -21,12 +22,11 @@ def test_check_outline_alignment_miss():
     # TODO: PASS
 
 
-def test_check_outline_alignment_os2_old():
+@check_id("outline_alignment_miss")
+def test_check_outline_alignment_os2_old(check):
     """Test that the outline_alignment_miss check works when
     the OS/2 table has a low version and does not have the
     xHeight and CapHeight fields that are normally used."""
-
-    check = CheckTester("outline_alignment_miss")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
@@ -56,9 +56,9 @@ def test_check_outline_alignment_os2_old():
     message = assert_results_contain(check(ttFont), WARN, "skip-cap-x-height-alignment")
 
 
-def test_check_outline_short_segments():
+@check_id("outline_short_segments")
+def test_check_outline_short_segments(check):
     """Check for short segments."""
-    check = CheckTester("outline_short_segments")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -75,9 +75,9 @@ def test_check_outline_short_segments():
     assert "Unfulfilled Conditions: not is_variable_font" in msg
 
 
-def test_check_outline_colinear_vectors():
+@check_id("outline_colinear_vectors")
+def test_check_outline_colinear_vectors(check):
     """Check for colinear line segments."""
-    check = CheckTester("outline_colinear_vectors")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -95,9 +95,9 @@ def test_check_outline_colinear_vectors():
     assert "Unfulfilled Conditions: not is_variable_font" in msg
 
 
-def test_check_outline_jaggy_segments():
+@check_id("outline_jaggy_segments")
+def test_check_outline_jaggy_segments(check):
     """Check for jaggy segments."""
-    check = CheckTester("outline_jaggy_segments")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -116,9 +116,9 @@ def test_check_outline_jaggy_segments():
     assert "Unfulfilled Conditions: not is_variable_font" in msg
 
 
-def test_check_outline_semi_vertical():
+@check_id("outline_semi_vertical")
+def test_check_outline_semi_vertical(check):
     """Check for semi-vertical/semi-horizontal lines."""
-    check = CheckTester("outline_semi_vertical")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -138,9 +138,9 @@ def test_check_outline_semi_vertical():
     assert "Unfulfilled Conditions: not is_italic" in msg
 
 
-def test_check_outline_direction():
+@check_id("outline_direction")
+def test_check_outline_direction(check):
     """Check for misaligned points."""
-    check = CheckTester("outline_direction")
 
     font = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
@@ -156,9 +156,8 @@ def test_check_outline_direction():
     assert_PASS(check(font))
 
 
-def test_check_overlapping_path_segments():
-    check = CheckTester("overlapping_path_segments")
-
+@check_id("overlapping_path_segments")
+def test_check_overlapping_path_segments(check):
     # Check a font that contains overlapping path segments
     filename = TEST_FILE("overlapping_path_segments/Figtree[wght].ttf")
     results = check(filename)

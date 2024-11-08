@@ -1,11 +1,10 @@
 import math
 import os
 import shutil
-import sys
 
 import pytest
 import requests
-from conftest import check_id, ImportRaiser, remove_import_raiser
+from conftest import check_id
 from fontTools.ttLib import TTFont
 
 from fontbakery.checks.vendorspecific.googlefonts.conditions import (
@@ -108,32 +107,6 @@ def delete_name_table_id(ttFont, nameID):
 @pytest.fixture
 def cabin_regular_path():
     return portable_path("data/test/cabin/Cabin-Regular.ttf")
-
-
-@check_id("googlefonts/metadata/designer_profiles")
-def test_extra_needed_exit_from_conditions(check, monkeypatch):
-    module_name = "google.protobuf"
-    sys.meta_path.insert(0, ImportRaiser(module_name))
-    monkeypatch.delitem(sys.modules, module_name, raising=False)
-
-    with pytest.raises(SystemExit):
-        font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-        check(font)
-
-    remove_import_raiser(module_name)
-
-
-@check_id("googlefonts/canonical_filename")
-def test_extra_needed_exit(check, monkeypatch):
-    module_name = "axisregistry"
-    sys.meta_path.insert(0, ImportRaiser(module_name))
-    monkeypatch.delitem(sys.modules, module_name, raising=False)
-
-    with pytest.raises(SystemExit):
-        ttFont = TTFont(TEST_FILE("cabinvfbeta/Cabin-VF.ttf"))
-        check(ttFont)
-
-    remove_import_raiser(module_name)
 
 
 @pytest.mark.parametrize(

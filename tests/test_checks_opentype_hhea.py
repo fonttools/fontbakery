@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import WARN, FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_maxadvancewidth():
+@check_id("opentype/maxadvancewidth")
+def test_check_maxadvancewidth(check):
     """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
-    check = CheckTester("opentype/maxadvancewidth")
 
     ttFont = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -24,9 +24,9 @@ def test_check_maxadvancewidth():
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
 
 
-def test_check_caretslope():
+@check_id("opentype/caret_slope")
+def test_check_caretslope(check):
     """Check hhea.caretSlopeRise and hhea.caretSlopeRun"""
-    check = CheckTester("opentype/caret_slope")
 
     # PASS
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))

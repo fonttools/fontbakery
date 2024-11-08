@@ -2,18 +2,18 @@ import io
 
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import WARN, FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_glyf_unused_data():
+@check_id("opentype/glyf_unused_data")
+def test_check_glyf_unused_data(check):
     """Is there any unused data at the end of the glyf table?"""
-    check = CheckTester("opentype/glyf_unused_data")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     ttFont = TTFont(font)
@@ -39,9 +39,9 @@ def test_check_glyf_unused_data():
     assert_results_contain(check(ttFont), FAIL, "missing-data")
 
 
-def test_check_points_out_of_bounds():
+@check_id("opentype/points_out_of_bounds")
+def test_check_points_out_of_bounds(check):
     """Check for points out of bounds."""
-    check = CheckTester("opentype/points_out_of_bounds")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_results_contain(check(ttFont), WARN, "points-out-of-bounds")
@@ -50,11 +50,10 @@ def test_check_points_out_of_bounds():
     assert_PASS(check(ttFont))
 
 
-def test_check_glyf_non_transformed_duplicate_components():
-    """
-    Check glyphs do not have duplicate components which have the same x,y coordinates.
-    """
-    check = CheckTester("opentype/glyf_non_transformed_duplicate_components")
+@check_id("opentype/glyf_non_transformed_duplicate_components")
+def test_check_glyf_non_transformed_duplicate_components(check):
+    """Check glyphs do not have duplicate components
+    which have the same x,y coordinates."""
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))

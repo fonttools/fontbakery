@@ -2,12 +2,12 @@ from io import BytesIO
 from fontTools.ttLib import TTFont, newTable
 from fontTools.ttLib.tables import otTables
 
+from conftest import check_id
 from fontbakery.status import WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
@@ -40,9 +40,9 @@ def add_gdef_table(font, class_defs):
     gdef.table.GlyphClassDef = class_def_table
 
 
-def test_check_gdef_spacing_marks():
+@check_id("opentype/gdef_spacing_marks")
+def test_check_gdef_spacing_marks(check):
     """Are some spacing glyphs in GDEF mark glyph class?"""
-    check = CheckTester("opentype/gdef_spacing_marks")
 
     ttFont = get_test_font()
     assert_SKIP(check(ttFont), "if a font lacks a GDEF table...")
@@ -60,9 +60,9 @@ def test_check_gdef_spacing_marks():
     )
 
 
-def test_check_gdef_mark_chars():
+@check_id("opentype/gdef_mark_chars")
+def test_check_gdef_mark_chars(check):
     """Are some mark characters not in in GDEF mark glyph class?"""
-    check = CheckTester("opentype/gdef_mark_chars")
 
     ttFont = get_test_font()
     assert_SKIP(check(ttFont), "if a font lacks a GDEF table...")
@@ -79,9 +79,9 @@ def test_check_gdef_mark_chars():
     assert_PASS(check(ttFont), "when properly declared...")
 
 
-def test_check_gdef_non_mark_chars():
+@check_id("opentype/gdef_non_mark_chars")
+def test_check_gdef_non_mark_chars(check):
     """Are some non-mark characters in GDEF mark glyph class spacing?"""
-    check = CheckTester("opentype/gdef_non_mark_chars")
 
     ttFont = get_test_font()
     assert_SKIP(check(ttFont), "if a font lacks a GDEF table...")

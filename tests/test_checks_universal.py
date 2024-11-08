@@ -352,11 +352,9 @@ def test_check_fontbakery_version(mock_get, mock_installed):
 
 
 @pytest.mark.xfail(reason="Often happens until rebasing")
-def test_check_fontbakery_version_live_apis():
+@check_id("fontbakery_version")
+def test_check_fontbakery_version_live_apis(check):
     """Check if FontBakery is up-to-date. (No API-mocking edition)"""
-    from fontbakery.codetesting import CheckTester
-
-    check = CheckTester("fontbakery_version")
 
     # Any of the test fonts can be used here.
     # The check requires a 'font' argument but it doesn't do anything with it.

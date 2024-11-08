@@ -2,11 +2,11 @@ import pytest
 
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import WARN, FAIL, PASS
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
     MockFont,
 )
@@ -28,9 +28,9 @@ def mada_ttFonts():
     return [TTFont(path) for path in mada_fonts]
 
 
-def test_check_family_underline_thickness(mada_ttFonts):
+@check_id("opentype/family/underline_thickness")
+def test_check_family_underline_thickness(check, mada_ttFonts):
     """Fonts have consistent underline thickness ?"""
-    check = CheckTester("opentype/family/underline_thickness")
 
     # We start with our reference Mada font family,
     # which we know has the same value of post.underlineThickness
@@ -57,9 +57,9 @@ def test_check_family_underline_thickness(mada_ttFonts):
     )
 
 
-def test_check_post_table_version():
+@check_id("opentype/post_table_version")
+def test_check_post_table_version(check):
     """Font has acceptable post format version table?"""
-    check = CheckTester("opentype/post_table_version")
 
     # create mock fonts for post format testing
 
@@ -143,9 +143,9 @@ def test_check_post_table_version():
     assert_PASS(check(mock_cff_post_3), reason="with a post 3 CFF mock font.")
 
 
-def test_check_italic_angle():
+@check_id("opentype/italic_angle")
+def test_check_italic_angle(check):
     """Checking post.italicAngle value."""
-    check = CheckTester("opentype/italic_angle")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 

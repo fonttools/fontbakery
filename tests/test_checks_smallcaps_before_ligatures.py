@@ -1,18 +1,18 @@
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables.otTables import Feature, FeatureRecord
 
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_smallcaps_before_ligatures():
+@check_id("smallcaps_before_ligatures")
+def test_check_smallcaps_before_ligatures(check):
     """Ensure 'smcp' lookups are defined before 'liga' lookups in the 'GSUB' table."""
-    check = CheckTester("smallcaps_before_ligatures")
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 

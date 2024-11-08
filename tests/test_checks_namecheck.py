@@ -1,7 +1,7 @@
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import INFO
@@ -10,9 +10,9 @@ from fontbakery.status import INFO
 # TODO: Maybe skip this code-test if the service is offline?
 # we could use pytest.mak.skipif here together with a piece of code that
 # verifies whether or not the namecheck.fontdata.com website is online at the moment
-def test_check_fontdata_namecheck():
+@check_id("fontdata_namecheck")
+def test_check_fontdata_namecheck(check):
     """Familyname is unique according to namecheck.fontdata.com"""
-    check = CheckTester("fontdata_namecheck")
 
     TIMEOUT_MSG = (
         "Sometimes namecheck.fontdata.com times out"

@@ -1,12 +1,12 @@
 from fontTools.ttLib import TTFont
 import pytest
 
+from conftest import check_id
 from fontbakery.status import WARN, FAIL, PASS, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
     MockFont,
 )
@@ -28,9 +28,9 @@ def mada_ttFonts():
     return [TTFont(path) for path in mada_fonts]
 
 
-def test_check_family_equal_font_versions(mada_ttFonts):
+@check_id("opentype/family/equal_font_versions")
+def test_check_family_equal_font_versions(check, mada_ttFonts):
     """Make sure all font files have the same version value."""
-    check = CheckTester("opentype/family/equal_font_versions")
 
     # our reference Mada family is know to be good here.
     assert_PASS(check(mada_ttFonts), "with good family.")
@@ -48,9 +48,9 @@ def test_check_family_equal_font_versions(mada_ttFonts):
     )
 
 
-def test_check_unitsperem():
+@check_id("opentype/unitsperem")
+def test_check_unitsperem(check):
     """Checking unitsPerEm value is reasonable."""
-    check = CheckTester("opentype/unitsperem")
 
     # In this test we'll forge several known-good and known-bad values.
     # We'll use Mada Regular to start with:
@@ -123,9 +123,9 @@ def test_parse_version_string():
             parse_version_string(string)
 
 
-def test_check_font_version():
+@check_id("opentype/font_version")
+def test_check_font_version(check):
     """Checking font version fields."""
-    check = CheckTester("opentype/font_version")
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
     test_font = TTFont(test_font_path)
@@ -175,9 +175,9 @@ def test_check_font_version():
     assert_results_contain(check(test_font), FAIL, "missing")
 
 
-def test_check_mac_style():
+@check_id("opentype/mac_style")
+def test_check_mac_style(check):
     """Checking head.macStyle value."""
-    check = CheckTester("opentype/mac_style")
     from fontbakery.constants import MacStyle
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))

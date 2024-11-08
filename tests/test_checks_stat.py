@@ -12,6 +12,7 @@ from fontbakery.status import FAIL, SKIP
 @check_id("inconsistencies_between_fvar_stat")
 def test_check_inconsistencies_between_fvar_stat(check):
     """Checking if STAT entries matches fvar and vice versa."""
+
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
     assert_PASS(check(ttFont), "with a good varfont...")
 
@@ -34,6 +35,7 @@ def test_check_inconsistencies_between_fvar_stat(check):
 @check_id("STAT_in_statics")
 def test_check_STAT_in_statics(check):
     """Checking STAT table on static fonts."""
+
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
     assert "Unfulfilled Conditions: has_STAT_table" in msg
@@ -63,6 +65,7 @@ def test_check_STAT_in_statics(check):
 @check_id("STAT_strings")
 def test_check_STAT_strings(check):
     """Check correctness of STAT table strings"""
+
     good = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))
     assert_PASS(check(good))
 

@@ -1,11 +1,11 @@
 import pytest
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import FAIL
@@ -18,9 +18,8 @@ from fontbakery.status import FAIL
         "ubuntusans/UbuntuSans[wdth,wght].ttf",
     ],
 )
-def test_tnum_glyphs_equal_widths(font_path):
-    check = CheckTester("tnum_glyphs_equal_widths")
-
+@check_id("tnum_glyphs_equal_widths")
+def test_tnum_glyphs_equal_widths(check, font_path):
     # Pass condition
     font = TTFont(TEST_FILE(font_path))
     assert_PASS(check(font))
@@ -28,9 +27,9 @@ def test_tnum_glyphs_equal_widths(font_path):
     # TODO: This should also have a FAIL test-case!
 
 
-def test_check_tabular_kerning():
+@check_id("tabular_kerning")
+def test_check_tabular_kerning(check):
     """Check tabular widths don't have kerning."""
-    check = CheckTester("tabular_kerning")
 
     # Has no numerals at all
     font = TEST_FILE("BadGrades/BadGrades-VF.ttf")

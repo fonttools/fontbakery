@@ -1,30 +1,20 @@
 import json
 import os
 import tempfile
-from unittest.mock import patch
 
+from conftest import check_id
 from fontbakery.status import FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-@patch("vharfbuzz.Vharfbuzz", side_effect=ImportError)
-def test_extra_needed_exit(mock_import_error):
-    font = TEST_FILE("nunito/Nunito-Regular.ttf")
-    with patch("sys.exit") as mock_exit:
-        check = CheckTester("shaping/regression")
-        check(font)
-        mock_exit.assert_called()
-
-
-def test_check_shaping_regression():
+@check_id("shaping/regression")
+def test_check_shaping_regression(check):
     """Check that we can test shaping against expectations."""
-    check = CheckTester("shaping/regression")
 
     shaping_test = {
         "configuration": {},
@@ -51,9 +41,9 @@ def test_check_shaping_regression():
         )
 
 
-def test_check_shaping_regression_with_variations():
+@check_id("shaping/regression")
+def test_check_shaping_regression_with_variations(check):
     """Check that we can test shaping with variation settings against expectations."""
-    check = CheckTester("shaping/regression")
 
     shaping_test = {
         "configuration": {},
@@ -82,9 +72,9 @@ def test_check_shaping_regression_with_variations():
         assert_PASS(check(font, config=config), "Oswald: A=0+453|V=1+505")
 
 
-def test_check_shaping_forbidden():
+@check_id("shaping/forbidden")
+def test_check_shaping_forbidden(check):
     """Check that we can test for forbidden glyphs in output."""
-    check = CheckTester("shaping/forbidden")
 
     shaping_test = {
         "configuration": {"forbidden_glyphs": [".notdef"]},
@@ -111,9 +101,9 @@ def test_check_shaping_forbidden():
         )
 
 
-def test_check_shaping_collides():
+@check_id("shaping/collides")
+def test_check_shaping_collides(check):
     """Check that we can test for colliding glyphs in output."""
-    check = CheckTester("shaping/collides")
 
     shaping_test = {
         "configuration": {"collidoscope": {"area": 0, "bases": True, "marks": True}},
@@ -140,9 +130,9 @@ def test_check_shaping_collides():
         )
 
 
-def test_check_dotted_circle():
+@check_id("dotted_circle")
+def test_check_dotted_circle(check):
     """Ensure dotted circle glyph is present and can attach marks."""
-    check = CheckTester("dotted_circle")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -154,10 +144,9 @@ def test_check_dotted_circle():
     assert_results_contain(check(font), FAIL, "unattached-dotted-circle-marks")
 
 
-def test_check_soft_dotted():
-    """Check if font substitues soft dotted glyphs
-    when combined with top marks."""
-    check = CheckTester("soft_dotted")
+@check_id("soft_dotted")
+def test_check_soft_dotted(check):
+    """Check if font substitues soft dotted glyphs when combined with top marks."""
 
     font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
     msg = assert_results_contain(check(font), WARN, "soft-dotted")

@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_sfnt_version():
+@check_id("sfnt_version")
+def test_check_sfnt_version(check):
     """Ensure that the font has the proper sfntVersion value."""
-    check = CheckTester("sfnt_version")
 
     # Valid TrueType font; the check must PASS.
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
