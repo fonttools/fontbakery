@@ -16,7 +16,7 @@
 import os
 import subprocess
 import sys
-from typing import Text, Optional
+from typing import Optional
 from copy import deepcopy
 
 from fontTools.pens.basePen import BasePen
@@ -378,7 +378,7 @@ def download_file(url):
             )
 
 
-def cff_glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
+def cff_glyph_has_ink(font: TTFont, glyph_name: str) -> bool:
     if "CFF2" in font:
         top_dict = font["CFF2"].cff.topDictIndex[0]
     else:
@@ -392,7 +392,7 @@ def cff_glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
     return False
 
 
-def ttf_glyph_has_ink(font: TTFont, name: Text) -> bool:
+def ttf_glyph_has_ink(font: TTFont, name: str) -> bool:
     glyph = font["glyf"].glyphs[name]
     glyph.expand(font["glyf"])
 
@@ -458,7 +458,7 @@ def compute_unicoderange_bits(ttFont):
     return result
 
 
-def glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
+def glyph_has_ink(font: TTFont, glyph_name: str) -> bool:
     """Checks if specified glyph has any ink.
 
     That is, that it has at least one defined contour associated.
