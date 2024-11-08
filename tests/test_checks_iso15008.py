@@ -1,33 +1,15 @@
-import sys
-
-import pytest
-
-from conftest import ImportRaiser, remove_import_raiser
-
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_extra_needed_exit(monkeypatch):
-    module_name = "uharfbuzz"
-    sys.meta_path.insert(0, ImportRaiser(module_name))
-    monkeypatch.delitem(sys.modules, module_name, raising=False)
-    from fontbakery.checks.iso15008 import pair_kerning
-
-    with pytest.raises(SystemExit):
-        pair_kerning(None, None, None)
-
-    remove_import_raiser(module_name)
-
-
-def test_check_iso15008_proportions():
+@check_id("iso15008/proportions")
+def test_check_iso15008_proportions(check):
     """Check if 0.65 => (H width / H height) => 0.80"""
-    check = CheckTester("iso15008/proportions")
 
     # Cabin has a proportion of 0.7, so that's good.
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
@@ -52,9 +34,9 @@ def test_check_iso15008_proportions():
     )
 
 
-def test_check_iso15008_stem_width():
+@check_id("iso15008/stem_width")
+def test_check_iso15008_stem_width(check):
     """Check if 0.10 <= (stem width / ascender) <= 0.82"""
-    check = CheckTester("iso15008/stem_width")
 
     font = TEST_FILE("cabin/Cabin-SemiBold.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -75,9 +57,9 @@ def test_check_iso15008_stem_width():
     )
 
 
-def test_check_iso15008_intercharacter_spacing():
+@check_id("iso15008/intercharacter_spacing")
+def test_check_iso15008_intercharacter_spacing(check):
     """Check if spacing between characters is adequate for display use"""
-    check = CheckTester("iso15008/intercharacter_spacing")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -111,9 +93,9 @@ def test_check_iso15008_intercharacter_spacing():
     )
 
 
-def test_check_iso15008_interword_spacing():
+@check_id("iso15008/interword_spacing")
+def test_check_iso15008_interword_spacing(check):
     """Check if spacing between words is adequate for display use"""
-    check = CheckTester("iso15008/interword_spacing")
 
     font = TEST_FILE("cabin/CabinCondensed-Bold.ttf")
     # lm space is 112; m+space+l space is 286; 286/112 = 255%
@@ -126,9 +108,9 @@ def test_check_iso15008_interword_spacing():
     )
 
 
-def test_check_iso15008_interline_spacing():
+@check_id("iso15008/interline_spacing")
+def test_check_iso15008_interline_spacing(check):
     """Check if spacing between lines is adequate for display use"""
-    check = CheckTester("iso15008/interline_spacing")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with a good font...")

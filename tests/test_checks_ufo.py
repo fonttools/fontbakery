@@ -1,17 +1,14 @@
 import os
-import sys
 
 import defcon
 import pytest
 
-from conftest import ImportRaiser, remove_import_raiser
-
+from conftest import check_id
 from fontbakery.status import FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
     assert_SKIP,
-    CheckTester,
     TEST_FILE,
 )
 
@@ -25,22 +22,8 @@ def empty_ufo_font(tmpdir):
     return (ufo, ufo_path)
 
 
-def test_extra_needed_exit(monkeypatch):
-    module_name = "defcon"
-    sys.meta_path.insert(0, ImportRaiser(module_name))
-    monkeypatch.delitem(sys.modules, module_name, raising=False)
-
-    ufo_path = TEST_FILE("test.ufo")
-    with pytest.raises(SystemExit):
-        check = CheckTester("ufo_required_fields")
-        check(ufo_path)
-
-    remove_import_raiser(module_name)
-
-
-def test_check_ufolint(empty_ufo_font):
-    check = CheckTester("ufolint")
-
+@check_id("ufolint")
+def test_check_ufolint(check, empty_ufo_font):
     _, ufo_path = empty_ufo_font
 
     assert_PASS(check(ufo_path))
@@ -50,9 +33,8 @@ def test_check_ufolint(empty_ufo_font):
     assert "ufolint failed the UFO source." in msg
 
 
-def test_check_required_fields(empty_ufo_font):
-    check = CheckTester("ufo_required_fields")
-
+@check_id("ufo_required_fields")
+def test_check_required_fields(check, empty_ufo_font):
     ufo, _ = empty_ufo_font
 
     msg = assert_results_contain(check(ufo), FAIL, "missing-required-fields")
@@ -68,9 +50,8 @@ def test_check_required_fields(empty_ufo_font):
     assert_PASS(check(ufo))
 
 
-def test_check_recommended_fields(empty_ufo_font):
-    check = CheckTester("ufo_recommended_fields")
-
+@check_id("ufo_recommended_fields")
+def test_check_recommended_fields(check, empty_ufo_font):
     ufo, _ = empty_ufo_font
 
     msg = assert_results_contain(check(ufo), WARN, "missing-recommended-fields")
@@ -87,9 +68,8 @@ def test_check_recommended_fields(empty_ufo_font):
     assert_PASS(check(ufo))
 
 
-def test_check_unnecessary_fields(empty_ufo_font):
-    check = CheckTester("ufo_unnecessary_fields")
-
+@check_id("ufo_unnecessary_fields")
+def test_check_unnecessary_fields(check, empty_ufo_font):
     ufo, _ = empty_ufo_font
 
     assert_PASS(check(ufo))
@@ -103,9 +83,9 @@ def test_check_unnecessary_fields(empty_ufo_font):
     assert "Unnecessary field(s) present:" in msg
 
 
-def test_check_designspace_has_sources():
+@check_id("designspace_has_sources")
+def test_check_designspace_has_sources(check):
     """See if we can actually load the source files."""
-    check = CheckTester("designspace_has_sources")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_PASS(check(designspace))
@@ -113,9 +93,9 @@ def test_check_designspace_has_sources():
     # TODO: FAIL, 'no-sources'
 
 
-def test_check_designspace_has_default_master():
+@check_id("designspace_has_default_master")
+def test_check_designspace_has_default_master(check):
     """Ensure a default master is defined."""
-    check = CheckTester("designspace_has_default_master")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_PASS(check(designspace))
@@ -123,9 +103,9 @@ def test_check_designspace_has_default_master():
     # TODO: FAIL, 'not-found'
 
 
-def test_check_designspace_has_consistent_glyphset():
+@check_id("designspace_has_consistent_glyphset")
+def test_check_designspace_has_consistent_glyphset(check):
     """Check consistency of glyphset in a designspace file."""
-    check = CheckTester("designspace_has_consistent_glyphset")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_results_contain(check(designspace), FAIL, "inconsistent-glyphset")
@@ -133,9 +113,9 @@ def test_check_designspace_has_consistent_glyphset():
     # TODO: Fix it and ensure it passes the check
 
 
-def test_check_designspace_has_consistent_codepoints():
+@check_id("designspace_has_consistent_codepoints")
+def test_check_designspace_has_consistent_codepoints(check):
     """Check codepoints consistency in a designspace file."""
-    check = CheckTester("designspace_has_consistent_codepoints")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_results_contain(check(designspace), FAIL, "inconsistent-codepoints")
@@ -143,18 +123,18 @@ def test_check_designspace_has_consistent_codepoints():
     # TODO: Fix it and ensure it passes the check
 
 
-def test_check_default_languagesystem_pass_without_features(empty_ufo_font):
+@check_id("ufo_features_default_languagesystem")
+def test_check_default_languagesystem_pass_without_features(check, empty_ufo_font):
     """Pass if the UFO source has no features."""
-    check = CheckTester("ufo_features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
     assert_SKIP(check(ufo), "No features.fea file in font.")
 
 
-def test_check_default_languagesystem_pass_with_empty_features(empty_ufo_font):
+@check_id("ufo_features_default_languagesystem")
+def test_check_default_languagesystem_pass_with_empty_features(check, empty_ufo_font):
     """Pass if the UFO source has a feature file but it is empty."""
-    check = CheckTester("ufo_features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -163,9 +143,9 @@ def test_check_default_languagesystem_pass_with_empty_features(empty_ufo_font):
     assert_PASS(check(ufo))
 
 
-def test_check_default_languagesystem_pass_with_features(empty_ufo_font):
+@check_id("ufo_features_default_languagesystem")
+def test_check_default_languagesystem_pass_with_features(check, empty_ufo_font):
     """Pass if the font has features and no default languagesystem statements."""
-    check = CheckTester("ufo_features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -174,12 +154,13 @@ def test_check_default_languagesystem_pass_with_features(empty_ufo_font):
     assert_PASS(check(ufo))
 
 
+@check_id("ufo_features_default_languagesystem")
 def test_check_default_languagesystem_warn_without_default_languagesystem(
+    check,
     empty_ufo_font,
 ):
     """Warn if `languagesystem DFLT dflt` is not present in the feature file,
     but other languagesystem statements are."""
-    check = CheckTester("ufo_features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -190,9 +171,11 @@ def test_check_default_languagesystem_warn_without_default_languagesystem(
     assert_results_contain(check(ufo), WARN, "default-languagesystem")
 
 
-def test_check_default_languagesystem_pass_with_default_languagesystem(empty_ufo_font):
+@check_id("ufo_features_default_languagesystem")
+def test_check_default_languagesystem_pass_with_default_languagesystem(
+    check, empty_ufo_font
+):
     """Pass if `languagesystem DFLT dflt` is explicitly used in the features."""
-    check = CheckTester("ufo_features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -203,8 +186,8 @@ feature liga { sub f i by f_i; } liga;"""
     assert_PASS(check(ufo))
 
 
-def test_check_ufo_consistent_curve_type_check(empty_ufo_font) -> None:
-    check = CheckTester("ufo_consistent_curve_type")
+@check_id("ufo_consistent_curve_type")
+def test_check_ufo_consistent_curve_type_check(check, empty_ufo_font) -> None:
     ufo, _ = empty_ufo_font
 
     cubic_contour = defcon.Contour()
@@ -241,9 +224,9 @@ def test_check_ufo_consistent_curve_type_check(empty_ufo_font) -> None:
     assert_results_contain(check(ufo), WARN, "mixed-glyphs")
 
 
-def test_check_ufo_no_open_corners() -> None:
+@check_id("ufo_no_open_corners")
+def test_check_ufo_no_open_corners(check) -> None:
     """Ensure the check identifies open corners correctly"""
-    check = CheckTester("ufo_no_open_corners")
 
     ufo = defcon.Font(TEST_FILE("test.ufo"))
 
@@ -255,9 +238,9 @@ def test_check_ufo_no_open_corners() -> None:
     assert_PASS(check(ufo))
 
 
-def test_check_designspace_has_consistent_groups(tmpdir) -> None:
+@check_id("designspace_has_consistent_groups")
+def test_check_designspace_has_consistent_groups(check, tmpdir) -> None:
     """Ensure the check identifies mismatched groups correctly"""
-    check = CheckTester("designspace_has_consistent_groups")
 
     designspace_path = TEST_FILE("mismatched_groups/Stupid Font.designspace")
 

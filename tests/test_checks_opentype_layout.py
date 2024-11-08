@@ -1,16 +1,17 @@
 from fontTools.ttLib import TTFont
+
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_layout_valid_feature_tags():
+@check_id("opentype/layout_valid_feature_tags")
+def test_check_layout_valid_feature_tags(check):
     """Does the font have any invalid feature tags?"""
-    check = CheckTester("opentype/layout_valid_feature_tags")
 
     # test font with valid, registered feature tags.
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
@@ -27,9 +28,9 @@ def test_check_layout_valid_feature_tags():
     assert_results_contain(check(font), FAIL, "bad-feature-tags")
 
 
-def test_check_layout_valid_script_tags():
+@check_id("opentype/layout_valid_script_tags")
+def test_check_layout_valid_script_tags(check):
     """Does the font have any invalid script tags?"""
-    check = CheckTester("opentype/layout_valid_script_tags")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     assert_PASS(check(font))
@@ -38,9 +39,9 @@ def test_check_layout_valid_script_tags():
     assert_results_contain(check(font), FAIL, "bad-script-tags")
 
 
-def test_check_layout_valid_language_tags():
+@check_id("opentype/layout_valid_language_tags")
+def test_check_layout_valid_language_tags(check):
     """Does the font have any invalid language tags?"""
-    check = CheckTester("opentype/layout_valid_language_tags")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     assert_PASS(check(font))

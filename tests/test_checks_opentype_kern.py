@@ -1,18 +1,18 @@
 from fontTools.ttLib import TTFont, newTable
 from fontTools.ttLib.tables._k_e_r_n import KernTable_format_0, KernTable_format_unkown
 
+from conftest import check_id
 from fontbakery.status import INFO, FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_kern_table():
+@check_id("opentype/kern_table")
+def test_check_kern_table(check):
     """Is there a "kern" table declared in the font?"""
-    check = CheckTester("opentype/kern_table")
 
     # Our reference Mada Regular is known to be good
     # (does not have a 'kern' table):

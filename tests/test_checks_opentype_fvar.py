@@ -1,20 +1,20 @@
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._f_v_a_r import Axis
 
+from conftest import check_id
 from fontbakery.status import FAIL, WARN, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
     MockFont,
 )
 
 
-def test_check_varfont_regular_wght_coord():
+@check_id("opentype/varfont/regular_wght_coord")
+def test_check_varfont_regular_wght_coord(check):
     """The variable font 'wght' (Weight) axis coordinate
     must be 400 on the 'Regular' instance."""
-    check = CheckTester("opentype/varfont/regular_wght_coord")
 
     # Our reference varfont CabinVFBeta.ttf
     # has a good Regular:wght coordinate
@@ -55,10 +55,10 @@ def test_check_varfont_regular_wght_coord():
     assert "Unfulfilled Conditions: is_variable_font, has_wght_axis" in msg
 
 
-def test_check_varfont_regular_wdth_coord():
+@check_id("opentype/varfont/regular_wdth_coord")
+def test_check_varfont_regular_wdth_coord(check):
     """The variable font 'wdth' (Width) axis coordinate
     must be 100 on the 'Regular' instance."""
-    check = CheckTester("opentype/varfont/regular_wdth_coord")
 
     # Our reference varfont CabinVFBeta.ttf
     # has a good Regular:wdth coordinate
@@ -99,10 +99,10 @@ def test_check_varfont_regular_wdth_coord():
     assert "Unfulfilled Conditions: is_variable_font, has_wdth_axis" in msg
 
 
-def test_check_varfont_regular_slnt_coord():
+@check_id("opentype/varfont/regular_slnt_coord")
+def test_check_varfont_regular_slnt_coord(check):
     """The variable font 'slnt' (Slant) axis coordinate
     must be zero on the 'Regular' instance."""
-    check = CheckTester("opentype/varfont/regular_slnt_coord")
 
     # Our reference varfont, CabinVFBeta.ttf, lacks a 'slnt' variation axis.
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
@@ -148,10 +148,10 @@ def test_check_varfont_regular_slnt_coord():
     assert "Unfulfilled Conditions: is_variable_font, has_slnt_axis" in msg
 
 
-def test_check_varfont_regular_ital_coord():
+@check_id("opentype/varfont/regular_ital_coord")
+def test_check_varfont_regular_ital_coord(check):
     """The variable font 'ital' (Italic) axis coordinate
     must be zero on the 'Regular' instance."""
-    check = CheckTester("opentype/varfont/regular_ital_coord")
 
     # Our reference varfont, CabinVFBeta.ttf, lacks an 'ital' variation axis.
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
@@ -197,10 +197,10 @@ def test_check_varfont_regular_ital_coord():
     assert "Unfulfilled Conditions: is_variable_font, has_ital_axis" in msg
 
 
-def test_check_varfont_regular_opsz_coord():
+@check_id("opentype/varfont/regular_opsz_coord")
+def test_check_varfont_regular_opsz_coord(check):
     """The variable font 'opsz' (Optical Size) axis coordinate
     should be between 10 and 16 on the 'Regular' instance."""
-    check = CheckTester("opentype/varfont/regular_opsz_coord")
 
     # Our reference varfont, CabinVFBeta.ttf, lacks an 'opsz' variation axis.
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
@@ -247,10 +247,10 @@ def test_check_varfont_regular_opsz_coord():
     assert msg == ('"Regular" instance not present.')
 
 
-def test_check_varfont_wght_valid_range():
+@check_id("opentype/varfont/wght_valid_range")
+def test_check_varfont_wght_valid_range(check):
     """The variable font 'wght' (Weight) axis coordinate
     must be within spec range of 1 to 1000 on all instances."""
-    check = CheckTester("opentype/varfont/wght_valid_range")
 
     # Our reference varfont CabinVFBeta.ttf
     # has all instances within the 1-1000 range
@@ -268,10 +268,10 @@ def test_check_varfont_wght_valid_range():
     )
 
 
-def test_check_varfont_wdth_valid_range():
+@check_id("opentype/varfont/wdth_valid_range")
+def test_check_varfont_wdth_valid_range(check):
     """The variable font 'wdth' (Width) axis coordinate
     must be strictly greater than zero, per the spec."""
-    check = CheckTester("opentype/varfont/wdth_valid_range")
 
     # Our reference varfont CabinVFBeta.ttf
     # has all instances within the 1-1000 range
@@ -289,10 +289,10 @@ def test_check_varfont_wdth_valid_range():
     )
 
 
-def test_check_varfont_slnt_range():
+@check_id("opentype/varfont/slnt_range")
+def test_check_varfont_slnt_range(check):
     """The variable font 'slnt' (Slant) axis coordinate
     specifies positive values in its range?"""
-    check = CheckTester("opentype/varfont/slnt_range")
 
     # Our reference Inter varfont has a bad slnt range
     ttFont = TTFont("data/test/varfont/inter/Inter[slnt,wght].ttf")
@@ -314,9 +314,9 @@ def test_check_varfont_slnt_range():
     assert_PASS(check(ttFont))
 
 
-def test_check_varfont_foundry_defined_tag_name():
+@check_id("opentype/varfont/foundry_defined_tag_name")
+def test_check_varfont_foundry_defined_tag_name(check):
     "Validate foundry-defined design-variation axis tag names."
-    check = CheckTester("opentype/varfont/foundry_defined_tag_name")
 
     # Our reference varfont CabinVFBeta.ttf has registered tags.
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
@@ -353,10 +353,10 @@ def test_check_varfont_foundry_defined_tag_name():
     )
 
 
-def test_check_varfont_valid_axis_nameid():
+@check_id("opentype/varfont/valid_axis_nameid")
+def test_check_varfont_valid_axis_nameid(check):
     """The value of axisNameID used by each VariationAxisRecord must
     be greater than 255 and less than 32768."""
-    check = CheckTester("opentype/varfont/valid_axis_nameid")
 
     # The axisNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -397,10 +397,10 @@ def test_check_varfont_valid_axis_nameid():
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
 
 
-def test_check_varfont_valid_subfamily_nameid():
+@check_id("opentype/varfont/valid_subfamily_nameid")
+def test_check_varfont_valid_subfamily_nameid(check):
     """The value of subfamilyNameID used by each InstanceRecord must
     be 2, 17, or greater than 255 and less than 32768."""
-    check = CheckTester("opentype/varfont/valid_subfamily_nameid")
 
     # The subfamilyNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -449,10 +449,10 @@ def test_check_varfont_valid_subfamily_nameid():
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
 
 
-def test_check_varfont_valid_postscript_nameid():
+@check_id("opentype/varfont/valid_postscript_nameid")
+def test_check_varfont_valid_postscript_nameid(check):
     """The value of postScriptNameID used by each InstanceRecord must
     be 6, 0xFFFF, or greater than 255 and less than 32768."""
-    check = CheckTester("opentype/varfont/valid_postscript_nameid")
 
     # The postScriptNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -501,11 +501,11 @@ def test_check_varfont_valid_postscript_nameid():
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
 
 
-def test_check_varfont_valid_default_instance_nameids():
+@check_id("opentype/varfont/valid_default_instance_nameids")
+def test_check_varfont_valid_default_instance_nameids(check):
     """If an instance record is included for the default instance, then the instance's
     subfamilyName string should match the string of nameID 2 or nameID 17, and the
     instance's postScriptName string should match the string of nameID 6."""
-    check = CheckTester("opentype/varfont/valid_default_instance_nameids")
 
     # The font's 'Regular' instance record has the same coordinates as the default
     # instance, and the record's string matches the string of nameID 2.
@@ -576,11 +576,11 @@ def test_check_varfont_valid_default_instance_nameids():
     assert_results_contain(check(ttFont_1), FAIL, "lacks-table")
 
 
-def test_check_varfont_same_size_instance_records():
+@check_id("opentype/varfont/same_size_instance_records")
+def test_check_varfont_same_size_instance_records(check):
     """All of the instance records in a given font must have the same size,
     with all either including or omitting the postScriptNameID field. If the value
     is 0xFFFF it means that no PostScript name is provided for the instance."""
-    check = CheckTester("opentype/varfont/same_size_instance_records")
 
     # The value of postScriptNameID is 0xFFFF for all the instance records in the
     # reference varfont
@@ -615,10 +615,10 @@ def test_check_varfont_same_size_instance_records():
     assert msg == "Font has no instance records."
 
 
-def test_check_varfont_distinct_instance_records():
+@check_id("opentype/varfont/distinct_instance_records")
+def test_check_varfont_distinct_instance_records(check):
     """All of the instance records in a font should have distinct coordinates
     and distinct subfamilyNameID and postScriptName ID values."""
-    check = CheckTester("opentype/varfont/distinct_instance_records")
 
     # All of the instance records in the reference varfont are unique
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -651,9 +651,9 @@ def test_check_varfont_distinct_instance_records():
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
 
 
-def test_check_varfont_family_axis_ranges():
+@check_id("opentype/varfont/family_axis_ranges")
+def test_check_varfont_family_axis_ranges(check):
     """Check that family axis ranges are indentical"""
-    check = CheckTester("opentype/varfont/family_axis_ranges")
 
     ttFonts = [
         TTFont("data/test/ubuntusansmono/UbuntuMono[wght].ttf"),
@@ -668,9 +668,9 @@ def test_check_varfont_family_axis_ranges():
     assert_PASS(check(ttFonts), "with good varfont...")
 
 
-def test_check_slant_direction():
+@check_id("opentype/slant_direction")
+def test_check_slant_direction(check):
     """Checking direction of slnt axis angles."""
-    check = CheckTester("opentype/slant_direction")
 
     font = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
     assert_PASS(check(font))

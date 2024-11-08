@@ -1,27 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import FAIL, WARN
 
 
-def test_check_fvar_name_entries():
-    """Check variable font instances."""
-    # TODO: Implement-me!
-
-
-def test_check_varfont_consistent_axes():
-    """Check variable font instances."""
-    # TODO: Implement-me!
-
-
-def test_check_varfont_duplexed_axis_reflow():
+@check_id("varfont/duplexed_axis_reflow")
+def test_check_varfont_duplexed_axis_reflow(check):
     """Ensure VFs with the GRAD axis do not vary horizontal advance."""
-    check = CheckTester("varfont/duplexed_axis_reflow")
 
     ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
     assert_results_contain(check(ttFont), FAIL, "grad-causes-reflow")
@@ -45,9 +35,9 @@ def test_check_varfont_duplexed_axis_reflow():
     assert_results_contain(check(ttFont), FAIL, "rond-causes-reflow")
 
 
-def test_check_varfont_unsupported_axes():
+@check_id("varfont/unsupported_axes")
+def test_check_varfont_unsupported_axes(check):
     """Ensure VFs do not contain (yet) the ital axis."""
-    check = CheckTester("varfont/unsupported_axes")
 
     # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'slnt' variation axes.
     # So, should pass the check:
@@ -63,9 +53,9 @@ def test_check_varfont_unsupported_axes():
     assert_results_contain(check(ttFont), FAIL, "unsupported-ital")
 
 
-def test_check_mandatory_avar_table():
+@check_id("mandatory_avar_table")
+def test_check_mandatory_avar_table(check):
     """Ensure variable fonts include an avar table."""
-    check = CheckTester("mandatory_avar_table")
 
     ttFont = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))
     assert_PASS(check(ttFont))
@@ -74,9 +64,9 @@ def test_check_mandatory_avar_table():
     assert_results_contain(check(ttFont), WARN, "missing-avar")
 
 
-def test_varfont_instances_in_order():
+@check_id("varfont/instances_in_order")
+def test_varfont_instances_in_order(check):
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    check = CheckTester("varfont/instances_in_order")
 
     assert_PASS(check(ttFont))
 

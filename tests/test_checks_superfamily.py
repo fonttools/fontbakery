@@ -3,12 +3,12 @@ import os
 from fontTools.ttLib import TTFont
 import pytest
 
+from conftest import check_id
 from fontbakery.status import INFO, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
     assert_results_contain,
-    CheckTester,
     MockFont,
     TEST_FILE,
 )
@@ -67,20 +67,18 @@ def cabin_condensed_ttFonts():
     return [TTFont(path) for path in paths]
 
 
-def test_check_superfamily_list():
-    check = CheckTester("superfamily/list")
-
+@check_id("superfamily/list")
+def test_check_superfamily_list(check):
     msg = assert_results_contain(
         check(MockFont(superfamily=[cabin_fonts])), INFO, "family-path"
     )
     assert msg == os.path.normpath("data/test/cabin")
 
 
+@check_id("superfamily/vertical_metrics")
 def test_check_superfamily_vertical_metrics(
-    montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts
+    check, montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts
 ):
-    check = CheckTester("superfamily/vertical_metrics")
-
     msg = assert_SKIP(check(MockFont(superfamily_ttFonts=[cabin_ttFonts[0]])))
     assert msg == "Sibling families were not detected."
 

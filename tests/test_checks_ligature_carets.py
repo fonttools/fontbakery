@@ -1,18 +1,18 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     # assert_PASS,  FIXME: We must also have PASS test-cases!
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
     MockFont,
 )
 from fontbakery.status import FAIL, WARN, SKIP
 
 
-def test_check_ligature_carets():
+@check_id("ligature_carets")
+def test_check_ligature_carets(check):
     """Is there a caret position declared for every ligature?"""
-    check = CheckTester("ligature_carets")
 
     # Our reference Mada Medium doesn't have a GSUB 'liga' feature, so it is skipped
     # because of an unfulfilled condition.

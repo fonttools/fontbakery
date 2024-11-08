@@ -2,18 +2,18 @@ import io
 
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_loca_maxp_num_glyphs():
+@check_id("opentype/loca/maxp_num_glyphs")
+def test_check_loca_maxp_num_glyphs(check):
     """Does the number of glyphs in the loca table match the maxp table?"""
-    check = CheckTester("opentype/loca/maxp_num_glyphs")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))

@@ -1,9 +1,9 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 from fontbakery.status import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL
@@ -11,9 +11,8 @@ from fontbakery.status import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
-def test_check_cff_call_depth():
-    check = CheckTester("opentype/cff_call_depth")
-
+@check_id("opentype/cff_call_depth")
+def test_check_cff_call_depth(check):
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     assert_PASS(check(font))
@@ -44,9 +43,8 @@ def test_check_cff_call_depth():
     )
 
 
-def test_check_cff2_call_depth():
-    check = CheckTester("opentype/cff2_call_depth")
-
+@check_id("opentype/cff2_call_depth")
+def test_check_cff2_call_depth(check):
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
     assert_PASS(check(font))
@@ -77,9 +75,8 @@ def test_check_cff2_call_depth():
     )
 
 
-def test_check_cff_deprecated_operators():
-    check = CheckTester("opentype/cff_deprecated_operators")
-
+@check_id("opentype/cff_deprecated_operators")
+def test_check_cff_deprecated_operators(check):
     # this font uses the deprecated 'dotsection' operator
     font = TEST_FILE("deprecated_operators/cff1_dotsection.otf")
     assert_results_contain(
@@ -102,9 +99,8 @@ def test_check_cff_deprecated_operators():
     )
 
 
-def test_check_cff_strings():
-    check = CheckTester("opentype/cff_ascii_strings")
-
+@check_id("opentype/cff_ascii_strings")
+def test_check_cff_strings(check):
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
 
     # check that a healthy CFF font passes:

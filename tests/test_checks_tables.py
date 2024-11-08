@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     TEST_FILE,
-    CheckTester,
     assert_PASS,
     assert_results_contain,
 )
 from fontbakery.status import FAIL, WARN
 
 
-def test_check_unwanted_aat_tables():
+@check_id("unwanted_aat_tables")
+def test_check_unwanted_aat_tables(check):
     """Are there unwanted Apple tables ?"""
-    check = CheckTester("unwanted_aat_tables")
 
     unwanted_tables = [
         "EBSC",
@@ -56,9 +56,9 @@ def test_check_unwanted_aat_tables():
         )
 
 
-def test_check_no_debugging_tables():
+@check_id("no_debugging_tables")
+def test_check_no_debugging_tables(check):
     """Ensure fonts do not contain any preproduction tables."""
-    check = CheckTester("no_debugging_tables")
 
     ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
     assert_results_contain(check(ttFont), WARN, "has-debugging-tables")

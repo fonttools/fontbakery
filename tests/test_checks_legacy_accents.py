@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_legacy_accents():
+@check_id("legacy_accents")
+def test_check_legacy_accents(check):
     """Check that legacy accents aren't used in composite glyphs."""
-    check = CheckTester("legacy_accents")
 
     test_font = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     assert_PASS(check(test_font))

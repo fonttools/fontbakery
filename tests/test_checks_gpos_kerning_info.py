@@ -1,17 +1,17 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     TEST_FILE,
     assert_PASS,
     assert_results_contain,
-    CheckTester,
 )
 from fontbakery.status import WARN
 
 
-def test_check_gpos_kerning_info():
+@check_id("gpos_kerning_info")
+def test_check_gpos_kerning_info(check):
     """Does GPOS table have kerning information?"""
-    check = CheckTester("gpos_kerning_info")
 
     # Our reference Mada Regular is known to have kerning-info
     # exclusively on an extension subtable

@@ -1,18 +1,18 @@
 from fontTools.ttLib import TTFont
 
+from conftest import check_id
 from fontbakery.codetesting import (
     # assert_PASS,  FIXME: We must also have PASS test-cases!
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
     MockFont,
 )
 from fontbakery.status import FAIL, WARN, SKIP
 
 
-def test_check_kerning_for_non_ligated_sequences():
+@check_id("kerning_for_non_ligated_sequences")
+def test_check_kerning_for_non_ligated_sequences(check):
     """Is there kerning info for non-ligated sequences ?"""
-    check = CheckTester("kerning_for_non_ligated_sequences")
 
     # Our reference Mada Medium doesn't have a GSUB 'liga' feature, so it is skipped
     # because of an unfulfilled condition.

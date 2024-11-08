@@ -1,15 +1,15 @@
+from conftest import check_id
 from fontbakery.status import WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_math_signs_width():
+@check_id("math_signs_width")
+def test_check_math_signs_width(check):
     """Check font math signs have the same width."""
-    check = CheckTester("math_signs_width")
 
     # The STIXTwo family was the reference font project
     # that we used to come up with the initial list of math glyphs

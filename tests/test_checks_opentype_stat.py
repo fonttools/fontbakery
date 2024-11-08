@@ -1,20 +1,18 @@
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables.otTables import AxisValueRecord
 
+from conftest import check_id
 from fontbakery.status import FAIL, SKIP, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
-    CheckTester,
     TEST_FILE,
 )
 
 
-def test_check_varfont_stat_axis_record_for_each_axis():
+@check_id("opentype/varfont/stat_axis_record_for_each_axis")
+def test_check_varfont_stat_axis_record_for_each_axis(check):
     """Check the STAT table has an Axis Record for every axis in the font."""
-    check = CheckTester(
-        "opentype/varfont/stat_axis_record_for_each_axis",
-    )
 
     # Our reference Cabin[wdth,wght].ttf variable font
     # has all necessary Axis Records
@@ -39,9 +37,9 @@ def test_check_varfont_stat_axis_record_for_each_axis():
     assert "Unfulfilled Conditions: is_variable_font" in msg
 
 
-def test_check_stat_has_axis_value_tables():
+@check_id("opentype/stat_has_axis_value_tables")
+def test_check_stat_has_axis_value_tables(check):
     """Check the STAT table has at least one Axis Value table."""
-    check = CheckTester("opentype/stat_has_axis_value_tables")
 
     # Our reference Cabin[wdth,wght].ttf variable font has Axis Value tables.
     # So the check must PASS.
@@ -109,9 +107,9 @@ def test_check_stat_has_axis_value_tables():
     assert msg == "AxisValue format 5 is unknown."
 
 
-def test_check_italic_axis_in_stat():
+@check_id("opentype/italic_axis_in_stat")
+def test_check_italic_axis_in_stat(check):
     """Ensure VFs have 'ital' STAT axis."""
-    check = CheckTester("opentype/italic_axis_in_stat")
 
     # PASS
     fonts = [
@@ -150,9 +148,9 @@ def test_check_italic_axis_in_stat():
         os.remove(font)
 
 
-def test_check_italic_axis_in_stat_is_boolean():
+@check_id("opentype/italic_axis_in_stat_is_boolean")
+def test_check_italic_axis_in_stat_is_boolean(check):
     """Ensure 'ital' STAT axis is boolean value"""
-    check = CheckTester("opentype/italic_axis_in_stat_is_boolean")
 
     # PASS
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
@@ -188,9 +186,9 @@ def test_check_italic_axis_in_stat_is_boolean():
     assert_results_contain(check(ttFont), WARN, "wrong-ital-axis-linkedvalue")
 
 
-def test_check_italic_axis_last():
+@check_id("opentype/italic_axis_last")
+def test_check_italic_axis_last(check):
     """Ensure 'ital' STAT axis is last."""
-    check = CheckTester("opentype/italic_axis_last")
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
@@ -204,9 +202,8 @@ def test_check_italic_axis_last():
     assert_PASS(check(font))
 
 
-def test_check_weight_class_fvar():
-    check = CheckTester("opentype/weight_class_fvar")
-
+@check_id("opentype/weight_class_fvar")
+def test_check_weight_class_fvar(check):
     ttFont = TTFont(TEST_FILE("varfont/Oswald-VF.ttf"))
     assert_PASS(check(ttFont), "matches fvar default value.")
 
