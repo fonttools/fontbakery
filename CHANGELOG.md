@@ -2,10 +2,21 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (2024-Nov-15)
-  - **Users are encouraged to try the pre-releases as we're approaching the date when we'll cut a final v0.13.0 release...**
+  - ...
 
 
-##  Possibly the last pre-release: 0.13.0a5 (2024-Nov-08)
+## 0.13.0a5 (2024-Nov-09)
+  - **Users are encouraged to try this pre-release as we're approaching the date when we'll cut a final v0.13.0 release...**
+
+### Previously experimental checks now made effective
+The dates indicate when each check was originally implemented as temporarily experimental.
+
+#### Promoted on Universal profile
+  - 2024/Jul/17: **typoascender_exceeds_Agrave**
+
+#### Promoted on Google Fonts profile
+  - 2024/May/22: **googlefonts/metadata/date_added**
+
 ### Changes to existing checks
 ### On the Universal profile
   - **[gsub/smallcaps_before_ligatures]:** renamed to **[smallcaps_before_ligatures]** (removing the `gsub/` prefix).

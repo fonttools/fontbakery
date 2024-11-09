@@ -76,7 +76,6 @@ def check_metadata_designer_values(family_metadata):
         Expected format is "YYYY-MM-DD"
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4729",
-    experimental="Since 2024/May/22",
 )
 def check_metadata_date_added(family_metadata):
     """Validate 'date_added' field on METADATA.pb."""
