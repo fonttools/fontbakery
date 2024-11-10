@@ -276,7 +276,6 @@ def check_linegaps(ttFont):
         So, it is important to ensure that the sTypoAscender value is greater than
         the maximum height of the uppercase /Agrave in all styles of a type family.
     """,
-    experimental="Since 2024/Jul/17",
     proposal="https://github.com/fonttools/fontbakery/issues/3170",
 )
 def check_typoascender_exceeds_Agrave(ttFont):
