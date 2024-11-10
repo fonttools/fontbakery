@@ -5,7 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## 0.13.0a5 (2024-Nov-09)
+## 0.13.0a5 (2024-Nov-10)
   - **Users are encouraged to try this pre-release as we're approaching the date when we'll cut a final v0.13.0 release...**
 
 ### Previously experimental checks now made effective
