@@ -2,7 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (2024-Nov-15)
-  - ...
+
+### Noteworthy code-changes
+  - Full fix for bug where check details with more severe status would be missing from the HTML report if a check with the same ID but less severe status was omitted (issue #4687)
 
 
 ## 0.13.0a5 (2024-Nov-10)
