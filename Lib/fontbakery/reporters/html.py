@@ -67,7 +67,9 @@ class HTMLReporter(SerializeReporter):
         def omitted(result):
             # This is horribly polymorphic, sorry
             if isinstance(result, list):  # I am cluster of checks
-                return omitted(result[0])
+                # Only omit if every check in the cluster should be omitted,
+                # otherwise there is useful information here.
+                return all(omitted(check) for check in result)
             if "status" in result:  # I am a single subresult
                 return self.omit_loglevel(result["status"])
             if "checks" in result:  # I am section
