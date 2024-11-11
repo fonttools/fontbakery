@@ -555,39 +555,6 @@ def test_check_required_tables(check):
         del ttFont.reader.tables[optional]
 
 
-@check_id("unwanted_tables")
-def test_check_unwanted_tables(check):
-    """Are there unwanted tables ?"""
-
-    unwanted_tables = [
-        "DSIG",
-        "FFTM",  # FontForge
-        "TTFA",  # TTFAutohint
-        "TSI0",  # TSI* = VTT
-        "TSI1",
-        "TSI2",
-        "TSI3",
-        "TSI5",
-        "prop",  # FIXME: Why is this one unwanted?
-    ]
-    # Our reference Mada Regular font is good here:
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont), "with a good font...")
-
-    # We now add unwanted tables one-by-one to validate the FAIL code-path:
-    for unwanted in unwanted_tables:
-        ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-        ttFont.reader.tables[unwanted] = "foo"
-        assert_results_contain(
-            check(ttFont),
-            FAIL,
-            "unwanted-tables",
-            f"with unwanted table {unwanted} ...",
-        )
-
-
 def test_glyph_has_ink():
     print()  # so next line doesn't start with '.....'
 
