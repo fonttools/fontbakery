@@ -26,6 +26,13 @@ def check_unwanted_tables(ttFont):
         "TSI2": "Table contains data only used in VTT",
         "TSI3": "Table contains data only used in VTT",
         "TSI5": "Table contains data only used in VTT",
+        "TSIC": "Table contains data only used in VTT",
+        "TSIV": "Table contains data only used in VOLT",
+        "TSIP": "Table contains data only used in VOLT",
+        "TSIS": "Table contains data only used in VOLT",
+        "TSID": "Table contains data only used in VOLT",
+        "TSIJ": "Table contains data only used in VOLT",
+        "TSIB": "Table contains data only used in VOLT",
         "prop": (
             "Table used on AAT, Apple's OS X specific technology."
             " Although Harfbuzz now has optional AAT support,"
