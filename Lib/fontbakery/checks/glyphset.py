@@ -90,7 +90,7 @@ def check_case_mapping(ttFont):
 
 
 @check(
-    id="family/control_chars",
+    id="control_chars",
     conditions=["are_ttf"],
     rationale="""
         Use of some unacceptable control characters in the U+0000 - U+001F range can

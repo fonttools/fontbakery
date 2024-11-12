@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - Full fix for bug where check details with more severe status would be missing from the HTML report if a check with the same ID but less severe status was omitted (issue #4687)
 
+### Changes to existing checks
+### On the Universal profile
+  - **[family/control_chars]:** renamed to **control_chars** as it is not realy a family-wide check. (issue #4896)
+
 
 ## 0.13.0a5 (2024-Nov-10)
   - **Users are encouraged to try this pre-release as we're approaching the date when we'll cut a final v0.13.0 release...**
