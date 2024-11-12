@@ -31,7 +31,7 @@ def test_check_render_own_name(check):
     assert_results_contain(check(ttFont), FAIL, "render-own-name")
 
 
-@check_id("family/control_chars")
+@check_id("control_chars")
 def test_check_family_control_chars(check):
     """Are any unacceptable control characters present in font files?"""
 
