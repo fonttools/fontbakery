@@ -1,7 +1,7 @@
 import re
 
 from fontbakery.prelude import check, PASS, WARN, FAIL
-from fontbakery.checks.name import get_family_name, get_subfamily_name
+from fontbakery.utils import get_family_name, get_subfamily_name
 
 
 @check(

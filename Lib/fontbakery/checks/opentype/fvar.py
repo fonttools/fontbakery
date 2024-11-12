@@ -1,7 +1,7 @@
 from fontbakery.callable import check
 from fontbakery.constants import REGISTERED_AXIS_TAGS
-from fontbakery.status import FAIL, PASS, WARN, SKIP
-from fontbakery.message import Message
+from fontbakery.prelude import condition, Message, FAIL, PASS, WARN, SKIP
+from fontbakery.testable import Font
 
 
 @check(
@@ -652,6 +652,13 @@ def check_varfont_family_axis_ranges(ttFonts):
             "axis-range-mismatch",
             "Variable axes ranges not matching between font files",
         )
+
+
+@condition(Font)
+def uharfbuzz_blob(font):
+    import uharfbuzz as hb
+
+    return hb.Blob.from_file_path(font.file)
 
 
 @check(

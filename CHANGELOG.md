@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 ### On the Universal profile
   - **[family/control_chars]:** renamed to **control_chars** as it is not realy a family-wide check. (issue #4896)
+  - **[glyf_nested_components]**  renamed to **nested_components**.
 
 
 ## 0.13.0a5 (2024-Nov-10)

@@ -95,7 +95,7 @@ PROFILE = {
                 "reason": "For TN, this is desired but not mandatory.",
             }
         ],
-        "glyf_nested_components": [
+        "nested_components": [
             {
                 "code": "found-nested-components",
                 "status": "WARN",
