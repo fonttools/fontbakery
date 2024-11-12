@@ -1,7 +1,6 @@
 from fontTools.ttLib import TTFont
 
 from conftest import check_id
-from fontbakery.checks.glyphset import can_shape
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -9,7 +8,7 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.status import FAIL
-from fontbakery.utils import remove_cmap_entry
+from fontbakery.utils import can_shape, remove_cmap_entry
 
 
 def test_can_shape():
