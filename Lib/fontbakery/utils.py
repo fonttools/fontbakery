@@ -745,3 +745,29 @@ def can_shape(ttFont, text, parameters=None):
     vharfbuzz = Vharfbuzz(filename)
     buf = vharfbuzz.shape(text, parameters)
     return all(g.codepoint != 0 for g in buf.glyph_infos)
+
+
+def get_family_name(ttFont):
+    """
+    Get the family name from the name table.
+
+    TODO: For now, this is just name ID 1. It should be expanded to at least
+    check IDs 16 & 21, and ideally do the whole font differentiator heuristic.
+    """
+    family_name = ttFont["name"].getName(1, 3, 1, 0x0409)
+    if family_name is None:
+        return None
+    return family_name.toUnicode()
+
+
+def get_subfamily_name(ttFont):
+    """
+    Get the subfamily name from the name table.
+
+    TODO: For now, this is just name ID 2. It should be expanded to at least
+    check IDs 17 & 22, and ideally do the whole font differentiator heuristic.
+    """
+    subfamily_name = ttFont["name"].getName(2, 3, 1, 0x0409)
+    if subfamily_name is None:
+        return None
+    return subfamily_name.toUnicode()

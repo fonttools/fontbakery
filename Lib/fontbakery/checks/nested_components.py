@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="glyf_nested_components",
+    id="nested_components",
     rationale="""
         There have been bugs rendering variable fonts with nested components.
         Additionally, some static fonts with nested components have been reported
@@ -15,7 +15,7 @@ from fontbakery.prelude import check, Message, FAIL
     conditions=["is_ttf"],
     proposal="https://github.com/fonttools/fontbakery/issues/2961",
 )
-def check_glyf_nested_components(ttFont, config):
+def check_nested_components(ttFont, config):
     """Ensure glyphs do not have components which are themselves components."""
     from fontbakery.utils import pretty_print_list
 
