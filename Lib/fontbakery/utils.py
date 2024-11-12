@@ -732,3 +732,16 @@ def image_dimensions(filename):
 
     else:
         return None  # some other file format
+
+
+def can_shape(ttFont, text, parameters=None):
+    """
+    Returns true if the font can render a text string without any
+    .notdef characters.
+    """
+    from vharfbuzz import Vharfbuzz
+
+    filename = ttFont.reader.file.name
+    vharfbuzz = Vharfbuzz(filename)
+    buf = vharfbuzz.shape(text, parameters)
+    return all(g.codepoint != 0 for g in buf.glyph_infos)
