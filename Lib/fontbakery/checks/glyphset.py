@@ -101,71 +101,23 @@ def check_case_mapping(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2430",
 )
-def check_family_control_chars(ttFonts):
+def check_family_control_chars(ttFont):
     """Does font file include unacceptable control character glyphs?"""
     # list of unacceptable control character glyph names
     # definition includes the entire control character Unicode block except:
     #    - .null (U+0000)
     #    - CR (U+000D)
-    unacceptable_cc_list = [
-        "uni0001",
-        "uni0002",
-        "uni0003",
-        "uni0004",
-        "uni0005",
-        "uni0006",
-        "uni0007",
-        "uni0008",
-        "uni0009",
-        "uni000A",
-        "uni000B",
-        "uni000C",
-        "uni000E",
-        "uni000F",
-        "uni0010",
-        "uni0011",
-        "uni0012",
-        "uni0013",
-        "uni0014",
-        "uni0015",
-        "uni0016",
-        "uni0017",
-        "uni0018",
-        "uni0019",
-        "uni001A",
-        "uni001B",
-        "uni001C",
-        "uni001D",
-        "uni001E",
-        "uni001F",
-    ]
+    UNACCEPTABLE_CC = {f"uni{n:04X}" for n in range(32) if n not in [0x00, 0x0D]}
 
-    # A dict with 'key => value' pairs of
-    # font path that did not pass the check => list of unacceptable glyph names
-    bad_fonts = {}
+    glyphset = set(ttFont["glyf"].glyphs.keys())
+    bad_glyphs = glyphset.intersection(UNACCEPTABLE_CC)
 
-    for ttFont in ttFonts:
-        passed = True
-        unacceptable_glyphs_in_set = []  # a list of unacceptable glyph names identified
-        glyph_name_set = set(ttFont["glyf"].glyphs.keys())
-        fontname = ttFont.reader.file.name
-
-        for unacceptable_glyph_name in unacceptable_cc_list:
-            if unacceptable_glyph_name in glyph_name_set:
-                passed = False
-                unacceptable_glyphs_in_set.append(unacceptable_glyph_name)
-
-        if not passed:
-            bad_fonts[fontname] = unacceptable_glyphs_in_set
-
-    if len(bad_fonts) > 0:
-        msg_unacceptable = (
-            "The following unacceptable control characters were identified:\n"
+    if bad_glyphs:
+        bad = ", ".join(bad_glyphs)
+        yield FAIL, Message(
+            "unacceptable",
+            f"The following unacceptable control characters were identified:\n{bad}",
         )
-        for fnt in bad_fonts.keys():
-            bad = ", ".join(bad_fonts[fnt])
-            msg_unacceptable += f" {fnt}: {bad}\n"
-        yield FAIL, Message("unacceptable", f"{msg_unacceptable}")
 
 
 @check(
