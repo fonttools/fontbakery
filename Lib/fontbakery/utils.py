@@ -771,3 +771,54 @@ def get_subfamily_name(ttFont):
     if subfamily_name is None:
         return None
     return subfamily_name.toUnicode()
+
+
+def feature_tags(ttFont):
+    in_this_font = set()
+    for table in ["GSUB", "GPOS"]:
+        if ttFont.get(table) and ttFont[table].table.FeatureList:
+            for fr in ttFont[table].table.FeatureList.FeatureRecord:
+                in_this_font.add(fr.FeatureTag)
+    return in_this_font
+
+
+def language_tags(ttFont):
+    in_this_font = set()
+    for table in ["GSUB", "GPOS"]:
+        if ttFont.get(table) and ttFont[table].table.ScriptList:
+            for fr in ttFont[table].table.ScriptList.ScriptRecord:
+                for lsr in fr.Script.LangSysRecord:
+                    in_this_font.add(lsr.LangSysTag)
+    return in_this_font
+
+
+def script_tags(ttFont):
+    in_this_font = set()
+    for table in ["GSUB", "GPOS"]:
+        if ttFont.get(table) and ttFont[table].table.ScriptList:
+            for fr in ttFont[table].table.ScriptList.ScriptRecord:
+                in_this_font.add(fr.ScriptTag)
+    return in_this_font
+
+
+def get_mark_class_glyphnames(ttFont):
+    from fontbakery.constants import GlyphClass
+
+    class_defs = ttFont["GDEF"].table.GlyphClassDef.classDefs.items()
+    return {name for (name, value) in class_defs if value == GlyphClass.MARK}
+
+
+def is_non_spacing_mark_char(charcode):
+    from fontTools import unicodedata
+
+    category = unicodedata.category(chr(charcode))
+    if category.startswith("C"):
+        # skip control characters
+        return None
+    else:
+        # Non spacing marks either have the Unicode General_category:
+        # Mn, Nonspacing_Mark
+        # Me, Enclosing_Mark
+        # Characters with the category Mc, Spacing_Mark should not be considered
+        # as non spacing marks.
+        return category in ("Mn", "Me")

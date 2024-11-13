@@ -3,10 +3,8 @@ import math
 
 from beziers.path import BezierPath
 
-from fontbakery.callable import condition, check
+from fontbakery.prelude import check, condition, Message, PASS, WARN
 from fontbakery.testable import Font
-from fontbakery.status import PASS, WARN
-from fontbakery.message import Message
 from fontbakery.utils import bullet_list
 
 ALIGNMENT_MISS_EPSILON = 2  # Two point lee-way on alignment misses
