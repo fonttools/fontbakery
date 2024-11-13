@@ -1,5 +1,5 @@
 from fontbakery.prelude import PASS, WARN, Message, check
-from fontbakery.checks.opentype.layout import feature_tags
+from fontbakery.utils import feature_tags
 
 
 @check(

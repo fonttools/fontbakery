@@ -3,7 +3,7 @@ from collections import Counter
 from typing import List
 
 from fontbakery.prelude import condition
-from fontbakery.testable import CheckRunContext, Font
+from fontbakery.testable import CheckRunContext, Font, TTCFont
 from fontbakery.utils import get_glyph_name
 
 
@@ -318,3 +318,152 @@ def missing_whitespace_chars(font):
     # fonts probably don't need an actual tab char
     # if tab is None: missing.append("0x0009")
     return missing
+
+
+class CFFAnalysis:
+    def __init__(self):
+        self.glyphs_dotsection = []
+        self.glyphs_endchar_seac = []
+        self.glyphs_exceed_max = []
+        self.glyphs_recursion_errors = []
+        self.string_not_ascii = []
+
+
+def _get_subr_bias(count):
+    if count < 1240:
+        bias = 107
+    elif count < 33900:
+        bias = 1131
+    else:
+        bias = 32768
+    return bias
+
+
+def _traverse_subr_call_tree(info, program, depth):
+    global_subrs = info["global_subrs"]
+    subrs = info["subrs"]
+    gsubr_bias = info["gsubr_bias"]
+    subr_bias = info["subr_bias"]
+
+    if depth > info["max_depth"]:
+        info["max_depth"] = depth
+
+    # once we exceed the max depth we can stop going deeper
+    if depth > 10:
+        return
+
+    if (
+        len(program) >= 5
+        and program[-1] == "endchar"
+        and all([isinstance(a, int) for a in program[-5:-1]])
+    ):
+        info["saw_endchar_seac"] = True
+    if "ignore" in program:  # decompiler expresses 'dotsection' as 'ignore'
+        info["saw_dotsection"] = True
+
+    while program:
+        x = program.pop()
+        if x == "callgsubr":
+            y = int(program.pop()) + gsubr_bias
+            sub_program = global_subrs[y].program.copy()
+            _traverse_subr_call_tree(info, sub_program, depth + 1)
+        elif x == "callsubr":
+            y = int(program.pop()) + subr_bias
+            sub_program = subrs[y].program.copy()
+            _traverse_subr_call_tree(info, sub_program, depth + 1)
+
+
+def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
+    char_strings = top_dict.CharStrings
+    global_subrs = top_dict.GlobalSubrs
+    gsubr_bias = _get_subr_bias(len(global_subrs))
+
+    if hasattr(top_dict, "rawDict"):
+        raw_dict = top_dict.rawDict
+        for key in ["Notice", "Copyright", "FontName", "FullName", "FamilyName"]:
+            for char in raw_dict.get(key, ""):
+                if ord(char) > 0x7F:
+                    analysis.string_not_ascii.append((key, raw_dict[key]))
+                    break
+
+    if private_dict is not None and hasattr(private_dict, "Subrs"):
+        subrs = private_dict.Subrs
+        subr_bias = _get_subr_bias(len(subrs))
+    else:
+        subrs = None
+        subr_bias = None
+
+    char_list = char_strings.keys()
+
+    for glyph_name in char_list:
+        t2_char_string, fd_select_index = char_strings.getItemAndSelector(glyph_name)
+        if fd_select_index is not None and fd_select_index != fd_index:
+            continue
+        try:
+            t2_char_string.decompile()
+        except RecursionError:
+            analysis.glyphs_recursion_errors.append(glyph_name)
+            continue
+        info = {}
+        info["subrs"] = subrs
+        info["global_subrs"] = global_subrs
+        info["gsubr_bias"] = gsubr_bias
+        info["subr_bias"] = subr_bias
+        info["max_depth"] = 0
+        depth = 0
+        program = t2_char_string.program.copy()
+        _traverse_subr_call_tree(info, program, depth)
+        max_depth = info["max_depth"]
+
+        if max_depth > 10:
+            analysis.glyphs_exceed_max.append(glyph_name)
+        if info.get("saw_endchar_seac"):
+            analysis.glyphs_endchar_seac.append(glyph_name)
+        if info.get("saw_dotsection"):
+            analysis.glyphs_dotsection.append(glyph_name)
+
+
+@condition(Font)
+def cff_analysis(font):
+    from fontTools.ttLib import TTFont
+
+    analysis = CFFAnalysis()
+    if isinstance(font, TTCFont):
+        ttFont = TTFont(font.file, fontNumber=font.index)
+    else:
+        ttFont = TTFont(font.file)  # Use our own copy here since we are decompiling
+
+    if "CFF " in ttFont:
+        try:
+            cff = ttFont["CFF "].cff
+        except UnicodeDecodeError:
+            analysis.string_not_ascii = None
+            return analysis
+
+        for top_dict in cff.topDictIndex:
+            if hasattr(top_dict, "FDArray"):
+                for fd_index, font_dict in enumerate(top_dict.FDArray):
+                    if hasattr(font_dict, "Private"):
+                        private_dict = font_dict.Private
+                    else:
+                        private_dict = None
+                    _analyze_cff(analysis, top_dict, private_dict, fd_index)
+            else:
+                if hasattr(top_dict, "Private"):
+                    private_dict = top_dict.Private
+                else:
+                    private_dict = None
+                _analyze_cff(analysis, top_dict, private_dict)
+
+    elif "CFF2" in ttFont:
+        cff = ttFont["CFF2"].cff
+
+        for top_dict in cff.topDictIndex:
+            for fd_index, font_dict in enumerate(top_dict.FDArray):
+                if hasattr(font_dict, "Private"):
+                    private_dict = font_dict.Private
+                else:
+                    private_dict = None
+                _analyze_cff(analysis, top_dict, private_dict, fd_index)
+
+    return analysis

@@ -1,7 +1,5 @@
-from fontbakery.callable import check, condition
+from fontbakery.prelude import check, condition, Message, WARN
 from fontbakery.testable import Font
-from fontbakery.status import WARN
-from fontbakery.message import Message
 
 
 @condition(Font)

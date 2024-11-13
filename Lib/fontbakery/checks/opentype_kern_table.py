@@ -1,6 +1,4 @@
-from fontbakery.callable import check
-from fontbakery.status import FAIL, INFO, PASS, WARN
-from fontbakery.message import Message
+from fontbakery.prelude import check, Message, FAIL, INFO, PASS, WARN
 
 
 @check(
