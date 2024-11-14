@@ -1,124 +1,76 @@
 from fontbakery.prelude import check, Message, FAIL, WARN
+from fontbakery.utils import get_name_entry_strings
 
 
 @check(
-    id="opentype/varfont/ital_range",
+    id="opentype/fvar/axis_ranges_correct",
     rationale="""
-        The OpenType spec says at
-        https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_ital
-        that:
-
-        [...] Valid numeric range: Values must be in the range 0 to 1.
+        According to the OpenType spec's registered design-variation tags, instances in
+        a variable font should have certain prescribed values.
+        If a variable font has a 'wght' (Weight) axis, the valid coordinate range is 1-1000.
+        If a variable font has a 'wdth' (Width) axis, the valid numeric range is strictly greater than zero.
+        If a variable font has a 'slnt' (Slant) axis, then the coordinate of its 'Regular' instance is required to be 0.
+        If a variable font has a 'ital' (Slant) axis, then the coordinate of its 'Regular' instance is required to be 0.
     """,
-    conditions=["is_variable_font", "has_ital_axis"],
+    conditions=["is_variable_font"],
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/2264",
+        "https://github.com/fonttools/fontbakery/pull/2520",
+        "https://github.com/fonttools/fontbakery/issues/2572",
+    ],
 )
-def check_varfont_ital_range(ttFont, ital_axis):
-    """The variable font 'ital' (Italic) axis coordinates
-    is in a valid range?"""
-
-    if not (ital_axis.minValue == 0 and ital_axis.maxValue == 1):
-        yield FAIL, Message(
-            "invalid-ital-range",
-            f'The range of values for the "ital" axis in'
-            f" this font is {ital_axis.minValue} to {ital_axis.maxValue}."
-            f" Italic axis range must be 0 to 1, "
-            f" where Roman is 0 and Italic 1."
-            f" If you prefer a bigger variation range consider using"
-            f' "Slant" axis instead of "Italic".',
-        )
-
-
-@check(
-    id="opentype/varfont/slnt_range",
-    rationale="""
-        The OpenType spec says at
-        https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt that:
-
-        [...] the scale for the Slant axis is interpreted as the angle of slant
-        in counter-clockwise degrees from upright. This means that a typical,
-        right-leaning oblique design will have a negative slant value. This matches
-        the scale used for the italicAngle field in the post table.
-    """,
-    conditions=["is_variable_font", "has_slnt_axis"],
-    proposal="https://github.com/fonttools/fontbakery/issues/2572",
-)
-def check_varfont_slnt_range(ttFont, slnt_axis):
-    """The variable font 'slnt' (Slant) axis coordinate
-    specifies positive values in its range?"""
-
-    if not (slnt_axis.minValue < 0 and slnt_axis.maxValue >= 0):
-        yield WARN, Message(
-            "unusual-slnt-range",
-            f'The range of values for the "slnt" axis in'
-            f" this font only allows positive coordinates"
-            f" (from {slnt_axis.minValue} to {slnt_axis.maxValue}),"
-            f" indicating that this may be a back slanted design,"
-            f" which is rare. If that's not the case, then"
-            f' the "slant" axis should be a range of'
-            f" negative values instead.",
-        )
-
-
-@check(
-    id="opentype/varfont/wght_valid_range",
-    rationale="""
-        According to the OpenType spec's
-        registered design-variation tag 'wght' available at
-        https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
-
-        On the 'wght' (Weight) axis, the valid coordinate range is 1-1000.
-    """,
-    conditions=["is_variable_font", "has_wght_axis"],
-    proposal="https://github.com/fonttools/fontbakery/issues/2264",
-)
-def check_varfont_wght_valid_range(ttFont):
-    """The variable font 'wght' (Weight) axis coordinate
-    must be within spec range of 1 to 1000 on all instances."""
+def check_fvar_axis_ranges_correct(ttFont, ital_axis, slnt_axis):
+    """Axes and named instances fall within correct ranges?"""
 
     for instance in ttFont["fvar"].instances:
+        name = get_name_entry_strings(ttFont, instance.subfamilyNameID)[0]
+
         if "wght" in instance.coordinates:
             value = instance.coordinates["wght"]
             if value < 1 or value > 1000:
                 yield FAIL, Message(
                     "wght-out-of-range",
-                    f'Found a bad "wght" coordinate with value {value}'
-                    f" outside of the valid range from 1 to 1000.",
+                    f"Instance {name} has wght coordinate"
+                    f" of {value}, expected between 1 and 1000",
                 )
                 break
 
-
-@check(
-    id="opentype/varfont/wdth_valid_range",
-    rationale="""
-        According to the OpenType spec's
-        registered design-variation tag 'wdth' available at
-        https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
-
-        On the 'wdth' (Width) axis, the valid numeric range is strictly greater than
-        zero.
-    """,
-    conditions=["is_variable_font", "has_wdth_axis"],
-    proposal="https://github.com/fonttools/fontbakery/pull/2520",
-)
-def check_varfont_wdth_valid_range(ttFont):
-    """The variable font 'wdth' (Width) axis coordinate
-    must strictly greater than zero."""
-
-    for instance in ttFont["fvar"].instances:
         if "wdth" in instance.coordinates:
             value = instance.coordinates["wdth"]
             if value < 1:
                 yield FAIL, Message(
                     "wdth-out-of-range",
-                    f'Found a bad "wdth" coordinate with value {value}'
-                    f" outside of the valid range (> 0).",
+                    f"Instance {name} has wdth coordinate"
+                    f" of {value}, expected at least 1",
                 )
                 break
 
             if value > 1000:
                 yield WARN, Message(
                     "wdth-greater-than-1000",
-                    f'Found a "wdth" coordinate with value {value}'
-                    f" which is valid but unusual.",
+                    f"Instance {name} has wdth coordinate"
+                    f" of {value}, which is valid but unusual",
                 )
                 break
+
+    if ital_axis:
+        if not (ital_axis.minValue == 0 and ital_axis.maxValue == 1):
+            yield FAIL, Message(
+                "invalid-ital-range",
+                f'The range of values for the "ital" axis in this font is'
+                f" {ital_axis.minValue} to {ital_axis.maxValue}."
+                f" The italic axis range must be 0 to 1, where Roman is 0 and Italic 1."
+                f' If you prefer a bigger variation range consider using the "Slant"'
+                f' axis instead of "Italic".',
+            )
+
+    if slnt_axis:
+        if not (slnt_axis.minValue < 0 and slnt_axis.maxValue >= 0):
+            yield WARN, Message(
+                "unusual-slnt-range",
+                f'The range of values for the "slnt" axis in this font only allows'
+                f" positive coordinates (from {slnt_axis.minValue} to"
+                f" {slnt_axis.maxValue}), indicating that this may be a back slanted"
+                f' design, which is rare. If that\'s not the case, then the "slant"'
+                f" axis should be a range of negative values instead.",
+            )

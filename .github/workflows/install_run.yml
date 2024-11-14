@@ -34,6 +34,7 @@ jobs:
               -x win_ascent_and_descent
               -x os2_metrics_match_hhea
               -x soft_dotted
+              -x fontdata_namecheck
               data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf
               data/test/source-sans-pro/OTF/SourceSansPro-Italic.otf
           - description: Universal profile on a variable font
@@ -44,6 +45,7 @@ jobs:
               -x fsselection
               -x valid_default_instance_nameids
               -x soft_dotted
+              -x fontdata_namecheck
               data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
           - description: Universal profile on a UFO font
             extras: ".[ufo]"
@@ -62,6 +64,7 @@ jobs:
               -x style
               -x family
               -x monospace
+              -x fontdata_namecheck
               data/test/ttc/NotoSerifToto.ttc
           - description: Font Bureau profile
             name: fontbureau

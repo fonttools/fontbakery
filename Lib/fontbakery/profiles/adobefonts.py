@@ -29,6 +29,7 @@ PROFILE = {
         #
         "opentype/caret_slope",
         "opentype/fsselection",
+        "opentype/fvar/axis_ranges_correct",
         "opentype/gdef_mark_chars",
         "opentype/gdef_non_mark_chars",
         "opentype/gdef_spacing_marks",
@@ -39,7 +40,6 @@ PROFILE = {
         "opentype/mac_style",
         "opentype/slant_direction",
         "opentype/varfont/family_axis_ranges",
-        "opentype/varfont/ital_range",
         "opentype/vendor_id",
         #
         "alt_caron",

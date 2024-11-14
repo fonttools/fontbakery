@@ -6,10 +6,16 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - Full fix for bug where check details with more severe status would be missing from the HTML report if a check with the same ID but less severe status was omitted (issue #4687)
 
+### New checks
+#### On the OpenType profile
+  - **[opentype/fvar/axis_ranges_correct]:** Replaces **opentype/varfont/ital_range**, **opentype/varfont/slnt_range**, **opentype/varfont/wdth_valid_range and **opentype/varfont/wght_valid_range**
+
+
 ### Changes to existing checks
 ### On the Universal profile
   - **[family/control_chars]:** renamed to **control_chars** as it is not realy a family-wide check. (issue #4896)
   - **[glyf_nested_components]**  renamed to **nested_components**.
+
 
 
 ## 0.13.0a5 (2024-Nov-10)
