@@ -26,11 +26,11 @@ def test_external_profile():
         fakemodule,
         "PROFILE",
         {
-            "include_profiles": ["opentype"],
+            "include_profiles": ["universal"],
             "sections": {
                 "Dalton Maag OpenType": [
                     "opentype/family/panose_familytype",
-                    "opentype/varfont/regular_opsz_coord",
+                    "opentype/fvar/regular_coords_correct",
                 ]
             },
         },

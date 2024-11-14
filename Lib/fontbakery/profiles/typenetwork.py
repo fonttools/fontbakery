@@ -132,39 +132,7 @@ PROFILE = {
                 "the 'wght' axis.",
             },
         ],
-        "opentype/varfont/regular_ital_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require"
-                " having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_opsz_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require"
-                " having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_slnt_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require"
-                " having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_wdth_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require"
-                " having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_wght_coord": [
+        "opentype/fvar/regular_coords_correct": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
