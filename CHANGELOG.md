@@ -8,8 +8,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New checks
 #### On the OpenType profile
-  - **[opentype/fvar/axis_ranges_correct]:** Replaces **opentype/varfont/ital_range**, **opentype/varfont/slnt_range**, **opentype/varfont/wdth_valid_range and **opentype/varfont/wght_valid_range**
-
+  - **[opentype/fvar/axis_ranges_correct]:** Replaces **opentype/varfont/ital_range**, **opentype/varfont/slnt_range**, **opentype/varfont/wdth_valid_range** and **opentype/varfont/wght_valid_range**
+  - **[opentype/varfont/valid_nameids]:** Replaces **opentype/varfont/valid_axis_nameid**, **opentype/varfont/valid_postscript_nameid**, and **opentype/varfont/valid_subfamily_nameid**
 
 ### Changes to existing checks
 ### On the Universal profile
