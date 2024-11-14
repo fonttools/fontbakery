@@ -8,10 +8,11 @@ from fontbakery.codetesting import (
 )
 
 
-@check_id("opentype/varfont/valid_axis_nameid")
-def test_check_varfont_valid_axis_nameid(check):
-    """The value of axisNameID used by each VariationAxisRecord must
-    be greater than 255 and less than 32768."""
+@check_id("opentype/varfont/valid_nameids")
+def test_check_varfont_valid_nameids(check):
+    ####
+    # The value of axisNameID used by each VariationAxisRecord must
+    # be greater than 255 and less than 32768.
 
     # The axisNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -29,33 +30,21 @@ def test_check_varfont_valid_axis_nameid(check):
     # Change the axes' axisNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
     wght_axis.axisNameID = 32768
-    wdth_axis.axisNameID = 255
     assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:32768")
-    msg = assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:255")
-    assert msg == (
-        "'Unnamed' instance has an axisNameID value that"
-        " is not greater than 255 and less than 32768."
-    )
+
+    wdth_axis.axisNameID = 255
+    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:255")
 
     # Another set of invalid values
     wght_axis.axisNameID = 128
-    wdth_axis.axisNameID = 36000
     assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:128")
-    msg = assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:36000")
-    assert msg == (
-        "'Unnamed' instance has an axisNameID value that"
-        " is not greater than 255 and less than 32768."
-    )
 
-    # Confirm the check yields FAIL if the font doesn't have a required table
-    del ttFont["name"]
-    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+    wdth_axis.axisNameID = 36000
+    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:36000")
 
-
-@check_id("opentype/varfont/valid_postscript_nameid")
-def test_check_varfont_valid_postscript_nameid(check):
-    """The value of postScriptNameID used by each InstanceRecord must
-    be 6, 0xFFFF, or greater than 255 and less than 32768."""
+    ####
+    # The value of postScriptNameID used by each InstanceRecord must
+    # be 6, 0xFFFF, or greater than 255 and less than 32768.
 
     # The postScriptNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -78,36 +67,24 @@ def test_check_varfont_valid_postscript_nameid(check):
     # Change two instances' postScriptNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
     inst_3.postscriptNameID = 255
-    inst_4.postscriptNameID = 32768
     assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:255")
-    msg = assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:32768")
-    assert msg == (
-        "'Unnamed' instance has a postScriptNameID value that"
-        " is neither 6, 0xFFFF, or greater than 255 and less than 32768."
-    )
+
+    inst_4.postscriptNameID = 32768
+    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:32768")
 
     # Reset two postScriptNameID to valid values,
     # then set two other postScriptNameID to invalid values
     inst_3.postscriptNameID = 256  # valid
     inst_4.postscriptNameID = 32767  # valid
     inst_1.postscriptNameID = 3
-    inst_2.postscriptNameID = 18
     assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:3")
-    msg = assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:18")
-    assert msg == (
-        "'Unnamed' instance has a postScriptNameID value that"
-        " is neither 6, 0xFFFF, or greater than 255 and less than 32768."
-    )
 
-    # Confirm the check yields FAIL if the font doesn't have a required table
-    del ttFont["name"]
-    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+    inst_2.postscriptNameID = 18
+    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:18")
 
-
-@check_id("opentype/varfont/valid_subfamily_nameid")
-def test_check_varfont_valid_subfamily_nameid(check):
-    """The value of subfamilyNameID used by each InstanceRecord must
-    be 2, 17, or greater than 255 and less than 32768."""
+    ####
+    # The value of subfamilyNameID used by each InstanceRecord must
+    # be 2, 17, or greater than 255 and less than 32768.
 
     # The subfamilyNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -130,27 +107,17 @@ def test_check_varfont_valid_subfamily_nameid(check):
     # Change two instances' subfamilyNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
     inst_3.subfamilyNameID = 255
-    inst_4.subfamilyNameID = 32768
     assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:255")
-    msg = assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:32768")
-    assert msg == (
-        "'Unnamed' instance has a subfamilyNameID value that"
-        " is neither 2, 17, or greater than 255 and less than 32768."
-    )
+
+    inst_4.subfamilyNameID = 32768
+    assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:32768")
 
     # Reset two subfamilyNameID to valid values,
     # then set two other subfamilyNameID to invalid values
     inst_3.subfamilyNameID = 256  # valid
     inst_4.subfamilyNameID = 32767  # valid
     inst_1.subfamilyNameID = 3
-    inst_2.subfamilyNameID = 18
     assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:3")
-    msg = assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:18")
-    assert msg == (
-        "'Unnamed' instance has a subfamilyNameID value that"
-        " is neither 2, 17, or greater than 255 and less than 32768."
-    )
 
-    # Confirm the check yields FAIL if the font doesn't have a required table
-    del ttFont["name"]
-    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+    inst_2.subfamilyNameID = 18
+    assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:18")
