@@ -176,35 +176,7 @@ PROFILE = {
                 "reason": "Adobe strongly recommends, but does not require having a Bold instance, and that instance should have coordinate 700 on the 'wght' axis.",
             },
         ],
-        "opentype/varfont/regular_ital_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_opsz_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_slnt_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_wdth_coord": [
-            {
-                "code": "no-regular-instance",
-                "status": "WARN",
-                "reason": "Adobe strongly recommends, but does not require having a Regular instance.",
-            },
-        ],
-        "opentype/varfont/regular_wght_coord": [
+        "opentype/fvar/regular_coords_correct": [
             {
                 "code": "no-regular-instance",
                 "status": "WARN",
