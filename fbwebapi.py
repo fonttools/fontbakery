@@ -27,6 +27,8 @@ for notreal in [
     "defcon",
     "vharfbuzz",
     "uharfbuzz",
+    "freetype",
+    "freetype.ft_errors",
 ]:
     sys.modules[notreal] = MagicMock()
 
