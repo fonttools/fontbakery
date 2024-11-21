@@ -4,14 +4,14 @@ from fontbakery.prelude import check, Message, FAIL, PASS, WARN, SKIP
 
 
 @check(
-    id="opentype/italic_axis_in_stat",
+    id="opentype/italic_axis_in_STAT",
     rationale="""
         Check that related Upright and Italic VFs have a
         'ital' axis in STAT table.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2934",
 )
-def check_italic_axis_in_stat(fonts, config):
+def check_italic_axis_in_STAT(fonts, config):
     """Ensure VFs have 'ital' STAT axis."""
     from fontTools.ttLib import TTFont
 
@@ -72,7 +72,7 @@ def check_italic_axis_in_stat(fonts, config):
 
 
 @check(
-    id="opentype/italic_axis_in_stat_is_boolean",
+    id="opentype/italic_axis_in_STAT_is_boolean",
     conditions=["style", "has_STAT_table"],
     rationale="""
         Check that the value of the 'ital' STAT axis is boolean (either 0 or 1),
@@ -81,7 +81,7 @@ def check_italic_axis_in_stat(fonts, config):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3668",
 )
-def check_italic_axis_in_stat_is_boolean(ttFont, style):
+def check_italic_axis_in_STAT_is_boolean(ttFont, style):
     """Ensure 'ital' STAT axis is boolean value"""
 
     def get_STAT_axis(font, tag):

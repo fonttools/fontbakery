@@ -28,7 +28,7 @@ PROFILE = {
         "fvar_name_entries",
         "fontdata_namecheck",
         "hinting_impact",
-        "inconsistencies_between_fvar_stat",
+        "inconsistencies_between_fvar_STAT",
         "integer_ppem_if_hinted",
         "kerning_for_non_ligated_sequences",
         "ligature_carets",

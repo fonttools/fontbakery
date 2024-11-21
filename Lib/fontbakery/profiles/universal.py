@@ -47,7 +47,7 @@ PROFILE = {
             "gpos7",
             "gpos_kerning_info",
             "hinting_impact",
-            "inconsistencies_between_fvar_stat",
+            "inconsistencies_between_fvar_STAT",
             "integer_ppem_if_hinted",
             "interpolation_issues",
             "legacy_accents",

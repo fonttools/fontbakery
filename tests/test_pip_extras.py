@@ -25,7 +25,7 @@ def test_lxml_etree_extra_needed_exit(monkeypatch):
     module_name = "lxml.etree"
     sys.meta_path.insert(0, ImportRaiser(module_name))
     monkeypatch.delitem(sys.modules, module_name, raising=False)
-    from fontbakery.checks.fontval import check_fontvalidator
+    from fontbakery.checks.fontvalidator import check_fontvalidator
 
     with pytest.raises(SystemExit):
         list(check_fontvalidator(None, None))
@@ -63,7 +63,7 @@ def test_uharfbuzz_extra_needed_exit(monkeypatch):
     module_name = "uharfbuzz"
     sys.meta_path.insert(0, ImportRaiser(module_name))
     monkeypatch.delitem(sys.modules, module_name, raising=False)
-    from fontbakery.checks.iso15008 import pair_kerning
+    from fontbakery.checks.iso15008.utils import pair_kerning
 
     with pytest.raises(SystemExit):
         pair_kerning(None, None, None)

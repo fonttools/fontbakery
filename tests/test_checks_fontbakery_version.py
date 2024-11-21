@@ -10,7 +10,7 @@ from fontbakery.codetesting import (
     assert_results_contain,
     TEST_FILE,
 )
-from fontbakery.checks.fontbakery import is_up_to_date
+from fontbakery.checks.fontbakery_version import is_up_to_date
 
 
 @pytest.mark.parametrize(

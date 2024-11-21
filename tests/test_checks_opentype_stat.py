@@ -10,8 +10,8 @@ from fontbakery.codetesting import (
 )
 
 
-@check_id("opentype/varfont/stat_axis_record_for_each_axis")
-def test_check_varfont_stat_axis_record_for_each_axis(check):
+@check_id("opentype/varfont/STAT_axis_record_for_each_axis")
+def test_check_varfont_STAT_axis_record_for_each_axis(check):
     """Check the STAT table has an Axis Record for every axis in the font."""
 
     # Our reference Cabin[wdth,wght].ttf variable font
@@ -37,8 +37,8 @@ def test_check_varfont_stat_axis_record_for_each_axis(check):
     assert "Unfulfilled Conditions: is_variable_font" in msg
 
 
-@check_id("opentype/stat_has_axis_value_tables")
-def test_check_stat_has_axis_value_tables(check):
+@check_id("opentype/STAT_has_axis_value_tables")
+def test_check_STAT_has_axis_value_tables(check):
     """Check the STAT table has at least one Axis Value table."""
 
     # Our reference Cabin[wdth,wght].ttf variable font has Axis Value tables.
@@ -107,8 +107,8 @@ def test_check_stat_has_axis_value_tables(check):
     assert msg == "AxisValue format 5 is unknown."
 
 
-@check_id("opentype/italic_axis_in_stat")
-def test_check_italic_axis_in_stat(check):
+@check_id("opentype/italic_axis_in_STAT")
+def test_check_italic_axis_in_STAT(check):
     """Ensure VFs have 'ital' STAT axis."""
 
     # PASS
@@ -148,8 +148,8 @@ def test_check_italic_axis_in_stat(check):
         os.remove(font)
 
 
-@check_id("opentype/italic_axis_in_stat_is_boolean")
-def test_check_italic_axis_in_stat_is_boolean(check):
+@check_id("opentype/italic_axis_in_STAT_is_boolean")
+def test_check_italic_axis_in_STAT_is_boolean(check):
     """Ensure 'ital' STAT axis is boolean value"""
 
     # PASS

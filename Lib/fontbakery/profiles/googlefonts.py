@@ -4,7 +4,7 @@ PROFILE = {
     "pending_review": [
         "cmap/format_12",
         "empty_letters",
-        "inconsistencies_between_fvar_stat",
+        "inconsistencies_between_fvar_STAT",
         "no_mac_entries",
         "typographic_family_name",
         "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
@@ -189,7 +189,7 @@ PROFILE = {
                 "reason": "Google Fonts has different policies on checking for italic angle.",
             },
         ],
-        "opentype/italic_axis_in_stat_is_boolean": [
+        "opentype/italic_axis_in_STAT_is_boolean": [
             {
                 "code": "wrong-ital-axis-value",
                 "status": "FAIL",

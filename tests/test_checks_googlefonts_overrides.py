@@ -63,8 +63,8 @@ def test_check_italic_angle(check):
     )
 
 
-@check_id("opentype/italic_axis_in_stat_is_boolean", profile=googlefonts_profile)
-def test_check_italic_axis_in_stat_is_boolean(check):
+@check_id("opentype/italic_axis_in_STAT_is_boolean", profile=googlefonts_profile)
+def test_check_italic_axis_in_STAT_is_boolean(check):
     """Ensure 'ital' STAT axis is boolean value"""
 
     # PASS

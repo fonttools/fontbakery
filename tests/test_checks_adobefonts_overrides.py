@@ -189,8 +189,8 @@ def test_check_override_varfont_valid_default_instance_nameids(check):
     assert "Overridden" in msg
 
 
-@check_id("opentype/stat_has_axis_value_tables", profile=adobefonts_profile)
-def test_check_override_stat_has_axis_value_tables(check):
+@check_id("opentype/STAT_has_axis_value_tables", profile=adobefonts_profile)
+def test_check_override_STAT_has_axis_value_tables(check):
     """Check that overridden tests yield the right result."""
 
     # Our reference Cabin[wdth,wght].ttf variable font has Axis Value tables.
@@ -220,11 +220,11 @@ def test_check_override_stat_has_axis_value_tables(check):
     assert "Overridden" in msg
 
 
-@check_id("inconsistencies_between_fvar_stat", profile=adobefonts_profile)
-def test_check_override_inconsistencies_between_fvar_stat(check):
+@check_id("inconsistencies_between_fvar_STAT", profile=adobefonts_profile)
+def test_check_override_inconsistencies_between_fvar_STAT(check):
     """Check that the overridden test yields WARN rather than FAIL"""
 
-    ttFont = TTFont(TEST_FILE("bad_fonts/fvar_stat_differences/AxisLocationVAR.ttf"))
+    ttFont = TTFont(TEST_FILE("bad_fonts/fvar_STAT_differences/AxisLocationVAR.ttf"))
     # add name with wrong order of name parts
     ttFont["name"].setName("Medium Text", 277, 3, 1, 0x409)
     assert_results_contain(

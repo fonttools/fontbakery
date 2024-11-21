@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL, PASS
 
 
 @check(
-    id="opentype/stat_has_axis_value_tables",
+    id="opentype/STAT_has_axis_value_tables",
     rationale="""
         According to the OpenType spec, in a variable font, it is strongly recommended
         that axis value tables be included for every element of typographic subfamily
@@ -21,10 +21,10 @@ from fontbakery.prelude import check, Message, FAIL, PASS
     conditions=["has_STAT_table"],
     proposal="https://github.com/fonttools/fontbakery/issues/3090",
 )
-def check_stat_has_axis_value_tables(ttFont, is_variable_font):
+def check_STAT_has_axis_value_tables(ttFont, is_variable_font):
     """STAT table has Axis Value tables?"""
     passed = True
-    stat_table = ttFont["STAT"].table
+    STAT_table = ttFont["STAT"].table
 
     if ttFont["STAT"].table.AxisValueCount == 0:
         yield FAIL, Message(
@@ -35,13 +35,13 @@ def check_stat_has_axis_value_tables(ttFont, is_variable_font):
 
     if is_variable_font:
         # Collect all the values defined for each design axis in the STAT table.
-        stat_axes_values = {}
-        for axis_index, axis in enumerate(stat_table.DesignAxisRecord.Axis):
+        STAT_axes_values = {}
+        for axis_index, axis in enumerate(STAT_table.DesignAxisRecord.Axis):
             axis_tag = axis.AxisTag
             axis_values = set()
 
             # Iterate over Axis Value tables.
-            for axis_value in stat_table.AxisValueArray.AxisValue:
+            for axis_value in STAT_table.AxisValueArray.AxisValue:
                 axis_value_format = axis_value.Format
 
                 if axis_value_format in (1, 2, 3):
@@ -56,7 +56,7 @@ def check_stat_has_axis_value_tables(ttFont, is_variable_font):
 
                 elif axis_value_format == 4:
                     # check that axisCount > 1. Also, format 4 records DO NOT
-                    # contribute to the "stat_axes_values" list used to check
+                    # contribute to the "STAT_axes_values" list used to check
                     # against fvar instances.
                     # see https://github.com/fonttools/fontbakery/issues/3957
                     if axis_value.AxisCount <= 1:
@@ -72,15 +72,15 @@ def check_stat_has_axis_value_tables(ttFont, is_variable_font):
                         f"AxisValue format {axis_value_format} is unknown.",
                     )
 
-            stat_axes_values[axis_tag] = axis_values
+            STAT_axes_values[axis_tag] = axis_values
 
         # Iterate over the 'fvar' named instances, and confirm that every coordinate
         # can be represented by the STAT table Axis Value tables.
         for inst in ttFont["fvar"].instances:
             for coord_axis_tag, coord_axis_value in inst.coordinates.items():
                 if (
-                    coord_axis_tag in stat_axes_values
-                    and coord_axis_value in stat_axes_values[coord_axis_tag]
+                    coord_axis_tag in STAT_axes_values
+                    and coord_axis_value in STAT_axes_values[coord_axis_tag]
                 ):
                     continue
 

@@ -3,7 +3,7 @@ from fontbakery.utils import bullet_list
 
 
 @check(
-    id="opentype/varfont/stat_axis_record_for_each_axis",
+    id="opentype/varfont/STAT_axis_record_for_each_axis",
     rationale="""
         According to the OpenType spec, there must be an Axis Record
         for every axis defined in the fvar table.
@@ -13,11 +13,11 @@ from fontbakery.utils import bullet_list
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/3017",
 )
-def check_varfont_stat_axis_record_for_each_axis(ttFont, config):
+def check_varfont_STAT_axis_record_for_each_axis(ttFont, config):
     """All fvar axes have a correspondent Axis Record on STAT table?"""
     fvar_axes = set(a.axisTag for a in ttFont["fvar"].axes)
-    stat_axes = set(a.AxisTag for a in ttFont["STAT"].table.DesignAxisRecord.Axis)
-    missing_axes = fvar_axes - stat_axes
+    STAT_axes = set(a.AxisTag for a in ttFont["STAT"].table.DesignAxisRecord.Axis)
+    missing_axes = fvar_axes - STAT_axes
     if len(missing_axes) > 0:
         yield FAIL, Message(
             "missing-axis-records",

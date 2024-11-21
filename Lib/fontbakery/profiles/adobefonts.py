@@ -34,8 +34,8 @@ PROFILE = {
         "opentype/gdef_non_mark_chars",
         "opentype/gdef_spacing_marks",
         "opentype/italic_angle",
-        "opentype/italic_axis_in_stat",
-        "opentype/italic_axis_in_stat_is_boolean",
+        "opentype/italic_axis_in_STAT",
+        "opentype/italic_axis_in_STAT_is_boolean",
         "opentype/italic_axis_last",
         "opentype/mac_style",
         "opentype/slant_direction",
@@ -197,7 +197,7 @@ PROFILE = {
                 "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
         ],
-        "opentype/stat_has_axis_value_tables": [
+        "opentype/STAT_has_axis_value_tables": [
             {
                 "code": "missing-axis-value-table",
                 "status": "WARN",
@@ -211,7 +211,7 @@ PROFILE = {
                 "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
         ],
-        "inconsistencies_between_fvar_stat": [
+        "inconsistencies_between_fvar_STAT": [
             {
                 "code": "missing-fvar-instance-axis-value",
                 "status": "WARN",
