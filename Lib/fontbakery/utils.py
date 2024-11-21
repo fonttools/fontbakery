@@ -822,3 +822,22 @@ def is_non_spacing_mark_char(charcode):
         # Characters with the category Mc, Spacing_Mark should not be considered
         # as non spacing marks.
         return category in ("Mn", "Me")
+
+
+def get_advance_width_for_char(ttFont, ch):
+    cp = ord(ch)
+    cmap = ttFont.getBestCmap()
+    if cp not in cmap:
+        return None
+    return ttFont["hmtx"][cmap[cp]][0]
+
+
+def unicoderange(ttFont):
+    """Get an integer bitmap representing the UnicodeRange fields in the os/2 table."""
+    os2 = ttFont["OS/2"]
+    return (
+        os2.ulUnicodeRange1
+        | os2.ulUnicodeRange2 << 32
+        | os2.ulUnicodeRange3 << 64
+        | os2.ulUnicodeRange4 << 96
+    )
