@@ -43,7 +43,6 @@ def check_article_images(config, family_directory):
 
     article_dir = os.path.join(family_directory, "article")
     article_path = os.path.join(article_dir, "ARTICLE.en_us.html")
-    images_dir = os.path.join(article_dir, "images")
 
     if not os.path.exists(article_path):
         yield WARN, Message(

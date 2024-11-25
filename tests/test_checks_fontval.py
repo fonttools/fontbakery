@@ -16,7 +16,6 @@ def test_check_fontvalidator(check):
     """MS Font Validator checks"""
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
-    config = {}
 
     # Then we make sure that there wasn't an ERROR
     # which would mean FontValidator is not properly installed:
@@ -25,7 +24,6 @@ def test_check_fontvalidator(check):
 
     # Simulate FontVal missing.
     import os
-
     old_path = os.environ["PATH"]
     os.environ["PATH"] = ""
     with pytest.raises(OSError) as _:
