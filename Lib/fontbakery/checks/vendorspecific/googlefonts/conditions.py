@@ -506,3 +506,49 @@ def expected_font_names(ttFont, ttFonts):
         build_fvar_instances(font_cp)
         build_stat(font_cp, siblings)
     return font_cp
+
+
+@condition(Font)
+def is_claiming_to_be_cjk_font(font):
+    """Test font object to confirm that it meets our definition of a CJK font file.
+
+    We do this in two ways: in some cases, we are testing the *metadata*,
+    i.e. what the font claims about itself, in which case the definition is
+    met if any of the following conditions are True:
+
+      1. The font has a CJK code page bit set in the OS/2 table
+      2. The font has a CJK Unicode range bit set in the OS/2 table
+
+    See below for another way of testing this.
+    """
+    from fontbakery.constants import (
+        CJK_CODEPAGE_BITS,
+        CJK_UNICODE_RANGE_BITS,
+    )
+
+    if not font.has_os2_table:
+        return
+
+    os2 = font.ttFont["OS/2"]
+
+    # OS/2 code page checks
+    for _, bit in CJK_CODEPAGE_BITS.items():
+        if os2.ulCodePageRange1 & (1 << bit):
+            return True
+
+    # OS/2 Unicode range checks
+    for _, bit in CJK_UNICODE_RANGE_BITS.items():
+        if bit in range(0, 32):
+            if os2.ulUnicodeRange1 & (1 << bit):
+                return True
+
+        elif bit in range(32, 64):
+            if os2.ulUnicodeRange2 & (1 << (bit - 32)):
+                return True
+
+        elif bit in range(64, 96):
+            if os2.ulUnicodeRange3 & (1 << (bit - 64)):
+                return True
+
+    # default, return False if the above checks did not identify a CJK font
+    return False

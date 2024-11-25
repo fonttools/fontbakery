@@ -1,10 +1,10 @@
 import pytest
 from fontTools.ttLib import TTFont
 
-from fontbakery.checks.vendorspecific.googlefonts.glyphset import is_icon_font
 from fontbakery.codetesting import TEST_FILE, MockContext, MockFont
 from fontbakery.fonts_profile import setup_context
 from fontbakery.testable import Font
+from fontbakery.utils import is_icon_font
 
 
 @pytest.mark.parametrize(
