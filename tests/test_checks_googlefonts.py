@@ -3793,9 +3793,9 @@ def test_check_axes_match(check, fp, mod, result, code):
         ),
     ],
 )
-@check_id("googlefonts/STAT")
-def test_check_STAT(check, fps, new_stat, result):
-    """Check STAT table Axis Values are correct"""
+@check_id("googlefonts/STAT/compulsory_axis_values")
+def test_check_STAT_compulsory_axis_values(check, fps, new_stat, result):
+    """Check a font's STAT table contains compulsory Axis Values."""
     # more comprehensive checks are available in the axisregistry:
     # https://github.com/googlefonts/axisregistry/blob/main/tests/test_names.py#L442
     # this check merely exists to check that everything is hooked up correctly

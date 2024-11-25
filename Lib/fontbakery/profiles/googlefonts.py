@@ -137,9 +137,9 @@ PROFILE = {
             "googlefonts/os2/use_typo_metrics",
             "googlefonts/production_glyphs_similarity",
             # "googlefonts/production_encoded_glyphs",  # DISABLED
-            "googlefonts/STAT",
             "googlefonts/STAT/axis_order",
             "googlefonts/STAT/axisregistry",
+            "googlefonts/STAT/compulsory_axis_values",
             "googlefonts/unitsperem",
             "googlefonts/usweightclass",
             "googlefonts/varfont/bold_wght_coord",

@@ -13,7 +13,7 @@ from fontbakery.constants import (
     WindowsLanguageID,
 )
 from fontbakery.utils import exit_with_install_instructions
-
+from fontbakery.checks.vendorspecific.googlefonts.utils import parse_html
 
 # @condition
 # def glyphsFile(glyphs_file):
@@ -103,6 +103,21 @@ def canonical_stylename(font):
 
 
 @condition(Font)
+def article(font):
+    """Read article/ARTICLE.en_us.html file from a font directory."""
+    descfile = os.path.join(os.path.dirname(font.file), "article", "ARTICLE.en_us.html")
+    if os.path.exists(descfile):
+        return open(descfile, "r", encoding="utf-8").read()
+    else:
+        return None
+
+
+@condition(Font)
+def article_html(font):
+    return parse_html(font.article)
+
+
+@condition(Font)
 def descfile(font):
     """Get the path of the DESCRIPTION file of a given font project."""
     if font:
@@ -120,6 +135,35 @@ def description(font):
     import io
 
     return io.open(font.descfile, "r", encoding="utf-8").read()
+
+
+@condition(Font)
+def description_html(font):
+    return parse_html(font.description)
+
+
+@condition(Font)
+def description_and_article(font):
+    description = font.description
+    article = font.article
+    result = {}
+    if description:
+        result["description"] = description
+    if article:
+        result["article"] = article
+    return result
+
+
+@condition(Font)
+def description_and_article_html(font):
+    description = font.description_html
+    article = font.article_html
+    result = {}
+    if description:
+        result["description"] = description
+    if article:
+        result["article"] = article
+    return result
 
 
 @condition(Font)
@@ -154,7 +198,9 @@ def family_metadata(font):
     except ImportError:
         exit_with_install_instructions("googlefonts")
 
-    from fontbakery.utils import get_FamilyProto_Message
+    from fontbakery.checks.vendorspecific.googlefonts.utils import (
+        get_FamilyProto_Message,
+    )
 
     try:
         return get_FamilyProto_Message(font.metadata_file)
@@ -372,43 +418,6 @@ def regular_ttFont(context):
             if get_instance_axis_value(ttFont, "Regular", "wght"):
                 return ttFont
     return None
-
-
-# @condition
-# def api_gfonts_ttFont(style, remote_styles):
-#     """Get a TTFont object of a font downloaded from Google Fonts
-#     corresponding to the given TTFont object of
-#     a local font being checked.
-#     """
-#     if remote_styles and style in remote_styles:
-#         return remote_styles[style]
-
-
-# @condition
-# def github_gfonts_ttFont(ttFont, license_filename, network):
-#     """Get a TTFont object of a font downloaded
-#     from Google Fonts git repository.
-#     """
-#     if not license_filename or not network:
-#         return None
-
-#     from fontbakery.utils import download_file
-#     from fontTools.ttLib import TTFont
-#     from urllib.request import HTTPError
-
-#     LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
-#     filename = os.path.basename(ttFont.reader.file.name)
-#     familyname = filename.split("-")[0].split("[")[0].lower()
-#     url = (
-#         f"https://github.com/google/fonts/raw/main"
-#         f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/{filename}"
-#     )
-#     try:
-#         fontfile = download_file(url)
-#         if fontfile:
-#             return TTFont(fontfile)
-#     except HTTPError:
-#         return None
 
 
 @condition(Font)

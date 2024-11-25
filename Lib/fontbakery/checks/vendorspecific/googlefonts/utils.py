@@ -6,6 +6,13 @@ from fontbakery.utils import exit_with_install_instructions
 
 
 @lru_cache(maxsize=1)
+def GFAxisRegistry():
+    from axisregistry import AxisRegistry
+
+    return AxisRegistry()
+
+
+@lru_cache(maxsize=1)
 def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
 
@@ -60,3 +67,48 @@ def registered_vendor_ids():
             registered_vendor_ids[code] = labels[0]
 
     return registered_vendor_ids
+
+
+def get_Protobuf_Message(klass, path):
+    try:
+        from google.protobuf import text_format
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
+
+    message = klass()
+    text_data = open(path, "rb").read()
+    text_format.Merge(text_data, message)
+    return message
+
+
+def get_FamilyProto_Message(path):
+    try:
+        from fontbakery.fonts_public_pb2 import FamilyProto
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
+
+    return get_Protobuf_Message(FamilyProto, path)
+
+
+def get_DesignerInfoProto_Message(text_data):
+    try:
+        from fontbakery.designers_pb2 import DesignerInfoProto
+        from google.protobuf import text_format
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
+
+    message = DesignerInfoProto()
+    text_format.Merge(text_data, message)
+    return message
+
+
+def parse_html(html):
+    try:
+        from lxml import etree
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
+    if html:
+        try:
+            return etree.fromstring("<html>" + html + "</html>")
+        except etree.XMLSyntaxError:
+            return None
