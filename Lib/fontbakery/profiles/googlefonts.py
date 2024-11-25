@@ -79,7 +79,7 @@ PROFILE = {
             "googlefonts/family/tnum_horizontal_metrics",
         ],
         "Name table checks": [
-            "googlefonts/name/family_name_compliance",
+            "googlefonts/family_name_compliance",
             "googlefonts/name/line_breaks",
         ],
         "Licensing Checks": [

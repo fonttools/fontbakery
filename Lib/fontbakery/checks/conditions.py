@@ -467,3 +467,53 @@ def cff_analysis(font):
                 _analyze_cff(analysis, top_dict, private_dict, fd_index)
 
     return analysis
+
+
+@condition(Font)
+def licenses(font):
+    """Get a list of paths for every license
+    file found in a font project."""
+    from fontbakery.utils import git_rootdir
+
+    found = []
+    family_directory = font.family_directory
+    search_paths = [family_directory]
+    gitroot = git_rootdir(family_directory)
+    if gitroot and gitroot not in search_paths:
+        search_paths.append(gitroot)
+
+    for directory in search_paths:
+        if directory:
+            for license_filename in ["OFL.txt", "LICENSE.txt"]:
+                license_path = os.path.join(directory, license_filename)
+                if os.path.exists(license_path):
+                    found.append(license_path)
+    return found
+
+
+@condition(Font)
+def license_contents(font):
+    if font.license_path:
+        return open(font.license_path, encoding="utf-8").read().replace(" \n", "\n")
+
+
+@condition(Font)
+def license_path(font):
+    """Get license path."""
+    # This assumes that a repo can have multiple license files
+    # and they're all the same.
+    # FIXME: We should have a fontbakery check for that, though!
+    if font.licenses and len(font.licenses) > 0:
+        return font.licenses[0]
+
+
+@condition(Font)
+def license_filename(font):
+    """Get license filename."""
+    if font.license_path:
+        return os.path.basename(font.license_path)
+
+
+@condition(Font)
+def is_ofl(font):
+    return font.license_filename and "OFL" in font.license_filename
