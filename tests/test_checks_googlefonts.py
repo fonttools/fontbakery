@@ -636,7 +636,7 @@ def test_check_fstype(check):
 
 def test_condition_registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
-    from fontbakery.checks.vendorspecific.googlefonts.os2 import registered_vendor_ids
+    from fontbakery.checks.vendorspecific.googlefonts.utils import registered_vendor_ids
 
     registered_ids = registered_vendor_ids()
 

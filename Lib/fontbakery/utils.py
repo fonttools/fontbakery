@@ -23,7 +23,12 @@ from fontTools.pens.basePen import BasePen
 from fontTools.ttLib import TTFont
 import rich
 
-from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
+from fontbakery.constants import (
+    NO_COLORS_THEME,
+    DARK_THEME,
+    LIGHT_THEME,
+    PANOSE_Family_Type,
+)
 
 
 def exit_with_install_instructions(profile_name):
@@ -840,4 +845,11 @@ def unicoderange(ttFont):
         | os2.ulUnicodeRange2 << 32
         | os2.ulUnicodeRange3 << 64
         | os2.ulUnicodeRange4 << 96
+    )
+
+
+def is_icon_font(ttFont, config):
+    return config.get("is_icon_font") or (
+        "OS/2" in ttFont
+        and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
     )
