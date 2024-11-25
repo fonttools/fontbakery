@@ -24,6 +24,7 @@ def test_check_fontvalidator(check):
 
     # Simulate FontVal missing.
     import os
+
     old_path = os.environ["PATH"]
     os.environ["PATH"] = ""
     with pytest.raises(OSError) as _:

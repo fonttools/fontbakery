@@ -4,15 +4,15 @@ from pkg_resources import resource_filename
 
 from fontbakery.utils import exit_with_install_instructions
 
-try:
-    from bs4 import BeautifulSoup, NavigableString
-except ImportError:
-    exit_with_install_instructions("googlefonts")
-
 
 @lru_cache(maxsize=1)
 def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
+
+    try:
+        from bs4 import BeautifulSoup, NavigableString
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
 
     registered_vendor_ids = {}
     CACHED = resource_filename(

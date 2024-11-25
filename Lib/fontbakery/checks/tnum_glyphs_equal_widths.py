@@ -70,9 +70,9 @@ def check_tnum_glyphs_equal_widths(ttFont):
         check_text = TEST_STR  # type: ignore # noqa:F821 pylint:disable=E0602
 
     # Evaluate any unicode escape sequences, e.g. \N{PLUS SIGN}
-    check_text = "".join([
-        parse_unicode_escape(line) for line in check_text.splitlines()
-    ])
+    check_text = "".join(
+        [parse_unicode_escape(line) for line in check_text.splitlines()]
+    )
 
     # Check for existence of tnum opentype feature
     if "GSUB" not in ttFont:

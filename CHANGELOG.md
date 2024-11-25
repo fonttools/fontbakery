@@ -1,9 +1,9 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0 (2024-Nov-15)
-
+##  Upcoming release: 0.13.0a6 (2024-Nov-??)
 ### Noteworthy code-changes
+  - **Users are encouraged to try this pre-release as we're approaching the date when we'll cut a final v0.13.0 release...**
   - Full fix for bug where check details with more severe status would be missing from the HTML report if a check with the same ID but less severe status was omitted (issue #4687)
 
 ### New checks
@@ -16,6 +16,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[family/control_chars]:** renamed to **control_chars** as it is not realy a family-wide check. (issue #4896)
   - **[glyf_nested_components]**  renamed to **nested_components**.
 
+### On the Google Fonts profile
+  - **[googlefonts/name/family_name_compliance]**  renamed to **googlefonts/family_name_compliance**.
 
 
 ## 0.13.0a5 (2024-Nov-10)

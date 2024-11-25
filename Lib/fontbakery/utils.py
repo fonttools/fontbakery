@@ -853,3 +853,24 @@ def is_icon_font(ttFont, config):
         "OS/2" in ttFont
         and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
     )
+
+
+def git_rootdir(family_dir):
+    if not family_dir:
+        return None
+
+    root_dir = None
+
+    try:
+        git_cmd = ["git", "-C", family_dir, "rev-parse", "--show-toplevel"]
+        git_output = subprocess.check_output(git_cmd, stderr=subprocess.STDOUT)
+        root_dir = git_output.decode("utf-8").strip()
+
+    except (OSError, IOError, subprocess.CalledProcessError):
+        pass  # Not a git repo, or git is not installed.
+
+    return root_dir
+
+
+def typo_metrics_enabled(ttFont):
+    return ttFont["OS/2"].fsSelection & 0b10000000 > 0
