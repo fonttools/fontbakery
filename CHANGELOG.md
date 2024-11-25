@@ -18,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### On the Google Fonts profile
   - **[googlefonts/name/family_name_compliance]**  renamed to **googlefonts/family_name_compliance**.
+  - **[googlefonts/STAT** renamed to **googlefonts/STAT/compulsory_axis_values**
 
 
 ## 0.13.0a5 (2024-Nov-10)

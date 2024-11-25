@@ -2,6 +2,7 @@ import os
 
 from fontbakery.prelude import check, Message, PASS, FATAL, SKIP
 from fontbakery.utils import exit_with_install_instructions
+from fontbakery.checks.vendorspecific.googlefonts.utils import get_FamilyProto_Message
 
 
 @check(
@@ -17,7 +18,6 @@ def check_metadata_parses(family_directory):
     """Check METADATA.pb parse correctly."""
     try:
         from google.protobuf import text_format
-        from fontbakery.utils import get_FamilyProto_Message
     except ImportError:
         exit_with_install_instructions("googlefonts")
 

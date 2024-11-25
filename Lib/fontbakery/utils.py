@@ -311,39 +311,6 @@ def get_font_glyph_data(font):
     return font_data
 
 
-def get_Protobuf_Message(klass, path):
-    try:
-        from google.protobuf import text_format
-    except ImportError:
-        exit_with_install_instructions("googlefonts")
-
-    message = klass()
-    text_data = open(path, "rb").read()
-    text_format.Merge(text_data, message)
-    return message
-
-
-def get_FamilyProto_Message(path):
-    try:
-        from fontbakery.fonts_public_pb2 import FamilyProto
-    except ImportError:
-        exit_with_install_instructions("googlefonts")
-
-    return get_Protobuf_Message(FamilyProto, path)
-
-
-def get_DesignerInfoProto_Message(text_data):
-    try:
-        from fontbakery.designers_pb2 import DesignerInfoProto
-        from google.protobuf import text_format
-    except ImportError:
-        exit_with_install_instructions("googlefonts")
-
-    message = DesignerInfoProto()
-    text_format.Merge(text_data, message)
-    return message
-
-
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
     from fontbakery.message import Message
     from fontbakery.status import PASS, FAIL

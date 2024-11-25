@@ -1,4 +1,9 @@
+import requests
+
 from fontbakery.prelude import check, Message, FAIL, WARN
+from fontbakery.checks.vendorspecific.googlefonts.utils import (
+    get_DesignerInfoProto_Message,
+)
 
 
 @check(
@@ -19,8 +24,6 @@ def check_metadata_designer_profiles(family_metadata, config):
     DESIGNER_INFO_RAW_URL = (
         "https://raw.githubusercontent.com/google/fonts/master/catalog/designers/{}/"
     )
-    from fontbakery.utils import get_DesignerInfoProto_Message
-    import requests
 
     # NOTE: See issue #3316
     TRANSLATE = {
