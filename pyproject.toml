@@ -199,6 +199,13 @@ extend-exclude = '''
 '''
 
 # ============================================================================
+[tool.ruff]
+exclude = [
+    "*_pb2.py",
+    "Lib/fontbakery/prelude.py",
+]
+
+# ============================================================================
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = ["tests"]

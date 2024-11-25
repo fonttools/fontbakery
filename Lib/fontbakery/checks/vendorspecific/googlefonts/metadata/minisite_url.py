@@ -34,7 +34,6 @@ def check_metadata_minisite_url(family_metadata, family_metadata_text_content):
             url = url[:-11]
         return url
 
-    bad_urls = []
     expected = clean_url(minisite_url)
     if minisite_url != expected:
         yield FAIL, Message(

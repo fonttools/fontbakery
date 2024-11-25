@@ -1,7 +1,4 @@
-import re
-
 from fontbakery.prelude import PASS, FAIL
-from fontbakery.utils import get_family_name, get_subfamily_name
 
 
 def check_repertoire(ttFont, character_repertoire, name, error_status=FAIL):

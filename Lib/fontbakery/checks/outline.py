@@ -243,7 +243,6 @@ def check_outline_colinear_vectors(ttFont, outlines_dict, config):
 def check_outline_jaggy_segments(ttFont, outlines_dict, config):
     """Do outlines contain any jaggy segments?"""
     warnings = []
-    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
 
     for glyph, outlines in outlines_dict.items():
         glyphname, display_name = glyph

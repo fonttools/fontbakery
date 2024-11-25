@@ -19,8 +19,6 @@ def check_STAT_table_eliding_bit(ttFont):
         return
     for axis_value_record in stat_table.AxisValueArray.AxisValue:
         if axis_value_record.Format in [1, 2, 3, 4]:
-            axis_index = axis_value_record.AxisIndex
-            # axis_value = axis_value_record.Value
             value_name_id = axis_value_record.ValueNameID
             axis_value_flags = axis_value_record.Flags
             value_name = name_table.getName(value_name_id, 3, 1, 0x409).toUnicode()

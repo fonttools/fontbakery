@@ -2541,7 +2541,6 @@ def test_check_repo_vf_has_static_fonts(check, tmp_path):
 
     # in order for this check to work, we need to
     # mimic the folder structure of the Google Fonts repository
-    dir_path = "ofl/foo/bar"
     tmp_gf_dir = tmp_path / "repo_vf_has_static_fonts"
     tmp_gf_dir.mkdir()
     family_dir = tmp_gf_dir / "ofl/testfamily"
@@ -3646,7 +3645,7 @@ def test_check_metadata_category_hints(check):
 
 
 @pytest.mark.parametrize(
-    """fp,mod,result""",
+    """fp,mod,expected""",
     [
         # font includes condensed fvar instances so it should fail
         (TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"), [], FAIL),
@@ -3658,12 +3657,11 @@ def test_check_metadata_category_hints(check):
     ],
 )
 @check_id("googlefonts/fvar_instances")
-def test_check_fvar_instances(check, fp, mod, result):
+def test_check_fvar_instances(check, fp, mod, expected):
     """Check font fvar instances are correct"""
     from fontTools.ttLib.tables._f_v_a_r import NamedInstance
 
     ttFont = TTFont(fp)
-    expected = expected_font_names(ttFont, [])
     if mod:
         for name, wght_val in mod:
             inst = NamedInstance()
@@ -3671,9 +3669,10 @@ def test_check_fvar_instances(check, fp, mod, result):
             inst.coordinates = {"wght": wght_val}
             ttFont["fvar"].instances.append(inst)
 
-    if result == PASS:
+    if expected == PASS:
         assert_PASS(check(ttFont), "with a good font")
-    elif result == FAIL:
+
+    elif expected == FAIL:
         assert_results_contain(
             check(ttFont),
             FAIL,

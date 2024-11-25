@@ -53,7 +53,7 @@ def test_check_outline_alignment_os2_old(check):
     del ttFont["OS/2"].usBreakChar
     del ttFont["OS/2"].usMaxContext
 
-    message = assert_results_contain(check(ttFont), WARN, "skip-cap-x-height-alignment")
+    assert_results_contain(check(ttFont), WARN, "skip-cap-x-height-alignment")
 
 
 @check_id("outline_short_segments")

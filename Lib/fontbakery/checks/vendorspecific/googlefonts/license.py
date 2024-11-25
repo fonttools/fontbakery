@@ -442,7 +442,7 @@ def check_name_license_url(ttFont, familyname):
 def check_metadata_license(family_metadata):
     """METADATA.pb license is "APACHE2", "UFL" or "OFL"?"""
     expected_licenses = ["APACHE2", "OFL", "UFL"]
-    if not family_metadata.license in expected_licenses:
+    if family_metadata.license not in expected_licenses:
         yield FAIL, Message(
             "bad-license",
             f'METADATA.pb license field ("{family_metadata.license}")'

@@ -92,7 +92,6 @@ def check_usweightclass(font, tn_expected_os2_weight):
     os2_value = font.ttFont["OS/2"].usWeightClass
 
     fail_message = "OS/2 usWeightClass is '{}' when it should be '{}'."
-    warn_message = "OS/2 usWeightClass is '{}' it will be better if it is '{}'."
     no_value_message = "OS/2 usWeightClass is '{}' and weight name is '{}'."
 
     if font.is_variable_font:
