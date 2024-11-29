@@ -1,19 +1,20 @@
+import os
+from io import BytesIO
+import tempfile
+
+from dehinter.font import dehint
+from fontTools.subset import main as pyftsubset
+from fontTools.ttLib import TTFont
+
 from fontbakery.prelude import check, Message, INFO
 from fontbakery.testable import Font
 from fontbakery.utils import filesize_formatting
 
 
 def hinting_stats(font: Font):
+    """Return file size differences for a hinted font compared
+    to an dehinted version of same file.
     """
-    Return file size differences for a hinted font compared to an dehinted version
-    of same file
-    """
-    import os
-    from io import BytesIO
-    from dehinter.font import dehint
-    from fontTools.subset import main as pyftsubset
-    from fontTools.ttLib import TTFont
-
     hinted_size = os.stat(font.file).st_size
     ttFont = TTFont(font.file)  # Use our own copy since we will dehint it
 
@@ -25,7 +26,9 @@ def hinting_stats(font: Font):
         dehinted_size = len(dehinted_buffer.read())
     elif font.is_cff or font.is_cff2:
         ext = os.path.splitext(font.file)[1]
-        tmp = font.file.replace(ext, "-tmp-dehinted%s" % ext)
+        tmp_dir = tempfile.mkdtemp()
+        tmp = os.path.join(tmp_dir, "dehinted%s" % ext)
+
         args = [
             font.file,
             "--no-hinting",
@@ -45,7 +48,7 @@ def hinting_stats(font: Font):
 
         dehinted_size = os.stat(tmp).st_size
         os.remove(tmp)
-
+        os.rmdir(tmp_dir)
     else:
         return None
 
