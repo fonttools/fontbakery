@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 ### On the Universal profile
+  - **[[hinting_impact]]:** Fix ERROR when running from a directory where the user lacks write permissions. Use a better location for creating a temp-dir (and a temp-file) for this check. (issue #4917)
   - **[family/control_chars]:** renamed to **control_chars** as it is not realy a family-wide check. (issue #4896)
   - **[glyf_nested_components]**  renamed to **nested_components**.
 
