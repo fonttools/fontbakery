@@ -99,7 +99,7 @@ jobs:
             name: fontwerk
             args: >-
               -c weight_class_fvar
-              -c inconsistencies_between_fvar_stat
+              -c inconsistencies_between_fvar_STAT
               -c style_linking
               -c consistent_axes
               -c metadata/parses
