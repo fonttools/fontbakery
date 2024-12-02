@@ -82,8 +82,11 @@ message SourceProto {
   optional string branch = 5;
   optional string commit = 2;
   optional string archive_url = 3;
+  optional string config_yaml =
+      6;  // See https://github.com/googlefonts/fontc/issues/1124
   repeated SourceFileProto files = 4;
-  // Next = 6
+
+  // Next = 7
 }
 
 // A file to take from source and where to put it in dest

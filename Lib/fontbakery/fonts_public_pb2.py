@@ -11,46 +11,9 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-# XXX Old .pyi file inserted here
-from google.protobuf import descriptor as _descriptor, message as _message, reflection as _reflection, symbol_database as _symbol_database
-from google.protobuf.internal import enum_type_wrapper
-from typing import Any
-
-AxisSegmentProto: Any
-DESCRIPTOR: Any
-FamilyFallbackProto: Any
-FamilyProto: Any
-FontProto: Any
-GlyphGroupProto: Any
-SampleTextProto: Any
-SourceFileProto: Any
-SourceProto: Any
-TARGET_OS_ANDROID: int
-TARGET_OS_IOS: int
-TARGET_OS_LINUX: int
-TARGET_OS_MAC: int
-TARGET_OS_WINDOWS: int
-TARGET_UNSPECIFIED: int
-TargetProto: Any
-TargetTypeProto: Any
-_AXISSEGMENTPROTO: _descriptor.Descriptor
-_FAMILYFALLBACKPROTO: _descriptor.Descriptor
-_FAMILYPROTO: _descriptor.Descriptor
-_FAMILYPROTO_REGISTRYDEFAULTOVERRIDESENTRY: _descriptor.Descriptor
-_FAMILYPROTO_SAMPLEGLYPHSENTRY: _descriptor.Descriptor
-_FONTPROTO: _descriptor.Descriptor
-_GLYPHGROUPPROTO: _descriptor.Descriptor
-_SAMPLETEXTPROTO: _descriptor.Descriptor
-_SOURCEFILEPROTO: _descriptor.Descriptor
-_SOURCEPROTO: _descriptor.Descriptor
-_TARGETPROTO: _descriptor.Descriptor
-_TARGETTYPEPROTO: Any
-_sym_db: _symbol_database.SymbolDatabase
-# XXX Old .pyi file ends
 
 
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x66onts_public.proto\x12\x13google.fonts_public\"\xc4\x07\n\x0b\x46\x61milyProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x10\n\x08\x64\x65signer\x18\x02 \x02(\t\x12\x0f\n\x07license\x18\x03 \x02(\t\x12\x10\n\x08\x63\x61tegory\x18\x04 \x03(\t\x12\x12\n\ndate_added\x18\x05 \x02(\t\x12-\n\x05\x66onts\x18\x06 \x03(\x0b\x32\x1e.google.fonts_public.FontProto\x12\x0f\n\x07\x61liases\x18\x07 \x03(\t\x12\x0f\n\x07subsets\x18\x08 \x03(\t\x12\x19\n\x11ttf_autohint_args\x18\t \x01(\t\x12\x33\n\x04\x61xes\x18\n \x03(\x0b\x32%.google.fonts_public.AxisSegmentProto\x12\x62\n\x1aregistry_default_overrides\x18\x0b \x03(\x0b\x32>.google.fonts_public.FamilyProto.RegistryDefaultOverridesEntry\x12\x30\n\x06source\x18\x0c \x01(\x0b\x32 .google.fonts_public.SourceProto\x12\x0f\n\x07is_noto\x18\r \x01(\x08\x12\x11\n\tlanguages\x18\x0e \x03(\t\x12;\n\tfallbacks\x18\x0f \x03(\x0b\x32(.google.fonts_public.FamilyFallbackProto\x12I\n\rsample_glyphs\x18\x10 \x03(\x0b\x32\x32.google.fonts_public.FamilyProto.SampleGlyphsEntry\x12\x39\n\x0bsample_text\x18\x11 \x01(\x0b\x32$.google.fonts_public.SampleTextProto\x12\x14\n\x0c\x64isplay_name\x18\x12 \x01(\t\x12\x43\n\x15ordered_sample_glyphs\x18\x13 \x03(\x0b\x32$.google.fonts_public.GlyphGroupProto\x12\x14\n\x0cminisite_url\x18\x14 \x01(\t\x12\x16\n\x0eprimary_script\x18\x15 \x01(\t\x12\x18\n\x10primary_language\x18\x16 \x01(\t\x12\x0e\n\x06stroke\x18\x17 \x01(\t\x12\x17\n\x0f\x63lassifications\x18\x19 \x03(\t\x1a?\n\x1dRegistryDefaultOverridesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\x1a\x33\n\x11SampleGlyphsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\tFontProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05style\x18\x02 \x02(\t\x12\x0e\n\x06weight\x18\x03 \x02(\x05\x12\x10\n\x08\x66ilename\x18\x04 \x02(\t\x12\x18\n\x10post_script_name\x18\x05 \x02(\t\x12\x11\n\tfull_name\x18\x06 \x02(\t\x12\x11\n\tcopyright\x18\x07 \x01(\t\"Z\n\x10\x41xisSegmentProto\x12\x0b\n\x03tag\x18\x01 \x01(\t\x12\x11\n\tmin_value\x18\x02 \x01(\x02\x12\x11\n\tmax_value\x18\x04 \x01(\x02J\x04\x08\x03\x10\x04R\rdefault_value\"\x8f\x01\n\x0bSourceProto\x12\x16\n\x0erepository_url\x18\x01 \x01(\t\x12\x0e\n\x06\x62ranch\x18\x05 \x01(\t\x12\x0e\n\x06\x63ommit\x18\x02 \x01(\t\x12\x13\n\x0b\x61rchive_url\x18\x03 \x01(\t\x12\x33\n\x05\x66iles\x18\x04 \x03(\x0b\x32$.google.fonts_public.SourceFileProto\"9\n\x0fSourceFileProto\x12\x13\n\x0bsource_file\x18\x01 \x01(\t\x12\x11\n\tdest_file\x18\x02 \x01(\t\"H\n\x0bTargetProto\x12\x39\n\x0btarget_type\x18\x01 \x01(\x0e\x32$.google.fonts_public.TargetTypeProto\"\xcc\x01\n\x13\x46\x61milyFallbackProto\x12:\n\x0b\x61xis_target\x18\x01 \x03(\x0b\x32%.google.fonts_public.AxisSegmentProto\x12\x30\n\x06target\x18\x02 \x03(\x0b\x32 .google.fonts_public.TargetProto\x12\x17\n\x0fsize_adjust_pct\x18\x03 \x01(\x02\x12\x1b\n\x13\x61scent_override_pct\x18\x05 \x01(\x02\x12\x11\n\tlocal_src\x18\x04 \x03(\t\"\x92\x02\n\x0fSampleTextProto\x12\x15\n\rmasthead_full\x18\x01 \x01(\t\x12\x18\n\x10masthead_partial\x18\x02 \x01(\t\x12\x0e\n\x06styles\x18\x03 \x01(\t\x12\x0e\n\x06tester\x18\x04 \x01(\t\x12\x11\n\tposter_sm\x18\x05 \x01(\t\x12\x11\n\tposter_md\x18\x06 \x01(\t\x12\x11\n\tposter_lg\x18\x07 \x01(\t\x12\x13\n\x0bspecimen_48\x18\x08 \x01(\t\x12\x13\n\x0bspecimen_36\x18\t \x01(\t\x12\x13\n\x0bspecimen_32\x18\n \x01(\t\x12\x13\n\x0bspecimen_21\x18\x0b \x01(\t\x12\x13\n\x0bspecimen_16\x18\x0c \x01(\t\x12\x0c\n\x04note\x18\r \x01(\t\"/\n\x0fGlyphGroupProto\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06glyphs\x18\x02 \x01(\t*\x92\x01\n\x0fTargetTypeProto\x12\x16\n\x12TARGET_UNSPECIFIED\x10\x00\x12\x15\n\x11TARGET_OS_WINDOWS\x10\x01\x12\x11\n\rTARGET_OS_MAC\x10\x02\x12\x13\n\x0fTARGET_OS_LINUX\x10\x03\x12\x15\n\x11TARGET_OS_ANDROID\x10\x04\x12\x11\n\rTARGET_OS_IOS\x10\x05\x42%\n\x16\x63om.google.fonts.protoB\x0b\x46ontsPublic')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x66onts_public.proto\x12\x13google.fonts_public\"\xc4\x07\n\x0b\x46\x61milyProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x10\n\x08\x64\x65signer\x18\x02 \x02(\t\x12\x0f\n\x07license\x18\x03 \x02(\t\x12\x10\n\x08\x63\x61tegory\x18\x04 \x03(\t\x12\x12\n\ndate_added\x18\x05 \x02(\t\x12-\n\x05\x66onts\x18\x06 \x03(\x0b\x32\x1e.google.fonts_public.FontProto\x12\x0f\n\x07\x61liases\x18\x07 \x03(\t\x12\x0f\n\x07subsets\x18\x08 \x03(\t\x12\x19\n\x11ttf_autohint_args\x18\t \x01(\t\x12\x33\n\x04\x61xes\x18\n \x03(\x0b\x32%.google.fonts_public.AxisSegmentProto\x12\x62\n\x1aregistry_default_overrides\x18\x0b \x03(\x0b\x32>.google.fonts_public.FamilyProto.RegistryDefaultOverridesEntry\x12\x30\n\x06source\x18\x0c \x01(\x0b\x32 .google.fonts_public.SourceProto\x12\x0f\n\x07is_noto\x18\r \x01(\x08\x12\x11\n\tlanguages\x18\x0e \x03(\t\x12;\n\tfallbacks\x18\x0f \x03(\x0b\x32(.google.fonts_public.FamilyFallbackProto\x12I\n\rsample_glyphs\x18\x10 \x03(\x0b\x32\x32.google.fonts_public.FamilyProto.SampleGlyphsEntry\x12\x39\n\x0bsample_text\x18\x11 \x01(\x0b\x32$.google.fonts_public.SampleTextProto\x12\x14\n\x0c\x64isplay_name\x18\x12 \x01(\t\x12\x43\n\x15ordered_sample_glyphs\x18\x13 \x03(\x0b\x32$.google.fonts_public.GlyphGroupProto\x12\x14\n\x0cminisite_url\x18\x14 \x01(\t\x12\x16\n\x0eprimary_script\x18\x15 \x01(\t\x12\x18\n\x10primary_language\x18\x16 \x01(\t\x12\x0e\n\x06stroke\x18\x17 \x01(\t\x12\x17\n\x0f\x63lassifications\x18\x19 \x03(\t\x1a?\n\x1dRegistryDefaultOverridesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\x1a\x33\n\x11SampleGlyphsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\tFontProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05style\x18\x02 \x02(\t\x12\x0e\n\x06weight\x18\x03 \x02(\x05\x12\x10\n\x08\x66ilename\x18\x04 \x02(\t\x12\x18\n\x10post_script_name\x18\x05 \x02(\t\x12\x11\n\tfull_name\x18\x06 \x02(\t\x12\x11\n\tcopyright\x18\x07 \x01(\t\"Z\n\x10\x41xisSegmentProto\x12\x0b\n\x03tag\x18\x01 \x01(\t\x12\x11\n\tmin_value\x18\x02 \x01(\x02\x12\x11\n\tmax_value\x18\x04 \x01(\x02J\x04\x08\x03\x10\x04R\rdefault_value\"\xa4\x01\n\x0bSourceProto\x12\x16\n\x0erepository_url\x18\x01 \x01(\t\x12\x0e\n\x06\x62ranch\x18\x05 \x01(\t\x12\x0e\n\x06\x63ommit\x18\x02 \x01(\t\x12\x13\n\x0b\x61rchive_url\x18\x03 \x01(\t\x12\x13\n\x0b\x63onfig_yaml\x18\x06 \x01(\t\x12\x33\n\x05\x66iles\x18\x04 \x03(\x0b\x32$.google.fonts_public.SourceFileProto\"9\n\x0fSourceFileProto\x12\x13\n\x0bsource_file\x18\x01 \x01(\t\x12\x11\n\tdest_file\x18\x02 \x01(\t\"H\n\x0bTargetProto\x12\x39\n\x0btarget_type\x18\x01 \x01(\x0e\x32$.google.fonts_public.TargetTypeProto\"\xcc\x01\n\x13\x46\x61milyFallbackProto\x12:\n\x0b\x61xis_target\x18\x01 \x03(\x0b\x32%.google.fonts_public.AxisSegmentProto\x12\x30\n\x06target\x18\x02 \x03(\x0b\x32 .google.fonts_public.TargetProto\x12\x17\n\x0fsize_adjust_pct\x18\x03 \x01(\x02\x12\x1b\n\x13\x61scent_override_pct\x18\x05 \x01(\x02\x12\x11\n\tlocal_src\x18\x04 \x03(\t\"\x92\x02\n\x0fSampleTextProto\x12\x15\n\rmasthead_full\x18\x01 \x01(\t\x12\x18\n\x10masthead_partial\x18\x02 \x01(\t\x12\x0e\n\x06styles\x18\x03 \x01(\t\x12\x0e\n\x06tester\x18\x04 \x01(\t\x12\x11\n\tposter_sm\x18\x05 \x01(\t\x12\x11\n\tposter_md\x18\x06 \x01(\t\x12\x11\n\tposter_lg\x18\x07 \x01(\t\x12\x13\n\x0bspecimen_48\x18\x08 \x01(\t\x12\x13\n\x0bspecimen_36\x18\t \x01(\t\x12\x13\n\x0bspecimen_32\x18\n \x01(\t\x12\x13\n\x0bspecimen_21\x18\x0b \x01(\t\x12\x13\n\x0bspecimen_16\x18\x0c \x01(\t\x12\x0c\n\x04note\x18\r \x01(\t\"/\n\x0fGlyphGroupProto\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06glyphs\x18\x02 \x01(\t*\x92\x01\n\x0fTargetTypeProto\x12\x16\n\x12TARGET_UNSPECIFIED\x10\x00\x12\x15\n\x11TARGET_OS_WINDOWS\x10\x01\x12\x11\n\rTARGET_OS_MAC\x10\x02\x12\x13\n\x0fTARGET_OS_LINUX\x10\x03\x12\x15\n\x11TARGET_OS_ANDROID\x10\x04\x12\x11\n\rTARGET_OS_IOS\x10\x05\x42%\n\x16\x63om.google.fonts.protoB\x0b\x46ontsPublic')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'fonts_public_pb2', globals())
@@ -62,8 +25,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _FAMILYPROTO_REGISTRYDEFAULTOVERRIDESENTRY._serialized_options = b'8\001'
   _FAMILYPROTO_SAMPLEGLYPHSENTRY._options = None
   _FAMILYPROTO_SAMPLEGLYPHSENTRY._serialized_options = b'8\001'
-  _TARGETTYPEPROTO._serialized_start=2056
-  _TARGETTYPEPROTO._serialized_end=2202
+  _TARGETTYPEPROTO._serialized_start=2077
+  _TARGETTYPEPROTO._serialized_end=2223
   _FAMILYPROTO._serialized_start=44
   _FAMILYPROTO._serialized_end=1008
   _FAMILYPROTO_REGISTRYDEFAULTOVERRIDESENTRY._serialized_start=892
@@ -75,15 +38,15 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _AXISSEGMENTPROTO._serialized_start=1151
   _AXISSEGMENTPROTO._serialized_end=1241
   _SOURCEPROTO._serialized_start=1244
-  _SOURCEPROTO._serialized_end=1387
-  _SOURCEFILEPROTO._serialized_start=1389
-  _SOURCEFILEPROTO._serialized_end=1446
-  _TARGETPROTO._serialized_start=1448
-  _TARGETPROTO._serialized_end=1520
-  _FAMILYFALLBACKPROTO._serialized_start=1523
-  _FAMILYFALLBACKPROTO._serialized_end=1727
-  _SAMPLETEXTPROTO._serialized_start=1730
-  _SAMPLETEXTPROTO._serialized_end=2004
-  _GLYPHGROUPPROTO._serialized_start=2006
-  _GLYPHGROUPPROTO._serialized_end=2053
+  _SOURCEPROTO._serialized_end=1408
+  _SOURCEFILEPROTO._serialized_start=1410
+  _SOURCEFILEPROTO._serialized_end=1467
+  _TARGETPROTO._serialized_start=1469
+  _TARGETPROTO._serialized_end=1541
+  _FAMILYFALLBACKPROTO._serialized_start=1544
+  _FAMILYFALLBACKPROTO._serialized_end=1748
+  _SAMPLETEXTPROTO._serialized_start=1751
+  _SAMPLETEXTPROTO._serialized_end=2025
+  _GLYPHGROUPPROTO._serialized_start=2027
+  _GLYPHGROUPPROTO._serialized_end=2074
 # @@protoc_insertion_point(module_scope)
