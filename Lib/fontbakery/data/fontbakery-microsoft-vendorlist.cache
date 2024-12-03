@@ -30,12 +30,12 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="Standard" />
-<meta name="git_commit_id" content="486e0e746ccaf047c421c8312e18d8e3c871ba67" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/486e0e746ccaf047c421c8312e18d8e3c871ba67/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="4d3b7b392514027d044a59ed84cd64aa584c0b4d" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/4d3b7b392514027d044a59ed84cd64aa584c0b4d/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="10/28/2024" />
+<meta name="ms.date" content="11/19/2024" />
 <meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -46,8 +46,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-10-28 03:38 PM" />
-<meta name="word_count" content="5062" />
+<meta name="updated_at" content="2024-11-19 05:30 PM" />
+<meta name="word_count" content="5085" />
 <meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
 	
 	<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c0439c36-80e3-415f-8e4c-6951e3f1b136" data-source="generated" />
@@ -57,7 +57,7 @@
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/2812d699-d85f-4a7f-839d-44e218b35d24" data-source="generated" />
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/3f56b378-07a9-4fa1-afe8-9889fdc77628" data-source="generated" />
 	<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/57828563-e363-48c1-ac42-c4d23fb7ba52" data-source="generated" />
-	<meta name="scope" content="typography" /><meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" /><link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical"><title>Registered font vendors - Typography | Microsoft Learn</title><link rel="stylesheet" href="/static/assets/0.4.028616137/styles/site-ltr.css">
+	<meta name="scope" content="typography" /><meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" /><link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical"><title>Registered font vendors - Typography | Microsoft Learn</title><link rel="stylesheet" href="/static/assets/0.4.028726178/styles/site-ltr.css">
 
 	<script id="msdocs-script">
 	var msDocs = {environment: {
@@ -96,7 +96,7 @@
 		functions:{}
 	};
 	</script><script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
-	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script><script src="/static/assets/0.4.028616137/global/deprecation.js"></script><script src="/static/assets/0.4.028616137/scripts/en-us/index-docs.js"></script></head>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script><script src="/static/assets/0.4.028726178/global/deprecation.js"></script><script src="/static/assets/0.4.028726178/scripts/en-us/index-docs.js"></script></head>
 
 <body lang="en-us" dir="ltr">
 	<div class="header-holder has-default-focus">
@@ -336,7 +336,7 @@
 
 							<div class="content "><h1 id="registered-font-vendors">Registered font vendors</h1><div class="display-flex justify-content-space-between align-items-center flex-wrap-wrap page-metadata-container">
 										<div class="margin-right-xxs">
-											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr"><li>Article</li><li class="visibility-hidden-visual-diff"><time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-10-28T08:00:00Z" data-article-date-source="calculated">10/28/2024</time>
+											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr"><li>Article</li><li class="visibility-hidden-visual-diff"><time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-11-19T08:00:00Z" data-article-date-source="calculated">11/19/2024</time>
 															</li><li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">8 contributors</button>
 														</li></ul>
@@ -431,7 +431,7 @@
 </tr>
 <tr>
 <td>3011</td>
-<td><a href="https://svgup.com/" data-linktype="external">LuxSVG</a></td>
+<td>LuxSVG</td>
 </tr>
 <tr>
 <td>1ASC</td>
@@ -797,6 +797,10 @@
 <td><a href="https://www.andresimard.ca/" data-linktype="external">André Simard Typedesigner</a></td>
 </tr>
 <tr>
+<td>ANGT</td>
+<td><a href="https://anagata.design/" data-linktype="external">Anagata</a></td>
+</tr>
+<tr>
 <td>anir</td>
 <td><a href="https://fonts.atipra.in/" data-linktype="external">Dr Anirban Mitra</a></td>
 </tr>
@@ -1001,6 +1005,10 @@
 <td>Agustín Varela Font Factory</td>
 </tr>
 <tr>
+<td>AvGd</td>
+<td><a href="https://github.com/Avante-Vangard" data-linktype="external">Avante Vangard Publishing Tools</a></td>
+</tr>
+<tr>
 <td>AVP</td>
 <td><a href="http://www.codesign.co.uk" data-linktype="external">Aviation Partners</a></td>
 </tr>
@@ -1158,10 +1166,6 @@
 <tr>
 <td>BGDN</td>
 <td><a href="http://www.ryanbugden.com" data-linktype="external">Ryan Bugden</a></td>
-</tr>
-<tr>
-<td>BGFX</td>
-<td><a href="https://berkeleygraphics.com/" data-linktype="external">Berkeley Graphics</a></td>
 </tr>
 <tr>
 <td>bgtl</td>
@@ -1559,6 +1563,10 @@
 <td>CHIC Type</td>
 </tr>
 <tr>
+<td>CHLL</td>
+<td><a href="https://chilltype.com" data-linktype="external">Chill Type</a></td>
+</tr>
+<tr>
 <td>CHRY</td>
 <td>Cherry Fonts</td>
 </tr>
@@ -1648,7 +1656,7 @@
 </tr>
 <tr>
 <td>CONT</td>
-<td><a href="http://www.contemporarytype.com/" data-linktype="external">Contemporary Type</a></td>
+<td>Contemporary Type</td>
 </tr>
 <tr>
 <td>COOL</td>
@@ -2217,6 +2225,10 @@
 <td><a href="https://faytype.com/" data-linktype="external">FayType</a></td>
 </tr>
 <tr>
+<td>fbf</td>
+<td><a href="https://www.nongnu.org/freebangfont" data-linktype="external">Free Bangla Font Project</a></td>
+</tr>
+<tr>
 <td>FBI</td>
 <td>The Font Bureau, Inc.</td>
 </tr>
@@ -2658,6 +2670,10 @@
 <tr>
 <td>GIFT</td>
 <td><a href="https://souvenirtypefaces.xyz/" data-linktype="external">Souvenir Typefaces</a></td>
+</tr>
+<tr>
+<td>GIGA</td>
+<td><a href="https://stgiga.github.io/UnifontEX/" data-linktype="external">St. GIGAFONT Typefaces (stgiga)</a></td>
 </tr>
 <tr>
 <td>GKOU</td>
@@ -4095,7 +4111,7 @@
 </tr>
 <tr>
 <td>MLAG</td>
-<td><a href="https://michaellagattuta.com" data-linktype="external">Michael LaGattuta</a></td>
+<td>Michael LaGattuta</td>
 </tr>
 <tr>
 <td>MLBU</td>
@@ -6175,7 +6191,7 @@
 </tr>
 <tr>
 <td>UNIT</td>
-<td><a href="https://universalthirst.com/" data-linktype="external">Universal Thirst</a></td>
+<td>Universal Thirst</td>
 </tr>
 <tr>
 <td>UNTP</td>
@@ -6192,6 +6208,10 @@
 <tr>
 <td>URW</td>
 <td><a href="http://www.urwpp.de/" data-linktype="external">URW Type Foundry GmbH</a></td>
+</tr>
+<tr>
+<td>USGC</td>
+<td><a href="https://usgraphics.com" data-linktype="external">U.S. Graphics Company</a></td>
 </tr>
 <tr>
 <td>USSS</td>
@@ -6562,7 +6582,11 @@
 </tr>
 <tr>
 <td>ZP</td>
-<td><a href="https://zilap.co/" data-linktype="external">Zilap Estudio</a></td>
+<td>Zilap Estudio</td>
+</tr>
+<tr>
+<td>ZPL</td>
+<td><a href="https://www.zapal.tech" data-linktype="external">Zapal</a></td>
 </tr>
 <tr>
 <td>ZSFT</td>
