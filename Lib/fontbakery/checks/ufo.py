@@ -72,7 +72,6 @@ def designspace_sources(designspace):
         problems early in the process.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
-    experimental="Since 2024/Aug/09",
 )
 def check_ufolint(ufo):
     """Run ufolint on UFO source directory."""
@@ -107,7 +106,6 @@ def check_ufolint(ufo):
         unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
-    experimental="Since 2024/Aug/09",
 )
 def check_ufo_required_fields(ufo_font):
     """Check that required fields are present in the UFO fontinfo."""
@@ -139,7 +137,6 @@ def check_ufo_required_fields(ufo_font):
         This includes fields that should be in any production font.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
-    experimental="Since 2024/Aug/09",
 )
 def check_ufo_recommended_fields(ufo_font):
     """Check that recommended fields are present in the UFO fontinfo."""
@@ -179,7 +176,6 @@ def check_ufo_recommended_fields(ufo_font):
         year is deprecated since UFO v2.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
-    experimental="Since 2024/Aug/09",
 )
 def check_ufo_unnecessary_fields(ufo_font):
     """Check that no unnecessary fields are present in the UFO fontinfo."""
@@ -219,7 +215,6 @@ def check_ufo_unnecessary_fields(ufo_font):
         can be properly parsed and does include valid source file references.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
-    experimental="Since 2024/Aug/09",
 )
 def check_designspace_has_sources(designspace_sources):
     """See if we can actually load the source files."""
@@ -235,7 +230,6 @@ def check_designspace_has_sources(designspace_sources):
         We expect that designspace files declare on of the masters as default.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
-    experimental="Since 2024/Aug/09",
 )
 def check_designspace_has_default_master(designSpace):
     """Ensure a default master is defined."""
@@ -253,7 +247,6 @@ def check_designspace_has_default_master(designSpace):
     """,
     conditions=["designspace_sources"],
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
-    experimental="Since 2024/Aug/09",
 )
 def check_designspace_has_consistent_glyphset(designSpace, config):
     """Check consistency of glyphset in a designspace file."""
@@ -287,7 +280,6 @@ def check_designspace_has_consistent_glyphset(designSpace, config):
     """,
     conditions=["designspace_sources"],
     proposal="https://github.com/fonttools/fontbakery/pull/3168",
-    experimental="Since 2024/Aug/09",
 )
 def check_designspace_has_consistent_codepoints(designSpace, config):
     """Check codepoints consistency in a designspace file."""
@@ -337,7 +329,6 @@ def check_designspace_has_consistent_codepoints(designSpace, config):
         http://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#4b-language-system
     """,
     proposal="https://github.com/googlefonts/fontbakery/issues/4011",
-    experimental="Since 2024/Aug/09",
 )
 def check_ufo_features_default_languagesystem(ufo_font):
     """Check that languagesystem DFLT dflt is present in the features.fea file."""
@@ -371,7 +362,6 @@ def check_ufo_features_default_languagesystem(ufo_font):
     """,
     conditions=["ufo_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/4795",
-    experimental="Since 2024/Jul/17",
 )
 def check_ufo_consistent_curve_type(config, ufo: Ufo):
     """Check that all glyphs across the source use the same curve type"""
@@ -428,7 +418,6 @@ def check_ufo_consistent_curve_type(config, ufo: Ufo):
     """,
     conditions=["ufo_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/4808",
-    experimental="Since 2024/Aug/09",
 )
 def check_ufo_no_open_corners(config, ufo):
     """Check the sources have no corners"""
@@ -468,7 +457,6 @@ def check_ufo_no_open_corners(config, ufo):
         whole Designspace, so this check helps flag if this isn't the case.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/4814",
-    experimental="Since 2024/Aug/12",
 )
 def check_designspace_has_consistent_groups(config, designSpace):
     """Confirms that all sources have the same kerning groups per Designspace."""
