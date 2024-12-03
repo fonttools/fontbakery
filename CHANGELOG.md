@@ -1,10 +1,32 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0a6 (2024-Nov-??)
+##  Upcoming release: 0.13.0 (2024-Dec-??)
+  - ...
+
+
+##  0.13.0a6 (2024-Dec-03)
 ### Noteworthy code-changes
   - **Users are encouraged to try this pre-release as we're approaching the date when we'll cut a final v0.13.0 release...**
   - Full fix for bug where check details with more severe status would be missing from the HTML report if a check with the same ID but less severe status was omitted (issue #4687)
+
+
+### Previously experimental checks now made effective
+The dates indicate when each check was originally implemented as temporarily experimental.
+
+#### Promoted on Universal profile
+  - 2024/Jul/17: **ufo_consistent_curve_type**
+  - 2024/Aug/09: **designspace_has_consistent_codepoints**
+  - 2024/Aug/09: **designspace_has_consistent_glyphset**
+  - 2024/Aug/09: **designspace_has_default_master**
+  - 2024/Aug/09: **designspace_has_sources**
+  - 2024/Aug/09: **ufo_features_default_languagesystem**
+  - 2024/Aug/09: **ufolint**
+  - 2024/Aug/09: **ufo_no_open_corners**
+  - 2024/Aug/09: **ufo_recommended_fields**
+  - 2024/Aug/09: **ufo_required_fields**
+  - 2024/Aug/09: **ufo_unnecessary_fields**
+  - 2024/Aug/12: **designspace_has_consistent_groups**
 
 ### New checks
 #### On the OpenType profile
