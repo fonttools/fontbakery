@@ -23,10 +23,7 @@ from fontbakery.prelude import check, Message, FAIL
     proposal="https://github.com/fonttools/fontbakery/issues/3708",
 )
 def check_varfont_valid_default_instance_nameids(ttFont, has_name_table):
-    """Validates that when an instance record is included for the default instance,
-    its subfamilyNameID value is set to a name ID whose string is equal to the
-    string of either name ID 2 or 17, and its postScriptNameID value is set to a
-    name ID whose string is equal to the string of name ID 6."""
+    """Validates subfamilyNameID and postScriptNameID for the default instance record"""
 
     if not has_name_table:
         yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
