@@ -8,19 +8,6 @@ from conftest import ImportRaiser, remove_import_raiser
 from fontbakery.codetesting import CheckTester, TEST_FILE
 
 
-def test_defcon_extra_needed_exit(monkeypatch):
-    module_name = "defcon"
-    sys.meta_path.insert(0, ImportRaiser(module_name))
-    monkeypatch.delitem(sys.modules, module_name, raising=False)
-
-    ufo_path = TEST_FILE("test.ufo")
-    with pytest.raises(SystemExit):
-        check = CheckTester("ufo_required_fields")
-        check(ufo_path)
-
-    remove_import_raiser(module_name)
-
-
 def test_lxml_etree_extra_needed_exit(monkeypatch):
     module_name = "lxml.etree"
     sys.meta_path.insert(0, ImportRaiser(module_name))

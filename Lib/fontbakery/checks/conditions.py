@@ -3,7 +3,13 @@ from collections import Counter
 from typing import List
 
 from fontbakery.prelude import condition
-from fontbakery.testable import CheckRunContext, Font, TTCFont
+from fontbakery.testable import (
+    CheckRunContext,
+    Designspace,
+    Font,
+    TTCFont,
+    Ufo,
+)
 from fontbakery.utils import get_glyph_name
 
 
@@ -537,3 +543,43 @@ def outlines_dict(font):
         )
         for glyphname in ttFont.getGlyphOrder()
     }
+
+
+@condition(Ufo)
+def ufo_font(ufo):
+    from fontTools.ufoLib.errors import UFOLibError
+    import defcon
+
+    try:
+        return defcon.Font(ufo.file)
+    except UFOLibError:
+        return None
+
+
+@condition(Designspace)
+def designSpace(designspace):
+    """
+    Given a filepath for a designspace file, parse it
+    and return a DesignSpaceDocument, which is
+    'an object to read, write and edit
+    interpolation systems for typefaces'.
+    """
+    from fontTools.designspaceLib import DesignSpaceDocument
+    import defcon
+
+    if designspace:
+        DS = DesignSpaceDocument.fromfile(designspace.file)
+        DS.loadSourceFonts(defcon.Font)
+        return DS
+
+
+@condition(Designspace)
+def designspace_sources(designspace):
+    """
+    Given a DesignSpaceDocument object,
+    return a set of UFO font sources.
+    """
+    import defcon
+
+    if designspace.designSpace:
+        return designspace.designSpace.loadSourceFonts(defcon.Font)
