@@ -517,3 +517,23 @@ def license_filename(font):
 @condition(Font)
 def is_ofl(font):
     return font.license_filename and "OFL" in font.license_filename
+
+
+@condition(Font)
+def outlines_dict(font):
+    from beziers.path import BezierPath
+
+    ttFont = font.ttFont
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
+    def display_name(glyphname):
+        if glyphname in reversed_cmap:
+            return f"{glyphname} (U+{reversed_cmap[glyphname]:04X})"
+        return glyphname
+
+    return {
+        (glyphname, display_name(glyphname)): BezierPath.fromFonttoolsGlyph(
+            ttFont, glyphname
+        )
+        for glyphname in ttFont.getGlyphOrder()
+    }

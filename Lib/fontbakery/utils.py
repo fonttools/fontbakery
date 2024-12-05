@@ -841,3 +841,11 @@ def git_rootdir(family_dir):
 
 def typo_metrics_enabled(ttFont):
     return ttFont["OS/2"].fsSelection & 0b10000000 > 0
+
+
+def close_but_not_on(value_expected, value_true, tolerance):
+    if value_expected == value_true:
+        return False
+    if abs(value_expected - value_true) <= tolerance:
+        return True
+    return False
