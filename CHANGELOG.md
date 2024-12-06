@@ -2,7 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (2024-Dec-??)
-  - ...
+### Deprecated checks
+#### On the Universal Profile
+  - **[kerning_for_non_ligated_sequences]**: "Is there kerning info for non-ligated sequences?" (issue #2954 / https://github.com/simoncozens/fontspector/commit/eaa52447ddc4a42e26b6430841a43026870d8a48)
 
 
 ##  0.13.0a6 (2024-Dec-03)

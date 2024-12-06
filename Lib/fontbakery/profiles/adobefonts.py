@@ -59,7 +59,6 @@ PROFILE = {
         "hinting_impact",
         "integer_ppem_if_hinted",
         "interpolation_issues",
-        "kerning_for_non_ligated_sequences",
         "legacy_accents",
         "ligature_carets",
         "mandatory_avar_table",
