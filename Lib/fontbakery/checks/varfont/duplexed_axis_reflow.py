@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from fontbakery.prelude import check, Message, FAIL, SKIP
+from fontbakery.utils import all_kerning, bullet_list
 
 
 @check(
@@ -15,11 +16,9 @@ from fontbakery.prelude import check, Message, FAIL, SKIP
 )
 def check_varfont_duplexed_axis_reflow(font, ttFont, config):
     """Ensure VFs with duplexed axes do not vary horizontal advance."""
-    from fontbakery.utils import all_kerning, pretty_print_list
 
     DUPLEXED_AXES = {"GRAD", "ROND"}
     relevant_axes = set(font.axes_by_tag.keys()) & DUPLEXED_AXES
-    relevant_axes_display = " or ".join(relevant_axes)
 
     if not (relevant_axes):
         yield SKIP, Message("no-relevant-axes", "This font has no duplexed axes")
@@ -36,12 +35,12 @@ def check_varfont_duplexed_axis_reflow(font, ttFont, config):
                     bad_glyphs_by_axis[duplexed_axis].add(glyph)
 
     for duplexed_axis, bad_glyphs in bad_glyphs_by_axis.items():
-        bad_glyphs_list = pretty_print_list(config, sorted(bad_glyphs))
+        bad_glyphs_list = bullet_list(config, sorted(bad_glyphs))
         yield FAIL, Message(
             f"{duplexed_axis.lower()}-causes-reflow",
-            "The following glyphs have variation in horizontal"
-            f" advance due to duplexed axis {duplexed_axis}:"
-            f" {bad_glyphs_list}",
+            f"The following glyphs have variation in horizontal"
+            f" advance due to duplexed axis {duplexed_axis}:\n"
+            f"{bad_glyphs_list}",
         )
 
     # Determine if any kerning rules vary the horizontal advance.
@@ -62,7 +61,6 @@ def check_varfont_duplexed_axis_reflow(font, ttFont, config):
                 if effective:
                     effective_regions.add(ix)
 
-        # Some regions vary *something* along the axis. But what?
         if effective_regions:
             kerning = all_kerning(ttFont)
             for left, right, v1, v2 in kerning:
@@ -80,8 +78,7 @@ def check_varfont_duplexed_axis_reflow(font, ttFont, config):
                             yield FAIL, Message(
                                 "duplexed-kern-causes-reflow",
                                 f"Kerning rules cause variation in"
-                                f" horizontal advance on a duplexed axis "
-                                f" ({relevant_axes_display})"
+                                f" horizontal advance on a duplexed axis"
                                 f" (e.g. {left}/{right})",
                             )
                             break
