@@ -53,7 +53,6 @@ PROFILE = {
             "legacy_accents",
             "ligature_carets",
             "linegaps",
-            "kerning_for_non_ligated_sequences",
             "mandatory_avar_table",
             "mandatory_glyphs",
             "math_signs_width",

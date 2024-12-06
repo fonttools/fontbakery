@@ -110,13 +110,6 @@ PROFILE = {
                 "reason": "This is a feature, not really needed to the font perform well.",
             },
         ],
-        "kerning_for_non_ligated_sequences": [
-            {
-                "code": "lacks-kern-info",
-                "status": "INFO",
-                "reason": "This is a feature, not really needed to the font perform well.",
-            },
-        ],
         "googlefonts/varfont/bold_wght_coord": [
             {
                 "code": "no-bold-instance",

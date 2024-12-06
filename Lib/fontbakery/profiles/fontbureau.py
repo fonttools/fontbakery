@@ -18,7 +18,6 @@ PROFILE = {
         "hinting_impact",
         "inconsistencies_between_fvar_STAT",
         "integer_ppem_if_hinted",
-        "kerning_for_non_ligated_sequences",
         "ligature_carets",
         "mandatory_avar_table",
         "missing_small_caps_glyphs",
