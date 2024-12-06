@@ -1,5 +1,6 @@
 from fontbakery.testable import Font
-from fontbakery.prelude import check, condition, FAIL, WARN, Message
+from fontbakery.prelude import check, condition, SKIP, WARN, Message
+from fontbakery.utils import bullet_list
 
 
 @condition(Font)
@@ -22,12 +23,11 @@ def ligature_glyphs(font):
                                             all_ligature_glyphs.append(lig.LigGlyph)
         return all_ligature_glyphs
     except (AttributeError, IndexError):
-        return -1  # Indicate fontTools-related crash...
+        return []  # fontTools bug perhaps? (issue #1596)
 
 
 @check(
     id="ligature_carets",
-    conditions=["ligature_glyphs"],
     rationale="""
         All ligatures in a font must have corresponding caret (text cursor) positions
         defined in the GDEF table, otherwhise, users may experience issues with
@@ -39,29 +39,10 @@ def ligature_glyphs(font):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1225",
 )
-def check_ligature_carets(ttFont, ligature_glyphs):
+def check_ligature_carets(config, ttFont, ligature_glyphs):
     """Are there caret positions declared for every ligature?"""
-    if ligature_glyphs == -1:
-        yield FAIL, Message(
-            "malformed",
-            (
-                "Failed to lookup ligatures."
-                " This font file seems to be malformed."
-                " For more info, read:"
-                " https://github.com/fonttools/fontbakery/issues/1596"
-            ),
-        )
-    elif "GDEF" not in ttFont:
-        yield WARN, Message(
-            "GDEF-missing",
-            (
-                "GDEF table is missing, but it is mandatory"
-                " to declare it on fonts that provide ligature"
-                " glyphs because the caret (text cursor)"
-                " positioning for each ligature must be"
-                " provided in this table."
-            ),
-        )
+    if len(ligature_glyphs) == 0:
+        yield SKIP, Message("no-ligatures", "No ligature glyphs found.")
     else:
         lig_caret_list = ttFont["GDEF"].table.LigCaretList
         if lig_caret_list is None:
@@ -76,10 +57,9 @@ def check_ligature_carets(ttFont, ligature_glyphs):
                 " for ligature glyphs on its GDEF table.",
             )
         elif missing:
-            missing = "\n\t- ".join(sorted(missing))
+            missing = bullet_list(config, sorted(missing))
             yield WARN, Message(
                 "incomplete-caret-pos-data",
-                f"This font lacks caret positioning"
-                f" values for these ligature glyphs:"
-                f"\n\t- {missing}\n\n  ",
+                f"This font lacks caret positioning values for these ligature glyphs:\n"
+                f"{missing}\n\n",
             )
