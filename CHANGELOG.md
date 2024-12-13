@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal Profile
   - **[kerning_for_non_ligated_sequences]**: "Is there kerning info for non-ligated sequences?" (issue #2954 / https://github.com/simoncozens/fontspector/commit/eaa52447ddc4a42e26b6430841a43026870d8a48)
 
+### Changes to existing checks
+### On the Google Fonts profile
+  - **[googlefonts/axes_match]:** Skip if remote_style is static
+
 
 ##  0.13.0a6 (2024-Dec-03)
 ### Noteworthy code-changes
