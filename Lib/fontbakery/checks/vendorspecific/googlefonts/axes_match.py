@@ -1,4 +1,4 @@
-from fontbakery.prelude import FAIL, PASS, Message, check
+from fontbakery.prelude import SKIP, FAIL, PASS, Message, check
 
 
 @check(
@@ -11,6 +11,9 @@ from fontbakery.prelude import FAIL, PASS, Message, check
 )
 def check_axes_match(ttFont, remote_style):
     """Check if the axes match between the font and the Google Fonts version."""
+    if "fvar" not in remote_style:
+        yield SKIP, "Remote style is a static font."
+        return
     remote_axes = {
         a.axisTag: (a.minValue, a.maxValue) for a in remote_style["fvar"].axes
     }
