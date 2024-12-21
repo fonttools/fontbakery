@@ -16,7 +16,6 @@ from fontbakery.prelude import PASS, FAIL, SKIP, Message, check
         This check attempts to detect this kind of mistake.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3020",
-    conditions=["is_ttf"],
 )
 def check_smallcaps_before_ligatures(ttFont):
     """
