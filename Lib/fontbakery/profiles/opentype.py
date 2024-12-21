@@ -45,7 +45,6 @@ PROFILE = {
             "opentype/postscript_name",
             "opentype/post_table_version",
             "opentype/slant_direction",
-            "opentype/STAT_has_axis_value_tables",
             "opentype/unitsperem",
             "opentype/varfont/distinct_instance_records",
             "opentype/varfont/family_axis_ranges",
