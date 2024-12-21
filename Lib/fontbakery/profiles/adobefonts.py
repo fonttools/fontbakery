@@ -196,20 +196,6 @@ PROFILE = {
                 "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
         ],
-        "opentype/STAT_has_axis_value_tables": [
-            {
-                "code": "missing-axis-value-table",
-                "status": "WARN",
-                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.\n"
-                "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
-            },
-            {
-                "code": "format-4-axis-count",
-                "status": "WARN",
-                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.\n"
-                "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
-            },
-        ],
         "inconsistencies_between_fvar_STAT": [
             {
                 "code": "missing-fvar-instance-axis-value",

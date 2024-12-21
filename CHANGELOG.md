@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal Profile
   - **[kerning_for_non_ligated_sequences]**: "Is there kerning info for non-ligated sequences?" (issue #2954 / https://github.com/simoncozens/fontspector/commit/eaa52447ddc4a42e26b6430841a43026870d8a48)
 
+#### On the OpenType Profile
+  - **[opentype/STAT_has_axis_value_tables]**: Because **inconsistencies_between_fvar_STAT** (now on `Universal`) potentially has a wider scope in the future, checking back from the fvar table to the STAT table. (https://github.com/fonttools/fontbakery/issues/4916#issuecomment-2507999113)
+
 ### Changes to existing checks
 ### On the Universal profile
   - **[smallcaps_before_ligatures]:** This check works just fine on OTFs, no need for `conditions=["is_ttf"]` (issue #4920)
