@@ -1,4 +1,20 @@
+import math
+from copy import deepcopy
+
+from beziers.path import BezierPath, Line, Point
+from fontTools.pens.boundsPen import BoundsPen
+
 from fontbakery.prelude import check, Message, FAIL, PASS, WARN
+
+
+def x_leftmost_intersection(paths, xMax, xMin, y):
+    for y_adjust in range(0, 20, 2):
+        line = Line(Point(xMin - 100, y + y_adjust), Point(xMax + 100, y + y_adjust))
+        for path in paths:
+            for s in path.asSegments():
+                intersections = s.intersections(line)
+                if intersections:
+                    return intersections[0].point.x
 
 
 @check(
@@ -15,10 +31,6 @@ from fontbakery.prelude import check, Message, FAIL, PASS, WARN
 )
 def check_italic_angle(ttFont, style):
     """Checking post.italicAngle value."""
-    import math
-    from beziers.path import BezierPath, Line, Point
-    from fontTools.pens.boundsPen import BoundsPen
-    from copy import deepcopy
 
     # This check modifies the font file with `.draw(boundspen)`
     # so here we'll work with a copy of the object so that we
@@ -26,20 +38,10 @@ def check_italic_angle(ttFont, style):
     ttFont_copy = deepcopy(ttFont)
 
     value = ttFont_copy["post"].italicAngle
-
-    # Calculating italic angle from the font's glyph outlines
-    def x_leftmost_intersection(paths, y):
-        for y_adjust in range(0, 20, 2):
-            line = Line(
-                Point(xMin - 100, y + y_adjust), Point(xMax + 100, y + y_adjust)
-            )
-            for path in paths:
-                for s in path.asSegments():
-                    intersections = s.intersections(line)
-                    if intersections:
-                        return intersections[0].point.x
-
-    GLYPHS_TO_CHECK = (
+    glyphset = ttFont_copy.getGlyphSet()
+    bad_glyphs = []
+    calculated_italic_angle = None
+    for glyph_name in (
         "bar",
         "uni007C",  # VERTICAL LINE
         "bracketleft",
@@ -48,41 +50,28 @@ def check_italic_angle(ttFont, style):
         "uni0048",  # LATIN CAPITAL LETTER H
         "I",
         "uni0049",  # LATIN CAPITAL LETTER I
-    )
-
-    bad_glyphs = []
-    for glyph_name in GLYPHS_TO_CHECK:
-        # Get bounds
-        glyphset = ttFont_copy.getGlyphSet()
+    ):
         if glyph_name not in glyphset:
             continue
+
+        # Get bounds
         boundspen = BoundsPen(glyphset)
         glyphset[glyph_name].draw(boundspen)
-        if not boundspen.bounds:
+        bounds = boundspen.bounds
+        if not bounds:
             bad_glyphs.append(glyph_name)
             continue
 
-    calculated_italic_angle = None
-    for glyph_name in GLYPHS_TO_CHECK:
-        try:
-            paths = BezierPath.fromFonttoolsGlyph(ttFont_copy, glyph_name)
-        except KeyError:
-            continue
-
-        # Get bounds
-        boundspen = BoundsPen(ttFont_copy.getGlyphSet())
-        ttFont_copy.getGlyphSet()[glyph_name].draw(boundspen)
-        bounds = boundspen.bounds
-        if not bounds:
-            continue
+        # Calculating italic angle from the font's glyph outlines
+        paths = BezierPath.fromFonttoolsGlyph(ttFont_copy, glyph_name)
         (xMin, yMin, xMax, yMax) = bounds
 
         # Measure at 20% distance from bottom and top
         y_bottom = yMin + (yMax - yMin) * 0.2
         y_top = yMin + (yMax - yMin) * 0.8
+        x_intsctn_bottom = x_leftmost_intersection(paths, xMax, xMin, y_bottom)
+        x_intsctn_top = x_leftmost_intersection(paths, xMax, xMin, y_top)
 
-        x_intsctn_bottom = x_leftmost_intersection(paths, y_bottom)
-        x_intsctn_top = x_leftmost_intersection(paths, y_top)
         # Fails to calculate the intersection for some situations,
         # so try again with next glyph
         if not x_intsctn_bottom or not x_intsctn_top:
@@ -119,9 +108,9 @@ def check_italic_angle(ttFont, style):
                 f"The value of post.italicAngle is positive, which"
                 f" is likely a mistake and should become negative"
                 f" for right-leaning Italics.\n"
-                f"post.italicAngle: {value}\n"
+                f"post.italicAngle: {value:.2f}\n"
                 f"angle calculated from outlines:"
-                f" {calculated_italic_angle:.1f})",
+                f" {calculated_italic_angle:.2f})",
             )
         if calculated_italic_angle > 0.1 and value < 0:
             passed = False
@@ -130,9 +119,9 @@ def check_italic_angle(ttFont, style):
                 f"The value of post.italicAngle is negative, which"
                 f" is likely a mistake and should become positive"
                 f" for left-leaning Italics.\n"
-                f"post.italicAngle: {value}\n"
+                f"post.italicAngle: {value:.2f}\n"
                 f"angle calculated from outlines:"
-                f" {calculated_italic_angle:.1f})",
+                f" {calculated_italic_angle:.2f})",
             )
 
     # Checking that italicAngle > 90
@@ -153,7 +142,7 @@ def check_italic_angle(ttFont, style):
         yield WARN, Message(
             "over-30-degrees",
             (
-                f"The value of post.italicAngle ({value}) is very high"
+                f"The value of post.italicAngle ({value:.2f}) is very high"
                 f" (over -30° or 30°) and should be confirmed."
             ),
         )
@@ -162,7 +151,7 @@ def check_italic_angle(ttFont, style):
         yield WARN, Message(
             "over-20-degrees",
             (
-                f"The value of post.italicAngle ({value}) seems very high"
+                f"The value of post.italicAngle ({value:.2f}) seems very high"
                 f" (over -20° or 20°) and should be confirmed."
             ),
         )
@@ -194,4 +183,4 @@ def check_italic_angle(ttFont, style):
         )
 
     if passed:
-        yield PASS, (f'Value of post.italicAngle is {value} with style="{style}".')
+        yield PASS, (f'Value of post.italicAngle is {value:.2f} with style="{style}".')
