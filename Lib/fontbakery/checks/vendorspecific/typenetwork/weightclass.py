@@ -70,7 +70,7 @@ def tn_expected_os2_weight(font):
 
 
 @check(
-    id="typenetwork/usweightclass",
+    id="typenetwork/weightclass",
     conditions=["tn_expected_os2_weight"],
     rationale="""
         For Variable Fonts, it should be equal to default wght, for static ttfs,
@@ -84,7 +84,7 @@ def tn_expected_os2_weight(font):
     """,
     proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
-def check_usweightclass(font, tn_expected_os2_weight):
+def check_weightclass(font, tn_expected_os2_weight):
     """Checking OS/2 usWeightClass."""
     failed = False
     expected_value = tn_expected_os2_weight["weightClass"]

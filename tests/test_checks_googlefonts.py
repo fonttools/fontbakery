@@ -754,8 +754,8 @@ def test_check_glyph_coverage(check):
     assert_PASS(check(ttFont))
 
 
-@check_id("googlefonts/usweightclass")
-def test_check_usweightclass(check):
+@check_id("googlefonts/weightclass")
+def test_check_weightclass(check):
     """Checking OS/2 usWeightClass."""
 
     # Our reference Mada Regular is know to be bad here.
@@ -3434,8 +3434,8 @@ def test_check_description_family_update(check, requests_mock):
     assert_PASS(check(MockFont(file=font, description=desc + "\nSomething else...")))
 
 
-@check_id("googlefonts/os2/use_typo_metrics")
-def test_check_os2_use_typo_metrics(check):
+@check_id("googlefonts/use_typo_metrics")
+def test_check_use_typo_metrics(check):
     """All non-CJK fonts checked with the googlefonts profile
     should have OS/2.fsSelection bit 7 (USE TYPO METRICS) set."""
 
@@ -3451,8 +3451,8 @@ def test_check_os2_use_typo_metrics(check):
     assert_results_contain(check(ttFont), FAIL, "missing-os2-fsselection-bit7")
 
 
-@check_id("googlefonts/os2/use_typo_metrics")
-def test_check_os2_use_typo_metrics_with_cjk(check):
+@check_id("googlefonts/use_typo_metrics")
+def test_check_use_typo_metrics_with_cjk(check):
     """All CJK fonts checked with the googlefonts profile should skip this check"""
 
     tt_pass_clear = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
