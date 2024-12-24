@@ -1853,8 +1853,8 @@ def test_check_check_metadata_canonical_weight_value(check):
         )
 
 
-@check_id("googlefonts/metadata/os2_weightclass")
-def test_check_metadata_os2_weightclass(check):
+@check_id("googlefonts/metadata/weightclass")
+def test_check_metadata_weightclass(check):
     """Checking OS/2 usWeightClass matches weight specified at METADATA.pb"""
 
     # === test cases for Variable Fonts ===

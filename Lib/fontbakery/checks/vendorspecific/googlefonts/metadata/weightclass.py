@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="googlefonts/metadata/os2_weightclass",
+    id="googlefonts/metadata/weightclass",
     rationale="""
         Check METADATA.pb font weights are correct.
 
@@ -18,7 +18,7 @@ from fontbakery.prelude import check, Message, FAIL
         "https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
     ],
 )
-def check_metadata_os2_weightclass(font, font_metadata):
+def check_metadata_weightclass(font, font_metadata):
     """Check METADATA.pb font weights are correct."""
     # Weight name to value mapping:
     GF_API_WEIGHT_NAMES = {
