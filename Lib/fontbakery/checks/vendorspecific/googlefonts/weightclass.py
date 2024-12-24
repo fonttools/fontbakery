@@ -3,7 +3,7 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="googlefonts/usweightclass",
+    id="googlefonts/weightclass",
     rationale="""
         Google Fonts expects variable fonts, static ttfs and static otfs to have
         differing OS/2 usWeightClass values.
@@ -22,7 +22,7 @@ from fontbakery.prelude import check, Message, FAIL
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4829",  # legacy check
 )
-def check_usweightclass(font, ttFonts):
+def check_weightclass(font, ttFonts):
     """
     Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
     """

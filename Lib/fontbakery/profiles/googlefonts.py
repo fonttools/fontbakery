@@ -118,6 +118,7 @@ PROFILE = {
             "outline_short_segments",
         ],
         "Font File Checks": [
+            "googlefonts/axes_match",
             "googlefonts/axisregistry/fvar_axis_defaults",
             "googlefonts/canonical_filename",
             "googlefonts/cjk_vertical_metrics",
@@ -134,14 +135,13 @@ PROFILE = {
             "googlefonts/name/mandatory_entries",
             "googlefonts/name/version_format",
             "googlefonts/old_ttfautohint",
-            "googlefonts/os2/use_typo_metrics",
             "googlefonts/production_glyphs_similarity",
             # "googlefonts/production_encoded_glyphs",  # DISABLED
             "googlefonts/STAT/axis_order",
             "googlefonts/STAT/axisregistry",
             "googlefonts/STAT/compulsory_axis_values",
             "googlefonts/unitsperem",
-            "googlefonts/usweightclass",
+            "googlefonts/use_typo_metrics",
             "googlefonts/varfont/bold_wght_coord",
             "googlefonts/varfont/duplicate_instance_names",
             "googlefonts/varfont/generate_static",
@@ -150,7 +150,7 @@ PROFILE = {
             "googlefonts/version_bump",
             "googlefonts/vertical_metrics",
             "googlefonts/vertical_metrics_regressions",
-            "googlefonts/axes_match",
+            "googlefonts/weightclass",
         ],
     },
     "configuration_defaults": {

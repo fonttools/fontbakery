@@ -33,8 +33,8 @@
 
 
 # ========= TODO: Implement code-test: ============
-#  @check_id("typenetwork/usweightclass")
-#  """Check usweightclass value."""
+#  @check_id("typenetwork/weightclass")
+#  """Check OS/2 usweightclass value."""
 
 
 # ========= TODO: Implement code-test: ============

@@ -55,10 +55,10 @@ PROFILE = {
             "typenetwork/marks_width",
             "typenetwork/name/mandatory_entries",
             "typenetwork/PUA_encoded_glyphs",
-            "typenetwork/usweightclass",
             "typenetwork/varfont/axes_have_variation",
             "typenetwork/varfont/fvar_axes_order",
             "typenetwork/vertical_metrics",
+            "typenetwork/weightclass",
         ],
         "Adobe Fonts": [
             "adobefonts/family/consistent_upm",

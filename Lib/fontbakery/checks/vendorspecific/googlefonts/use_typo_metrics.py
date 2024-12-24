@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL, SKIP
 
 
 @check(
-    id="googlefonts/os2/use_typo_metrics",
+    id="googlefonts/use_typo_metrics",
     rationale="""
         All fonts on the Google Fonts collection should have OS/2.fsSelection bit 7
         (USE_TYPO_METRICS) set. This requirement is part of the vertical metrics scheme
@@ -24,7 +24,7 @@ from fontbakery.prelude import check, Message, FAIL, SKIP
     severity=10,
     proposal="https://github.com/fonttools/fontbakery/issues/3241",
 )
-def check_os2_fsselectionbit7(fonts):
+def check_use_typo_metrics(fonts):
     """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts."""
     if any(font.is_cjk_font for font in fonts):
         yield SKIP, Message("cjk", "This check does not apply to CJK fonts.")
