@@ -2,6 +2,14 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (2024-Dec-??)
+### Noteworthy code-changes
+  - Created a dictionary at `Lib/fontbakery/legacy_checkids.py` that documents the renaming of checks-IDs that is happenning between versions v0.12.10 and v0.13.0
+
+  This file contains a translation map that can be useful:
+  - to be read directly by humans
+  - to generate documentation
+  - to implement a backwards compatibility mechanism
+
 ### Deprecated checks
 #### On the Universal Profile
   - **[kerning_for_non_ligated_sequences]**: "Is there kerning info for non-ligated sequences?" (issue #2954 / https://github.com/simoncozens/fontspector/commit/eaa52447ddc4a42e26b6430841a43026870d8a48)
