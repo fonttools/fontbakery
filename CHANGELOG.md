@@ -14,7 +14,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[smallcaps_before_ligatures]:** This check works just fine on OTFs, no need for `conditions=["is_ttf"]` (issue #4920)
 
 ### On the Google Fonts profile
-  - **[googlefonts/axes_match]:** Skip if remote_style is static
+  - **[googlefonts/axes_match]:** Skip if remote_style is static.
+  - **[googlefonts/metadata/weightclass]:** Removed `"os2_"` from **googlefonts/metadata/os2_weightclass** checkid.
 
 
 ##  0.13.0a6 (2024-Dec-03)

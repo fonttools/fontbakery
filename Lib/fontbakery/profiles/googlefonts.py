@@ -43,7 +43,6 @@ PROFILE = {
             "googlefonts/metadata/nameid/family_and_full_names",
             "googlefonts/metadata/nameid/font_name",
             "googlefonts/metadata/nameid/post_script_name",
-            "googlefonts/metadata/os2_weightclass",
             "googlefonts/metadata/parses",
             "googlefonts/metadata/primary_script",
             "googlefonts/metadata/regular_is_400",
@@ -58,6 +57,7 @@ PROFILE = {
             "googlefonts/metadata/valid_full_name_values",
             "googlefonts/metadata/valid_nameid25",
             "googlefonts/metadata/valid_post_script_name_values",
+            "googlefonts/metadata/weightclass",
         ],
         "Glyphset Checks": [
             "googlefonts/glyphsets/shape_languages",

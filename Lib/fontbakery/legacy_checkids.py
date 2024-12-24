@@ -1,3 +1,5 @@
+# pylint: disable=line-too-long  # This is data, not code
+
 # The dictionary below documents the renaming of checks-IDs that happened
 # between version v0.12.10 (keys) and v0.13.0 (values)
 renaming_map = {
@@ -101,7 +103,6 @@ renaming_map = {
     "com.google.fonts/check/metadata/nameid/family_and_full_names":      "googlefonts/metadata/nameid/family_and_full_names",
     "com.google.fonts/check/metadata/nameid/font_name":                  "googlefonts/metadata/nameid/font_name",
     "com.google.fonts/check/metadata/nameid/post_script_name":           "googlefonts/metadata/nameid/post_script_name",
-    "com.google.fonts/check/metadata/os2_weightclass":                   "googlefonts/metadata/os2_weightclass",
     "com.google.fonts/check/metadata/parses":                            "googlefonts/metadata/parses",
     "com.google.fonts/check/metadata/primary_script":                    "googlefonts/metadata/primary_script",
     "com.google.fonts/check/metadata/regular_is_400":                    "googlefonts/metadata/regular_is_400",
@@ -117,6 +118,7 @@ renaming_map = {
     "com.google.fonts/check/metadata/valid_full_name_values":            "googlefonts/metadata/valid_full_name_values",
     "com.google.fonts/check/metadata/valid_nameid25":                    "googlefonts/metadata/valid_nameid25",
     "com.google.fonts/check/metadata/valid_post_script_name_values":     "googlefonts/metadata/valid_post_script_name_values",
+    "com.google.fonts/check/metadata/os2_weightclass":                   "googlefonts/metadata/weightclass",
     "com.google.fonts/check/name/description_max_length":                "googlefonts/name/description_max_length",
     "com.google.fonts/check/name/familyname_first_char":                 "googlefonts/name/familyname_first_char",
     "com.google.fonts/check/name/license":                               "googlefonts/name/license",
