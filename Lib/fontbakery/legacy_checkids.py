@@ -10,7 +10,6 @@ renaming_map = {
     "com.google.fonts/check/alt_caron":                                  "alt_caron",
     "com.google.fonts/check/arabic_high_hamza":                          "arabic_high_hamza",
     "com.google.fonts/check/arabic_spacing_symbols":                     "arabic_spacing_symbols",
-    # TODO: where did this one come from?                                "caps_vertically_centered",
     "com.google.fonts/check/case_mapping":                               "case_mapping",
     "com.google.fonts/check/cjk_chws_feature":                           "cjk_chws_feature",
     "com.google.fonts/check/cjk_not_enough_glyphs":                      "cjk_not_enough_glyphs",
@@ -41,9 +40,7 @@ renaming_map = {
     "com.fontwerk/check/vendor_id":                                      "fontwerk/vendor_id",
     "com.adobe.fonts/check/freetype_rasterizer":                         "freetype_rasterizer",
     "com.google.fonts/check/fvar_name_entries":                          "fvar_name_entries",
-    # TODO: Where did this come from?                                    "glyphs_file/name/family_and_style_max_length",
     "com.google.fonts/check/article/images":                             "googlefonts/article/images",
-    # Is this a new check?                                               "googlefonts/axes_match",
     "com.google.fonts/check/gf_axisregistry/fvar_axis_defaults":         "googlefonts/axisregistry/fvar_axis_defaults",
     "com.google.fonts/check/canonical_filename":                         "googlefonts/canonical_filename",
     "com.google.fonts/check/cjk_vertical_metrics":                       "googlefonts/cjk_vertical_metrics",
@@ -131,7 +128,6 @@ renaming_map = {
     "com.google.fonts/check/fstype":                                     "googlefonts/fstype",
     "com.google.fonts/check/os2/use_typo_metrics":                       "googlefonts/use_typo_metrics",
     "com.google.fonts/check/usweightclass":                              "googlefonts/weightclass",
-    # Is this a new check?                                               "googlefonts/production_encoded_glyphs",
     "com.google.fonts/check/production_glyphs_similarity":               "googlefonts/production_glyphs_similarity",
     "com.google.fonts/check/repo/dirname_matches_nameid_1":              "googlefonts/repo/dirname_matches_nameid_1",
     "com.google.fonts/check/repo/fb_report":                             "googlefonts/repo/fb_report",
@@ -141,7 +137,6 @@ renaming_map = {
     "com.google.fonts/check/repo/zip_files":                             "googlefonts/repo/zip_files",
     "com.google.fonts/check/STAT/axis_order":                            "googlefonts/STAT/axis_order",
     "com.google.fonts/check/STAT/gf_axisregistry":                       "googlefonts/STAT/axisregistry",
-    # New check?                                                         "googlefonts/STAT/compulsory_axis_values",
     "com.google.fonts/check/unitsperem_strict":                          "googlefonts/unitsperem",
     "com.google.fonts/check/varfont/bold_wght_coord":                    "googlefonts/varfont/bold_wght_coord",
     "com.google.fonts/check/varfont_duplicate_instance_names":           "googlefonts/varfont/duplicate_instance_names",
@@ -168,14 +163,12 @@ renaming_map = {
     "com.google.fonts/check/mandatory_avar_table":                       "mandatory_avar_table",
     "com.google.fonts/check/mandatory_glyphs":                           "mandatory_glyphs",
     "com.google.fonts/check/math_signs_width":                           "math_signs_width",
-    # New check?                                                         "microsoft/character_repertoires",
     "com.microsoft/check/copyright":                                     "microsoft/copyright",
     "com.microsoft/check/fstype":                                        "microsoft/fstype",
     "com.microsoft/check/fvar_STAT_axis_ranges":                         "microsoft/fvar_STAT_axis_ranges",
     "com.microsoft/check/license_description":                           "microsoft/license_description",
     "com.microsoft/check/manufacturer":                                  "microsoft/manufacturer",
     "com.microsoft/check/office_ribz_req":                               "microsoft/office_ribz_req",
-    # New check?                                                         "microsoft/ogl2",
     "com.microsoft/check/STAT_axis_values":                              "microsoft/STAT_axis_values",
     "com.microsoft/check/STAT_table_axis_order":                         "microsoft/STAT_table_axis_order",
     "com.microsoft/check/STAT_table_eliding_bit":                        "microsoft/STAT_table_eliding_bit",
@@ -183,12 +176,10 @@ renaming_map = {
     "com.microsoft/check/vendor_url":                                    "microsoft/vendor_url",
     "com.microsoft/check/version":                                       "microsoft/version",
     "com.microsoft/check/vertical_metrics":                              "microsoft/vertical_metrics",
-    # New check?                                                         "microsoft/wgl4",
     "com.google.fonts/check/missing_small_caps_glyphs":                  "missing_small_caps_glyphs",
     "com.microsoft/check/name_id_1":                                     "name_id_1",
     "com.microsoft/check/name_id_2":                                     "name_id_2",
     "com.microsoft/check/name_length_req":                               "name_length_req",
-    # New check?                                                         "name/char_restrictions",
     "com.google.fonts/check/name/family_and_style_max_length":           "name/family_and_style_max_length",
     "com.google.fonts/check/name/italic_names":                          "name/italic_names",
     "com.google.fonts/check/name/no_copyright_on_description":           "name/no_copyright_on_description",
@@ -221,13 +212,10 @@ renaming_map = {
     "com.google.fonts/check/family/underline_thickness":                 "opentype/family/underline_thickness",
     "com.google.fonts/check/font_version TODO: double-check this!":      "opentype/font_version",
     "com.google.fonts/check/fsselection":                                "opentype/fsselection",
-    # New check?                                                         "opentype/fvar/axis_ranges_correct",
-    #
-    # com.typenetwork/check/varfont/ital_range
-    # com.google.fonts/check/varfont/slnt_range
-    # com.google.fonts/check/varfont/wdth_valid_range
-    # com.google.fonts/check/varfont/wght_valid_range
-    #
+    "com.typenetwork/check/varfont/ital_range":                          "opentype/fvar/axis_ranges_correct",
+    "com.google.fonts/check/varfont/slnt_range":                         "opentype/fvar/axis_ranges_correct",
+    "com.google.fonts/check/varfont/wdth_valid_range":                   "opentype/fvar/axis_ranges_correct",
+    "com.google.fonts/check/varfont/wght_valid_range":                   "opentype/fvar/axis_ranges_correct",
     "com.google.fonts/check/varfont/regular_ital_coord":                 "opentype/fvar/regular_coords_correct",
     "com.google.fonts/check/varfont/regular_opsz_coord":                 "opentype/fvar/regular_coords_correct",
     "com.google.fonts/check/varfont/regular_slnt_coord":                 "opentype/fvar/regular_coords_correct",
@@ -255,7 +243,6 @@ renaming_map = {
     "com.google.fonts/check/post_table_version":                         "opentype/post_table_version",
     "com.adobe.fonts/check/postscript_name":                             "opentype/postscript_name",
     "com.google.fonts/check/slant_direction":                            "opentype/slant_direction",
-    "TODO: where did this one come from?":                               "opentype/STAT/ital_axis",
     "com.google.fonts/check/unitsperem":                                 "opentype/unitsperem",
     "com.adobe.fonts/check/varfont/distinct_instance_records":           "opentype/varfont/distinct_instance_records",
     "com.google.fonts/check/varfont/family_axis_ranges":                 "opentype/varfont/family_axis_ranges",
@@ -263,8 +250,10 @@ renaming_map = {
     "com.adobe.fonts/check/varfont/same_size_instance_records":          "opentype/varfont/same_size_instance_records",
     "com.google.fonts/check/varfont/stat_axis_record_for_each_axis":     "opentype/varfont/STAT_axis_record_for_each_axis",
     "com.adobe.fonts/check/varfont/valid_default_instance_nameids":      "opentype/varfont/valid_default_instance_nameids",
-    # TODO: where did this one come from?                                "opentype/varfont/valid_nameids",
-    "com.thetypefounders/check/vendor_id TODO: review this!":            "opentype/vendor_id",
+    "com.adobe.fonts/check/varfont/valid_axis_nameid":                   "opentype/varfont/valid_nameids",
+    "com.adobe.fonts/check/varfont/valid_postscript_nameid":             "opentype/varfont/valid_nameids",
+    "com.adobe.fonts/check/varfont/valid_subfamily_nameid":              "opentype/varfont/valid_nameids",
+    "com.thetypefounders/check/vendor_id":                               "opentype/vendor_id",  # TODO: review this!
     "com.fontwerk/check/weight_class_fvar":                              "opentype/weight_class_fvar",
     "com.google.fonts/check/xavgcharwidth":                              "opentype/xavgcharwidth",
     "com.google.fonts/check/os2_metrics_match_hhea":                     "os2_metrics_match_hhea",
@@ -275,7 +264,6 @@ renaming_map = {
     "com.google.fonts/check/outline_jaggy_segments":                     "outline_jaggy_segments",
     "com.google.fonts/check/outline_semi_vertical":                      "outline_semi_vertical",
     "com.google.fonts/check/outline_short_segments":                     "outline_short_segments",
-    # New check?                                                         "overlapping_path_segments",
     "com.google.fonts/check/render_own_name":                            "render_own_name",
     "com.google.fonts/check/required_tables":                            "required_tables",
     "com.google.fonts/check/rupee":                                      "rupee",
@@ -304,7 +292,6 @@ renaming_map = {
     "com.typenetwork/check/family/valid_underline":                      "typenetwork/family/valid_underline",
     "com.typenetwork/check/font_is_centered_vertically":                 "typenetwork/font_is_centered_vertically",
     "com.typenetwork/check/glyph_coverage":                              "typenetwork/glyph_coverage",
-    # New check?                                                         "typenetwork/glyphsets",
     "com.typenetwork/check/marks_width":                                 "typenetwork/marks_width",
     "com.typenetwork/check/name/mandatory_entries":                      "typenetwork/name/mandatory_entries",
     "com.typenetwork/check/PUA_encoded_glyphs":                          "typenetwork/PUA_encoded_glyphs",
@@ -314,9 +301,7 @@ renaming_map = {
     "com.typenetwork/check/vertical_metrics":                            "typenetwork/vertical_metrics",
     "com.arrowtype.fonts/check/typoascender_exceeds_Agrave":             "typoascender_exceeds_Agrave",
     "com.microsoft/check/typographic_family_name":                       "typographic_family_name",
-    # New check?                                                         "ufo_consistent_curve_type",
     "com.thetypefounders/check/features_default_languagesystem":         "ufo_features_default_languagesystem",
-    # New check?                                                         "ufo_no_open_corners",
     "com.daltonmaag/check/ufo_recommended_fields":                       "ufo_recommended_fields",
     "com.daltonmaag/check/ufo_required_fields":                          "ufo_required_fields",
     "com.daltonmaag/check/ufo_unnecessary_fields":                       "ufo_unnecessary_fields",
@@ -339,6 +324,22 @@ renaming_map = {
 
 
 # Still need to review these ones:
+
+# Where did this one come from?   "caps_vertically_centered",
+# Where did this come from?       "glyphs_file/name/family_and_style_max_length",
+# Is this a new check?            "googlefonts/axes_match",
+# Is this a new check?            "googlefonts/production_encoded_glyphs",
+# New check?                      "googlefonts/STAT/compulsory_axis_values",
+# New check?                      "microsoft/character_repertoires",
+# New check?                      "microsoft/ogl2",
+# New check?                      "microsoft/wgl4",
+# New check?                      "name/char_restrictions",
+# where did this one come from?   "opentype/STAT/ital_axis",
+# New check?                      "overlapping_path_segments",
+# New check?                      "typenetwork/glyphsets",
+# New check?                      "ufo_consistent_curve_type",
+# New check?                      "ufo_no_open_corners",
+
 # com.google.fonts/check/dsig                                            REVIEW: dsig was deprecated?
 # com.google.fonts/check/whitespace_glyphnames
 # com.google.fonts/check/italic_axis_in_stat
@@ -350,6 +351,3 @@ renaming_map = {
 # com.google.fonts/check/STAT
 # com.adobe.fonts/check/stat_has_axis_value_tables
 # com.adobe.fonts/check/fsselection_matches_macstyle                     TODO: where is this?
-# com.adobe.fonts/check/varfont/valid_axis_nameid
-# com.adobe.fonts/check/varfont/valid_postscript_nameid
-# com.adobe.fonts/check/varfont/valid_subfamily_nameid
