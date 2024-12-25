@@ -137,6 +137,7 @@ renaming_map = {
     "com.google.fonts/check/repo/zip_files":                             "googlefonts/repo/zip_files",
     "com.google.fonts/check/STAT/axis_order":                            "googlefonts/STAT/axis_order",
     "com.google.fonts/check/STAT/gf_axisregistry":                       "googlefonts/STAT/axisregistry",
+    "com.google.fonts/check/STAT":                                       "googlefonts/STAT/compulsory_axis_values",
     "com.google.fonts/check/unitsperem_strict":                          "googlefonts/unitsperem",
     "com.google.fonts/check/varfont/bold_wght_coord":                    "googlefonts/varfont/bold_wght_coord",
     "com.google.fonts/check/varfont_duplicate_instance_names":           "googlefonts/varfont/duplicate_instance_names",
@@ -180,6 +181,7 @@ renaming_map = {
     "com.microsoft/check/name_id_1":                                     "name_id_1",
     "com.microsoft/check/name_id_2":                                     "name_id_2",
     "com.microsoft/check/name_length_req":                               "name_length_req",
+    "com.google.fonts/check/name/ascii_only_entries":                    "name/char_restrictions",
     "com.google.fonts/check/name/family_and_style_max_length":           "name/family_and_style_max_length",
     "com.google.fonts/check/name/italic_names":                          "name/italic_names",
     "com.google.fonts/check/name/no_copyright_on_description":           "name/no_copyright_on_description",
@@ -212,6 +214,7 @@ renaming_map = {
     "com.google.fonts/check/family/underline_thickness":                 "opentype/family/underline_thickness",
     "com.google.fonts/check/font_version TODO: double-check this!":      "opentype/font_version",
     "com.google.fonts/check/fsselection":                                "opentype/fsselection",
+    "com.adobe.fonts/check/fsselection_matches_macstyle":                "opentype/fsselection_matches_macstyle",
     "com.typenetwork/check/varfont/ital_range":                          "opentype/fvar/axis_ranges_correct",
     "com.google.fonts/check/varfont/slnt_range":                         "opentype/fvar/axis_ranges_correct",
     "com.google.fonts/check/varfont/wdth_valid_range":                   "opentype/fvar/axis_ranges_correct",
@@ -227,6 +230,9 @@ renaming_map = {
     "com.google.fonts/check/glyf_non_transformed_duplicate_components":  "opentype/glyf_non_transformed_duplicate_components",
     "com.google.fonts/check/glyf_unused_data":                           "opentype/glyf_unused_data",
     "com.google.fonts/check/italic_angle":                               "opentype/italic_angle",
+    "com.google.fonts/check/italic_axis_in_stat":                        "opentype/italic_axis_in_STAT",
+    "com.google.fonts/check/italic_axis_in_stat_is_boolean":             "opentype/italic_axis_in_STAT_is_boolean",
+    "com.google.fonts/check/italic_axis_last":                           "opentype/italic_axis_last",
     "com.google.fonts/check/kern_table":                                 "opentype/kern_table",
     "com.google.fonts/check/layout_valid_feature_tags":                  "opentype/layout_valid_feature_tags",
     "com.google.fonts/check/layout_valid_language_tags":                 "opentype/layout_valid_language_tags",
@@ -253,7 +259,7 @@ renaming_map = {
     "com.adobe.fonts/check/varfont/valid_axis_nameid":                   "opentype/varfont/valid_nameids",
     "com.adobe.fonts/check/varfont/valid_postscript_nameid":             "opentype/varfont/valid_nameids",
     "com.adobe.fonts/check/varfont/valid_subfamily_nameid":              "opentype/varfont/valid_nameids",
-    "com.thetypefounders/check/vendor_id":                               "opentype/vendor_id",  # TODO: review this!
+    "com.thetypefounders/check/vendor_id":                               "opentype/vendor_id",
     "com.fontwerk/check/weight_class_fvar":                              "opentype/weight_class_fvar",
     "com.google.fonts/check/xavgcharwidth":                              "opentype/xavgcharwidth",
     "com.google.fonts/check/os2_metrics_match_hhea":                     "os2_metrics_match_hhea",
@@ -301,7 +307,9 @@ renaming_map = {
     "com.typenetwork/check/vertical_metrics":                            "typenetwork/vertical_metrics",
     "com.arrowtype.fonts/check/typoascender_exceeds_Agrave":             "typoascender_exceeds_Agrave",
     "com.microsoft/check/typographic_family_name":                       "typographic_family_name",
+    "com.google.fonts/check/consistent_curve_type":                      "ufo_consistent_curve_type",
     "com.thetypefounders/check/features_default_languagesystem":         "ufo_features_default_languagesystem",
+    "com.daltonmaag/check/no_open_corners":                              "ufo_no_open_corners",
     "com.daltonmaag/check/ufo_recommended_fields":                       "ufo_recommended_fields",
     "com.daltonmaag/check/ufo_required_fields":                          "ufo_required_fields",
     "com.daltonmaag/check/ufo_unnecessary_fields":                       "ufo_unnecessary_fields",
@@ -329,25 +337,9 @@ renaming_map = {
 # Where did this come from?       "glyphs_file/name/family_and_style_max_length",
 # Is this a new check?            "googlefonts/axes_match",
 # Is this a new check?            "googlefonts/production_encoded_glyphs",
-# New check?                      "googlefonts/STAT/compulsory_axis_values",
 # New check?                      "microsoft/character_repertoires",
 # New check?                      "microsoft/ogl2",
 # New check?                      "microsoft/wgl4",
-# New check?                      "name/char_restrictions",
 # where did this one come from?   "opentype/STAT/ital_axis",
 # New check?                      "overlapping_path_segments",
 # New check?                      "typenetwork/glyphsets",
-# New check?                      "ufo_consistent_curve_type",
-# New check?                      "ufo_no_open_corners",
-
-# com.google.fonts/check/dsig                                            REVIEW: dsig was deprecated?
-# com.google.fonts/check/whitespace_glyphnames
-# com.google.fonts/check/italic_axis_in_stat
-# com.google.fonts/check/italic_axis_in_stat_is_boolean
-# com.google.fonts/check/italic_axis_last
-# com.google.fonts/check/name/ascii_only_entries
-# com.google.fonts/check/name/unwanted_chars
-# com.google.fonts/check/kerning_for_non_ligated_sequences
-# com.google.fonts/check/STAT
-# com.adobe.fonts/check/stat_has_axis_value_tables
-# com.adobe.fonts/check/fsselection_matches_macstyle                     TODO: where is this?
