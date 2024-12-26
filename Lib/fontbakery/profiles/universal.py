@@ -90,6 +90,7 @@ PROFILE = {
             "valid_glyphnames",
             "varfont/consistent_axes",
             "varfont/duplexed_axis_reflow",
+            "varfont/duplicate_instance_names",
             "varfont/instances_in_order",
             "varfont/unsupported_axes",
             "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.

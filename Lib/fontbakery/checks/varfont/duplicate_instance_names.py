@@ -3,14 +3,16 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="googlefonts/varfont/duplicate_instance_names",
+    id="varfont/duplicate_instance_names",
     rationale="""
         This check's purpose is to detect duplicate named instances names in a
         given variable font.
+
         Repeating instance names may be the result of instances for several VF axes
-        defined in `fvar`, but since currently only weight+italic tokens are allowed
-        in instance names as per GF specs, they ended up repeating.
-        Instead, only a base set of fonts for the most default representation of the
+        defined in `fvar`, but in some setups only weight+italic tokens are used
+        in instance names, so they end up repeating.
+
+        Only a base set of fonts for the most default representation of the
         family can be defined through instances in the `fvar` table, all other
         instances will have to be left to access through the `STAT` table.
     """,
