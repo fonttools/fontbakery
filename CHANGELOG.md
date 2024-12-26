@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ##  Upcoming release: 0.13.0 (2024-Dec-??)
 ### Noteworthy code-changes
-  - Created a dictionary at `Lib/fontbakery/legacy_checkids.py` that documents the renaming of checks-IDs that is happenning between versions v0.12.10 and v0.13.0
+  - Created a dictionary at `Lib/fontbakery/legacy_checkids.py` that documents the renaming of checks-IDs that is happenning between versions v0.12.10 and v0.13.0 (PR #4929)
 
   This file contains a translation map that can be useful:
   - to be read directly by humans
@@ -23,8 +23,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[smallcaps_before_ligatures]:** This check works just fine on OTFs, no need for `conditions=["is_ttf"]` (issue #4920)
 
 ### On the Google Fonts profile
-  - **[googlefonts/axes_match]:** Skip if remote_style is static.
-  - **[googlefonts/metadata/weightclass]:** Removed `"os2_"` from **googlefonts/metadata/os2_weightclass** checkid.
+  - **[googlefonts/axes_match]:** Skip if remote_style is static. (PR #4924)
+  - **[googlefonts/metadata/weightclass]:** Removed `"os2_"` from **googlefonts/metadata/os2_weightclass** checkid. (PR #4929)
 
 
 ##  0.13.0a6 (2024-Dec-03)
