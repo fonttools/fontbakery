@@ -12,6 +12,6 @@ profiles
    notofonts
    fontbureau
    fontwerk
-   fontval
    microsoft
+   fontval
    iso15008
