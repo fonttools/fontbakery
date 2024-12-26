@@ -14,7 +14,6 @@ from fontbakery.codetesting import (
     assert_results_contain,
     portable_path,
     TEST_FILE,
-    MockFont,
 )
 
 
@@ -176,10 +175,9 @@ def test_check_xavgcharwidth(check):
     assert_results_contain(check(test_font), FATAL, "missing-glyphs")
 
 
-@check_id("opentype/fsselection_matches_macstyle")
+@check_id("opentype/fsselection")
 def test_check_fsselection_matches_macstyle(check):
     """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
-
     from fontbakery.constants import FsSelection
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
@@ -193,7 +191,7 @@ def test_check_fsselection_matches_macstyle(check):
     message = assert_results_contain(
         check(test_font), FAIL, "fsselection-macstyle-bold"
     )
-    assert "bold" in message
+    assert "Bold" in message
 
     # now turn off bold in OS/2.fsSelection so we can focus on italic
     test_font["OS/2"].fsSelection &= ~FsSelection.BOLD
@@ -203,7 +201,7 @@ def test_check_fsselection_matches_macstyle(check):
     message = assert_results_contain(
         check(test_font), FAIL, "fsselection-macstyle-italic"
     )
-    assert "italic" in message
+    assert "Italic" in message
 
 
 @check_id("opentype/family/bold_italic_unique_for_nameid1")
@@ -282,7 +280,6 @@ def test_check_vendor_id(check):
 @check_id("opentype/fsselection")
 def test_check_fsselection(check):
     """Checking OS/2 fsSelection value."""
-
     from fontbakery.constants import FsSelection
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -355,19 +352,23 @@ def test_check_fsselection(check):
         ],
     ]
 
-    for fsSelection_value, style, expected, expected_message in test_cases:
+    for fsSelection_value, style, expected, _expected_message in test_cases:
         ttFont["OS/2"].fsSelection = fsSelection_value
 
+        ttFont.reader.file.name = f"Test-{style}.ttf"
+        print(f"Testing {ttFont.reader.file.name}...")
         if expected == PASS:
+            results = list(check(ttFont))
+            # Only care about results which refer to the old FontBakery test here
+            results = [r for r in results if "fsselection" not in r.message.code]
             assert_PASS(
-                check(MockFont(ttFont=ttFont, style=style)),
+                results,
                 "with fsSelection:{fsSelection_value} style:{style}...",
             )
         else:
             message = assert_results_contain(
-                check(MockFont(ttFont=ttFont, style=style)),
+                check(ttFont),
                 FAIL,
                 expected,
                 f"with fsSelection:{fsSelection_value} style:{style}...",
             )
-            assert message == expected_message

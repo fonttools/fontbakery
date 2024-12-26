@@ -16,6 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the OpenType Profile
   - **[opentype/STAT_has_axis_value_tables]**: Because **inconsistencies_between_fvar_STAT** (now on `Universal`) potentially has a wider scope in the future, checking back from the fvar table to the STAT table. (https://github.com/fonttools/fontbakery/issues/4916#issuecomment-2507999113)
+  - **[opentype/fsselection_matches_macstyle]:** Merged into **[opentype/fsselection]**. (PR #4935)
 
 ### Changes to existing checks
 ### On the Universal profile

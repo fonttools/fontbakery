@@ -17,7 +17,6 @@ PROFILE = {
             "opentype/family/underline_thickness",
             "opentype/font_version",
             "opentype/fsselection",
-            "opentype/fsselection_matches_macstyle",
             "opentype/fvar/axis_ranges_correct",
             "opentype/fvar/regular_coords_correct",
             "opentype/gdef_mark_chars",

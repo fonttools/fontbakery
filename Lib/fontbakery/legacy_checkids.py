@@ -219,7 +219,7 @@ renaming_map = {
     "com.google.fonts/check/family/underline_thickness":                    "opentype/family/underline_thickness",
     "com.google.fonts/check/font_version TODO: double-check this!":         "opentype/font_version",
     "com.google.fonts/check/fsselection":                                   "opentype/fsselection",
-    "com.adobe.fonts/check/fsselection_matches_macstyle":                   "opentype/fsselection_matches_macstyle",
+    "com.adobe.fonts/check/fsselection_matches_macstyle":                   "opentype/fsselection",
     "com.typenetwork/check/varfont/ital_range":                             "opentype/fvar/axis_ranges_correct",
     "com.google.fonts/check/varfont/slnt_range":                            "opentype/fvar/axis_ranges_correct",
     "com.google.fonts/check/varfont/wdth_valid_range":                      "opentype/fvar/axis_ranges_correct",
