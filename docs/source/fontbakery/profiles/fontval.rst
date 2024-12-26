@@ -1,5 +1,5 @@
-########################
-Microsoft Font Validator
-########################
+#################
+MS Font Validator
+#################
 
 .. autoprofile:: fontbakery.profiles.fontval

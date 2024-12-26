@@ -266,17 +266,6 @@ class TerminalReporter(FontbakeryReporter):
                     line.set_length(self._console.width)
                 self._console.print(lines)
 
-            if check.suggested_profile:
-                self._console.print(
-                    "    [rationale-title]Suggested Profile:[/] "
-                    + f" {check.suggested_profile}",
-                )
-
-            if check.proponent:
-                self._console.print(
-                    "    [rationale-title]Proponent:[/]" + f" {check.proponent}\n",
-                )
-
             if check.proposal:
                 moreinfo = check.proposal
                 if not isinstance(moreinfo, list):
