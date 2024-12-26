@@ -98,7 +98,6 @@ PROFILE = {
             "adobefonts/STAT_strings",
         ],
         "Google Fonts": [
-            "googlefonts/varfont/duplicate_instance_names",
             "googlefonts/varfont/bold_wght_coord",
         ],
     },

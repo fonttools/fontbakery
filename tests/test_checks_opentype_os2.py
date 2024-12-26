@@ -366,7 +366,7 @@ def test_check_fsselection(check):
                 "with fsSelection:{fsSelection_value} style:{style}...",
             )
         else:
-            message = assert_results_contain(
+            assert_results_contain(
                 check(ttFont),
                 FAIL,
                 expected,

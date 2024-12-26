@@ -10,6 +10,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - to generate documentation
   - to implement a backwards compatibility mechanism
 
+### Migration of checks
+#### Moved from Google Fonts to Universal profile
+  - **[googlefonts/varfont/duplicate_instance_names]**: Renamed to **varfont/duplicate_instance_names** (PR #4937)
+
+
 ### Deprecated checks
 #### On the Universal Profile
   - **[kerning_for_non_ligated_sequences]**: "Is there kerning info for non-ligated sequences?" (issue #2954 / https://github.com/simoncozens/fontspector/commit/eaa52447ddc4a42e26b6430841a43026870d8a48)
