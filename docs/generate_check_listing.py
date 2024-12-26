@@ -44,6 +44,13 @@ for filename, profile, msg in [
     output.write(f"{'#'*len(msg)}\n{msg}\n{'#'*len(msg)}\n\n")
 
     for section, checks in profile["sections"].items():
+        section_header = (
+            f"\n{'-'*len(section)}\n"
+            f"{section}\n"
+            f"{'-'*len(section)}\n\n"
+            f".. toctree::\n"
+        )
+
         for checkid in checks:
             # we don´t want to document any given check more than once:
             if checkid in seen:
@@ -62,5 +69,10 @@ for filename, profile, msg in [
                     f = f"vendorspecific.{vendor_profile}.{'.'.join(checkid)}"
             else:
                 f = ".".join(checkid)
+
+            if section_header:
+                output.write(section_header)
+                section_header = None
+
             output.write(f".. automodule:: fontbakery.checks.{f}\n    :members:\n")
     output.close()
