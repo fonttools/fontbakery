@@ -103,7 +103,7 @@ class FontbakeryCheckDocumenter(FunctionDocumenter):
         check = self.object
         self.add_line("*" + check.description + "*", source_name)
         self.add_line("", source_name)
-        for section in ["rationale", "proposal", "proponent", "conditions", "severity"]:
+        for section in ["rationale", "proposal", "conditions", "severity"]:
             if getattr(check, section):
                 getattr(self, f"render_{section}")()
         self.add_line("", source_name)
@@ -131,12 +131,6 @@ class FontbakeryCheckDocumenter(FunctionDocumenter):
                     )
         else:
             self.add_line(f"* **Original proposal**: {check.proposal}", source_name)
-
-    def render_proponent(self):
-        check = self.object
-        source_name = self.get_sourcename()
-        self.add_line("", source_name)
-        self.add_line(f"**Proponent**: {check.proponent}", source_name)
 
     def render_conditions(self):
         check = self.object

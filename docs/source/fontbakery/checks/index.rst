@@ -5,16 +5,14 @@ Check definitions
 .. toctree::
    :maxdepth: 1
 
+   opentype
+   iso15008
+   universal
    adobefonts
    fontbureau
-   fontval
    fontwerk
    googlefonts
-   iso15008
    microsoft
    notofonts
-   opentype
-   outline
-   shaping
    typenetwork
-   ufo
+   fontval

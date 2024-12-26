@@ -139,9 +139,6 @@ class FontBakeryCheck(FontbakeryCallable):
         # Using markdown, perhaps?
         proposal=None,  # An URL to the original proposal for this check.
         # This is typically a github issue or pull request.
-        proponent=None,  # Name Surname (@github_username)
-        suggested_profile=None,  # A suggestion of which fontbakery profile
-        # should this check be added to once implemented.
         experimental=False,  # Experimental checks won't affect the process exit code
         severity=None,  # numeric value from 1=min to 10=max, denoting check severity
         configs=None,  # items from config[self.id] to inject into the check's namespace
@@ -151,9 +148,6 @@ class FontBakeryCheck(FontbakeryCallable):
         # Below are a few candidates for that:
         # affects=None,  # A list of tuples each indicating Browser/OS/Application
         #                # and the affected versions range.
-        # example_failures=None,  # A reference to some font or family that
-        #                         # originally failed due to the problems
-        #                         # that this check tries to detect and report.
     ):
         """This is the base class for all checks. It will usually
         not be used directly to create check instances, rather
@@ -204,9 +198,7 @@ class FontBakeryCheck(FontbakeryCallable):
         )
         self.configs = configs
         self.proposal = proposal
-        self.proponent = proponent
         self.experimental = experimental
-        self.suggested_profile = suggested_profile
         self.severity = severity
         if not self.description:
             raise TypeError("{} needs a description.".format(type(self).__name__))

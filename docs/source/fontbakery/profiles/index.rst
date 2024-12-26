@@ -13,4 +13,5 @@ profiles
    fontbureau
    fontwerk
    fontval
+   microsoft
    iso15008
