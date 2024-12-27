@@ -187,7 +187,7 @@ PROFILE = {
                 "reason": "Google Fonts has different policies on checking for italic angle.",
             },
         ],
-        "opentype/italic_axis_in_STAT_is_boolean": [
+        "opentype/STAT/ital_axis": [
             {
                 "code": "wrong-ital-axis-value",
                 "status": "FAIL",
@@ -203,8 +203,6 @@ PROFILE = {
                 "status": "FAIL",
                 "reason": "For Google Fonts, all messages from this check are considered FAILs",
             },
-        ],
-        "opentype/italic_axis_last": [
             {
                 "code": "ital-axis-not-last",
                 "status": "FAIL",

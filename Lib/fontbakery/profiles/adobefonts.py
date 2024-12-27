@@ -34,11 +34,9 @@ PROFILE = {
         "opentype/gdef_non_mark_chars",
         "opentype/gdef_spacing_marks",
         "opentype/italic_angle",
-        "opentype/italic_axis_in_STAT",
-        "opentype/italic_axis_in_STAT_is_boolean",
-        "opentype/italic_axis_last",
         "opentype/mac_style",
         "opentype/slant_direction",
+        "opentype/STAT/ital_axis",
         "opentype/varfont/family_axis_ranges",
         "opentype/vendor_id",
         #

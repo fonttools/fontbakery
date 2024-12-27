@@ -1,185 +1,166 @@
-import os
-
-from fontbakery.prelude import check, Message, FAIL, PASS, WARN, SKIP
+from fontbakery.prelude import check, Message, FAIL, WARN, SKIP
 
 
-@check(
-    id="opentype/italic_axis_in_STAT",
-    rationale="""
-        Check that related Upright and Italic VFs have a
-        'ital' axis in STAT table.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/2934",
-)
-def check_italic_axis_in_STAT(fonts, config):
-    """Ensure VFs have 'ital' STAT axis."""
-    from fontTools.ttLib import TTFont
+def get_STAT_axis(ttFont, tag):
+    for axis in ttFont["STAT"].table.DesignAxisRecord.Axis:
+        if axis.AxisTag == tag:
+            return axis
+    return None
 
-    font_filenames = [f.file for f in fonts]
-    italics = [f for f in font_filenames if "Italic" in f]
-    missing_roman = []
-    italic_to_roman_mapping = {}
-    for italic in italics:
-        style_from_filename = os.path.basename(italic).split("-")[-1].split(".")[0]
-        is_varfont = "[" in style_from_filename
 
-        # to remove the axes syntax used on variable-font filenames:
-        if is_varfont:
-            style_from_filename = style_from_filename.split("[")[0]
+def get_STAT_axis_value(ttFont, tag):
+    for i, axis in enumerate(ttFont["STAT"].table.DesignAxisRecord.Axis):
+        if axis.AxisTag == tag:
+            for axisValue in ttFont["STAT"].table.AxisValueArray.AxisValue:
+                if axisValue.AxisIndex == i:
+                    linked_value = None
+                    if hasattr(axisValue, "LinkedValue"):
+                        linked_value = axisValue.LinkedValue
+                    return axisValue.Value, axisValue.Flags, linked_value
+    return None, None, None
 
-        if style_from_filename == "Italic":
-            if is_varfont:
-                # "Familyname-Italic[wght,wdth].ttf" => "Familyname[wght,wdth].ttf"
-                roman_counterpart = italic.replace("-Italic", "")
-            else:
-                # "Familyname-Italic.ttf" => "Familyname-Regular.ttf"
-                roman_counterpart = italic.replace("Italic", "Regular")
-        else:
-            # "Familyname-BoldItalic[wght,wdth].ttf" => "Familyname-Bold[wght,wdth].ttf"
-            roman_counterpart = italic.replace("Italic", "")
 
-        if is_varfont:
-            if roman_counterpart not in font_filenames:
-                missing_roman.append(italic)
-            else:
-                italic_to_roman_mapping[italic] = roman_counterpart
-
-    if missing_roman:
-        from fontbakery.utils import pretty_print_list
-
-        missing_roman = pretty_print_list(config, missing_roman)
+def check_has_ital(font):
+    if "STAT" not in font.ttFont:
         yield FAIL, Message(
-            "missing-roman",
-            f"Italics missing a Roman counterpart, so couldn't check"
-            f" both Roman and Italic for 'ital' axis: {missing_roman}",
+            "no-stat",
+            f"Font {font.file} has no STAT table",
         )
         return
 
-    # Actual check starts here
-    for italic_filename in italic_to_roman_mapping:
-        italic = italic_filename
-        upright = italic_to_roman_mapping[italic_filename]
-
-        for filepath in (upright, italic):
-            ttFont = TTFont(filepath)
-            if "ital" not in [
-                axis.AxisTag for axis in ttFont["STAT"].table.DesignAxisRecord.Axis
-            ]:
-                yield FAIL, Message(
-                    "missing-ital-axis",
-                    f"Font {os.path.basename(filepath)}" f" is missing an 'ital' axis.",
-                )
+    if "ital" not in [
+        axis.AxisTag for axis in font.ttFont["STAT"].table.DesignAxisRecord.Axis
+    ]:
+        yield FAIL, Message(
+            "missing-ital-axis",
+            f"Font {font.file} lacks an 'ital' axis in the STAT table.",
+        )
 
 
-@check(
-    id="opentype/italic_axis_in_STAT_is_boolean",
-    conditions=["style", "has_STAT_table"],
-    rationale="""
-        Check that the value of the 'ital' STAT axis is boolean (either 0 or 1),
-        and elided for the Upright and not elided for the Italic,
-        and that the Upright is linked to the Italic.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/3668",
-)
-def check_italic_axis_in_STAT_is_boolean(ttFont, style):
-    """Ensure 'ital' STAT axis is boolean value"""
-
-    def get_STAT_axis(font, tag):
-        for axis in font["STAT"].table.DesignAxisRecord.Axis:
-            if axis.AxisTag == tag:
-                return axis
-        return None
-
-    def get_STAT_axis_value(font, tag):
-        for i, axis in enumerate(font["STAT"].table.DesignAxisRecord.Axis):
-            if axis.AxisTag == tag:
-                for axisValue in font["STAT"].table.AxisValueArray.AxisValue:
-                    if axisValue.AxisIndex == i:
-                        linkedValue = None
-                        if hasattr(axisValue, "LinkedValue"):
-                            linkedValue = axisValue.LinkedValue
-                        return axisValue.Value, axisValue.Flags, linkedValue
-        return None, None, None
-
-    if not get_STAT_axis(ttFont, "ital"):
-        yield SKIP, "Font doesn't have an ital axis"
+def check_ital_is_binary_and_last(font, is_italic):
+    if "STAT" not in font.ttFont:
         return
 
-    value, flags, linkedValue = get_STAT_axis_value(ttFont, "ital")
-    if (value, flags, linkedValue) == (None, None, None):
-        yield SKIP, "No 'ital' axis in STAT."
+    if not get_STAT_axis(font.ttFont, "ital"):
+        yield SKIP, "Font {font.file} doesn't have an ital axis"
         return
 
-    passed = True
-    # Font has an 'ital' axis in STAT
-    if "Italic" in style:
-        if value != 1:
-            passed = False
-            yield WARN, Message(
-                "wrong-ital-axis-value",
-                f"STAT table 'ital' axis has wrong value."
-                f" Expected: 1, got '{value}'.",
-            )
-        if flags != 0:
-            passed = False
-            yield WARN, Message(
-                "wrong-ital-axis-flag",
-                f"STAT table 'ital' axis flag is wrong."
-                f" Expected: 0 (not elided), got '{flags}'.",
-            )
-    else:
-        if value != 0:
-            passed = False
-            yield WARN, Message(
-                "wrong-ital-axis-value",
-                f"STAT table 'ital' axis has wrong value."
-                f" Expected: 0, got '{value}'.",
-            )
-        if flags != 2:
-            passed = False
-            yield WARN, Message(
-                "wrong-ital-axis-flag",
-                f"STAT table 'ital' axis flag is wrong.\n"
-                f"Expected: 2 (elided)\n"
-                f"Got: '{flags}'",
-            )
-        if linkedValue != 1:
-            passed = False
-            yield WARN, Message(
-                "wrong-ital-axis-linkedvalue",
-                "STAT table 'ital' axis is not linked to Italic.",
-            )
-
-    if passed:
-        yield PASS, "STAT table ital axis values are good."
-
-
-@check(
-    id="opentype/italic_axis_last",
-    conditions=["style", "has_STAT_table"],
-    rationale="""
-        Check that the 'ital' STAT axis is last in axis order.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/3669",
-)
-def check_italic_axis_last(ttFont, style):
-    """Ensure 'ital' STAT axis is last."""
-
-    def get_STAT_axis(font, tag):
-        for axis in font["STAT"].table.DesignAxisRecord.Axis:
-            if axis.AxisTag == tag:
-                return axis
-        return None
-
-    axis = get_STAT_axis(ttFont, "ital")
-    if not axis:
-        yield SKIP, "No 'ital' axis in STAT."
-        return
-
-    if ttFont["STAT"].table.DesignAxisRecord.Axis[-1].AxisTag != "ital":
+    tags = [axis.AxisTag for axis in font.ttFont["STAT"].table.DesignAxisRecord.Axis]
+    ital_pos = tags.index("ital")
+    if ital_pos != len(tags) - 1:
         yield WARN, Message(
             "ital-axis-not-last",
-            "STAT table 'ital' axis is not the last in the axis order.",
+            f"Font {font.file} has 'ital' axis in position"
+            f" {ital_pos + 1} of {len(tags)}.",
         )
+
+    value, flags, linked_value = get_STAT_axis_value(font.ttFont, "ital")
+    if (value, flags, linked_value) == (None, None, None):
+        yield SKIP, "No 'ital' axis in STAT."
+        return
+
+    if is_italic:
+        expected_value = 1.0  # Italic
+        expected_flags = 0x0000  # AxisValueTableFlags empty
     else:
-        yield PASS, "STAT table ital axis order is good."
+        expected_value = 0.0  # Upright
+        expected_flags = 0x0002  # ElidableAxisValueName
+
+    if value != expected_value:
+        yield WARN, Message(
+            "wrong-ital-axis-value",
+            f"{font.file} has STAT table 'ital' axis with wrong value."
+            f" Expected: {expected_value}, got '{value}'",
+        )
+
+    if flags != expected_flags:
+        yield WARN, Message(
+            "wrong-ital-axis-flag",
+            f"{font.file} has STAT table 'ital' axis with wrong flags."
+            f" Expected: {expected_flags}, got '{flags}'",
+        )
+
+    # If we are Roman, check for the linked value
+    if not is_italic:
+        if linked_value != 1.0:  # Roman should be linked to a fully-italic.
+            yield WARN, Message(
+                "wrong-ital-axis-linkedvalue",
+                f"{font.file} has STAT table 'ital' axis with wrong linked value."
+                f" Expected: 1.0, got '{linked_value}'",
+            )
+
+
+def segment_vf_collection(fonts):
+    roman_italic = []
+    italics = []
+    non_italics = []
+    for font in fonts:
+        if "-Italic[" in font.file:
+            italics.append(font)
+        else:
+            non_italics.append(font)
+
+    for italic in italics:
+        # Find a matching roman
+        suspected_roman = italic.file.replace("-Italic[", "[")
+
+        found_roman = None
+        for non_italic in non_italics:
+            if non_italic.file == suspected_roman:
+                found_roman = non_italic
+                break
+
+        if found_roman:
+            non_italics.remove(found_roman)
+            roman_italic.append((found_roman, italic))
+        else:
+            roman_italic.append((None, italic))
+
+    # Now add all the remaining non-italic fonts
+    for roman in non_italics:
+        roman_italic.append((roman, None))
+
+    return roman_italic
+
+
+@check(
+    id="opentype/STAT/ital_axis",
+    rationale="""
+        Check that related Upright and Italic VFs have an
+        'ital' axis in the STAT table.
+
+        Since the STAT table can be used to create new instances, it is
+        important to ensure that such an 'ital' axis be the last one
+        declared in the STAT table so that the eventual naming of new
+        instances follows the subfamily traditional scheme (RIBBI / WWS)
+        where "Italic" is always last.
+
+        The 'ital' axis should also be strictly boolean, only accepting
+        values of 0 (for Uprights) or 1 (for Italics). This usually works
+        as a mechanism for selecting between two linked variable font files.
+
+        Also, the axis value name for uprights must be set as elidable.
+    """,
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/2934",
+        "https://github.com/fonttools/fontbakery/issues/3668",
+        "https://github.com/fonttools/fontbakery/issues/3669",
+    ],
+)
+def check_STAT_ital_axis(fonts, config):
+    """Ensure VFs have 'ital' STAT axis."""
+
+    for roman, italic in segment_vf_collection(fonts):
+        if roman and italic:
+            # These should definitely both have an ital axis
+            yield from check_has_ital(roman)
+            yield from check_has_ital(italic)
+            yield from check_ital_is_binary_and_last(roman, False)
+            yield from check_ital_is_binary_and_last(italic, True)
+        elif italic:
+            yield FAIL, Message(
+                "missing-roman",
+                f"Italic font {italic.file} has no matching Roman font.",
+            )
+        elif roman:
+            yield from check_ital_is_binary_and_last(roman, False)

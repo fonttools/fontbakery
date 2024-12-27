@@ -36,10 +36,9 @@ def test_check_varfont_STAT_axis_record_for_each_axis(check):
     assert "Unfulfilled Conditions: is_variable_font" in msg
 
 
-@check_id("opentype/italic_axis_in_STAT")
+@check_id("opentype/STAT/ital_axis")
 def test_check_italic_axis_in_STAT(check):
     """Ensure VFs have 'ital' STAT axis."""
-
     # PASS
     fonts = [
         TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"),
@@ -77,16 +76,20 @@ def test_check_italic_axis_in_STAT(check):
         os.remove(font)
 
 
-@check_id("opentype/italic_axis_in_STAT_is_boolean")
+@check_id("opentype/STAT/ital_axis")
 def test_check_italic_axis_in_STAT_is_boolean(check):
     """Ensure 'ital' STAT axis is boolean value"""
 
     # PASS
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
-    assert_PASS(check(TTFont(font)))
+    results = check(TTFont(font))
+    results = [r for r in results if r.message.code == "wrong-ital-axis-value"]
+    assert_PASS(results)
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    assert_PASS(check(TTFont(font)))
+    results = check(TTFont(font))
+    results = [r for r in results if r.message.code == "wrong-ital-axis-value"]
+    assert_PASS(results)
 
     # FAIL
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
@@ -99,36 +102,39 @@ def test_check_italic_axis_in_STAT_is_boolean(check):
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 0
     assert_results_contain(check(ttFont), WARN, "wrong-ital-axis-flag")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
+    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
-    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 0
-    assert_results_contain(check(ttFont), WARN, "wrong-ital-axis-value")
+    italfont = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
+    ital_ttFont = TTFont(italfont)
+    ital_ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 0
+    assert_results_contain(check([ttFont, ital_ttFont]), WARN, "wrong-ital-axis-value")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    ttFont = TTFont(font)
-    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 2
-    assert_results_contain(check(ttFont), WARN, "wrong-ital-axis-flag")
+    ital_ttFont = TTFont(italfont)
+    ital_ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 2
+    assert_results_contain(check([ttFont, ital_ttFont]), WARN, "wrong-ital-axis-flag")
 
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
-    ttFont["STAT"].table.AxisValueArray.AxisValue[6].LinkedValue = None
+    ttFont["STAT"].table.AxisValueArray.AxisValue[6].LinkedValue = 0.4
     assert_results_contain(check(ttFont), WARN, "wrong-ital-axis-linkedvalue")
 
 
-@check_id("opentype/italic_axis_last")
+@check_id("opentype/STAT/ital_axis")
 def test_check_italic_axis_last(check):
     """Ensure 'ital' STAT axis is last."""
 
+    font_roman = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
+    ttFont_roman = TTFont(font_roman)
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
     # Move last axis (ital) to the front
     ttFont["STAT"].table.DesignAxisRecord.Axis = [
         ttFont["STAT"].table.DesignAxisRecord.Axis[-1]
     ] + ttFont["STAT"].table.DesignAxisRecord.Axis[:-1]
-    assert_results_contain(check(ttFont), WARN, "ital-axis-not-last")
+    assert_results_contain(check([ttFont_roman, ttFont]), WARN, "ital-axis-not-last")
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    assert_PASS(check(font))
+    assert_PASS(check([font_roman, font]))
 
 
 @check_id("opentype/weight_class_fvar")
