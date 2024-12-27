@@ -30,6 +30,7 @@ PROFILE = {
         "smart_dropout",
         "stylisticset_description",
         "typographic_family_name",
+        "varfont/bold_wght_coord",
         "varfont/consistent_axes",
         "varfont/duplexed_axis_reflow",
         "varfont/duplicate_instance_names",

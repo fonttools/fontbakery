@@ -71,7 +71,6 @@ PROFILE = {
         ],
         "Google Fonts": [
             "googlefonts/family/equal_codepoint_coverage",
-            "googlefonts/varfont/bold_wght_coord",
             "googlefonts/STAT/axis_order",
         ],
         "Outline Checks": [
@@ -109,19 +108,17 @@ PROFILE = {
                 "reason": "This is a feature, not really needed to the font perform well.",
             },
         ],
-        "googlefonts/varfont/bold_wght_coord": [
+        "varfont/bold_wght_coord": [
             {
                 "code": "no-bold-instance",
                 "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require having a Bold "
-                "instance, and that instance should have coordinate 700 on the 'wght' axis.",
+                "reason": "Adobe and Type Network recommend, but do not require having a Bold instance.",
             },
             {
                 "code": "wght-not-700",
                 "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require having a "
-                "Bold instance, and that instance should have coordinate 700 on "
-                "the 'wght' axis.",
+                "reason": "Adobe and Type Network recommend (but do not require) that"
+                " instance should have coordinate 700 on the 'wght' axis.",
             },
         ],
         "opentype/fvar/regular_coords_correct": [

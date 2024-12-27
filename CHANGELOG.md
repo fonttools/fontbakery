@@ -13,7 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Migration of checks
 #### Moved from Google Fonts to Universal profile
   - **[googlefonts/varfont/duplicate_instance_names]**: Renamed to **varfont/duplicate_instance_names** (PR #4937)
-
+  - **[googlefonts/varfont/bold_wght_coord]**: Renamed to **varfont/bold_wght_coord** (PR #4938)
 
 ### Deprecated checks
 #### On the Universal Profile

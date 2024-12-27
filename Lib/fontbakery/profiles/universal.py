@@ -88,6 +88,7 @@ PROFILE = {
             "unwanted_aat_tables",
             "unwanted_tables",
             "valid_glyphnames",
+            "varfont/bold_wght_coord",
             "varfont/consistent_axes",
             "varfont/duplexed_axis_reflow",
             "varfont/duplicate_instance_names",

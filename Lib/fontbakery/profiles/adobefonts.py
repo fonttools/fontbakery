@@ -97,9 +97,6 @@ PROFILE = {
             "adobefonts/unsupported_tables",
             "adobefonts/STAT_strings",
         ],
-        "Google Fonts": [
-            "googlefonts/varfont/bold_wght_coord",
-        ],
     },
     "overrides": {
         "whitespace_glyphs": [
@@ -162,16 +159,16 @@ PROFILE = {
                 "reason": "Many CFF OpenType fonts in circulation are built with the Microsoft platform Full font name string identical to the PostScript FontName in the CFF Name INDEX. This practice was documented in the OpenType spec until version 1.5.",
             }
         ],
-        "googlefonts/varfont/bold_wght_coord": [
+        "varfont/bold_wght_coord": [
             {
                 "code": "no-bold-instance",
                 "status": "WARN",
-                "reason": "Adobe strongly recommends, but does not require having a Bold instance, and that instance should have coordinate 700 on the 'wght' axis.",
+                "reason": "Adobe strongly recommends, but does not require having a Bold instance.",
             },
             {
                 "code": "wght-not-700",
                 "status": "WARN",
-                "reason": "Adobe strongly recommends, but does not require having a Bold instance, and that instance should have coordinate 700 on the 'wght' axis.",
+                "reason": "Adobe strongly recommends (but does not require) that instance should have coordinate 700 on the 'wght' axis.",
             },
         ],
         "opentype/fvar/regular_coords_correct": [
