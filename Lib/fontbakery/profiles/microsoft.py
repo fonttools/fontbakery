@@ -50,6 +50,7 @@ PROFILE = {
         "ufo_required_fields",
         "ufo_unnecessary_fields",
         "unwanted_aat_tables",
+        "varfont/bold_wght_coord",
         "varfont/consistent_axes",
         "varfont/duplexed_axis_reflow",
         "varfont/duplicate_instance_names",

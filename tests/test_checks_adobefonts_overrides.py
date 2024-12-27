@@ -273,7 +273,7 @@ def test_check_override_trailing_spaces(check):
     assert "Overridden" in msg
 
 
-@check_id("googlefonts/varfont/bold_wght_coord", profile=adobefonts_profile)
+@check_id("varfont/bold_wght_coord", profile=adobefonts_profile)
 def test_check_override_bold_wght_coord(check):
     """Check that overriden tests yield WARN rather than FAIL."""
 

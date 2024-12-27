@@ -142,7 +142,6 @@ PROFILE = {
             "googlefonts/STAT/compulsory_axis_values",
             "googlefonts/unitsperem",
             "googlefonts/use_typo_metrics",
-            "googlefonts/varfont/bold_wght_coord",
             "googlefonts/varfont/generate_static",
             "googlefonts/varfont/has_HVAR",
             "googlefonts/vendor_id",
