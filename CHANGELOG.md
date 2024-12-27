@@ -10,6 +10,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - to generate documentation
   - to implement a backwards compatibility mechanism
 
+### New checks
+#### Added to the OpenType profile
+ - **[STAT/ital_axis]**: Replaces the old checks (**opentype/italic_axis_in_stat**, **opentype/italic_axis_in_stat_is_boolean** and **opentype/italic_axis_last**) from the same profile (issue #4865)
+
 ### Migration of checks
 #### Moved from Google Fonts to Universal profile
   - **[googlefonts/varfont/duplicate_instance_names]**: Renamed to **varfont/duplicate_instance_names** (PR #4937)

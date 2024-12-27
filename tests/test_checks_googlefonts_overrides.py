@@ -63,58 +63,68 @@ def test_check_italic_angle(check):
     )
 
 
-@check_id("opentype/italic_axis_in_STAT_is_boolean", profile=googlefonts_profile)
-def test_check_italic_axis_in_STAT_is_boolean(check):
+@check_id("opentype/STAT/ital_axis", profile=googlefonts_profile)
+def test_check_STAT_ital_axis__axes_values_and_flags(check):
     """Ensure 'ital' STAT axis is boolean value"""
 
     # PASS
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
-    assert_PASS(check(TTFont(font)))
+    results = check(TTFont(font))
+    results = [r for r in results if r.message.code == "wrong-ital-axis-value"]
+    assert_PASS(results)
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    assert_PASS(check(TTFont(font)))
+    results = check(TTFont(font))
+    results = [r for r in results if r.message.code == "wrong-ital-axis-value"]
+    assert_PASS(results)
 
     # FAIL
-    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
-    ttFont = TTFont(font)
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 1
     assert_results_contain(check(ttFont), FAIL, "wrong-ital-axis-value")
 
-    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
-    ttFont = TTFont(font)
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 0
     assert_results_contain(check(ttFont), FAIL, "wrong-ital-axis-flag")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    ttFont = TTFont(font)
-    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 0
-    assert_results_contain(check(ttFont), FAIL, "wrong-ital-axis-value")
+    ttFonts = [
+        TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")),
+        TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")),
+    ]
+    ttFonts[1]["STAT"].table.AxisValueArray.AxisValue[6].Value = 0
+    assert_results_contain(check(ttFonts), FAIL, "wrong-ital-axis-value")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    ttFont = TTFont(font)
-    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 2
-    assert_results_contain(check(ttFont), FAIL, "wrong-ital-axis-flag")
+    ttFonts = [
+        TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")),
+        TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")),
+    ]
+    ttFonts[1]["STAT"].table.AxisValueArray.AxisValue[6].Flags = 2
+    assert_results_contain(check(ttFonts), FAIL, "wrong-ital-axis-flag")
 
-    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
-    ttFont = TTFont(font)
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].LinkedValue = None
     assert_results_contain(check(ttFont), FAIL, "wrong-ital-axis-linkedvalue")
 
 
-@check_id("opentype/italic_axis_last", profile=googlefonts_profile)
-def test_check_italic_axis_last(check):
-    """Ensure 'ital' STAT axis is boolean value"""
+@check_id("opentype/STAT/ital_axis", profile=googlefonts_profile)
+def test_check_STAT_ital_axis(check):
+    """Ensure VFs have 'ital' STAT axis."""
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    ttFont = TTFont(font)
+    ttFonts = [
+        TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")),
+        TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")),
+    ]
     # Move last axis (ital) to the front
-    ttFont["STAT"].table.DesignAxisRecord.Axis = [
-        ttFont["STAT"].table.DesignAxisRecord.Axis[-1]
-    ] + ttFont["STAT"].table.DesignAxisRecord.Axis[:-1]
-    assert_results_contain(check(ttFont), FAIL, "ital-axis-not-last")
+    ttFonts[1]["STAT"].table.DesignAxisRecord.Axis = [
+        ttFonts[1]["STAT"].table.DesignAxisRecord.Axis[-1]
+    ] + ttFonts[1]["STAT"].table.DesignAxisRecord.Axis[:-1]
+    assert_results_contain(check(ttFonts), FAIL, "ital-axis-not-last")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    assert_PASS(check(font))
+    fonts = [
+        TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"),
+        TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"),
+    ]
+    assert_PASS(check(fonts))
 
 
 @check_id("alt_caron", profile=googlefonts_profile)
