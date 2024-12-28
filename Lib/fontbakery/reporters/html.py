@@ -110,6 +110,28 @@ class HTMLReporter(SerializeReporter):
                 (e for e in section["result"].elements() if e != "PASS"),
                 key=LOGLEVELS.index,
             )
+        if self.legacy_checkid_references:
+            deprecation_warning = (
+                "By late-December 2024, FontBakery version 0.13.0"
+                " introduced a new naming scheme for the check-IDs.<br>"
+                "<br>"
+                "Fontbakery detected usage of old IDs and performed an"
+                " automatic backwards-compatibility translation for you.<br>"
+                "This automatic translation will be deprecated in the next"
+                " major release.<br>"
+                "<br>"
+                "Please start using the new check-IDs as documented at"
+                " <a href='https://github.com/fonttools/fontbakery/blob/"
+                "83db7cc2a6ad58585ddec9397306e0420843edb1/Lib/"
+                "fontbakery/legacy_checkids.py'>"
+                "/Lib/fontbakery/legacy_checkids.py</a><br>"
+                "<br>"
+                "The following legacy check-IDs were detected:<br>"
+                f" - {'<br> - '.join(self.legacy_checkid_references)}<br>"
+                "<br>"
+            )
+        else:
+            deprecation_warning = None
 
         return self.template_engine().render(
             sections=data["sections"],
@@ -118,4 +140,5 @@ class HTMLReporter(SerializeReporter):
             total=total,
             summary={k: data["result"][k] for k in LOGLEVELS},
             succinct=self.succinct,
+            deprecation_warning=deprecation_warning,
         )

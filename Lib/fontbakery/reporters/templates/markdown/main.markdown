@@ -2,6 +2,11 @@
 
 fontbakery version: {{fb_version}}
 
+{% if deprecation_warning %}
+### DEPRECATION WARNING
+{{deprecation_warning}}
+{% endif %}
+
 {% if fatal_checks %}
 ## Checks with FATAL results
 
