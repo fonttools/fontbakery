@@ -41,6 +41,7 @@ PROFILE = {
     ],
     "pending_review": [
         "epar",
+        "base_has_width",
     ],
     "sections": {
         "Type Network": [

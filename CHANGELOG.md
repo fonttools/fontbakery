@@ -11,6 +11,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - to implement a backwards compatibility mechanism
 
 ### New checks
+#### Added to the Universal profile
+  - **EXPERIMENTAL - [base_has_width]:** Check base characters have non-zero advance width. (issue #4906)
+
 #### Added to the OpenType profile
   - **[STAT/ital_axis]**: Replaces the old checks (**opentype/italic_axis_in_stat**, **opentype/italic_axis_in_stat_is_boolean** and **opentype/italic_axis_last**) from the same profile (issue #4865)
 

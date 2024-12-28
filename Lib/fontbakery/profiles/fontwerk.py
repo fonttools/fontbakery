@@ -18,6 +18,7 @@ PROFILE = {
     ],
     "pending_review": [
         "epar",
+        "base_has_width",
         "googlefonts/axes_match",
         "overlapping_path_segments",
         "typographic_family_name",

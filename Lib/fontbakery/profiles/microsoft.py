@@ -11,6 +11,7 @@ PROFILE = {
         "opentype/slant_direction",
         "opentype/weight_class_fvar",
         #
+        "base_has_width",
         "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
