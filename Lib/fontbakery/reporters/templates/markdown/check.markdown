@@ -1,5 +1,5 @@
 <details>
-    <summary>{{check.result | emoticon}} <b>{{check.result}}</b> {{check.description}} <a href="https://fontbakery.readthedocs.io/en/stable/fontbakery/checks/{{check.module}}.html#{{check.id | replace("_", "-") | replace("/", "-") | replace(".", "-")}}">{{check.id}}</a></summary>
+    <summary>{{check.result | emoticon}} <b>{{check.result}}</b> {{check.description}} <a href="{{check.doc_url}}">{{check.id}}</a></summary>
     <div>
 
 {% if not succinct and check.rationale %}
