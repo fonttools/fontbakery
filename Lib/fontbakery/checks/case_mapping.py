@@ -1,4 +1,7 @@
+import unicodedata
+
 from fontbakery.prelude import check, Message, FAIL
+from fontbakery.utils import markdown_table
 
 
 @check(
@@ -13,8 +16,6 @@ from fontbakery.prelude import check, Message, FAIL
 )
 def check_case_mapping(ttFont):
     """Ensure the font supports case swapping for all its glyphs."""
-    import unicodedata
-    from fontbakery.utils import markdown_table
 
     # These are a selection of codepoints for which the corresponding case-swap
     # glyphs are missing way too often on the Google Fonts library,
