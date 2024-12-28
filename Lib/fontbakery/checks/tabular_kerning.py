@@ -1,4 +1,5 @@
 from fontbakery.prelude import check, Message, FAIL, SKIP
+from fontbakery.utils import mark_glyphs
 
 
 @check(
@@ -158,16 +159,6 @@ def check_tabular_kerning(ttFont):
             len(get_str_buffer(glyph_list).split("|")) > 1
             and get_kerning(glyph_list) == expected_kerning
         )
-
-    def mark_glyphs(ttFont):
-        marks = []
-        if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
-            class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
-            glyphOrder = ttFont.getGlyphOrder()
-            for name in glyphOrder:
-                if name in class_def and class_def[name] == 3:
-                    marks.append(name)
-        return marks
 
     # Font has no numerals at all
     if not all([glyph_name_for_character(ttFont, c) for c in "0123456789"]):

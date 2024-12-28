@@ -43,6 +43,7 @@ PROFILE = {
         "alt_caron",
         "arabic_high_hamza",
         "arabic_spacing_symbols",
+        "base_has_width",
         "case_mapping",
         "cjk_chws_feature",  # was temporarily removed
         "cjk_not_enough_glyphs",

@@ -24,6 +24,7 @@ PROFILE = {
             "alt_caron",
             "arabic_high_hamza",
             "arabic_spacing_symbols",
+            "base_has_width",
             "caps_vertically_centered",
             "case_mapping",
             "cjk_chws_feature",

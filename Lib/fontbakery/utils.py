@@ -849,3 +849,14 @@ def close_but_not_on(value_expected, value_true, tolerance):
     if abs(value_expected - value_true) <= tolerance:
         return True
     return False
+
+
+def mark_glyphs(ttFont):
+    marks = []
+    if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
+        class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
+        glyphOrder = ttFont.getGlyphOrder()
+        for name in glyphOrder:
+            if name in class_def and class_def[name] == 3:
+                marks.append(name)
+    return marks
