@@ -40,6 +40,27 @@ class GHMarkdownReporter(HTMLReporter):
                     else:
                         key = "Family checks"
 
+                    module_parts = check["module"].split(".")
+                    if module_parts[0] == "vendorspecific":
+                        module = module_parts[1]
+                    elif module_parts[0] == "opentype":
+                        module = "opentype"
+                    else:
+                        module = "universal"
+
+                    check["id"] = check["key"][1].split(":")[1]
+                    check["id"] = check["id"].split(">")[0]
+                    check_id = check["id"].replace("_", "-")
+                    check_id = check_id.replace("/", "-")
+                    check_id = check_id.replace(".", "-")
+
+                    check["doc_url"] = (
+                        f"https://fontbakery.readthedocs.io/en/"
+                        f"stable/fontbakery/checks/"
+                        f"{module}.html#"
+                        f"{check_id}"
+                    )
+
                     if check["result"] == "FATAL":
                         # These will be reported at the very top.
                         if key not in fatal_checks:
