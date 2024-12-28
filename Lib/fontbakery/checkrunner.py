@@ -68,6 +68,8 @@ class CheckRunner:
         for testable in self.context.testables:
             testable.context = self.context
 
+        self.legacy_checkid_references = set()
+
     @staticmethod
     def _check_result(result) -> Subresult:
         """Check that the check returned a well formed result:
@@ -231,17 +233,46 @@ class CheckRunner:
 
     @property
     def order(self) -> Tuple[Identity, ...]:
+        from fontbakery.legacy_checkids import renaming_map
+
+        legacy_ids = {}
+        for k, v in renaming_map.items():
+            try:
+                legacy_ids[v].append(k)
+            except KeyError:
+                legacy_ids[v] = [k]
+
         _order = []
         for section in self.profile.sections:
             for check in section.checks:
-                if self._explicit_checks and all(
-                    explicit not in check.id for explicit in self._explicit_checks
-                ):
-                    continue
-                if self._exclude_checks and any(
-                    excluded in check.id for excluded in self._exclude_checks
-                ):
-                    continue
+                if self._explicit_checks:
+                    selected_via_new_checkid = any(
+                        explicit in check.id for explicit in self._explicit_checks
+                    )
+                    selected_via_legacy_checkid = False
+                    if not selected_via_new_checkid and check.id in legacy_ids:
+                        for legacy in legacy_ids[check.id]:
+                            if any(
+                                explicit in legacy for explicit in self._explicit_checks
+                            ):
+                                selected_via_legacy_checkid = True
+                                self.legacy_checkid_references.add(legacy)
+
+                    if not selected_via_legacy_checkid and not selected_via_new_checkid:
+                        continue
+
+                if self._exclude_checks:
+                    if any(excluded in check.id for excluded in self._exclude_checks):
+                        continue
+
+                    if check.id in legacy_ids:
+                        for legacy in legacy_ids[check.id]:
+                            if any(
+                                excluded in legacy for excluded in self._exclude_checks
+                            ):
+                                self.legacy_checkid_references.add(legacy)
+                                continue
+
                 args = set(check.args)
                 context_args = set(arg for arg in args if arg in dir(self.context))
 
@@ -296,6 +327,7 @@ class CheckRunner:
 
         # Tell all the reporters we're done
         for reporter in reporters:
+            reporter.legacy_checkid_references = list(self.legacy_checkid_references)
             reporter.end()
 
     def _override_status(self, subresult: Subresult, check):

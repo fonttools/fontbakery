@@ -77,6 +77,29 @@ class GHMarkdownReporter(HTMLReporter):
                             other_checks[key] = []
                         other_checks[key].append(check)
 
+                    if self.legacy_checkid_references:
+                        references = "\n - ".join(self.legacy_checkid_references)
+                        deprecation_warning = (
+                            "By late-December 2024, FontBakery version 0.13.0"
+                            " introduced a new naming scheme for the check-IDs.\n"
+                            "\n"
+                            "Fontbakery detected usage of old IDs and performed an"
+                            " automatic backwards-compatibility translation for you.\n"
+                            "This automatic translation will be deprecated in the next"
+                            " major release.\n"
+                            "\n"
+                            "Please start using the new check-IDs as documented at\n"
+                            "https://github.com/fonttools/fontbakery/blob/"
+                            "83db7cc2a6ad58585ddec9397306e0420843edb1/Lib/"
+                            "fontbakery/legacy_checkids.py\n"
+                            "\n"
+                            "The following legacy check-IDs were detected:\n"
+                            f" - {references}\n"
+                            "\n"
+                        )
+                    else:
+                        deprecation_warning = None
+
         # Sort them by log-level results:
         ordering = ["ERROR", "FATAL", "FAIL", "WARN", "INFO", "PASS", "SKIP"]
         for check_group in [fatal_checks, experimental_checks, other_checks]:
@@ -94,4 +117,5 @@ class GHMarkdownReporter(HTMLReporter):
             other_checks=other_checks,
             succinct=self.succinct,
             total=num_checks,
+            deprecation_warning=deprecation_warning,
         )

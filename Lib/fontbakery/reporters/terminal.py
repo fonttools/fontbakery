@@ -197,6 +197,27 @@ class TerminalReporter(FontbakeryReporter):
             and self._counter[PASS.name] > 20
         ):
             self._console.print(CUPCAKE)
+        if self.legacy_checkid_references:
+            references = "\n - ".join(self.legacy_checkid_references)
+            self._console.print(
+                "[message-FATAL]DEPRECATION WARNING[/]:\n"
+                "By late-December 2024, FontBakery version 0.13.0 introduced a new"
+                " naming scheme for the check-IDs.\n"
+                "\n"
+                "Fontbakery detected usage of old IDs and performed an automatic"
+                " backwards-compatibility translation for you.\n"
+                "This automatic translation will be deprecated in the next"
+                " major release.\n"
+                "\n"
+                "Please start using the new check-IDs as documented at\n"
+                "https://github.com/fonttools/fontbakery/blob/"
+                "83db7cc2a6ad58585ddec9397306e0420843edb1/Lib/"
+                "fontbakery/legacy_checkids.py\n"
+                "\n"
+                "The following legacy check-IDs were detected:\n"
+                f" - {references}\n"
+                "\n"
+            )
         self._console.print("DONE!")
 
     def receive_result(self, checkresult: CheckResult):
