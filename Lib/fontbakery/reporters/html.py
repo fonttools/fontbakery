@@ -122,7 +122,7 @@ class HTMLReporter(SerializeReporter):
                 "<br>"
                 "Please start using the new check-IDs as documented at"
                 " <a href='https://github.com/fonttools/fontbakery/blob/"
-                "83db7cc2a6ad58585ddec9397306e0420843edb1/Lib/"
+                "31970cdc5807c3b75c2f9b6e223aca57ffda535f/Lib/"
                 "fontbakery/legacy_checkids.py'>"
                 "/Lib/fontbakery/legacy_checkids.py</a><br>"
                 "<br>"
