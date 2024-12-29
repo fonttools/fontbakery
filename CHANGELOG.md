@@ -26,6 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Deprecated checks
 #### On the Universal Profile
+  - **[epar]**: The EPAR table is/was a way of expressing common licensing permissions and restrictions in metadata; almost nothing supported it, and we gave it a chance for quite a while... (issues #4947)
   - **[kerning_for_non_ligated_sequences]**: "Is there kerning info for non-ligated sequences?" (issue #2954 / https://github.com/simoncozens/fontspector/commit/eaa52447ddc4a42e26b6430841a43026870d8a48)
 
 #### On the OpenType Profile

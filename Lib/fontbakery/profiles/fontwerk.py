@@ -17,7 +17,6 @@ PROFILE = {
         "fontdata_namecheck",
     ],
     "pending_review": [
-        "epar",
         "base_has_width",
         "googlefonts/axes_match",
         "overlapping_path_segments",

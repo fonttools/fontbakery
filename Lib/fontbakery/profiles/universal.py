@@ -35,7 +35,6 @@ PROFILE = {
             "control_chars",
             "empty_glyph_on_gid1_for_colrv0",
             "empty_letters",
-            "epar",
             "family/single_directory",
             "family/vertical_metrics",
             "family/win_ascent_and_descent",

@@ -11,7 +11,6 @@ PROFILE = {
         "control_chars",
         "empty_glyph_on_gid1_for_colrv0",
         "empty_letters",
-        "epar",
         "file_size",
         "fvar_name_entries",
         "fontdata_namecheck",

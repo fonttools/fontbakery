@@ -39,7 +39,6 @@ PROFILE = {
         "varfont/unsupported_axes",  # Despite discouraging its use, TN accepts fonts with ital axis.
     ],
     "pending_review": [
-        "epar",
         "base_has_width",
     ],
     "sections": {

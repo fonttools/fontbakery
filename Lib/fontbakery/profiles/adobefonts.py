@@ -50,7 +50,6 @@ PROFILE = {
         "color_cpal_brightness",
         "contour_count",  # was temporarily removed
         "control_chars",
-        "epar",
         "empty_glyph_on_gid1_for_colrv0",
         "file_size",
         "fontdata_namecheck",
