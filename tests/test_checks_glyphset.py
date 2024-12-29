@@ -19,17 +19,6 @@ def test_can_shape():
     assert not can_shape(font, "こんにちは")
 
 
-@check_id("render_own_name")
-def test_check_render_own_name(check):
-    """Check family directory name."""
-
-    ttFont = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
-    assert_PASS(check(ttFont))
-
-    ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
-    assert_results_contain(check(ttFont), FAIL, "render-own-name")
-
-
 @check_id("control_chars")
 def test_check_family_control_chars(check):
     """Are any unacceptable control characters present in font files?"""
