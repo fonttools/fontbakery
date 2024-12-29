@@ -15,7 +15,6 @@ PROFILE = {
         "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
-        "colorfont_tables",
         "control_chars",
         "designspace_has_consistent_codepoints",
         "designspace_has_consistent_glyphset",

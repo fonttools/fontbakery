@@ -48,7 +48,6 @@ PROFILE = {
         "cjk_chws_feature",  # was temporarily removed
         "cjk_not_enough_glyphs",
         "color_cpal_brightness",
-        "colorfont_tables",
         "contour_count",  # was temporarily removed
         "control_chars",
         "epar",

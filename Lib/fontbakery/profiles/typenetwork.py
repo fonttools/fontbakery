@@ -13,7 +13,6 @@ PROFILE = {
         "cjk_chws_feature",
         "cjk_not_enough_glyphs",
         "color_cpal_brightness",  # Color fonts check.
-        "colorfont_tables",  # Color fonts check.
         "designspace_has_consistent_codepoints",  # < TypeNetwork doesn’t check designspace files.
         "designspace_has_consistent_glyphset",  #   <
         "designspace_has_consistent_groups",  #     <

@@ -8,7 +8,6 @@ PROFILE = {
         "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",
-        "colorfont_tables",
         "control_chars",
         "empty_glyph_on_gid1_for_colrv0",
         "empty_letters",

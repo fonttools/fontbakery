@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="colorfont_tables",
+    id="googlefonts/colorfont_tables",
     rationale="""
         COLR v0 fonts are widely supported in most browsers so they do not require
         an SVG color table. However, some environments (e.g. Safari, Adobe apps)
