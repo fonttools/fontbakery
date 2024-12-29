@@ -2,12 +2,16 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (2024-Dec-??)
+  - ...
+
+
+##  0.13.0a7 (2024-Dec-29)
 ### Noteworthy code-changes
   - Created a dictionary at `Lib/fontbakery/legacy_checkids.py` that documents the renaming of checks-IDs that is happenning between versions v0.12.10 and v0.13.0 (PR #4929)
 
   - This file contains a translation map that can be useful to be read directly by humans and it is also used to implement a backwards compatibility mechanism to accept the old IDs.
 
-  - All reporters are now listing which legacy check-IDs were used on the --check-id and --exclude-checkid options and instructing the users to update to the new naming scheme, because the old ones will be permanently deprecated in the next major release. (issue #4942)
+  - All reporters are now listing which legacy check-IDs were used on the --checkid and --exclude-checkid options and instructing the users to update to the new naming scheme, because the old ones will be permanently deprecated in the next major release. (issue #4942)
 
 ### New checks
 #### Added to the Universal profile
