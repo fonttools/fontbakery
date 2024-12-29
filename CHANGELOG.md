@@ -17,6 +17,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[STAT/ital_axis]**: Replaces the old checks (**opentype/italic_axis_in_stat**, **opentype/italic_axis_in_stat_is_boolean** and **opentype/italic_axis_last**) from the same profile (issue #4865)
 
 ### Migration of checks
+#### Moved from Universal to Google Fonts profile
+  - **[[colorfont_tables]]: Renamed and moved back to **googlefonts/color_fonts** based on feedback from @khaledhosny (issue #4945)
+
 #### Moved from Google Fonts to Universal profile
   - **[googlefonts/varfont/duplicate_instance_names]**: Renamed to **varfont/duplicate_instance_names** (PR #4937)
   - **[googlefonts/varfont/bold_wght_coord]**: Renamed to **varfont/bold_wght_coord** (PR #4938)
