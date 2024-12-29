@@ -68,7 +68,6 @@ PROFILE = {
             "ots",
             "overlapping_path_segments",
             "required_tables",
-            "render_own_name",
             "rupee",
             "sfnt_version",
             "smallcaps_before_ligatures",

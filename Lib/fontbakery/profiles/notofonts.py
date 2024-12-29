@@ -26,8 +26,8 @@ PROFILE = {
     "exclude_checks": [
         "googlefonts/glyph_coverage",
         "googlefonts/gasp",
+        "googlefonts/render_own_name",
         #
-        "render_own_name",
         "smart_dropout",
     ],
     "configuration_defaults": {

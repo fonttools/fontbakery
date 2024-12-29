@@ -38,7 +38,6 @@ PROFILE = {
         "no_debugging_tables",
         "no_mac_entries",
         "overlapping_path_segments",
-        "render_own_name",
         "smallcaps_before_ligatures",
         "smart_dropout",
         "stylisticset_description",

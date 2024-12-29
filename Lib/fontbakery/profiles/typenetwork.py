@@ -27,7 +27,6 @@ PROFILE = {
         "math_signs_width",  # It really depends on the design and the intended use to make math symbols the same width.
         "name/no_copyright_on_description",
         "os2_metrics_match_hhea",  # Removed in favor of new vmetrics check
-        "render_own_name",
         "STAT_strings",  # replaced by adobefonts/STAT_strings
         "superfamily/list",
         "ufolint",  #                             < TypeNetwork doesn’t check .ufo files.

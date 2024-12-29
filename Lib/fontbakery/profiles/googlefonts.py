@@ -138,6 +138,7 @@ PROFILE = {
             "googlefonts/old_ttfautohint",
             "googlefonts/production_glyphs_similarity",
             # "googlefonts/production_encoded_glyphs",  # DISABLED
+            "googlefonts/render_own_name",
             "googlefonts/STAT/axis_order",
             "googlefonts/STAT/axisregistry",
             "googlefonts/STAT/compulsory_axis_values",

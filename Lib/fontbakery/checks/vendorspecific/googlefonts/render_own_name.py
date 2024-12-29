@@ -9,7 +9,7 @@ from fontbakery.utils import can_shape
 
 
 @check(
-    id="render_own_name",
+    id="googlefonts/render_own_name",
     rationale="""
         A base expectation is that a font family's regular/default (400 roman) style
         can render its 'menu name' (nameID 1) in itself.
