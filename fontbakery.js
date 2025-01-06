@@ -301,6 +301,7 @@ fbWorker.onmessage = (event) => {
   }
   if ("version" in event.data) {
     $("#fb-version").html(event.data.version);
+    return;
   }
 
   if ("checks" in event.data) {
