@@ -1,5 +1,6 @@
 import pkgutil
 import sys
+from types import ModuleType, SimpleNamespace
 from mock import MagicMock
 from importlib import import_module
 import unicodedata
@@ -22,8 +23,6 @@ for notreal in [
     "rich.markup",
     "pyyaml",
     "yaml",
-    "glyphsLib",
-    "glyphsLib.glyphdata",
     "defcon",
     "vharfbuzz",
     "uharfbuzz",
@@ -31,6 +30,31 @@ for notreal in [
     "freetype.ft_errors",
 ]:
     sys.modules[notreal] = MagicMock()
+
+
+sys.modules["glyphsLib"] = ModuleType("glyphsLib")
+sys.modules["glyphsLib.glyphdata"] = ModuleType("glyphsLib.glyphdata")
+
+import glyphsLib
+
+glyphsLib.glyphdata = sys.modules["glyphsLib.glyphdata"]
+
+
+class Foo:
+    pass
+
+
+glyphsLib.glyphdata.GlyphData = Foo
+glyphsLib.glyphdata.GLYPHDATA = glyphsLib.glyphdata.GlyphData()
+
+
+def fallback_getter(name):
+    if hasattr(glyphsLib.glyphdata.GLYPHDATA, name):
+        return getattr(glyphsLib.glyphdata.GLYPHDATA, name)
+    return MagicMock()
+
+
+glyphsLib.glyphdata.__getattr__ = fallback_getter
 
 import glyphsets
 
