@@ -28,6 +28,7 @@ for notreal in [
     "uharfbuzz",
     "freetype",
     "freetype.ft_errors",
+    "tabulate",
 ]:
     sys.modules[notreal] = MagicMock()
 
