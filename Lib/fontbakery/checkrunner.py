@@ -34,6 +34,7 @@ from fontbakery.status import (
     PASS,
     SKIP,
 )
+from fontbakery.legacy_checkids import renaming_map as old_to_new
 
 
 class CheckRunner:
@@ -69,6 +70,12 @@ class CheckRunner:
             testable.context = self.context
 
         self.legacy_checkid_references = set()
+        self.new_to_old = {}
+        for old_id, new_id in old_to_new.items():
+            try:
+                self.new_to_old[new_id].append(old_id)
+            except KeyError:
+                self.new_to_old[new_id] = [old_id]
 
     @staticmethod
     def _check_result(result) -> Subresult:
@@ -233,15 +240,6 @@ class CheckRunner:
 
     @property
     def order(self) -> Tuple[Identity, ...]:
-        from fontbakery.legacy_checkids import renaming_map
-
-        legacy_ids = {}
-        for k, v in renaming_map.items():
-            try:
-                legacy_ids[v].append(k)
-            except KeyError:
-                legacy_ids[v] = [k]
-
         _order = []
         for section in self.profile.sections:
             for check in section.checks:
@@ -250,8 +248,11 @@ class CheckRunner:
                         explicit in check.id for explicit in self._explicit_checks
                     )
                     selected_via_legacy_checkid = False
-                    if not selected_via_new_checkid and check.id in legacy_ids:
-                        for legacy in legacy_ids[check.id]:
+                    if (
+                        not selected_via_new_checkid
+                        and check.id in self.new_to_old.keys()
+                    ):
+                        for legacy in self.new_to_old[check.id]:
                             if any(
                                 explicit in legacy for explicit in self._explicit_checks
                             ):
@@ -265,8 +266,8 @@ class CheckRunner:
                     if any(excluded in check.id for excluded in self._exclude_checks):
                         continue
 
-                    if check.id in legacy_ids:
-                        for legacy in legacy_ids[check.id]:
+                    if check.id in self.new_to_old:
+                        for legacy in self.new_to_old[check.id]:
                             if any(
                                 excluded in legacy for excluded in self._exclude_checks
                             ):
@@ -333,6 +334,12 @@ class CheckRunner:
     def _override_status(self, subresult: Subresult, check):
         orig_status = subresult.status.name
 
+        # Detect usage of legacy check-IDs on profile override declarations
+        # and automatically translate them to the new check-ID naming scheme:
+        if check.id not in self.profile.overrides and check.id in old_to_new.keys():
+            self.legacy_checkid_references.add(check.id)
+            check.id = old_to_new[check.id]
+
         # Potentially override the status based on the profile.
         if check.id in self.profile.overrides:
             for override in self.profile.overrides[check.id]:
@@ -347,7 +354,15 @@ overridden by the {self.profile.name} profile:
                     return subresult
         # Potentially override the status based on the config file.
         # Replaces the status with config["overrides"][check.id][message.code]
-        status_overrides = self.config.get("overrides", {}).get(check.id)
+        config_file_overrides = self.config.get("overrides", {})
+        status_overrides = config_file_overrides.get(check.id)
+
+        # Maybe it is referencing the old-style ID?
+        if not status_overrides and check.id in old_to_new:
+            status_overrides = config_file_overrides.get(old_to_new[check.id])
+            if status_overrides:
+                self.legacy_checkid_references.add(check.id)
+
         if (
             not status_overrides
             or not isinstance(subresult.message, Message)
