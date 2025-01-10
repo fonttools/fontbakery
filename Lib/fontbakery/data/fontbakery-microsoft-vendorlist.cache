@@ -30,12 +30,12 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="Standard" />
-<meta name="git_commit_id" content="4d3b7b392514027d044a59ed84cd64aa584c0b4d" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/4d3b7b392514027d044a59ed84cd64aa584c0b4d/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="8cb246a55ad999b6ad6a17715a204c57c3156a9d" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/8cb246a55ad999b6ad6a17715a204c57c3156a9d/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="11/19/2024" />
+<meta name="ms.date" content="01/08/2025" />
 <meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -46,8 +46,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-11-19 05:30 PM" />
-<meta name="word_count" content="5085" />
+<meta name="updated_at" content="2025-01-09 02:54 PM" />
+<meta name="word_count" content="5096" />
 <meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
 	
 	<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c0439c36-80e3-415f-8e4c-6951e3f1b136" data-source="generated" />
@@ -57,7 +57,7 @@
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/2812d699-d85f-4a7f-839d-44e218b35d24" data-source="generated" />
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/3f56b378-07a9-4fa1-afe8-9889fdc77628" data-source="generated" />
 	<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/57828563-e363-48c1-ac42-c4d23fb7ba52" data-source="generated" />
-	<meta name="scope" content="typography" /><meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" /><link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical"><title>Registered font vendors - Typography | Microsoft Learn</title><link rel="stylesheet" href="/static/assets/0.4.028726178/styles/site-ltr.css">
+	<meta name="scope" content="typography" /><meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" /><link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical"><title>Registered font vendors - Typography | Microsoft Learn</title><link rel="stylesheet" href="/static/assets/0.4.029026183/styles/site-ltr.css">
 
 	<script id="msdocs-script">
 	var msDocs = {environment: {
@@ -92,11 +92,11 @@
 			hasBookmark: true,
 			hasShare: true,
 			isPermissioned: false,
-			isPrivateUnauthorized: false,hasRecommendations: true,contributors: [{ name: "alib-ms", url: "https://github.com/alib-ms" },{ name: "DhurataJ", url: "https://github.com/DhurataJ" },{ name: "kturetz", url: "https://github.com/kturetz" },{ name: "PeterCon", url: "https://github.com/PeterCon" },{ name: "WorkNihar", url: "https://github.com/WorkNihar" },{ name: "mijacobs", url: "https://github.com/mijacobs" },{ name: "v-nihar", url: "https://github.com/v-nihar" },{ name: "VSC-Service-Account", url: "https://github.com/VSC-Service-Account" }],},
+			isPrivateUnauthorized: false,hasRecommendations: true,contributors: [{ name: "alib-ms", url: "https://github.com/alib-ms" },{ name: "DhurataJ", url: "https://github.com/DhurataJ" },{ name: "kturetz", url: "https://github.com/kturetz" },{ name: "PeterCon", url: "https://github.com/PeterCon" },{ name: "WorkNihar", url: "https://github.com/WorkNihar" },{ name: "mijacobs", url: "https://github.com/mijacobs" },{ name: "v-nihar", url: "https://github.com/v-nihar" }],},
 		functions:{}
 	};
 	</script><script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
-	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script><script src="/static/assets/0.4.028726178/global/deprecation.js"></script><script src="/static/assets/0.4.028726178/scripts/en-us/index-docs.js"></script></head>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script><script src="/static/assets/0.4.029026183/global/deprecation.js"></script><script src="/static/assets/0.4.029026183/scripts/en-us/index-docs.js"></script></head>
 
 <body lang="en-us" dir="ltr">
 	<div class="header-holder has-default-focus">
@@ -336,9 +336,9 @@
 
 							<div class="content "><h1 id="registered-font-vendors">Registered font vendors</h1><div class="display-flex justify-content-space-between align-items-center flex-wrap-wrap page-metadata-container">
 										<div class="margin-right-xxs">
-											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr"><li>Article</li><li class="visibility-hidden-visual-diff"><time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-11-19T08:00:00Z" data-article-date-source="calculated">11/19/2024</time>
+											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr"><li>Article</li><li class="visibility-hidden-visual-diff"><time class="is-invisible" data-article-date aria-label="Article review date" datetime="2025-01-08T08:00:00Z" data-article-date-source="calculated">01/08/2025</time>
 															</li><li class="contributors-holder display-none-print">
-															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">8 contributors</button>
+															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">7 contributors</button>
 														</li></ul>
 										</div>
 <div id="user-feedback" class="margin-block-xxs display-none-print" data-hide-on-archived>
@@ -1621,6 +1621,10 @@
 <tr>
 <td>CMMA</td>
 <td><a href="https://www.commatype.com/" data-linktype="external">Comma Type</a></td>
+</tr>
+<tr>
+<td>CNK</td>
+<td><a href="https://www.cinketype.com/" data-linktype="external">Cinketype</a></td>
 </tr>
 <tr>
 <td>CNTY</td>
@@ -2931,6 +2935,10 @@
 <td><a href="http://www.haikumonkey.net" data-linktype="external">Haiku Monkey</a></td>
 </tr>
 <tr>
+<td>HN</td>
+<td><a href="https://www.behance.net/horanocte" data-linktype="external">Hora Nocte Type Foundry</a></td>
+</tr>
+<tr>
 <td>HOH</td>
 <td>HOHOHtype</td>
 </tr>
@@ -3817,6 +3825,10 @@
 <tr>
 <td>LS</td>
 <td><a href="https://www.lettersoup.de/" data-linktype="external">lettersoup</a></td>
+</tr>
+<tr>
+<td>LST</td>
+<td><a href="https://studio-laucke-siebein.com/type" data-linktype="external">Laucke Siebein Type</a></td>
 </tr>
 <tr>
 <td>LT</td>
