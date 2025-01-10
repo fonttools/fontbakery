@@ -1,8 +1,21 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.0 (2024-Dec-??)
+##  Upcoming release: 0.13.1 (2025-Jan-??)
   - ...
+
+
+##  0.13.0 (2025-Jan-10)
+### Stable release notes
+  To see the full list of changes, please read below the changelog entries of these pre-releases of v0.13.0:
+  - 0.13.0a7 (2024-Dec-29)
+  - 0.13.0a6 (2024-Dec-03)
+  - 0.13.0a5 (2024-Nov-10)
+  - 0.13.0a4 (2024-Nov-06)
+  - 0.13.0a3 (2024-Oct-25)
+  - 0.13.0a2 (2024-Oct-16)
+  - 0.13.0a1 (2024-Sep-19)
+  - 0.13.0a0 (2024-Sep-13)
 
 
 ##  0.13.0a7 (2024-Dec-29)
