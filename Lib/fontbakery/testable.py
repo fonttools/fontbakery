@@ -224,7 +224,7 @@ class Font(Testable):
             ("OS/2" in ttFont and ttFont["OS/2"].fsSelection & FsSelection.ITALIC)
             or ("head" in ttFont and ttFont["head"].macStyle & MacStyle.ITALIC)
             or keyword_in_full_font_name(ttFont, "italic")
-            or ("post" in ttFont and ttFont["post"].italicAngle)
+            or ("post" in ttFont and ttFont["post"].italicAngle != 0)
         )
 
     @cached_property
