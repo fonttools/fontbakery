@@ -245,6 +245,21 @@ class Font(Testable):
             )
         )
 
+    @cached_property
+    def familyname(self):
+        from fontbakery.utils import get_name_entry_strings
+        from fontbakery.constants import NameID
+
+        ttFont = self.ttFont
+        familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+        typo_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+        if not familynames:
+            return None
+
+        familyname = typo_familynames[0] if typo_familynames else familynames[0]
+
+        return familyname
+
 
 @dataclass
 class TTCFont(Font):

@@ -97,6 +97,8 @@ def segment_vf_collection(fonts):
     for font in fonts:
         if "-Italic[" in font.file:
             italics.append(font)
+        elif font.is_italic:
+            italics.append(font)
         else:
             non_italics.append(font)
 
@@ -107,6 +109,9 @@ def segment_vf_collection(fonts):
         found_roman = None
         for non_italic in non_italics:
             if non_italic.file == suspected_roman:
+                found_roman = non_italic
+                break
+            elif non_italic.familyname == italic.familyname:
                 found_roman = non_italic
                 break
 
