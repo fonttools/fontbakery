@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 ### On the OpenType Profile
-  - **[opentype/slant_direction]:** SKIP instead of ERROR if a font does not contain 'H'
+  - **[opentype/slant_direction]:** SKIP instead of ERROR if a font does not contain 'H' (PR #4969)
 
 
 ##  0.13.0 (2025-Jan-10)
