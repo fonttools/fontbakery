@@ -32,7 +32,7 @@ dependencies = [
     "cmarkgfm >= 0.4",
     "defcon",
     "dehinter >= 3.1.0",  # 3.1.0 added dehinter.font.hint function
-    "fontTools[ufo] >= 4.46.0",
+    "fontTools[ufo] >= 4.47.0",  # varLib.interpolatableHelpers.InterpolatableProblem
     "freetype-py < 2.4.0",  # see: https://github.com/fonttools/fontbakery/issues/4143
     "Jinja2 >= 3.0.0",  # issue #4717
     "munkres",
