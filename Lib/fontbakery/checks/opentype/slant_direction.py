@@ -1,5 +1,9 @@
-from fontbakery.prelude import check, condition, Message, FAIL, PASS
+from fontbakery.prelude import Message, check, condition
+from fontbakery.status import FAIL, PASS, SKIP
 from fontbakery.testable import Font
+
+# Reference codepoint to use to determine slant angle.
+REFERENCE = "H"
 
 
 @condition(Font)
@@ -33,10 +37,19 @@ def check_slant_direction(ttFont, uharfbuzz_blob):
         yield PASS, "Font has no slnt axis"
         return
 
+    if ord(REFERENCE) not in ttFont.getBestCmap():
+        yield SKIP, Message(
+            "no-reference-glyph",
+            f"This check uses '{REFERENCE}' as a reference codepoint to "
+            "determine slant direction, but it is not present in this font, "
+            "and so the slant direction cannot be checked.",
+        )
+        return
+
     hb_face = hb.Face(uharfbuzz_blob)
     hb_font = hb.Font(hb_face)
     buf = hb.Buffer()
-    buf.add_str("H")
+    buf.add_str(REFERENCE)
     features = {"kern": True, "liga": True}
     hb.shape(hb_font, buf, features)
 
