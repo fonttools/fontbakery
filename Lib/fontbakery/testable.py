@@ -252,7 +252,9 @@ class Font(Testable):
 
         ttFont = self.ttFont
         familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-        typo_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+        typo_familynames = get_name_entry_strings(
+            ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME
+        )
         if not familynames:
             return None
 
