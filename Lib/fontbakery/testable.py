@@ -87,6 +87,23 @@ class Font(Testable):
         return font
 
     @cached_property
+    def family(self):
+        from fontbakery.utils import get_name_entry_strings
+        from fontbakery.constants import NameID
+
+        ttFont = self.ttFont
+        familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+        typo_familynames = get_name_entry_strings(
+            ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME
+        )
+        if not familynames:
+            return None
+
+        family = typo_familynames[0] if typo_familynames else familynames[0]
+
+        return family
+
+    @cached_property
     def style(self):
         """Determine font style from canonical filename."""
         from fontbakery.constants import STATIC_STYLE_NAMES
@@ -244,23 +261,6 @@ class Font(Testable):
                 and not bold_adjacent_styles_in_full_font_name(ttFont)
             )
         )
-
-    @cached_property
-    def familyname(self):
-        from fontbakery.utils import get_name_entry_strings
-        from fontbakery.constants import NameID
-
-        ttFont = self.ttFont
-        familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-        typo_familynames = get_name_entry_strings(
-            ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME
-        )
-        if not familynames:
-            return None
-
-        familyname = typo_familynames[0] if typo_familynames else familynames[0]
-
-        return familyname
 
 
 @dataclass

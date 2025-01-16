@@ -111,7 +111,7 @@ def segment_vf_collection(fonts):
             if non_italic.file == suspected_roman:
                 found_roman = non_italic
                 break
-            if non_italic.familyname == italic.familyname:
+            if non_italic.family == italic.family:
                 found_roman = non_italic
                 break
 
