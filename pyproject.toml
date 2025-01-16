@@ -67,9 +67,7 @@ beautifulsoup4 = [
 ]
 
 shaperglot = [
-    "shaperglot >= 0.3.0, < 0.7.0",
-    # versions prior to v0.3.0 had too stric dependency rules
-    # for other deps such as protobuf, making it harder satisfy all dependencies.
+    "shaperglot >= 1.0.0a1, == 1.*",
 ]
 
 # These Google Fonts profile dependencies contain data that is critical to
@@ -80,7 +78,7 @@ googlefontsalwayslatest = [
     "gflanguages >= 0.7.2, == 0.7.*",
     "gfsubsets >= 2024.9.25",
     "glyphsets >= 1.1.0, == 1.*",
-    "shaperglot >= 0.6.4, == 0.6.*",
+    "shaperglot >= 1.0.0a1, == 1.*",
 ]
 
 
