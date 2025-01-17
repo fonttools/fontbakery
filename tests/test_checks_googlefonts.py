@@ -1204,7 +1204,7 @@ def test_check_metadata_includes_production_subsets(check, requests_mock):
     """Check METADATA.pb has production subsets."""
 
     requests_mock.get(
-        "http://fonts.google.com/metadata/fonts",
+        "https://fonts.google.com/metadata/fonts",
         json={
             "familyMetadataList": [
                 {
@@ -2686,7 +2686,7 @@ def test_check_repo_zip_files(check, tmp_path):
 @check_id("googlefonts/vertical_metrics")
 def test_check_vertical_metrics(check, requests_mock):
     requests_mock.get(
-        "http://fonts.google.com/metadata/fonts",
+        "https://fonts.google.com/metadata/fonts",
         json={
             "familyMetadataList": [
                 {"family": "Akshar"},
@@ -2959,7 +2959,7 @@ def test_check_vertical_metrics_regressions(check):
 @check_id("googlefonts/cjk_vertical_metrics")
 def test_check_cjk_vertical_metrics(check, requests_mock):
     requests_mock.get(
-        "http://fonts.google.com/metadata/fonts",
+        "https://fonts.google.com/metadata/fonts",
         json={
             "familyMetadataList": [],
         },
