@@ -38,6 +38,7 @@ def check_unwanted_tables(ttFont):
             " Although Harfbuzz now has optional AAT support,"
             " new fonts should not be using that."
         ),
+        "Debg": "FontTools debugging table",
     }
     unwanted_tables_found = []
     unwanted_tables_tags = set(UNWANTED_TABLES)
