@@ -329,7 +329,7 @@ renaming_map = {
     "com.google.fonts/check/varfont/instances_in_order":                    "varfont/instances_in_order",
     "com.google.fonts/check/varfont/unsupported_axes":                      "varfont/unsupported_axes",
     "com.microsoft/check/vtt_volt_data":                                    "vtt_volt_data",
-    "com.google.fonts/check/vttclean":                                      "vttclean",
+    "com.google.fonts/check/vttclean":                                      "unwanted_tables",
     "com.google.fonts/check/whitespace_glyphs":                             "whitespace_glyphs",
     "com.google.fonts/check/whitespace_ink":                                "whitespace_ink",
     "com.google.fonts/check/whitespace_widths":                             "whitespace_widths",

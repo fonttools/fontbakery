@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 ### On the Universal profile.
-  - **[no_debugging_tables]:** merged into unwanted_tables. (issue #4972)
+  - **[no_debugging_tables]** and **[vttclean]** are now merged into unwanted_tables. (issues #4972 and #4975)
 
 ### On the OpenType Profile
   - **[opentype/slant_direction]:** SKIP instead of ERROR if a font does not contain 'H' (PR #4969)
