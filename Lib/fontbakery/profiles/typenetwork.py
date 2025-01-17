@@ -34,7 +34,7 @@ PROFILE = {
         "ufo_recommended_fields",  #              <
         "ufo_required_fields",  #                 <
         "ufo_unnecessary_fields",  #              <
-        "vtt_volt_data",  # Very similar to 'vttclean' check, it may be a good idea to merge them.
+        "vtt_volt_data",
         "varfont/unsupported_axes",  # Despite discouraging its use, TN accepts fonts with ital axis.
     ],
     "pending_review": [

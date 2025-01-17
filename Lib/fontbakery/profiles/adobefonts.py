@@ -82,8 +82,7 @@ PROFILE = {
         "varfont/duplexed_axis_reflow",
         "varfont/instances_in_order",
         "varfont/unsupported_axes",
-        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
-        "vttclean",
+        "vtt_volt_data",
     ],
     "sections": {
         "Adobe Fonts Checks": [

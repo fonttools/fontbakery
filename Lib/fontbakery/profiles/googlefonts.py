@@ -7,7 +7,7 @@ PROFILE = {
         "inconsistencies_between_fvar_STAT",
         "no_mac_entries",
         "typographic_family_name",
-        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
+        "vtt_volt_data",
     ],
     "sections": {
         "Article Checks": [
