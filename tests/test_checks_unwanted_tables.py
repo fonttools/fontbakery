@@ -39,6 +39,9 @@ def test_check_unwanted_tables(check):
         "TSI3",
         "TSI5",
         "prop",  # FIXME: Why is this one unwanted?
+        "Debg",  # Tables such as `Debg` are useful in the pre-production stages of
+        #          font development, but add unnecessary bloat to a production font
+        #          and should be removed before release.
     ]
     # Our reference Mada Regular font is good here:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))

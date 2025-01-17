@@ -65,7 +65,6 @@ PROFILE = {
         "name/family_and_style_max_length",
         "name/italic_names",
         "nested_components",
-        "no_debugging_tables",
         "no_mac_entries",
         "overlapping_path_segments",
         "smallcaps_before_ligatures",

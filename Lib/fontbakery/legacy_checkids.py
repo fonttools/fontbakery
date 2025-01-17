@@ -191,7 +191,7 @@ renaming_map = {
     "com.google.fonts/check/name/no_copyright_on_description":              "name/no_copyright_on_description",
     "com.google.fonts/check/name/trailing_spaces":                          "name/trailing_spaces",
     "com.google.fonts/check/glyf_nested_components":                        "nested_components",
-    "com.google.fonts/check/no_debugging_tables":                           "no_debugging_tables",
+    "com.google.fonts/check/no_debugging_tables":                           "unwanted_tables",
     "com.fontwerk/check/no_mac_entries":                                    "no_mac_entries",
     "com.google.fonts/check/cmap/alien_codepoints":                         "notofonts/cmap/alien_codepoints",
     "com.google.fonts/check/cmap/unexpected_subtables":                     "notofonts/cmap/unexpected_subtables",

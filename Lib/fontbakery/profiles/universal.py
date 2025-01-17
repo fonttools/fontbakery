@@ -62,7 +62,6 @@ PROFILE = {
             "name/no_copyright_on_description",
             "name/italic_names",
             "nested_components",
-            "no_debugging_tables",
             "no_mac_entries",
             "os2_metrics_match_hhea",
             "ots",
