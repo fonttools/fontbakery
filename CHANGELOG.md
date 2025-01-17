@@ -1,15 +1,20 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.1 (2025-Jan-??)
+##  Upcoming release: 0.13.2 (2025-Jan-??)
   - ...
 
+
+##  0.13.1 (2025-Jan-17)
 ### Changes to existing checks
 ### On the Universal profile.
   - **[no_debugging_tables]** and **[vttclean]** are now merged into unwanted_tables. (issues #4972 and #4975)
 
 ### On the OpenType Profile
   - **[opentype/slant_direction]:** SKIP instead of ERROR if a font does not contain 'H' (PR #4969)
+
+### On the Google Fonts Profile
+  - Changed Google Fonts production metadata URL to https. (issue #4977)
 
 
 ##  0.13.0 (2025-Jan-10)
