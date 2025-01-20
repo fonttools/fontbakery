@@ -21,7 +21,7 @@ PROFILE = {
         "googlefonts/axes_match",
         "overlapping_path_segments",
         "typographic_family_name",
-        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
+        "vtt_volt_data",
         #
         # Note: When reviewing these 2 checks below, please check whether googlefonts also includes them or not,
         # since currently they're in googlefonts' pending_review as well.

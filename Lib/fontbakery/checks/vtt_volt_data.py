@@ -1,8 +1,6 @@
 from fontbakery.prelude import check, FAIL, PASS
 
 
-# FIXME: I think these two checks ('vtt_volt_data' and 'vttclean') are very similar
-#        so we may consider merging them into a single one.
 @check(
     id="vtt_volt_data",
     rationale="""

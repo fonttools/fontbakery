@@ -483,7 +483,7 @@ def production_metadata(context):
 
     import requests
 
-    meta_url = "http://fonts.google.com/metadata/fonts"
+    meta_url = "https://fonts.google.com/metadata/fonts"
     return requests.get(meta_url, timeout=context.config.get("timeout")).json()
 
 

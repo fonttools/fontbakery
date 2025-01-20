@@ -58,14 +58,3 @@ def test_check_smart_dropout(check):
 
     ttFont["prep"].program.bytecode = array.array("B", [0])
     assert_results_contain(check(ttFont), FAIL, "lacks-smart-dropout")
-
-
-@check_id("vttclean")
-def test_check_vttclean(check):
-    """There must not be VTT Talk sources in the font."""
-
-    good_font = TEST_FILE("mada/Mada-Regular.ttf")
-    assert_PASS(check(good_font))
-
-    bad_font = TEST_FILE("hinting/Roboto-VF.ttf")
-    assert_results_contain(check(bad_font), FAIL, "has-vtt-sources")

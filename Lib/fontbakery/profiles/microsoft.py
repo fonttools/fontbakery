@@ -35,7 +35,6 @@ PROFILE = {
         "name/char_restrictions",
         "name/family_and_style_max_length",
         "nested_components",
-        "no_debugging_tables",
         "no_mac_entries",
         "overlapping_path_segments",
         "smallcaps_before_ligatures",
@@ -54,7 +53,6 @@ PROFILE = {
         "varfont/duplicate_instance_names",
         "varfont/instances_in_order",
         "varfont/unsupported_axes",
-        "vttclean",  # very similar to vtt_volt_data, may be a good idea to merge them.
     ],
     "sections": {
         "Metadata Checks": [

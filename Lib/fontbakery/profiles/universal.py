@@ -62,7 +62,6 @@ PROFILE = {
             "name/no_copyright_on_description",
             "name/italic_names",
             "nested_components",
-            "no_debugging_tables",
             "no_mac_entries",
             "os2_metrics_match_hhea",
             "ots",
@@ -92,8 +91,7 @@ PROFILE = {
             "varfont/duplicate_instance_names",
             "varfont/instances_in_order",
             "varfont/unsupported_axes",
-            "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
-            "vttclean",
+            "vtt_volt_data",
             "whitespace_glyphs",
             "whitespace_ink",
             "whitespace_widths",

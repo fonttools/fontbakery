@@ -65,7 +65,6 @@ PROFILE = {
         "name/family_and_style_max_length",
         "name/italic_names",
         "nested_components",
-        "no_debugging_tables",
         "no_mac_entries",
         "overlapping_path_segments",
         "smallcaps_before_ligatures",
@@ -83,8 +82,7 @@ PROFILE = {
         "varfont/duplexed_axis_reflow",
         "varfont/instances_in_order",
         "varfont/unsupported_axes",
-        "vtt_volt_data",  # very similar to vttclean, may be a good idea to merge them.
-        "vttclean",
+        "vtt_volt_data",
     ],
     "sections": {
         "Adobe Fonts Checks": [
