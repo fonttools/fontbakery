@@ -37,15 +37,12 @@ def check_arabic_high_hamza(ttFont):
 
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
-        reverseCmap = ttFont["cmap"].buildReversed()
-        glyphOrder = ttFont.getGlyphOrder()
-        for name in glyphOrder:
-            if ARABIC_LETTER_HIGH_HAMZA in reverseCmap.get(name, set()):
-                if name in class_def and class_def[name] == 3:
-                    yield FAIL, Message(
-                        "mark-in-gdef",
-                        f'"{name}" is defined in GDEF as a mark (class 3).',
-                    )
+        name = get_glyph_name(ttFont, ARABIC_LETTER_HIGH_HAMZA)
+        if name in class_def and class_def[name] == 3:
+            yield FAIL, Message(
+                "mark-in-gdef",
+                f'"{name}" is defined in GDEF as a mark (class 3).',
+            )
 
     if ARABIC_LETTER_HAMZA not in cmap:
         yield SKIP, Message(
