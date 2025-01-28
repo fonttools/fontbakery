@@ -18,7 +18,7 @@ def check_fontdata_namecheck(ttFont, familyname):
     API_URL = f"https://namecheck.fontdata.com/api/?q={familyname.replace(' ', '+')}"
     HTML_URL = f"http://namecheck.fontdata.com/?q={familyname.replace(' ', '+')}"
     try:
-        response = requests.get(API_URL)
+        response = requests.get(API_URL, timeout=10)
         data = response.json()
         # "1.0" means there is a 100% confidence that the name is already in use
         if data["data"]["confidence"]["1.0"] > 0:
