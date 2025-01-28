@@ -15,24 +15,18 @@ def check_fontdata_namecheck(ttFont, familyname):
     import requests
 
     FB_ISSUE_TRACKER = "https://github.com/fonttools/fontbakery/issues"
-    NAMECHECK_URL = "http://namecheck.fontdata.com"
+    API_URL = f"https://namecheck.fontdata.com/api/?q={familyname.replace(' ', '+')}"
+    HTML_URL = f"http://namecheck.fontdata.com/?q={familyname.replace(' ', '+')}"
     try:
-        # Since October 2019, it seems that we need to fake our user-agent
-        # in order to get correct query results
-        FAKE = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)"
-        response = requests.post(
-            NAMECHECK_URL,
-            params={"q": familyname},
-            headers={"User-Agent": FAKE},
-            timeout=10,
-        )
-        data = response.content.decode("utf-8")
-        if "fonts by that exact name" in data:
+        response = requests.get(API_URL, timeout=10)
+        data = response.json()
+        # "1.0" means there is a 100% confidence that the name is already in use
+        if data["data"]["confidence"]["1.0"] > 0:
             yield INFO, Message(
                 "name-collision",
                 f'The family name "{familyname}" seems'
                 f" to be already in use.\n"
-                f"Please visit {NAMECHECK_URL} for more info.",
+                f"Please visit {HTML_URL} for more info.",
             )
         else:
             yield PASS, "Font familyname seems to be unique."
@@ -41,7 +35,7 @@ def check_fontdata_namecheck(ttFont, familyname):
 
         yield ERROR, Message(
             "namecheck-service",
-            f"Failed to access: {NAMECHECK_URL}.\n"
+            f"Failed to access: {API_URL}.\n"
             f"\t\tThis check relies on the external service"
             f" http://namecheck.fontdata.com via the internet."
             f" While the service cannot be reached or does not"

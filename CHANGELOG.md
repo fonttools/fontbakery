@@ -2,7 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.2 (2025-Jan-??)
-  - ...
+### Changes to existing checks
+### On the Universal profile.
+  - **[fontdata_namecheck]** Use api endpoint (issues #https://github.com/fonttools/fontbakery/issues/2719#issuecomment-2618877625)
 
 
 ##  0.13.1 (2025-Jan-17)
