@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 ### On the Universal profile.
   - **[no_debugging_tables]** and **[vttclean]** are now merged into unwanted_tables. (issues #4972 and #4975)
+  - **[arabic_high_hamza]** now checks U+0674 ARABIC LETTER HIGH HAMZA and not U+0675 ARABIC LETTER HIGH HAMZA ALEF. (issue #4290)
 
 ### On the OpenType Profile
   - **[opentype/slant_direction]:** SKIP instead of ERROR if a font does not contain 'H' (PR #4969)
