@@ -1,4 +1,4 @@
-from fontbakery.prelude import FAIL, SKIP, Message, check
+from fontbakery.prelude import FAIL, SKIP, WARN, Message, check
 from fontbakery.utils import get_glyph_name
 
 
@@ -70,9 +70,9 @@ def check_arabic_high_hamza(ttFont):
     high_hamza_area = area_pen.value
 
     if abs((high_hamza_area - hamza_area) / hamza_area) > 0.1:
-        yield FAIL, Message(
+        yield WARN, Message(
             "glyph-area",
             "The arabic letter high hamza (U+0674) should have roughly"
-            " the same size the arabic letter hamza (U+0621),"
-            " but a different glyph outline area was detected.",
+            " the same size the arabic letter hamza (U+0621) while raised"
+            " above baseline, but a different glyph outline area was detected.",
         )
