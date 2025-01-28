@@ -24,26 +24,21 @@ def check_arabic_high_hamza(ttFont):
     from fontTools.pens.areaPen import AreaPen
     from copy import deepcopy
 
-    # This check modifies the font file with `.draw(pen)`
-    # so here we'll work with a copy of the object so that we
-    # do not affect other checks:
-    ttFont_copy = deepcopy(ttFont)
-
     ARABIC_LETTER_HAMZA = 0x0621
     ARABIC_LETTER_HIGH_HAMZA = 0x0674
 
-    cmap = ttFont_copy.getBestCmap()
-    if ARABIC_LETTER_HAMZA not in cmap or ARABIC_LETTER_HIGH_HAMZA not in cmap:
+    cmap = ttFont.getBestCmap()
+    if ARABIC_LETTER_HIGH_HAMZA not in cmap:
         yield SKIP, Message(
             "glyphs-missing",
-            "This check will only run on fonts that have both glyphs U+0621 and U+0674",
+            "This check will only run on fonts that have U+0674 glyph",
         )
         return
 
-    if "GDEF" in ttFont_copy and ttFont_copy["GDEF"].table.GlyphClassDef:
-        class_def = ttFont_copy["GDEF"].table.GlyphClassDef.classDefs
-        reverseCmap = ttFont_copy["cmap"].buildReversed()
-        glyphOrder = ttFont_copy.getGlyphOrder()
+    if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
+        class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
+        reverseCmap = ttFont["cmap"].buildReversed()
+        glyphOrder = ttFont.getGlyphOrder()
         for name in glyphOrder:
             if ARABIC_LETTER_HIGH_HAMZA in reverseCmap.get(name, set()):
                 if name in class_def and class_def[name] == 3:
@@ -51,6 +46,18 @@ def check_arabic_high_hamza(ttFont):
                         "mark-in-gdef",
                         f'"{name}" is defined in GDEF as a mark (class 3).',
                     )
+
+    if ARABIC_LETTER_HAMZA not in cmap:
+        yield SKIP, Message(
+            "glyphs-missing",
+            "This check will only run on fonts that have both glyphs U+0621 and U+0674",
+        )
+        return
+
+    # This check modifies the font file with `.draw(pen)`
+    # so here we'll work with a copy of the object so that we
+    # do not affect other checks:
+    ttFont_copy = deepcopy(ttFont)
 
     # Also validate the bounding box of the glyph and compare
     # it to U+0621 expecting them to have roughly the same size
