@@ -8,10 +8,10 @@ from fontbakery.utils import get_glyph_name
         "https://github.com/googlefonts/fontbakery/issues/4290",
     ],
     rationale="""
-        Many fonts incorrectly treat ARABIC LETTER HIGH HAMZA (U+0675) as a variant of
+        Many fonts incorrectly treat ARABIC LETTER HIGH HAMZA (U+0674) as a variant of
         ARABIC HAMZA ABOVE (U+0654) and make it a combining mark of the same size.
 
-        But U+0675 is a base letter and should be a variant of ARABIC LETTER HAMZA
+        But U+0674 is a base letter and should be a variant of ARABIC LETTER HAMZA
         (U+0621) but raised slightly above baseline.
 
         Not doing so effectively makes the font useless for Jawi and
@@ -20,7 +20,7 @@ from fontbakery.utils import get_glyph_name
     severity=4,
 )
 def check_arabic_high_hamza(ttFont):
-    """Check that glyph for U+0675 ARABIC LETTER HIGH HAMZA is not a mark."""
+    """Check that glyph for U+0674 ARABIC LETTER HIGH HAMZA is not a mark."""
     from fontTools.pens.areaPen import AreaPen
     from copy import deepcopy
 
@@ -30,13 +30,13 @@ def check_arabic_high_hamza(ttFont):
     ttFont_copy = deepcopy(ttFont)
 
     ARABIC_LETTER_HAMZA = 0x0621
-    ARABIC_LETTER_HIGH_HAMZA = 0x0675
+    ARABIC_LETTER_HIGH_HAMZA = 0x0674
 
     cmap = ttFont_copy.getBestCmap()
     if ARABIC_LETTER_HAMZA not in cmap or ARABIC_LETTER_HIGH_HAMZA not in cmap:
         yield SKIP, Message(
             "glyphs-missing",
-            "This check will only run on fonts that have both glyphs U+0621 and U+0675",
+            "This check will only run on fonts that have both glyphs U+0621 and U+0674",
         )
         return
 
@@ -68,7 +68,7 @@ def check_arabic_high_hamza(ttFont):
     if abs((high_hamza_area - hamza_area) / hamza_area) > 0.1:
         yield FAIL, Message(
             "glyph-area",
-            "The arabic letter high hamza (U+0675) should have roughly"
+            "The arabic letter high hamza (U+0674) should have roughly"
             " the same size the arabic letter hamza (U+0621),"
             " but a different glyph outline area was detected.",
         )
