@@ -23,7 +23,7 @@ def is_space(codepoint):
     proposal="https://github.com/fonttools/fontbakery/issues/4906",
     experimental="Since 2024/12/28",
 )
-def check_base_has_width(font, context):
+def check_base_has_width(font, config):
     """Check base characters have non-zero advance width."""
 
     reversed_cmap = {v: k for k, v in font.ttFont.getBestCmap().items()}
@@ -43,7 +43,7 @@ def check_base_has_width(font, context):
             problems.append(f"{gid} (U+{codepoint:04X})")
 
     if problems:
-        problems = bullet_list(context, problems)
+        problems = bullet_list(config, problems)
         yield FAIL, Message(
             "zero-width-bases",
             f"The following glyphs had zero advance width:\n{problems}",
