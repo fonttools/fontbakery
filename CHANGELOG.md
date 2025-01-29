@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 ### On the Universal profile.
   - **[fontdata_namecheck]** Use api endpoint (issues #https://github.com/fonttools/fontbakery/issues/2719#issuecomment-2618877625)
+  - **[base_has_width]** Use `config` instead of `context` variable. (PR #4983)
 
 
 ##  0.13.1 (2025-Jan-17)
