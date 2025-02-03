@@ -74,7 +74,7 @@ shaperglot = [
 # always be up-to-date, so we treat any update to these deps the same way we would
 # deal with API-breaking updates. Only the latest released version is acceptable:
 googlefontsalwayslatest = [
-    "axisregistry >= 0.4.11, == 0.4.*",
+    "axisregistry >= 0.4.12, == 0.4.*",
     "gflanguages >= 0.7.2, == 0.7.*",
     "gfsubsets >= 2024.9.25",
     "glyphsets >= 1.1.0, == 1.*",
