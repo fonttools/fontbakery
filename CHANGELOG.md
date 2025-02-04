@@ -1,16 +1,24 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.2 (2025-Jan-??)
+##  Upcoming release: 0.13.3 (2025-Feb-??)
+  - ...
+
+
+##  0.13.2 (2025-Feb-03)
 ### Changes to existing checks
-### On the Universal profile.
-  - **[fontdata_namecheck]** Use api endpoint (issues #https://github.com/fonttools/fontbakery/issues/2719#issuecomment-2618877625)
-  - **[base_has_width]** Use `config` instead of `context` variable. (PR #4983)
+### On the Universal profile
+  - **[fontdata_namecheck]:** Use api endpoint (issues #https://github.com/fonttools/fontbakery/issues/2719#issuecomment-2618877625)
+  - **[base_has_width]:** Use `config` instead of `context` variable. (PR #4983)
+  - **[arabic_high_hamza]:** Check high hamza isn’t mark even if hamza is missing and make the size of high hamza a WARN. Also check the correct code point. (issue #4290)
+
+### On the Open Type profile
+  - **[opentype/STAT/ital_axis]:** Rework segment_vf_collection. Better testing of italic/family relation, not just file names. (issue #4964 / PR #4966)
 
 
 ##  0.13.1 (2025-Jan-17)
 ### Changes to existing checks
-### On the Universal profile.
+### On the Universal profile
   - **[no_debugging_tables]** and **[vttclean]** are now merged into unwanted_tables. (issues #4972 and #4975)
   - **[arabic_high_hamza]** now checks U+0674 ARABIC LETTER HIGH HAMZA and not U+0675 ARABIC LETTER HIGH HAMZA ALEF, and the size check of _high hamza_ is now a warning instead of a fauilre. (issue #4290)
 
