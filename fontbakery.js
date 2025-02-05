@@ -30,22 +30,22 @@ const EXCUSES = {
   // Needs network
   vendor_id: NEEDS_NETWORK,
   fontdata_namecheck: NEEDS_NETWORK,
-  vertical_metrics_regressions: NEEDS_NETWORK,
-  "metadata/includes_production_subsets": NEEDS_NETWORK,
-  "metadata/designer_profiles": NEEDS_NETWORK,
-  "description/broken_links": NEEDS_NETWORK,
-  "metadata/broken_links": NEEDS_NETWORK,
+  "googlefonts/vertical_metrics_regressions": NEEDS_NETWORK,
+  "googlefonts/metadata/includes_production_subsets": NEEDS_NETWORK,
+  "googlefonts/metadata/designer_profiles": NEEDS_NETWORK,
+  "googlefonts/description/broken_links": NEEDS_NETWORK,
+  "googlefonts/metadata/broken_links": NEEDS_NETWORK,
   version_bump: NEEDS_NETWORK,
   production_glyphs_similarity: NEEDS_NETWORK,
   // Shaping checks
   render_own_name: CANT_COMPILE("Freetype"),
   dotted_circle: CANT_COMPILE("cffsubr [required by ufo2ft]"),
-  "metadata/can_render_samples": CANT_COMPILE("Harfbuzz"),
+  "googlefonts/metadata/can_render_samples": CANT_COMPILE("Harfbuzz"),
   slant_direction: CANT_COMPILE("Harfbuzz"),
-  "glyphsets/shape_languages": CANT_COMPILE("Harfbuzz"),
+  "googlefonts/glyphsets/shape_languages": CANT_COMPILE("Harfbuzz"),
 
   // Other checks
-  "metadata/family_directory_name": NOWASM(
+  "googlefonts/metadata/family_directory_name": NOWASM(
     "there are no directories in the WASM environment"
   ),
   ttx_roundtrip: NOWASM(

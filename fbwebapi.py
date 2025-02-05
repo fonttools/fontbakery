@@ -26,6 +26,7 @@ for notreal in [
     "defcon",
     "vharfbuzz",
     "uharfbuzz",
+    "shaperglot",
     "freetype",
     "freetype.ft_errors",
     "tabulate",
