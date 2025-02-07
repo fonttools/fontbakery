@@ -67,7 +67,7 @@ renaming_map = {
     "com.google.fonts/check/fvar_instances":                                "googlefonts/fvar_instances",
     "com.google.fonts/check/gasp":                                          "googlefonts/gasp",
     "com.google.fonts/check/glyph_coverage":                                "googlefonts/glyph_coverage",
-    "com.google.fonts/check/glyphsets/shape_languages":                     "googlefonts/glyphsets/shape_language",
+    "com.google.fonts/check/glyphsets/shape_languages":                     "googlefonts/glyphsets/shape_languages",
     "com.google.fonts/check/has_ttfautohint_params":                        "googlefonts/has_ttfautohint_params",
     "com.google.fonts/check/license/OFL_body_text":                         "googlefonts/license/OFL_body_text",
     "com.google.fonts/check/license/OFL_copyright":                         "googlefonts/license/OFL_copyright",
