@@ -82,8 +82,6 @@ PROFILE = {
             "typographic_family_name",
             "unique_glyphnames",
             "unreachable_glyphs",
-            "unwanted_aat_tables",
-            "unwanted_tables",
             "valid_glyphnames",
             "varfont/bold_wght_coord",
             "varfont/consistent_axes",

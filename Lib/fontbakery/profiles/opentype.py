@@ -43,6 +43,7 @@ PROFILE = {
             "opentype/slant_direction",
             "opentype/STAT/ital_axis",
             "opentype/unitsperem",
+            "opentype/unwanted_aat_tables",
             "opentype/varfont/distinct_instance_records",
             "opentype/varfont/family_axis_ranges",
             "opentype/varfont/foundry_defined_tag_name",

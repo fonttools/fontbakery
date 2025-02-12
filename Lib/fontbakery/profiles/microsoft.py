@@ -9,6 +9,7 @@ PROFILE = {
     "pending_review": [
         "opentype/cff_ascii_strings",
         "opentype/slant_direction",
+        "opentype/unwanted_aat_tables",
         "opentype/weight_class_fvar",
         #
         "base_has_width",
@@ -46,7 +47,6 @@ PROFILE = {
         "ufo_recommended_fields",
         "ufo_required_fields",
         "ufo_unnecessary_fields",
-        "unwanted_aat_tables",
         "varfont/bold_wght_coord",
         "varfont/consistent_axes",
         "varfont/duplexed_axis_reflow",

@@ -9,7 +9,7 @@ from fontbakery.codetesting import (
 from fontbakery.status import FAIL
 
 
-@check_id("unwanted_aat_tables")
+@check_id("opentype/unwanted_aat_tables")
 def test_check_unwanted_aat_tables(check):
     """Are there unwanted Apple tables ?"""
 
