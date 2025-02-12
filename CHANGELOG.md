@@ -2,7 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.3 (2025-Feb-??)
-  - ...
+### Changes to existing checks
+### On the OpenType profile
+  - **[opentype/unwanted_aat_tables]:** EBSC is not an AAT table. (issue #4992)
 
 
 ##  0.13.2 (2025-Feb-03)

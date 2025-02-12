@@ -25,7 +25,6 @@ def check_unwanted_aat_tables(ttFont):
         "bloc",
         "bmap",
         "bsln",
-        "EBSC",
         "fdsc",
         "feat",
         "fond",

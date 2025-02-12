@@ -14,7 +14,6 @@ def test_check_unwanted_aat_tables(check):
     """Are there unwanted Apple tables ?"""
 
     unwanted_tables = [
-        "EBSC",
         "Zaph",
         "acnt",
         "ankr",
