@@ -319,7 +319,7 @@ renaming_map = {
     "com.daltonmaag/check/ufolint":                                         "ufolint",
     "com.google.fonts/check/unique_glyphnames":                             "unique_glyphnames",
     "com.google.fonts/check/unreachable_glyphs":                            "unreachable_glyphs",
-    "com.google.fonts/check/aat":                                           "unwanted_aat_tables",
+    "com.google.fonts/check/aat":                                           "opentype/unwanted_aat_tables",
     "com.google.fonts/check/unwanted_tables":                               "unwanted_tables",
     "com.google.fonts/check/valid_glyphnames":                              "valid_glyphnames",
     "com.google.fonts/check/varfont/bold_wght_coord":                       "varfont/bold_wght_coord",

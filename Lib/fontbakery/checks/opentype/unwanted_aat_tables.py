@@ -2,7 +2,7 @@ from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
-    id="unwanted_aat_tables",
+    id="opentype/unwanted_aat_tables",
     rationale="""
         Apple's TrueType reference manual [1] describes SFNT tables not in the
         Microsoft OpenType specification [2] and these can sometimes sneak into final
