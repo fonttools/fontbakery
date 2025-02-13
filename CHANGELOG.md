@@ -10,6 +10,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### On the OpenType profile
   - **[opentype/unwanted_aat_tables]:** EBSC is not an AAT table. (issue #4992)
 
+### On the Universal profile
+  - **[unwanted_tables]:** Remove checking for 'prop' because it is an AAT table. (issue #4989)
+
 
 ##  0.13.2 (2025-Feb-03)
 ### Changes to existing checks
