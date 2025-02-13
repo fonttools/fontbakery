@@ -33,11 +33,6 @@ def check_unwanted_tables(ttFont):
         "TSID": "Table contains data only used in VOLT",
         "TSIJ": "Table contains data only used in VOLT",
         "TSIB": "Table contains data only used in VOLT",
-        "prop": (
-            "Table used on AAT, Apple's OS X specific technology."
-            " Although Harfbuzz now has optional AAT support,"
-            " new fonts should not be using that."
-        ),
         "Debg": "FontTools debugging table",
     }
     unwanted_tables_found = []
