@@ -16,6 +16,7 @@
 import os
 import subprocess
 import sys
+import traceback
 from typing import Optional
 from copy import deepcopy
 
@@ -860,3 +861,12 @@ def mark_glyphs(ttFont):
             if name in class_def and class_def[name] == 3:
                 marks.append(name)
     return marks
+
+
+def format_error(error: Exception) -> str:
+    """Detail an error with name and stack trace for serialisation."""
+
+    message = f"Failed with {type(error).__name__}: {error}\n```\n"
+    message += "".join(traceback.format_tb(error.__traceback__))
+    message += "\n```"
+    return message
