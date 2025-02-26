@@ -7,7 +7,9 @@ KEEP_ORIGINAL_MESSAGE = None
 class Message:
     """Status messages to be yielded by FontBakeryCheck"""
 
-    def __init__(self, code, message):
+    message: str
+
+    def __init__(self, code, message: str):
         """
         code: (string|number) a check internal, unique code to describe a
               specific failure condition. A short string is preferred, it

@@ -16,7 +16,6 @@ from collections import OrderedDict
 import concurrent.futures
 import inspect
 import threading
-import traceback
 from typing import Union, Tuple
 
 from fontbakery.configuration import Configuration
@@ -26,7 +25,7 @@ from fontbakery.result import (
     Identity,
 )
 from fontbakery.message import Message
-from fontbakery.utils import is_negated
+from fontbakery.utils import is_negated, format_error
 from fontbakery.status import (
     Status,
     ERROR,
@@ -154,7 +153,7 @@ class CheckRunner:
             except Exception as err:
                 if not self.catch_errors:
                     raise
-                status = Subresult(ERROR, Message("error", str(err)))
+                status = Subresult(ERROR, Message("error", format_error(err)))
                 return (status, None)
 
             if negate:
@@ -194,7 +193,9 @@ class CheckRunner:
         except Exception as error:
             if not self.catch_errors:
                 raise
-            status = Subresult(ERROR, Message("failed-dependencies", error))
+            status = Subresult(
+                ERROR, Message("failed-dependencies", format_error(error))
+            )
             return (status, None)
 
     def _run_check(self, identity: Identity):
@@ -225,10 +226,7 @@ class CheckRunner:
         except Exception as error:
             if not self.catch_errors:
                 raise
-            message = f"Failed with {type(error).__name__}: {error}\n```\n"
-            message += "".join(traceback.format_tb(error.__traceback__))
-            message += "\n```"
-            subresults = [(ERROR, Message("failed-check", message))]
+            subresults = [(ERROR, Message("failed-check", format_error(error)))]
 
         result.extend(
             [
