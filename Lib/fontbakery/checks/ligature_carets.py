@@ -43,6 +43,12 @@ def check_ligature_carets(config, ttFont, ligature_glyphs):
     """Are there caret positions declared for every ligature?"""
     if len(ligature_glyphs) == 0:
         yield SKIP, Message("no-ligatures", "No ligature glyphs found.")
+    elif "GDEF" not in ttFont:
+        yield WARN, Message(
+            "lacks-caret-pos-gdef",
+            "This font lacks caret position values"
+            " for ligature glyphs because it has not GDEF table.",
+        )
     else:
         lig_caret_list = ttFont["GDEF"].table.LigCaretList
         if lig_caret_list is None:
