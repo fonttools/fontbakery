@@ -47,7 +47,7 @@ def check_ligature_carets(config, ttFont, ligature_glyphs):
         yield WARN, Message(
             "lacks-caret-pos-gdef",
             "This font lacks caret position values"
-            " for ligature glyphs because it has not GDEF table.",
+            " for ligature glyphs because it doesn't have a GDEF table.",
         )
     else:
         lig_caret_list = ttFont["GDEF"].table.LigCaretList
