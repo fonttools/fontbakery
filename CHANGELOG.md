@@ -12,6 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### On the Universal profile
   - **[unwanted_tables]:** Remove checking for 'prop' because it is an AAT table. (issue #4989)
+  - **[base_has_width]:** Examine non-mark glyphs rather than mark glyphs; ignore PUA. (issue #5007)
 
 
 ##  0.13.2 (2025-Feb-03)
