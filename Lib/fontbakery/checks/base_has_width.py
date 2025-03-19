@@ -5,14 +5,20 @@ from fontbakery.utils import bullet_list, mark_glyphs
 
 
 def is_space(codepoint):
-    return unicodedata.category(chr(codepoint)) in [
-        "Zs",  # Space Separator
-        "Zl",  # Line Separator
-        "Zp",  # Paragraph Separator
-        "Cf",  # Format
-        "Mn",  # Nonspacing Mark
-        "Cc",  # Control
-    ]
+    return (
+        unicodedata.category(chr(codepoint))
+        in [
+            "Zs",  # Space Separator
+            "Zl",  # Line Separator
+            "Zp",  # Paragraph Separator
+            "Cf",  # Format
+            "Mn",  # Nonspacing Mark
+            "Cc",  # Control
+        ]
+        or 0xE000 <= codepoint <= 0xF8FF
+        or 0xF0000 <= codepoint <= 0xFFFFD
+        or 0x100000 <= codepoint <= 0x10FFFD
+    )
 
 
 @check(
@@ -36,7 +42,7 @@ def check_base_has_width(font, config):
         if codepoint == 0 or codepoint is None:
             continue
 
-        if advance == 0 and not gid not in mark_glyphs(font.ttFont):
+        if advance == 0 and gid not in mark_glyphs(font.ttFont):
             if is_space(codepoint):
                 continue
 
