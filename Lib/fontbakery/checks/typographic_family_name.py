@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, FAIL
+from fontbakery.prelude import check, FAIL, Message
 
 
 @check(
@@ -19,7 +19,8 @@ def check_typographic_family_name(ttFonts):
 
         values.add(name_record.toUnicode())
     if len(values) != 1:
-        yield FAIL, (
+        yield FAIL, Message(
+            "incosistent-family-name",
             f"Name ID 16 (Typographic Family name) is not consistent "
             f"across fonts. Values found: {sorted(values)}"
         )
