@@ -15,9 +15,9 @@ def check_typographic_family_name(ttFonts):
     for ttFont in ttFonts:
         name_record = ttFont["name"].getName(16, 3, 1, 0x0409)
         if name_record is None:
-            values.add("<no value>")
-        else:
-            values.add(name_record.toUnicode())
+            name_record = ttFont["name"].getName(1, 3, 1, 0x0409)
+
+        values.add(name_record.toUnicode())
     if len(values) != 1:
         yield FAIL, (
             f"Name ID 16 (Typographic Family name) is not consistent "
