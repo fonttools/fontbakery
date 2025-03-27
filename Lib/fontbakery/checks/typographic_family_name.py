@@ -22,5 +22,5 @@ def check_typographic_family_name(ttFonts):
         yield FAIL, Message(
             "incosistent-family-name",
             f"Name ID 16 (Typographic Family name) is not consistent "
-            f"across fonts. Values found: {sorted(values)}"
+            f"across fonts. Values found: {sorted(values)}",
         )

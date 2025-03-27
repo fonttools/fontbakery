@@ -93,9 +93,7 @@ def test_check_typographic_family_name(check, cabin_ttFonts, montserrat_ttFonts)
     assert_PASS(check(family), "with a good family...")
 
     assert_results_contain(
-        check([cabin_ttFonts, montserrat_ttFonts]),
-        FAIL,
-        "incosistent-family-name"
+        check([cabin_ttFonts, montserrat_ttFonts]), FAIL, "incosistent-family-name"
     )
 
 
