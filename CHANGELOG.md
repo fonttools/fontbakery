@@ -1,7 +1,8 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.3 (2025-Feb-??)
+##  Upcoming release: 0.13.3 (2025-Apr-??)
+
 ### Migration of checks
 #### Moved from Universal to OpenType profile
   - **[[opentype/unwanted_aat_tables]]:** AAT is as legitimate as OpenType and Apple ships and actively develop AAT fonts. Such check belongs to the OpenYype profile instead of the Universal profile. (issue #4991)
@@ -13,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### On the Universal profile
   - **[unwanted_tables]:** Remove checking for 'prop' because it is an AAT table. (issue #4989)
   - **[base_has_width]:** Examine non-mark glyphs rather than mark glyphs; ignore PUA. (issue #5007)
+  - **[typographic_family_name]:** Fix for support families with RIBBI and non-RIBBI styles. (PR #5012)
 
 
 ##  0.13.2 (2025-Feb-03)

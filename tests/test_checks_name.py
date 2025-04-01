@@ -18,6 +18,46 @@ def test_ttFont():
     return TTFont(TEST_FILE("selawik/Selawik-fvar-test-VTT.ttf"), lazy=True)
 
 
+@pytest.fixture
+def montserrat_ttFonts():
+    paths = [
+        TEST_FILE("montserrat/Montserrat-Black.ttf"),
+        TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
+        TEST_FILE("montserrat/Montserrat-Bold.ttf"),
+        TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
+        TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
+        TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
+        TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
+        TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
+        TEST_FILE("montserrat/Montserrat-Italic.ttf"),
+        TEST_FILE("montserrat/Montserrat-Light.ttf"),
+        TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
+        TEST_FILE("montserrat/Montserrat-Medium.ttf"),
+        TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
+        TEST_FILE("montserrat/Montserrat-Regular.ttf"),
+        TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
+        TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
+        TEST_FILE("montserrat/Montserrat-Thin.ttf"),
+        TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),
+    ]
+    return [TTFont(path) for path in paths]
+
+
+@pytest.fixture
+def cabin_ttFonts():
+    paths = [
+        TEST_FILE("cabin/Cabin-BoldItalic.ttf"),
+        TEST_FILE("cabin/Cabin-Bold.ttf"),
+        TEST_FILE("cabin/Cabin-Italic.ttf"),
+        TEST_FILE("cabin/Cabin-MediumItalic.ttf"),
+        TEST_FILE("cabin/Cabin-Medium.ttf"),
+        TEST_FILE("cabin/Cabin-Regular.ttf"),
+        TEST_FILE("cabin/Cabin-SemiBoldItalic.ttf"),
+        TEST_FILE("cabin/Cabin-SemiBold.ttf"),
+    ]
+    return [TTFont(path) for path in paths]
+
+
 @check_id("name_id_1")
 def test_check_name_id_1(check, test_ttFont):
     """Font has a name with ID 1."""
@@ -46,15 +86,15 @@ def test_check_name_length_req(check, test_ttFont):
 
 
 @check_id("typographic_family_name")
-def test_check_typographic_family_name(check, test_ttFont):
+def test_check_typographic_family_name(check, cabin_ttFonts, montserrat_ttFonts):
     """Typographic Family name consistency."""
 
-    family = [
-        test_ttFont,  # FIXME: This must be tested with more than a single font file!
-    ]
+    family = montserrat_ttFonts
     assert_PASS(check(family), "with a good family...")
 
-    # TODO: test a FAIL case
+    assert_results_contain(
+        check([cabin_ttFonts, montserrat_ttFonts]), FAIL, "incosistent-family-name"
+    )
 
 
 @check_id("name/char_restrictions")
