@@ -214,6 +214,7 @@ PROFILES = {
   typenetwork: "Type Network",
   fontwerk: "Fontwerk",
   microsoft: "Microsoft",
+  iso15008: "ISO 15008",
 };
 
 function addProfile(profilename, col) {
