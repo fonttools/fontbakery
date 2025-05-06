@@ -8,7 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ##  0.13.3 (2025-Apr-06)
 ### Migration of checks
 #### Moved from Universal to OpenType profile
-  - **[opentype/unwanted_aat_tables]:** AAT is as legitimate as OpenType and Apple ships and actively develop AAT fonts. Such check belongs to the OpenYype profile instead of the Universal profile. (issue #4991)
+  - **[opentype/unwanted_aat_tables]:** AAT is as legitimate as OpenType and Apple ships and actively develop AAT fonts. Such check belongs to the OpenType profile instead of the Universal profile. (issue #4991)
 
 ### Changes to existing checks
 ### On the OpenType profile
