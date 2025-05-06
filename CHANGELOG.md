@@ -10,6 +10,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Moved from Universal to OpenType profile
   - **[opentype/unwanted_aat_tables]:** AAT is as legitimate as OpenType and Apple ships and actively develop AAT fonts. Such check belongs to the OpenType profile instead of the Universal profile. (issue #4991)
 
+### New checks
+#### Added to the OpenType profile
+  - **[opentype/dsig]:** Reintroduce this check that had been recently deprecated. It is considered by users to be easier to disable this dedicated check, instead of having the DSIG table checking happen inside of the broader 'unwanted_tables' check. (issue #4990)
+
 ### Changes to existing checks
 ### On the OpenType profile
   - **[opentype/unwanted_aat_tables]:** EBSC is not an AAT table. (issue #4992)
