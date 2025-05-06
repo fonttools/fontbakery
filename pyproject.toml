@@ -36,7 +36,7 @@ dependencies = [
     "freetype-py < 2.4.0",  # see: https://github.com/fonttools/fontbakery/issues/4143
     "Jinja2 >= 3.0.0",  # issue #4717
     "munkres",
-    "opentypespec",
+    "opentypespec >= 1.9.2",  # recognize 'sunu' script tag for Sunuwar (fontbakery/issues/5014)
     "opentype-sanitizer >= 9.1.0, == 9.*",
     "packaging >= 14.5",  # VERSION_PATTERN was added on v14.5 (fontbakery/issues/4792)
     "pip-api",
