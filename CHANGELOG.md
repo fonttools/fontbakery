@@ -1,15 +1,19 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.3 (2025-Apr-??)
+##  Upcoming release: 0.13.4 (2025-May-?)
+  - ...
 
+
+##  0.13.3 (2025-Apr-06)
 ### Migration of checks
 #### Moved from Universal to OpenType profile
-  - **[[opentype/unwanted_aat_tables]]:** AAT is as legitimate as OpenType and Apple ships and actively develop AAT fonts. Such check belongs to the OpenYype profile instead of the Universal profile. (issue #4991)
+  - **[opentype/unwanted_aat_tables]:** AAT is as legitimate as OpenType and Apple ships and actively develop AAT fonts. Such check belongs to the OpenYype profile instead of the Universal profile. (issue #4991)
 
 ### Changes to existing checks
 ### On the OpenType profile
   - **[opentype/unwanted_aat_tables]:** EBSC is not an AAT table. (issue #4992)
+  - **[opentype/layout_valid_script_tags]:** Set a minimum requirement for the opentypespec dependency. To make sure 'sunu' script tag (for Sunuwar) is recognized as a valid tag. (issue #5014)
 
 ### On the Universal profile
   - **[unwanted_tables]:** Remove checking for 'prop' because it is an AAT table. (issue #4989)
