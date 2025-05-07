@@ -29,7 +29,7 @@ def check_name_family_and_style_max_length(ttFont):
     checks = [
         [
             FAIL,
-            NameID.FULL_FONT_NAME,
+            NameID.FONT_FAMILY_NAME,
             32,
             (
                 "with the dropdown menu in old versions of Microsoft Word"
