@@ -6,6 +6,8 @@
 
 Font Bakery is a command-line tool for checking the quality of font projects.
 
+See also: [Fontspector](https://github.com/fonttools/fontspector) (the Rust port of Font Bakery).
+
 For a quick overview, check out the [list of checks](https://fontbakery.readthedocs.io/en/latest/fontbakery/profiles/index.html) currently offered.
 And for a full written introduction [check out our documentation at Read The Docs.](https://fontbakery.readthedocs.io/en/stable)
 
