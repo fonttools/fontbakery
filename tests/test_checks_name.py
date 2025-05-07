@@ -216,8 +216,8 @@ def test_check_name_char_restrictions(check):
 def test_check_name_family_and_style_max_length(check):
     """Name table entries should not be too long."""
 
-    # Our reference Cabin Regular is known to be good
-    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    # Our static reference Merriweather Regular is known to be good
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
     # So it must PASS the check:
     assert_PASS(check(ttFont), "with a good font...")
@@ -227,8 +227,8 @@ def test_check_name_family_and_style_max_length(check):
     # a discussion of the requirements
 
     for index, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            # This has 33 chars, while the max currently allowed is 32
+        if name.nameID == NameID.FONT_FAMILY_NAME:
+            # This has 33 chars, while the max currently allowed is 31
             bad = "An Absurdly Long Family Name Font"
             assert len(bad) == 33
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
@@ -238,11 +238,43 @@ def test_check_name_family_and_style_max_length(check):
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
 
     results = check(ttFont)
-    assert_results_contain(results, FAIL, "nameid4-too-long", "with a bad font...")
-    assert_results_contain(results, WARN, "nameid6-too-long", "with a bad font...")
+    assert_results_contain(results, FAIL, "nameid1-too-long", "with a bad font...")
 
-    # Restore the original VF
+    # Now get a variable font reference
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+
+    # set long STAT style name, then check for a FAIL
+    for index, name in enumerate(ttFont["name"].names):
+        # verify that "Cabin" length, plus 27 chars, exceeds limit of 31
+        if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
+            assert len(ttFont["name"].names[index].string) + 27 > 31
+
+    # find the first instance nameID from the STAT table, then make it long
+    # and check for a FAIL
+    for value in ttFont["STAT"].table.AxisValueArray.AxisValue:
+        # if the value is marked as elidable, don’t count it
+        if value.Flags & 2:
+            continue
+        # otherwise, get the STAT style name entry and make it long
+        bad = "Absurdly Long Name Particle"
+        assert len(bad) == 27
+
+        # edit the name table entry for the STAT style name
+        for index, name in enumerate(ttFont["name"].names):
+            if name.nameID == value.ValueNameID:
+                ttFont["name"].names[index].string = bad.encode(name.getEncoding())
+
+        # stop after the first applicable STAT value
+        break
+
+    results = check(ttFont)
+    assert_results_contain(
+        results, FAIL, "familyname-plus-stat-entries-too-long", "with a bad font..."
+    )
+
+    # remove STAT table, then check for a FAIL if the STAT table is not present
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    del ttFont["STAT"]
 
     # ...and break the check again with a bad fvar instance name:
     nameid_to_break = ttFont["fvar"].instances[0].subfamilyNameID
@@ -254,8 +286,10 @@ def test_check_name_family_and_style_max_length(check):
             assert len(bad) == 28
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
             break
+
+    results = check(ttFont)
     assert_results_contain(
-        check(ttFont), FAIL, "instance-too-long", "with a bad font..."
+        results, FAIL, "fvar-instance-too-long", "with a bad font..."
     )
 
 
