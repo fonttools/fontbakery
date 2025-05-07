@@ -50,7 +50,7 @@
 	
 		<meta name="ms.author" content="alib" />
 	
-		<meta name="ms.date" content="2025-04-22T00:00:00Z" />
+		<meta name="ms.date" content="2025-05-07T00:00:00Z" />
 	
 		<meta name="keywords" content="typography" />
 	
@@ -62,13 +62,13 @@
 	
 		<meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 	
-		<meta name="updated_at" content="2025-04-23T15:33:00Z" />
+		<meta name="updated_at" content="2025-05-07T16:20:00Z" />
 	
 		<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 	
-		<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/271f76aa0ef0eeadc4fccf7937d940fefd24124c/typographydocs/vendors/index.md" />
+		<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/154bf5ce05e8044fb96a8ce3b39a8d2126bf0f03/typographydocs/vendors/index.md" />
 	
-		<meta name="git_commit_id" content="271f76aa0ef0eeadc4fccf7937d940fefd24124c" />
+		<meta name="git_commit_id" content="154bf5ce05e8044fb96a8ce3b39a8d2126bf0f03" />
 	
 		<meta name="site_name" content="Docs" />
 	
@@ -86,7 +86,7 @@
 	
 		<meta name="feedback_help_link_url" content="" />
 	
-		<meta name="word_count" content="5343" />
+		<meta name="word_count" content="5366" />
 	
 		<meta name="asset_id" content="vendors/index" />
 	
@@ -96,7 +96,7 @@
 	
 		<meta name="source_path" content="typographydocs/vendors/index.md" />
 	
-		<meta name="previous_tlsh_hash" content="484553E2090DA49C8FD3D6764AE16F40DD4AB24629A048C51D2E32029A0E06D397EE0F7ECF1DB2CAD09F467213F6AB872AE4DF28D391739954F4862D802616F33D5A3FC761" />
+		<meta name="previous_tlsh_hash" content="ACDE71E2090DA49C8FD3D6764AE16F40DD4AB24629A048C51D2E32029A0E06D397EE4F7ECF1DB2CAD19F467213F6AB872AE4DF28D391739954F4462D802616F33D5A3FC761" />
 	
 		<meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 	 
@@ -114,7 +114,7 @@
 	
 
 			<!-- assets and js globals -->
-			<link rel="stylesheet" href="/static/assets/0.4.030426722/styles/site-ltr.css" />
+			<link rel="stylesheet" href="/static/assets/0.4.030476746/styles/site-ltr.css" />
 			<link rel="preconnect" href="//mscom.demdex.net" crossorigin />
 						<link rel="dns-prefetch" href="//target.microsoft.com" />
 						<link rel="dns-prefetch" href="//microsoftmscompoc.tt.omtrdc.net" />
@@ -200,7 +200,7 @@
 	</script>
 
 			<!-- base scripts, msdocs global should be before this -->
-			<script src="/static/assets/0.4.030426722/scripts/en-us/index-docs.js"></script>
+			<script src="/static/assets/0.4.030476746/scripts/en-us/index-docs.js"></script>
 			
 
 			<!-- json-ld -->
@@ -494,7 +494,7 @@
 						<span class="docon docon-more-vertical"></span>
 					</span>
 				</summary>
-				<div class="popover-content padding-xs">
+				<div class="popover-content">
 					
 		<button
 			data-page-action-item="overflow-mobile"
@@ -685,11 +685,11 @@
 			<li class="">Article</li>   <li class="visibility-hidden-visual-diff">
 			<local-time
 				format="twoDigitNumeric"
-				datetime="2025-04-22T08:00:00.000Z"
+				datetime="2025-05-07T08:00:00.000Z"
 				data-article-date-source="calculated"
 				class="is-invisible"
 			>
-				2025-04-22
+				2025-05-07
 			</local-time>
 		</li> 
 			<li class="contributors-holder display-none-print">
@@ -1018,6 +1018,10 @@
 <td><a href="http://www.allcapstype.com/" data-linktype="external">AllCaps</a></td>
 </tr>
 <tr>
+<td>ACNT</td>
+<td><a href="https://accentype.xyz/" data-linktype="external">Accentype</a></td>
+</tr>
+<tr>
 <td>ACT2</td>
 <td><a href="https://twitter.com/AnselZhong" data-linktype="external">Ansel Zhong (白云岫)</a></td>
 </tr>
@@ -1056,6 +1060,10 @@
 <tr>
 <td>AES</td>
 <td>AE Type</td>
+</tr>
+<tr>
+<td>AFOS</td>
+<td>A Foundry of Sorts</td>
 </tr>
 <tr>
 <td>AFOU</td>
@@ -1563,6 +1571,10 @@
 <tr>
 <td>BF</td>
 <td><a href="http://www.brass-fonts.de" data-linktype="external">BrassFonts</a></td>
+</tr>
+<tr>
+<td>‎BFF</td>
+<td><a href="https://www.banglafontfoundry.com/" data-linktype="external">Bangla Font Foundry</a></td>
 </tr>
 <tr>
 <td>BFGS</td>
@@ -2283,6 +2295,14 @@
 <td>Digital Graphic Labs foundry</td>
 </tr>
 <tr>
+<td>DGRY</td>
+<td>Dogray</td>
+</tr>
+<tr>
+<td>DHA</td>
+<td><a href="https://dhakatype.com/" data-linktype="external">Dhakatype</a></td>
+</tr>
+<tr>
 <td>DHRM</td>
 <td><a href="https://dharmatype.com/" data-linktype="external">Dharma Type</a></td>
 </tr>
@@ -2349,6 +2369,10 @@
 <tr>
 <td>DOT</td>
 <td><a href="https://ddott.net/" data-linktype="external">DDOTT Typefoundry</a></td>
+</tr>
+<tr>
+<td>DOUG</td>
+<td><a href="https://www.douglashayes.studio/" data-linktype="external">Douglas Hayes Studio</a></td>
 </tr>
 <tr>
 <td>DP</td>
@@ -2727,7 +2751,7 @@
 </tr>
 <tr>
 <td>FCB</td>
-<td><a href="https://fontclubbelgica.xyz/" data-linktype="external">Font Club Belgica</a></td>
+<td>Font Club Belgica</td>
 </tr>
 <tr>
 <td>FCTP</td>
@@ -6588,6 +6612,10 @@
 <tr>
 <td>TOFU</td>
 <td><a href="https://www.tofutype.ca/" data-linktype="external">Tofu Type Foundry</a></td>
+</tr>
+<tr>
+<td>TOGF</td>
+<td><a href="https://www.typesofgraffiti.com/" data-linktype="external">Types of Graffiti</a></td>
 </tr>
 <tr>
 <td>TOKO</td>
