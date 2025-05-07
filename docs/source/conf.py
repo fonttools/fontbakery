@@ -23,9 +23,9 @@ copyright = "2025 The Font Bakery Authors"
 author = "The Font Bakery Authors"
 
 # The short X.Y version
-version = "0.13"
+version = "1.0"
 # The full version, including alpha/beta/rc tags
-release = "0.13.3"
+release = "1.0.0"
 
 
 # -- General configuration ---------------------------------------------------
