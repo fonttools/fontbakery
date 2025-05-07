@@ -1,11 +1,10 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  Upcoming release: 0.13.4 (2025-May-?)
-  - ...
 
+##  1.0.0 (2025-May-07)
+  - See also: https://github.com/fonttools/fontspector
 
-##  0.13.3 (2025-Apr-06)
 ### Migration of checks
 #### Moved from Universal to OpenType profile
   - **[opentype/unwanted_aat_tables]:** AAT is as legitimate as OpenType and Apple ships and actively develop AAT fonts. Such check belongs to the OpenType profile instead of the Universal profile. (issue #4991)
