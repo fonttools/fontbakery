@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 
 from fontbakery.constants import (
     RIBBI_STYLE_NAMES,
@@ -20,7 +21,7 @@ from fontbakery.utils import get_name_entry_strings
     ],
 )
 def check_name_family_and_style_max_length(ttFont):
-    """Combined length of family and style must not exceed 32 characters."""
+    """Combined length of family and style must not exceed 31 characters."""
 
     def strip_ribbi(x):
         ribbi_re = " (" + "|".join(RIBBI_STYLE_NAMES) + ")$"
@@ -30,7 +31,7 @@ def check_name_family_and_style_max_length(ttFont):
         [
             FAIL,
             NameID.FONT_FAMILY_NAME,
-            32,
+            31,
             (
                 "with the dropdown menu in old versions of Microsoft Word"
                 " as well as shaping issues for some accented letters in"
@@ -59,34 +60,35 @@ def check_name_family_and_style_max_length(ttFont):
 
     # name ID 1/16 + fvar instance name > 32 : FAIL : problems with Windows
     if "fvar" in ttFont:
-        for instance in ttFont["fvar"].instances:
-            for instance_name in get_name_entry_strings(
-                ttFont, instance.subfamilyNameID
-            ):
-                typo_family_names = {
-                    (r.platformID, r.platEncID, r.langID): r
-                    for r in ttFont["name"].names
-                    if r.nameID == 16
-                }
-                family_names = {
-                    (r.platformID, r.platEncID, r.langID): r
-                    for r in ttFont["name"].names
-                    if r.nameID == 1
-                }
-                for platform in family_names:
-                    if platform in typo_family_names:
-                        family_name = typo_family_names[platform].toUnicode()
-                    else:
-                        family_name = family_names[platform].toUnicode()
-                    full_instance_name = family_name + " " + instance_name
-                    if len(full_instance_name) > 32:
-                        yield FAIL, Message(
-                            "instance-too-long",
-                            f"Variable font instance name '{full_instance_name}'"
-                            f" formed by space-separated concatenation of"
-                            f" font family name (nameID {NameID.FONT_FAMILY_NAME})"
-                            f" and instance subfamily nameID {instance.subfamilyNameID}"
-                            f" exceeds 32 characters.\n\n"
-                            f"This has been found to cause shaping issues for some"
-                            f" accented letters in Microsoft Word on Windows 10 and 11.",
-                        )
+
+        try:
+            family_name = ttFont["name"].getName(NameID.TYPOGRAPHIC_FAMILY_NAME, 3, 1, 0x409).toUnicode()
+            family_name_id = NameID.TYPOGRAPHIC_FAMILY_NAME
+        except AttributeError:
+            family_name = ttFont["name"].getName(NameID.FONT_FAMILY_NAME, 3, 1, 0x409).toUnicode()
+            family_name_id = NameID.FONT_FAMILY_NAME
+
+
+        styles_per_axis = defaultdict(list)
+        for value in font["STAT"].table.AxisValueArray.AxisValue:
+            axis_name = axes[value.AxisIndex]
+            styles_per_axis[axis_name].append(
+                font["name"].getName(value.ValueNameID, 3, 1, 0x409).toUnicode()
+            )
+
+        names = [
+            f'{family_name} {" ".join(combination)}'
+            for combination in product(*styles_per_axis.values())
+        ]
+
+        for name in names:
+            if len(name) > 31:
+                stat_style_combination = name.remove(family_name + " ")
+                yield FAIL, Message(
+                    "familyname-plus-stat-entries-too-long",
+                    f"Name ID {family_name_id} '{name}' plus"
+                    f" STAT table style combination '{stat_style_combination}'"
+                    f" exceeds 31 characters.\n\n This has been found to"
+                    f" cause a fallback font to appear for some accented letters in"
+                    f" Microsoft Word on Windows 10 and 11.",
+                )
