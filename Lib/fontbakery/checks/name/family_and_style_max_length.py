@@ -12,6 +12,22 @@ from fontbakery.utils import get_name_entry_strings
     rationale="""
         This check ensures that the length of name table entries is not
         too long, as this causes problems in some environments.
+
+        Background on length limit (credit to Aaron Bell at google/fonts/issues/9185):
+
+        The font dropdown in Microsoft Office on PC is driven by the older
+        GDI font enumeration and rendering technology. GDI uses LOGFONTA 
+        (https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfonta) 
+        to define the attributes of a font, and CHAR lfFaceName[LF_FACESIZE]; 
+        to define the font name. The problem, though, is that the string lfFaceName 
+        is restricted to 32 characters, including the terminating NULL.
+
+        In a variable font where the master location is at a location with a 
+        significant number of characters, say, “ExtraLight”, name ID 1 can become 
+        quite long (eg: “Chiron Hei HK ExtraLight”). However, in determining the 
+        font name, Microsoft will prioritize name ID 16 over name ID 1. So this 
+        lets one reduce the character count back to the standard font name 
+        (eg: “Chiron Hei HK”).
     """,
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/1488",
