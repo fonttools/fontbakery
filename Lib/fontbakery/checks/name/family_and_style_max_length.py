@@ -46,8 +46,8 @@ def check_name_family_and_style_max_length(ttFont):
             FAIL,
             NameID.FONT_FAMILY_NAME,
             31,
-            "cause a fallback font to appear for some accented letters, as well as"
-            " in some scripts such as Thai, in"
+            "cause a fallback font to appear for some accented letters, as well"
+            " as in some scripts such as Thai, in"
             " Microsoft Word on Windows 10 and 11. It can also lead to names"
             " which are truncated in the Microsoft Word font menu.\n\n",
             strip_ribbi,
@@ -115,10 +115,10 @@ def check_name_family_and_style_max_length(ttFont):
                     "familyname-plus-stat-entries-too-long",
                     f"Name ID {family_name_id} '{family_name}' plus"
                     f" STAT table style combination '{stat_style_combination}'"
-                    f" exceeds 31 characters (the combination is {len(name)} characters in total).\n\n"
+                    f" exceeds 31 characters (the combination is {len(name)} characters).\n\n"
                     f" This has been found to"
-                    f" cause a fallback font to appear for some accented letters, as well as"
-                    f" in some scripts such as Thai, in"
+                    f" cause a fallback font to appear for some accented letters, as well"
+                    f" as in some scripts such as Thai, in"
                     f" Microsoft Word on Windows 10 and 11. It can also lead to names"
                     f" which are truncated in the Microsoft Word font menu.\n\n",
                 )
@@ -154,8 +154,8 @@ def check_name_family_and_style_max_length(ttFont):
                             f" and instance subfamily nameID {instance.subfamilyNameID}"
                             f" exceeds 32 characters.\n\n"
                             f" This has been found to"
-                            f" cause a fallback font to appear for some accented letters, as well as"
-                            f" in some scripts such as Thai, in"
+                            f" cause a fallback font to appear for some accented letters, as well"
+                            f" as in some scripts such as Thai, in"
                             f" Microsoft Word on Windows 10 and 11. It can also lead to names"
                             f" which are truncated in the Microsoft Word font menu.\n\n",
                         )
