@@ -1,6 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+##  1.0.1 (2025-May-??)
+
+### Changes to existing checks
+### On the Universal profile
+  - **[name/family_and_style_max_length]:** Update to account for STAT table, along with recent testing and observations contributed to issue #2179
 
 ##  1.0.0 (2025-May-07)
   - See also: https://github.com/fonttools/fontspector
