@@ -33,9 +33,9 @@ def check_name_family_and_style_max_length(ttFont):
             NameID.FONT_FAMILY_NAME,
             31,
             (
-                "with the dropdown menu in old versions of Microsoft Word"
-                " as well as shaping issues for some accented letters in"
-                " Microsoft Word on Windows 10 and 11"
+                " cause a fallback font to appear for some accented letters in"
+                " Microsoft Word on Windows 10 and 11. It can also lead to names"
+                " which are truncated in the Microsoft Word font menu.",
             ),
             strip_ribbi,
         ],
@@ -43,7 +43,9 @@ def check_name_family_and_style_max_length(ttFont):
             WARN,
             NameID.POSTSCRIPT_NAME,
             27,
-            "with PostScript printers, especially on Mac platforms",
+            "with PostScript printers, especially on Mac platforms. Per Thomas"
+            " Phinney, this is likely limited to classic versions "
+            " of Mac OS, pre-OS X (released in the year 2000).",
             lambda x: x,
         ],
     ]
@@ -90,5 +92,6 @@ def check_name_family_and_style_max_length(ttFont):
                     f" STAT table style combination '{stat_style_combination}'"
                     f" exceeds 31 characters.\n\n This has been found to"
                     f" cause a fallback font to appear for some accented letters in"
-                    f" Microsoft Word on Windows 10 and 11.",
+                    f" Microsoft Word on Windows 10 and 11. It can also lead to names"
+                    f" which are truncated in the Microsoft Word font menu.",
                 )
