@@ -59,7 +59,6 @@ def check_name_family_and_style_max_length(ttFont):
 
     # check variable font name lengths
     if "fvar" in ttFont and "STAT" in ttFont:
-
         # Get the family name from the name table (prefer ID 16)
         # NOTE: NameID 21 might be prefered by MS Word, but it is not known.
         # if it is used, we could use fonttools .getBestFamilyName() instead
