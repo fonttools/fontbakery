@@ -33,12 +33,10 @@ def check_name_family_and_style_max_length(ttFont):
             FAIL,
             NameID.FONT_FAMILY_NAME,
             31,
-            (
-                " cause a fallback font to appear for some accented letters in, as well as"
-                " in some scripts such as Thai, in"
-                " Microsoft Word on Windows 10 and 11. It can also lead to names"
-                " which are truncated in the Microsoft Word font menu.\n\n",
-            ),
+            "cause a fallback font to appear for some accented letters, as well as"
+            " in some scripts such as Thai, in"
+            " Microsoft Word on Windows 10 and 11. It can also lead to names"
+            " which are truncated in the Microsoft Word font menu.\n\n",
             strip_ribbi,
         ],
         [
