@@ -1,12 +1,9 @@
 import re
-from itertools import product
 from collections import defaultdict
+from itertools import product
 
-from fontbakery.constants import (
-    RIBBI_STYLE_NAMES,
-    NameID,
-)
-from fontbakery.prelude import check, Message, FAIL, WARN
+from fontbakery.constants import RIBBI_STYLE_NAMES, NameID
+from fontbakery.prelude import FAIL, WARN, Message, check
 from fontbakery.utils import get_name_entry_strings
 
 
@@ -65,10 +62,16 @@ def check_name_family_and_style_max_length(ttFont):
 
         # get the family name from the name table (prefer ID 16)
         try:
-            family_name = ttFont["name"].getName(NameID.TYPOGRAPHIC_FAMILY_NAME, 3, 1, 0x409).toUnicode()
+            family_name = (
+                ttFont["name"]
+                .getName(NameID.TYPOGRAPHIC_FAMILY_NAME, 3, 1, 0x409)
+                .toUnicode()
+            )
             family_name_id = NameID.TYPOGRAPHIC_FAMILY_NAME
         except AttributeError:
-            family_name = ttFont["name"].getName(NameID.FONT_FAMILY_NAME, 3, 1, 0x409).toUnicode()
+            family_name = (
+                ttFont["name"].getName(NameID.FONT_FAMILY_NAME, 3, 1, 0x409).toUnicode()
+            )
             family_name_id = NameID.FONT_FAMILY_NAME
 
         styles_per_axis = defaultdict(list)
