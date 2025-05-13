@@ -241,9 +241,13 @@ def test_check_name_family_and_style_max_length(check):
         bad = "Absurdly Long Name Particle"
         assert len(bad) == 27
 
-        name = ttFont["name"].getName(value.ValueNameID, 3, 1, 0x409)
+        # edit the name table entry for the STAT style name
+        for index, name in enumerate(ttFont["name"].names):
+            if name.nameID == value.ValueNameID:
+                ttFont["name"].names[index].string = bad.encode(name.getEncoding())
 
-        ttFont["name"].names[value.ValueNameID].string = bad.encode(name.getEncoding())
+        # stop after the first applicable STAT value
+        break
 
     results = check(ttFont)
     assert_results_contain(
