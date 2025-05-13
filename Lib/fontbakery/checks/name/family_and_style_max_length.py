@@ -145,14 +145,14 @@ def check_name_family_and_style_max_length(ttFont):
                     else:
                         family_name = family_names[platform].toUnicode()
                     full_instance_name = family_name + " " + instance_name
-                    if len(full_instance_name) > 32:
+                    if len(full_instance_name) > 31:
                         yield FAIL, Message(
                             "fvar-instance-too-long",
                             f"Variable font instance name '{full_instance_name}'"
                             f" formed by space-separated concatenation of"
                             f" font family name (nameID {NameID.FONT_FAMILY_NAME})"
                             f" and instance subfamily nameID {instance.subfamilyNameID}"
-                            f" exceeds 32 characters.\n\n"
+                            f" exceeds 31 characters.\n\n"
                             f" This has been found to"
                             f" cause a fallback font to appear for some accented letters, as well"
                             f" as in some scripts such as Thai, in"
