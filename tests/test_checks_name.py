@@ -225,9 +225,8 @@ def test_check_name_family_and_style_max_length(check):
     # Now get a variable font reference
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
-    # TODO: set long STAT style name, then check for a FAIL
+    # set long STAT style name, then check for a FAIL
     for index, name in enumerate(ttFont["name"].names):
-
         # verify that "Cabin" length, plus 27 chars, exceeds limit of 31
         if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
             assert len(ttFont["name"].names[index].string) + 27 > 31
@@ -247,12 +246,12 @@ def test_check_name_family_and_style_max_length(check):
         ttFont["name"].names[value.ValueNameID].string = bad.encode(name.getEncoding())
 
     results = check(ttFont)
-    assert_results_contain(results, FAIL, "familyname-plus-stat-entries-too-long", "with a bad font...")
+    assert_results_contain(
+        results, FAIL, "familyname-plus-stat-entries-too-long", "with a bad font..."
+    )
 
-    # TODO: remove STAT table, then check for a FAIL if the STAT table is not present
+    # remove STAT table, then check for a FAIL if the STAT table is not present
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
-
-    # remove STAT table
     del ttFont["STAT"]
 
     # ...and break the check again with a bad fvar instance name:
