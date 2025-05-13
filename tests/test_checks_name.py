@@ -197,8 +197,8 @@ def test_check_name_char_restrictions(check):
 def test_check_name_family_and_style_max_length(check):
     """Name table entries should not be too long."""
 
-    # Our reference Cabin Regular is known to be good
-    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    # Our static reference Merriweather Regular is known to be good
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
     # So it must PASS the check:
     assert_PASS(check(ttFont), "with a good font...")
@@ -208,8 +208,8 @@ def test_check_name_family_and_style_max_length(check):
     # a discussion of the requirements
 
     for index, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            # This has 33 chars, while the max currently allowed is 32
+        if name.nameID == NameID.FONT_FAMILY_NAME:
+            # This has 33 chars, while the max currently allowed is 31
             bad = "An Absurdly Long Family Name Font"
             assert len(bad) == 33
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
@@ -219,10 +219,10 @@ def test_check_name_family_and_style_max_length(check):
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
 
     results = check(ttFont)
-    assert_results_contain(results, FAIL, "nameid4-too-long", "with a bad font...")
+    assert_results_contain(results, FAIL, "nameid1-too-long", "with a bad font...")
     assert_results_contain(results, WARN, "nameid6-too-long", "with a bad font...")
 
-    # Restore the original VF
+    # Now get a variable font reference
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
     # ...and break the check again with a bad fvar instance name:
