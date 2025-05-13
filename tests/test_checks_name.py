@@ -230,7 +230,7 @@ def test_check_name_family_and_style_max_length(check):
         # verify that "Cabin" length, plus 27 chars, exceeds limit of 31
         if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
             assert len(ttFont["name"].names[index].string) + 27 > 31
-    
+
     # find the first instance nameID from the STAT table, then make it long
     # and check for a FAIL
     for value in ttFont["STAT"].table.AxisValueArray.AxisValue:
