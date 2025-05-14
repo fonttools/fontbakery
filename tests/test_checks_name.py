@@ -268,8 +268,10 @@ def test_check_name_family_and_style_max_length(check):
             assert len(bad) == 28
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
             break
+
+    results = check(ttFont)
     assert_results_contain(
-        check(ttFont), FAIL, "instance-too-long", "with a bad font..."
+        results, FAIL, "fvar-instance-too-long", "with a bad font..."
     )
 
 
