@@ -1,8 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## Upcoming release: 1.0.0 (2025-Jun-??)
+### Bugfixes
+- fonttools==4.58.0 has been changed (PR #https://github.com/fonttools/fonttools/pull/3809/): It fixes duplicate names, therefore the test for the `unique_glyphnames`check was failing. (issue #5023)
 
-##  1.0.0 (2025-May-07)
+## 1.0.0 (2025-May-07)
   - See also: https://github.com/fonttools/fontspector
 
 ### Migration of checks
