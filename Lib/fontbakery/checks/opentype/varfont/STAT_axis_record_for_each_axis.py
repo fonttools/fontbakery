@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, Message, FAIL, PASS
+from fontbakery.prelude import FAIL, PASS, SKIP, Message, check
 from fontbakery.utils import bullet_list
 
 
@@ -16,6 +16,10 @@ from fontbakery.utils import bullet_list
 def check_varfont_STAT_axis_record_for_each_axis(ttFont, config):
     """All fvar axes have a correspondent Axis Record on STAT table?"""
     fvar_axes = set(a.axisTag for a in ttFont["fvar"].axes)
+    if "STAT" not in ttFont:
+        yield SKIP, Message("missing-axis-records", "The font has no STAT table.")
+        return
+
     STAT_axes = set(a.AxisTag for a in ttFont["STAT"].table.DesignAxisRecord.Axis)
     missing_axes = fvar_axes - STAT_axes
     if len(missing_axes) > 0:
