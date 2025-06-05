@@ -4,7 +4,7 @@ from fontTools.varLib.interpolatable import test as interpolation_test
 from fontTools.varLib.interpolatableHelpers import InterpolatableProblem
 from fontTools.varLib.models import piecewiseLinearMap
 
-from fontbakery.prelude import check, Message, PASS, WARN
+from fontbakery.prelude import PASS, SKIP, WARN, Message, check
 from fontbakery.utils import bullet_list
 
 
@@ -25,6 +25,9 @@ from fontbakery.utils import bullet_list
 )
 def check_interpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
+    if "gvar" not in ttFont:
+        yield SKIP, Message("interpolation-issues", "The font has no gvar table.")
+        return
 
     gvar = ttFont["gvar"]
     # This code copied from fontTools.varLib.interpolatable
