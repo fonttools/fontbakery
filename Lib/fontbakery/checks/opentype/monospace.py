@@ -67,7 +67,7 @@ def PANOSE_expected(family_type):
 
 @check(
     id="opentype/monospace",
-    conditions=["glyph_metrics_stats", "is_ttf"],
+    conditions=["glyph_metrics_stats"],
     rationale="""
         There are various metadata in the OpenType spec to specify if a font is
         monospaced or not. If the font is not truly monospaced, then no monospaced
@@ -118,7 +118,7 @@ def check_monospace(ttFont, glyph_metrics_stats):
 
     # Check for missing tables before indexing them
     missing_tables = False
-    required = ["glyf", "hhea", "hmtx", "OS/2", "post"]
+    required = ["hhea", "hmtx", "OS/2", "post"]
     for key in required:
         if key not in ttFont:
             missing_tables = True
