@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 1.0.1 (2025-Jun-??)
 ### Bugfixes
 - fonttools==4.58.0 has been changed (PR #https://github.com/fonttools/fonttools/pull/3809/): It fixes duplicate names, therefore the test for the `unique_glyphnames`check was failing. (issue #5023)
+- Fix passing legacy check ids to --exclude-checkid (PR #5032)
 
 ### On the opentype profile
 - **[check_monospace]:** Check CFF fonts as well: remove conditions "is_ttf" + remove "glyf" from required tables (issue #5030)

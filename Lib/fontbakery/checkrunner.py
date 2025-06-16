@@ -238,6 +238,17 @@ class CheckRunner:
 
     @property
     def order(self) -> Tuple[Identity, ...]:
+        # map old excluded check ids to new ones
+        _exclude_checks = None
+        if self._exclude_checks:
+            _exclude_checks = []
+            for excluded in self._exclude_checks:
+                if excluded in old_to_new:
+                    self.legacy_checkid_references.add(excluded)
+                    _exclude_checks.append(old_to_new[excluded])
+                else:
+                    _exclude_checks.append(excluded)
+
         _order = []
         for section in self.profile.sections:
             for check in section.checks:
@@ -260,15 +271,13 @@ class CheckRunner:
                     if not selected_via_legacy_checkid and not selected_via_new_checkid:
                         continue
 
-                if self._exclude_checks:
-                    if any(excluded in check.id for excluded in self._exclude_checks):
+                if _exclude_checks:
+                    if any(excluded in check.id for excluded in _exclude_checks):
                         continue
 
                     if check.id in self.new_to_old:
                         for legacy in self.new_to_old[check.id]:
-                            if any(
-                                excluded in legacy for excluded in self._exclude_checks
-                            ):
+                            if any(excluded in legacy for excluded in _exclude_checks):
                                 self.legacy_checkid_references.add(legacy)
                                 continue
 
