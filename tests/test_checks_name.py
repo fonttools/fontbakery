@@ -1,3 +1,4 @@
+import copy
 import pytest
 from fontTools.ttLib import TTFont
 
@@ -82,7 +83,25 @@ def test_check_name_length_req(check, test_ttFont):
 
     assert_PASS(check(test_ttFont), "with a good font...")
 
-    # TODO: test a FAIL case
+    test_ttFont_bad = copy.deepcopy(test_ttFont)
+    for rec in test_ttFont_bad["name"].names:
+        if rec.nameID in (NameID.FONT_FAMILY_NAME, NameID.TYPOGRAPHIC_FAMILY_NAME):
+            rec.string = "A" * 32
+    assert_results_contain(check(test_ttFont_bad), FAIL, "long-name")
+
+
+@check_id("instances_name_length_req")
+def test_check_instances_name_length_req(check, test_ttFont):
+    """Maximum allowed length for family and subfamily names."""
+
+    assert_PASS(check(test_ttFont), "with a good font...")
+
+    instance = test_ttFont["fvar"].instances[0]
+    test_ttFont_bad = copy.deepcopy(test_ttFont)
+    for rec in test_ttFont_bad["name"].names:
+        if rec.nameID == instance.subfamilyNameID:
+            rec.string = "A" * 32
+    assert_results_contain(check(test_ttFont_bad), FAIL, "long-name")
 
 
 @check_id("typographic_family_name")
