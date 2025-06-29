@@ -9,6 +9,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### On the opentype profile
 - **[check_monospace]:** Check CFF fonts as well: remove conditions "is_ttf" + remove "glyf" from required tables (issue #5030)
 
+### New checks
+### On microsoft profile
+- **[instances_name_length_req]:** Check family and subfamily name length, similar to **name_length_req** but for "fvar" instances, using names computed from "STAT" table. (PR #5035)
+
 
 ## 1.0.0 (2025-May-07)
   - See also: https://github.com/fonttools/fontspector
