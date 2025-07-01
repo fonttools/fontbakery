@@ -39,6 +39,8 @@ PROFILE = {
     ],
     "pending_review": [
         "base_has_width",
+        "name_length_req",
+        "instances_name_length_req",
     ],
     "sections": {
         "Type Network": [
