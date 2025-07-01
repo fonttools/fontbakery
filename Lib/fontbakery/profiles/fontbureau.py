@@ -35,6 +35,8 @@ PROFILE = {
         "varfont/instances_in_order",
         "varfont/unsupported_axes",
         "vtt_volt_data",
+        "name_length_req",
+        "instances_name_length_req",
     ],
     "sections": {
         "Font Bureau Checks": [
