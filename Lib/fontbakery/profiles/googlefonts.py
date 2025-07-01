@@ -8,6 +8,8 @@ PROFILE = {
         "no_mac_entries",
         "typographic_family_name",
         "vtt_volt_data",
+        "name_length_req",
+        "instances_name_length_req",
     ],
     "sections": {
         "Article Checks": [
