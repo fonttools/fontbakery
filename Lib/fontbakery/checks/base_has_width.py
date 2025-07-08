@@ -27,7 +27,6 @@ def is_space(codepoint):
         Base characters should have non-zero advance width.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4906",
-    experimental="Since 2024/12/28",
 )
 def check_base_has_width(font, config):
     """Check base characters have non-zero advance width."""

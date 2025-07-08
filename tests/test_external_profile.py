@@ -96,3 +96,26 @@ def test_in_and_exclude_checks_default():
 
     checks = profile_checks(fakemodule, {"explicit_checks": ["opentype/unitsperem"]})
     assert checks == ["opentype/unitsperem"]
+
+
+def test_exclude_checks_old_ids():
+    from fontbakery.legacy_checkids import renaming_map
+
+    fakemodule = FakeModule()
+    setattr(
+        fakemodule,
+        "PROFILE",
+        {
+            "include_profiles": ["microsoft"],
+            "sections": {},
+        },
+    )
+
+    old = "com.microsoft/check/vendor_url"
+    new = renaming_map[old]
+
+    checks = profile_checks(fakemodule)
+    assert new in checks
+
+    checks = profile_checks(fakemodule, {"exclude_checks": [old]})
+    assert new not in checks

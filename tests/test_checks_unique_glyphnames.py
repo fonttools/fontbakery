@@ -26,13 +26,13 @@ def test_check_unique_glyphnames(check):
 
     # Load again, we changed the font directly.
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    ttFont.setGlyphOrder(glyph_names)
     # Just access the data to make fonttools generate it.
     ttFont["post"]  # pylint:disable=pointless-statement
     _file = io.BytesIO()
     _file.name = ttFont.reader.file.name
     ttFont.save(_file)
     ttFont = TTFont(_file)
+    ttFont.setGlyphOrder(glyph_names)
     message = assert_results_contain(check(ttFont), FAIL, "duplicated-glyph-names")
     assert "space" in message
 

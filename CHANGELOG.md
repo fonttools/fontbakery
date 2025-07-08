@@ -1,13 +1,25 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-##  1.0.1 (2025-May-??)
+## Upcoming release: 1.1.0 (2025-Jul-??)
 
 ### Changes to existing checks
 ### On the Universal profile
   - **[name/family_and_style_max_length]:** Update to account for STAT table, along with recent testing and observations contributed to issue #2179
 
-##  1.0.0 (2025-May-07)
+## 1.0.1 (2025-Jul-04)
+### Bugfixes
+  - fonttools==4.58.0 has been changed (PR #https://github.com/fonttools/fonttools/pull/3809/): It fixes duplicate names, therefore the test for the `unique_glyphnames`check was failing. (issue #5023)
+  - Fix passing legacy check ids to --exclude-checkid (PR #5032)
+
+### On the OpenType profile
+  - **[check_monospace]:** Check CFF fonts as well: remove conditions "is_ttf" + remove "glyf" from required tables (issue #5030)
+
+### On the Universal profile
+  - **[base_has_width]** is no longer considered experimental.
+
+
+## 1.0.0 (2025-May-07)
   - See also: https://github.com/fonttools/fontspector
 
 ### Migration of checks
