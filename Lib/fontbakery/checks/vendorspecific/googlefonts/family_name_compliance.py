@@ -71,7 +71,7 @@ def check_family_name_compliance(ttFont):
         known_exception = False
 
         # Process exceptions
-        filename = resource_filename("fontbakery", abbreviations_exceptions_txt)
+        filename = get_resource_file_path(abbreviations_exceptions_txt)
         for exception in open(filename, "r", encoding="utf-8").readlines():
             exception = exception.split("#")[0].strip()
             if exception == "":
