@@ -25,8 +25,8 @@ from fontbakery.constants import NameID
 def check_family_name_compliance(ttFont):
     """Check family name for GF Guide compliance."""
     import re
-    from pkg_resources import resource_filename
-    from fontbakery.utils import get_name_entries
+
+    from fontbakery.utils import get_name_entries, get_resource_file_path
 
     camelcase_exceptions_txt = "data/googlefonts/camelcased_familyname_exceptions.txt"
     abbreviations_exceptions_txt = (
@@ -45,7 +45,7 @@ def check_family_name_compliance(ttFont):
         known_exception = False
 
         # Process exceptions
-        filename = resource_filename("fontbakery", camelcase_exceptions_txt)
+        filename = get_resource_file_path(camelcase_exceptions_txt)
         for exception in open(filename, "r", encoding="utf-8").readlines():
             exception = exception.split("#")[0].strip()
             if exception == "":

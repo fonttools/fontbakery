@@ -13,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import annotations
+
 import os
 import subprocess
 import sys
 import traceback
-from typing import Optional
 from copy import deepcopy
+from typing import TYPE_CHECKING, Optional
 
 from fontTools.pens.basePen import BasePen
 from fontTools.ttLib import TTFont
@@ -30,6 +32,27 @@ from fontbakery.constants import (
     LIGHT_THEME,
     PANOSE_Family_Type,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+
+def get_resource_file_path(sub_file_path: str) -> Path:
+    """Return the full file path of a resource file inside the fontbakery
+    directory.
+
+    Args:
+        sub_file_path (str): The file path relative to the `fontbakery`
+            directory.
+
+    Returns:
+        Path: The full file path
+    """
+    from importlib.resources import as_file, files
+
+    with as_file(files("fontbakery").joinpath(sub_file_path)) as path:
+        file_path = path
+    return file_path
 
 
 def exit_with_install_instructions(profile_name):

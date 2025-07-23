@@ -1,8 +1,7 @@
 import re
 from functools import lru_cache
-from pkg_resources import resource_filename
 
-from fontbakery.utils import exit_with_install_instructions
+from fontbakery.utils import exit_with_install_instructions, get_resource_file_path
 
 
 @lru_cache(maxsize=1)
@@ -22,9 +21,7 @@ def registered_vendor_ids():
         exit_with_install_instructions("googlefonts")
 
     registered_vendor_ids = {}
-    CACHED = resource_filename(
-        "fontbakery", "data/fontbakery-microsoft-vendorlist.cache"
-    )
+    CACHED = get_resource_file_path("data/fontbakery-microsoft-vendorlist.cache")
     content = open(CACHED, encoding="utf-8").read()
     # Strip all <A> HTML tags from the raw HTML. The current page contains a
     # closing </A> for which no opening <A> is present, which causes
