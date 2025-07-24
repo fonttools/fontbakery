@@ -40,7 +40,7 @@ def check_name_family_and_style_max_length(ttFont):
     def strip_ribbi(x):
         ribbi_re = " (" + "|".join(RIBBI_STYLE_NAMES) + ")$"
         return re.sub(ribbi_re, "", x)
-    
+
     # constants for name length limits
     NAME_LENGTH_LIMIT = 31
     PSNAME_LENGTH_LIMIT = 27
