@@ -40,7 +40,7 @@ def check_name_family_and_style_max_length(ttFont):
     def strip_ribbi(x):
         ribbi_re = " (" + "|".join(RIBBI_STYLE_NAMES) + ")$"
         return re.sub(ribbi_re, "", x)
-
+    
     # constants for name length limits
     NAME_LENGTH_LIMIT = 31
     PSNAME_LENGTH_LIMIT = 27
@@ -101,6 +101,12 @@ def check_name_family_and_style_max_length(ttFont):
         for value in ttFont["STAT"].table.AxisValueArray.AxisValue:
             # if the value is marked as elidable, don’t count it
             if value.Flags & ELIDABLE_FLAG:
+                continue
+            # skip "Regular" and "Italic" style names, which do not count towards MS Word limit
+            if ttFont["name"].getName(value.ValueNameID, 3, 1, 0x409).toUnicode() in [
+                "Regular",
+                "Italic",
+            ]:
                 continue
             # otherwise, get the STAT style particle name and add it to the list
             styles_per_axis[value.AxisIndex].append(
