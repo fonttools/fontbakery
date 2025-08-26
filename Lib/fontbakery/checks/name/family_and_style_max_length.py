@@ -57,15 +57,6 @@ def check_name_family_and_style_max_length(ttFont):
             " which are truncated in the Microsoft Word font menu.\n\n",
             strip_ribbi,
         ],
-        [
-            WARN,
-            NameID.POSTSCRIPT_NAME,
-            PSNAME_LENGTH_LIMIT,
-            "with PostScript printers, especially on Mac platforms. Per Thomas"
-            " Phinney, this is likely limited to classic versions "
-            " of Mac OS, pre-OS X (released in the year 2000).\n\n",
-            lambda x: x,
-        ],
     ]
     for loglevel, nameid, maxlen, reason, transform in checks:
         for the_name in get_name_entry_strings(ttFont, nameid):
