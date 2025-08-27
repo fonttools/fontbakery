@@ -5,6 +5,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - Replace deprecated `pkg_resources` by `importlib.resources` (issue #5028)
   - ...
 
+### Changes to existing checks
+### On the Universal profile
+  - **[name/family_and_style_max_length]:** Update to account for STAT table, along with recent testing and observations contributed to issue #2179
 
 ## 1.0.1 (2025-Jul-04)
 ### Bugfixes
