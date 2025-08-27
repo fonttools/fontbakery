@@ -1,7 +1,9 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 1.1.0 (2025-Jul-??)
+## Upcoming release: 1.1.0 (2025-Sept-??)
+  - Replace deprecated `pkg_resources` by `importlib.resources` (issue #5028)
+  - ...
 
 ### Changes to existing checks
 ### On the Universal profile
