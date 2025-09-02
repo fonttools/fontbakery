@@ -307,11 +307,11 @@ def rfn_exception(font):
     been published previously with an RFN, or fonts which benefit from
     an agreement with Google Fonts.
     """
-    from fontbakery.utils import get_resource_file_path
+    from fontbakery.utils import get_resource_file_contents
 
     rfn_exceptions_txt = "data/googlefonts/reserved_font_name_exceptions.txt"
-    filename = get_resource_file_path(rfn_exceptions_txt)
-    for exception in open(filename, "r", encoding="utf-8").readlines():
+    contents = get_resource_file_contents(rfn_exceptions_txt)
+    for exception in contents.splitlines():
         exception = exception.split("#")[0].strip()
         exception = exception.replace(" ", "")
         if exception == "":
