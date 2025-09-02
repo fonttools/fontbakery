@@ -85,7 +85,7 @@ def check_family_name_compliance(ttFont):
                         continue
                     if exception in family_name:
                         known_exception = True
-                        yield  PASS, Message(
+                        yield PASS, Message(
                             "known-abbreviation-exception",
                             "Family name is a known exception to the abbreviation rule.",
                         )
