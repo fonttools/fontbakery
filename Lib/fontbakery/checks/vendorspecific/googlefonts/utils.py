@@ -1,7 +1,7 @@
 import re
 from functools import lru_cache
+from importlib.resources import as_file, files
 
-from fontbakery.utils import exit_with_install_instructions, get_resource_file_path
 
 
 @lru_cache(maxsize=1)
@@ -21,8 +21,11 @@ def registered_vendor_ids():
         exit_with_install_instructions("googlefonts")
 
     registered_vendor_ids = {}
-    CACHED = get_resource_file_path("data/fontbakery-microsoft-vendorlist.cache")
-    content = open(CACHED, encoding="utf-8").read()
+    with as_file(
+        files("fontbakery").joinpath("data/fontbakery-microsoft-vendorlist.cache")
+    ) as CACHED:
+        with open(CACHED, encoding="utf-8") as f:
+            content = f.read()
     # Strip all <A> HTML tags from the raw HTML. The current page contains a
     # closing </A> for which no opening <A> is present, which causes
     # beautifulsoup to silently stop processing that section from the error

@@ -25,8 +25,9 @@ from fontbakery.constants import NameID
 def check_family_name_compliance(ttFont):
     """Check family name for GF Guide compliance."""
     import re
+    from importlib.resources import as_file, files
 
-    from fontbakery.utils import get_name_entries, get_resource_file_path
+    from fontbakery.utils import get_name_entries
 
     camelcase_exceptions_txt = "data/googlefonts/camelcased_familyname_exceptions.txt"
     abbreviations_exceptions_txt = (
@@ -45,18 +46,21 @@ def check_family_name_compliance(ttFont):
         known_exception = False
 
         # Process exceptions
-        filename = get_resource_file_path(camelcase_exceptions_txt)
-        for exception in open(filename, "r", encoding="utf-8").readlines():
-            exception = exception.split("#")[0].strip()
-            if exception == "":
-                continue
-            if exception in family_name:
-                known_exception = True
-                yield PASS, Message(
-                    "known-camelcase-exception",
-                    "Family name is a known exception to the CamelCase rule.",
-                )
-                break
+        with as_file(
+            files("fontbakery").joinpath(camelcase_exceptions_txt)
+        ) as filename:
+            with open(filename, "r", encoding="utf-8") as f:
+                for exception in f.readlines():
+                    exception = exception.split("#")[0].strip()
+                    if exception == "":
+                        continue
+                    if exception in family_name:
+                        known_exception = True
+                        yield PASS, Message(
+                            "known-camelcase-exception",
+                            "Family name is a known exception to the CamelCase rule.",
+                        )
+                        break
 
         if not known_exception:
             yield FAIL, Message(
@@ -71,18 +75,21 @@ def check_family_name_compliance(ttFont):
         known_exception = False
 
         # Process exceptions
-        filename = get_resource_file_path(abbreviations_exceptions_txt)
-        for exception in open(filename, "r", encoding="utf-8").readlines():
-            exception = exception.split("#")[0].strip()
-            if exception == "":
-                continue
-            if exception in family_name:
-                known_exception = True
-                yield PASS, Message(
-                    "known-abbreviation-exception",
-                    "Family name is a known exception to the abbreviation rule.",
-                )
-                break
+        with as_file(
+            files("fontbakery").joinpath(abbreviations_exceptions_txt)
+        ) as filename:
+            with open(filename, "r", encoding="utf-8") as f:
+                for exception in f.readlines():
+                    exception = exception.split("#")[0].strip()
+                    if exception == "":
+                        continue
+                    if exception in family_name:
+                        known_exception = True
+                        yield  PASS, Message(
+                            "known-abbreviation-exception",
+                            "Family name is a known exception to the abbreviation rule.",
+                        )
+                        break
 
         if not known_exception:
             # Allow SC ending
