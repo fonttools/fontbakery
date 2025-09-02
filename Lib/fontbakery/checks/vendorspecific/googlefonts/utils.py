@@ -3,7 +3,6 @@ from functools import lru_cache
 from importlib.resources import as_file, files
 
 
-
 @lru_cache(maxsize=1)
 def GFAxisRegistry():
     from axisregistry import AxisRegistry
