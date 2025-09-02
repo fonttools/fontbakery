@@ -2,6 +2,8 @@ import re
 from functools import lru_cache
 from importlib.resources import as_file, files
 
+from fontbakery.utils import exit_with_install_instructions
+
 
 @lru_cache(maxsize=1)
 def GFAxisRegistry():
