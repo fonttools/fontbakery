@@ -20,7 +20,7 @@ import subprocess
 import sys
 import traceback
 from copy import deepcopy
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from fontTools.pens.basePen import BasePen
 from fontTools.ttLib import TTFont
@@ -33,11 +33,8 @@ from fontbakery.constants import (
     PANOSE_Family_Type,
 )
 
-if TYPE_CHECKING:
-    from pathlib import Path
 
-
-def get_resource_file_path(sub_file_path: str) -> Path:
+def get_resource_file_contents(sub_file_path: str) -> str:
     """Return the full file path of a resource file inside the fontbakery
     directory.
 
@@ -51,8 +48,9 @@ def get_resource_file_path(sub_file_path: str) -> Path:
     from importlib.resources import as_file, files
 
     with as_file(files("fontbakery").joinpath(sub_file_path)) as path:
-        file_path = path
-    return file_path
+        with open(path, encoding="utf-8") as f:
+            contents = f.read()
+    return contents
 
 
 def exit_with_install_instructions(profile_name):

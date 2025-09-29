@@ -27,6 +27,8 @@ PROFILE = {
         # since currently they're in googlefonts' pending_review as well.
         "cmap/format_12",
         "empty_letters",
+        "name_length_req",
+        "instances_name_length_req",
     ],
     "sections": {
         "Fontwerk Checks": [
