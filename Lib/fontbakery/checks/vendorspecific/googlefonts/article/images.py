@@ -59,7 +59,7 @@ def check_article_images(config, family_directory):
     word_count = len(text.split())
     char_count = len(text)
 
-    visuals = soup.find_all(["img", "svg", "video", "iframe"])
+    visuals = list(soup.find_all(["img", "svg", "video", "iframe"]))
     missing_files = []
     for visual in visuals:
         if src := visual.get("src"):
