@@ -1,9 +1,16 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 1.1.0 (2025-Sept-??)
-  - Replace deprecated `pkg_resources` by `importlib.resources` (issue #5028)
+## Upcoming release: 1.1.1 (2025-??-??)
   - ...
+
+
+## 1.1.0 (2025-Oct-02)
+  - Replace deprecated `pkg_resources` by `importlib.resources` (issue #5028)
+
+### New checks
+### On microsoft profile
+  - **[instances_name_length_req]:** Similar to **name_length_req**, but checks the family and subfamily names of the instances, computed from STAT table.
 
 
 ## 1.0.1 (2025-Jul-04)
