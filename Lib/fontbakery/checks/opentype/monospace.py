@@ -166,10 +166,11 @@ def check_monospace(ttFont, glyph_metrics_stats):
                 f"{PANOSE_expected(family_type)}",
             )
 
-        num_glyphs = len(ttFont["glyf"].glyphs)
+        glyph_names = ttFont.getGlyphNames()
+        num_glyphs = len(glyph_names)
         unusually_spaced_glyphs = [
             g
-            for g in ttFont["glyf"].glyphs
+            for g in glyph_names
             if g not in [".notdef", ".null", "NULL"]
             and ttFont["hmtx"].metrics[g][0] != 0
             and ttFont["hmtx"].metrics[g][0] != most_common_width
