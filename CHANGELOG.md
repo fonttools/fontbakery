@@ -1,6 +1,12 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## Upcoming release v1.1.1 (2025-Oct-?)
+
+### Changes to existing checks
+#### On the OpenType profile
+  - **[opentype/monospace]**: Ensure check works with monospace OTF fonts (PR #5051)
+
 ## 1.1.0 (2025-Oct-02)
   - Replace deprecated `pkg_resources` by `importlib.resources` (issue #5028)
 
