@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
   - **[opentype/STAT/ital_axis]**: Skip check for fonts without STAT table (issue #4998)
 
+#### On the Noto Fonts profile
+  - **[notofonts/unicode_range_bits]**: Correctly detect PUA glyphs between 0xF0000 and 0xFF000
+
 ## 1.1.0 (2025-Oct-02)
   - Replace deprecated `pkg_resources` by `importlib.resources` (issue #5028)
 

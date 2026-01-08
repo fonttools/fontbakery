@@ -534,7 +534,7 @@ UNICODERANGE_DATA = [
     ],
     [(89, "Mathematical Alphanumeric Symbols", 0x1D400, 0x1D7FF)],
     [
-        (90, "Private Use (plane 15)", 0xFF000, 0xFFFFD),
+        (90, "Private Use (plane 15)", 0xF0000, 0xFFFFD),
         (90, "Private Use (plane 16)", 0x100000, 0x10FFFD),
     ],
     [
