@@ -18,6 +18,8 @@ def test_check_nested_components(check):
 
     # We need to create a nested component. "second" has components, so setting
     # one of "quotedbl"'s components to "second" should do it.
+    # pylint: disable=[E1136]  # false positive
     ttFont["glyf"]["quotedbl"].components[0].glyphName = "second"
+    # pylint: enable=[E1136]
 
     assert_results_contain(check(ttFont), FAIL, "found-nested-components")

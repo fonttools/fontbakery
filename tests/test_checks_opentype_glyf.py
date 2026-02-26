@@ -59,8 +59,10 @@ def test_check_glyf_non_transformed_duplicate_components(check):
     assert_PASS(check(ttFont))
 
     # Set qutodbl's components to have the same x,y values
+    # pylint: disable=[E1136]  # false positive
     ttFont["glyf"]["quotedbl"].components[0].x = 0
     ttFont["glyf"]["quotedbl"].components[1].x = 0
     ttFont["glyf"]["quotedbl"].components[0].y = 0
     ttFont["glyf"]["quotedbl"].components[1].y = 0
+    # pylint: enable=[E1136]
     assert_results_contain(check(ttFont), FAIL, "found-duplicates")

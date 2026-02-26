@@ -194,10 +194,12 @@ def test_check_italic_angle(check):
 
     ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.rightslanted.ttf"))
     assert_PASS(check(MockFont(ttFont=ttFont, style="Italic")))
+    # pylint: disable=[E1136]  # false positive
     ttFont["glyf"]["I"].endPtsOfContours = []
     ttFont["glyf"]["I"].coordinates = []
     ttFont["glyf"]["I"].flags = []
     ttFont["glyf"]["I"].numberOfContours = 0
+    # pylint: enable=[E1136]
     assert_results_contain(
         check(MockFont(ttFont=ttFont, style="Italic")), WARN, "empty-glyphs"
     )
