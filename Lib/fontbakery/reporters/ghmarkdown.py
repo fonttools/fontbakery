@@ -19,6 +19,7 @@ class GHMarkdownReporter(HTMLReporter):
         fatal_checks = {}
         experimental_checks = {}
         other_checks = {}
+        deprecation_warning = None
 
         num_checks = 0
         for section in data["sections"]:
@@ -77,7 +78,7 @@ class GHMarkdownReporter(HTMLReporter):
                             other_checks[key] = []
                         other_checks[key].append(check)
 
-                    if self.legacy_checkid_references:
+                    if deprecation_warning is None and self.legacy_checkid_references:
                         references = "\n - ".join(self.legacy_checkid_references)
                         deprecation_warning = (
                             "By late-December 2024, FontBakery version 0.13.0"
@@ -97,8 +98,6 @@ class GHMarkdownReporter(HTMLReporter):
                             f" - {references}\n"
                             "\n"
                         )
-                    else:
-                        deprecation_warning = None
 
         # Sort them by log-level results:
         ordering = ["ERROR", "FATAL", "FAIL", "WARN", "INFO", "PASS", "SKIP"]

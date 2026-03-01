@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release v1.1.1 (2025-Oct-?)
 
+### Bugfixes
+  - Fix an issue where Markdown reports throw an error when all checks pass (PR #5059)
+
 ### Changes to existing checks
 #### On the OpenType profile
   - **[opentype/monospace]**: Ensure check works with monospace OTF fonts (PR #5051)
