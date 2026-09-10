@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
   - **[opentype/STAT/ital_axis]**: Skip check for fonts without STAT table (issue #4998)
 
+#### On the Google Fonts profile
+  - **[googlefonts/colorfont_tables]**: No longer FAIL variable fonts with an SVG table when none of the SVG color glyphs actually have variation data (in `gvar` or `CFF2`); only FAIL when at least one SVG color glyph varies (issue #4946)
+
 ## 1.1.0 (2025-Oct-02)
   - Replace deprecated `pkg_resources` by `importlib.resources` (issue #5028)
 
